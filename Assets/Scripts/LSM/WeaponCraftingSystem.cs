@@ -1,41 +1,33 @@
 using UnityEngine;
-using UnityEngine.UI;
 
-public class UIManager : MonoBehaviour
+public class WeaponCraftingSystem : MonoBehaviour
 {
-    // UI 버튼 등에 연결해서 테스트용으로 활용
-
-    public WeaponCraftingSystem craftingSystem;
-    public WeaponRecipe testRecipe;
-    public RefineSystem refineSystem;
-    public MaterialItem testMaterial;
-    public WeaponUpgradeSystem upgradeSystem;
-    public Weapon testWeapon;
-    public GemSystem gemSystem;
-    public Gem testGem;
-
-    public void OnClick_CraftWeapon()
+    public string CraftWeapon(WeaponRecipe recipe)
     {
-        craftingSystem.CraftWeapon(testRecipe);
-    }
+        foreach (var req in recipe.requirements)
+        {
+            if (!InventoryManager.Instance.HasEnoughItems(req.material, req.quantity))
+            {
+                return $"재료 부족: {req.material.itemName}";
+            }
+        }
 
-    public void OnClick_Refine()
-    {
-        refineSystem.Refine(testMaterial);
-    }
+        if (!InventoryManager.Instance.SpendGold(recipe.goldRequired))
+        {
+            return $"골드 부족! (필요 골드: {recipe.goldRequired})";
+        }
 
-    public void OnClick_UpgradeWeapon()
-    {
-        upgradeSystem.UpgradeWeapon(testWeapon);
-    }
+        foreach (var req in recipe.requirements)
+        {
+            for (int i = 0; i < req.quantity; i++)
+            {
+                InventoryManager.Instance.RemoveItem(req.material);
+            }
+        }
 
-    public void OnClick_AttachGem()
-    {
-        gemSystem.AttachGem(testWeapon, testGem);
-    }
+        Weapon weaponInstance = Instantiate(recipe.resultWeapon);
+        InventoryManager.Instance.AddItem(weaponInstance);
 
-    public void OnClick_DetachGem()
-    {
-        gemSystem.DetachGem(testWeapon, testGem);
+        return $"무기 제작 성공! {weaponInstance.itemName} 제작 완료";
     }
 }

@@ -8,7 +8,7 @@ public class RefineSystem : MonoBehaviour
     public Gem gem;
     public MaterialItem strangeStone;
 
-    public void Refine(MaterialItem material)
+    public string Refine(MaterialItem material)
     {
         if (material.materialType == MaterialType.Ore)
         {
@@ -16,8 +16,9 @@ public class RefineSystem : MonoBehaviour
             {
                 InventoryManager.Instance.RemoveItem(material);
                 InventoryManager.Instance.AddItem(ingot);
-                Debug.Log("정련 성공! 원석 → 주괴");
+                return "정련 성공! 원석 → 주괴";
             }
+            else return "원석이 부족합니다!";
         }
         else if (material.materialType == MaterialType.GemOre)
         {
@@ -25,8 +26,9 @@ public class RefineSystem : MonoBehaviour
             {
                 InventoryManager.Instance.RemoveItem(material);
                 InventoryManager.Instance.AddItem(gem);
-                Debug.Log("세공 성공! 보석 원석 → 보석");
+                return "세공 성공! 보석 원석 → 보석";
             }
+            else return "보석 원석이 부족합니다!";
         }
         else if (material.materialType == MaterialType.StrangeStone)
         {
@@ -35,12 +37,13 @@ public class RefineSystem : MonoBehaviour
                 InventoryManager.Instance.RemoveItem(material);
                 InventoryManager.Instance.AddItem(ingot);
                 InventoryManager.Instance.AddItem(gem);
-                Debug.Log("이상한 돌 → 주괴 & 보석 둘 다 획득!");
+                return "이상한 돌 → 주괴 & 보석 둘 다 획득!";
             }
+            else return "이상한 돌이 부족합니다!";
         }
         else
         {
-            Debug.LogWarning("정련/세공 불가능한 재료입니다.");
+            return "정련/세공 불가능한 재료입니다.";
         }
     }
 }

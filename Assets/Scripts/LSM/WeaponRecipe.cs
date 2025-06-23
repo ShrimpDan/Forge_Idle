@@ -13,4 +13,5 @@ public class WeaponRecipe : ScriptableObject
 
     public List<MaterialRequirement> requirements;
     public Weapon resultWeapon;
+    public int goldRequired;
 }
