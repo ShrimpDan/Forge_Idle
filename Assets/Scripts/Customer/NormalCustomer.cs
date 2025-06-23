@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NorMalCustomer : Customer
+public class NormalCustomer : Customer
 {
     protected virtual void Start()
     {
