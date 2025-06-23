@@ -1,0 +1,68 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &557909202714817512
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6745967737152009208}
+  - component: {fileID: 4089929060300545932}
+  m_Layer: 0
+  m_Name: TestUIManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6745967737152009208
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 557909202714817512}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 540, y: 960, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4089929060300545932
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 557909202714817512}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 716f64a299d01b94086646dfa25a0fe5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gemUIPanel: {fileID: 9162017122252664285, guid: 0bba1f967b5b87740b5317510e6ce859, type: 3}
+  craftingUIPanel: {fileID: 9162017122252664285, guid: 471a4ce496ac2e54387a9d293b3ec72f, type: 3}
+  upgradeUIPanel: {fileID: 9162017122252664285, guid: 55744c71521b7c14196430574b36053d, type: 3}
+  refineUIPanel: {fileID: 9162017122252664285, guid: 16c990dac42ef7f42a5ad078f34721e3, type: 3}
+  gemInputSlot: {fileID: 9164034258408933690, guid: f878ceb31494f0d4b991ad27540bccb4, type: 3}
+  refineInputSlot: {fileID: 9164034258408933690, guid: f878ceb31494f0d4b991ad27540bccb4, type: 3}
+  upgradeInputSlot: {fileID: 9164034258408933690, guid: f878ceb31494f0d4b991ad27540bccb4, type: 3}
+  craftingInputSlot: {fileID: 9164034258408933690, guid: f878ceb31494f0d4b991ad27540bccb4, type: 3}
+  gemResultImage: {fileID: 9164034258408933690, guid: f878ceb31494f0d4b991ad27540bccb4, type: 3}
+  refineResultImage: {fileID: 9164034258408933690, guid: f878ceb31494f0d4b991ad27540bccb4, type: 3}
+  upgradeResultBox: {fileID: 9164034258408933690, guid: f878ceb31494f0d4b991ad27540bccb4, type: 3}
+  craftingResultBox: {fileID: 9164034258408933690, guid: f878ceb31494f0d4b991ad27540bccb4, type: 3}
+  gemResultText: {fileID: 0}
+  refineResultText: {fileID: 0}
+  upgradeResultText: {fileID: 0}
+  craftingResultText: {fileID: 0}
+  inventoryPopup: {fileID: 0}
+  inventoryManager: {fileID: 0}
+  craftingSystem: {fileID: 0}
+  upgradeSystem: {fileID: 0}
+  refineSystem: {fileID: 0}
+  gemSystem: {fileID: 0}

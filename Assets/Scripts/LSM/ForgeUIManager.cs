@@ -19,10 +19,11 @@ public class ForgeUIManager : MonoBehaviour
     public RefineSystem refineSystem;
     public GemSystem gemSystem;
 
+
     // 각 패널별 상태
     Item selectedOre, selectedGemOre, selectedWeapon, selectedGem, selectedUpgradeWeapon, selectedUpgradeGem;
 
-    // Gem 세공 Panel
+    // --------- Gem 세공 Panel ---------
     public void OnClickGemInputSlot()
     {
         // GemOre(보석원석)만 추출해서 팝업에 전달
@@ -46,7 +47,7 @@ public class ForgeUIManager : MonoBehaviour
             gemResultImage.GetComponent<Image>().sprite = gem.icon;
         }
     }
-    //  Refine Panel
+    // --------- Refine Panel ---------
     public void OnClickRefineInputSlot()
     {
         var ores = inventoryManager.items.FindAll(i => (i is MaterialItem mat) && mat.materialType == MaterialType.Ore);
@@ -69,7 +70,7 @@ public class ForgeUIManager : MonoBehaviour
             refineResultImage.GetComponent<Image>().sprite = ingot.icon;
         }
     }
-    //  Upgrade Panel 
+    // --------- Upgrade Panel ---------
     public void OnClickUpgradeInputSlot()
     {
         var weapons = inventoryManager.items.FindAll(i => i is Weapon);
@@ -85,7 +86,7 @@ public class ForgeUIManager : MonoBehaviour
         string result = upgradeSystem.UpgradeWeapon((Weapon)selectedUpgradeWeapon);
         upgradeResultText.text = result;
     }
-    //  Gem 장착 Panel
+    // --------- Gem 장착 Panel ---------
     public void OnClickGemAttachInputSlot()
     {
         // 무기만 선택
@@ -112,4 +113,33 @@ public class ForgeUIManager : MonoBehaviour
         gemResultText.text = result;
     }
     // 보석 해제 로직, 확인창/골드 차감 후 슬롯 비우기 등도 별도 함수로 구현
+
+    public void ShowGemPanel()
+    {
+        gemUIPanel.SetActive(true);
+        craftingUIPanel.SetActive(false);
+        upgradeUIPanel.SetActive(false);
+        refineUIPanel.SetActive(false);
+    }
+    public void ShowCraftingPanel()
+    {
+        gemUIPanel.SetActive(false);
+        craftingUIPanel.SetActive(true);
+        upgradeUIPanel.SetActive(false);
+        refineUIPanel.SetActive(false);
+    }
+    public void ShowUpgradePanel()
+    {
+        gemUIPanel.SetActive(false);
+        craftingUIPanel.SetActive(false);
+        upgradeUIPanel.SetActive(true);
+        refineUIPanel.SetActive(false);
+    }
+    public void ShowRefinePanel()
+    {
+        gemUIPanel.SetActive(false);
+        craftingUIPanel.SetActive(false);
+        upgradeUIPanel.SetActive(false);
+        refineUIPanel.SetActive(true);
+    }
 }
