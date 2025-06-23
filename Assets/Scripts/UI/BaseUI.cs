@@ -3,7 +3,7 @@ using UnityEngine;
 public abstract class BaseUI : MonoBehaviour
 {
     public abstract UIType UIType { get; }
-    private UIManager uIManager;
+    protected UIManager uIManager;
 
     public virtual void Init(UIManager uIManager)
     {
