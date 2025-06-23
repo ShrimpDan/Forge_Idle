@@ -824,7 +824,6 @@ GameObject:
   - component: {fileID: 3003621910563571427}
   - component: {fileID: 8494344756678960809}
   - component: {fileID: 5540036244564697405}
-  - component: {fileID: 3497907256093630680}
   m_Layer: 0
   m_Name: DungeonWindow
   m_TagString: Untagged
@@ -892,19 +891,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 0.5
---- !u!114 &3497907256093630680
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9162017122252664285}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0a9692888f6378448be777d6d11a55b6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  exitBtn: {fileID: 6088809695972888961}
 --- !u!1001 &6827194574253957798
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -998,7 +984,8 @@ PrefabInstance:
       value: Dungeon_Slot
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 5868815511947817644, guid: 212dbd79ab27cfc46a57c4ec5c52af06, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 212dbd79ab27cfc46a57c4ec5c52af06, type: 3}
