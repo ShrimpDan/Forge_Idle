@@ -28,8 +28,8 @@ public class TraineeData : ScriptableObject
     [Tooltip("현재 제자가 착용 중인지 여부입니다.")]
     [SerializeField] private bool isEquipped = false;
 
-    [Tooltip("현재 제자가 사용 가능한 상태인지 여부입니다.")]
-    [SerializeField] private bool isUsable = true;
+    [Tooltip("현재 제자가 사용 가능 중인 상태인지 여부입니다.")]
+    [SerializeField] private bool isUsable = false;
 
 
     // 외부 접근용 Getter

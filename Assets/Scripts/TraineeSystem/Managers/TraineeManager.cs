@@ -114,8 +114,8 @@ public class TraineeManager : MonoBehaviour
     /// </summary>
     public bool TryEquipTrainee(TraineeData data)
     {
-        // 사용 불가능한 제자는 착용할 수 없음
-        if (!data.IsUsable)
+        // 외부에서 사용 중인 제자는 착용할 수 없음
+        if (data.IsUsable)
         {
             Debug.Log("이 제자는 현재 사용할 수 없습니다.");
             return false;
