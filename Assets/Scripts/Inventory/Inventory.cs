@@ -1,81 +1,84 @@
 using System;
 using System.Collections.Generic;
 
-public class InventoryManager
+namespace Jang
 {
-    public List<ItemInstance> ResourceList { get; private set; }
-    public List<ItemInstance> EquipmentList { get; private set; }
-    public List<ItemInstance> GemList { get; private set; }
-
-    public event Action onItemAdded;
-
-    public InventoryManager()
+    public class InventoryManager
     {
-        ResourceList = new();
-        EquipmentList = new();
-        GemList = new();
-    }
+        public List<ItemInstance> ResourceList { get; private set; }
+        public List<ItemInstance> EquipmentList { get; private set; }
+        public List<ItemInstance> GemList { get; private set; }
 
-    public void AddItem(ItemInstance item, int amount = 1)
-    {
-        switch (item.Data.ItemType)
+        public event Action onItemAdded;
+
+        public InventoryManager()
         {
-            case ItemType.Equipment:
-                EquipmentList.Add(item);
-                break;
-
-            case ItemType.Gem:
-                AddOrMergeItem(GemList, item, amount);
-                break;
-
-            case ItemType.Resource:
-                AddOrMergeItem(ResourceList, item, amount);
-                break;
+            ResourceList = new();
+            EquipmentList = new();
+            GemList = new();
         }
 
-        onItemAdded?.Invoke();
-    }
-
-    private void AddOrMergeItem(List<ItemInstance> list, ItemInstance newItem, int amount)
-    {
-        var existItem = list.Find(i => i.ItemKey == newItem.ItemKey);
-
-        if (existItem != null)
+        public void AddItem(ItemInstance item, int amount = 1)
         {
-            existItem.AddItem(amount);
-        }
-        else
-        {
-            list.Add(newItem);
-        }
-    }
+            switch (item.Data.ItemType)
+            {
+                case ItemType.Equipment:
+                    EquipmentList.Add(item);
+                    break;
 
-    public void UseItem(ItemInstance item)
-    {
-        if (item.Data.ItemType == ItemType.Equipment)
-        {
-            return;
+                case ItemType.Gem:
+                    AddOrMergeItem(GemList, item, amount);
+                    break;
+
+                case ItemType.Resource:
+                    AddOrMergeItem(ResourceList, item, amount);
+                    break;
+            }
+
+            onItemAdded?.Invoke();
         }
 
-        item.UseItem();
-
-        if (item.Quantity <= 0)
+        private void AddOrMergeItem(List<ItemInstance> list, ItemInstance newItem, int amount)
         {
-            RemoveItem(item);
+            var existItem = list.Find(i => i.ItemKey == newItem.ItemKey);
+
+            if (existItem != null)
+            {
+                existItem.AddItem(amount);
+            }
+            else
+            {
+                list.Add(newItem);
+            }
         }
-    }
 
-    public void RemoveItem(ItemInstance item)
-    {
-        switch (item.Data.ItemType)
+        public void UseItem(ItemInstance item)
         {
-            case ItemType.Gem:
-                GemList.Remove(item);
-                break;
+            if (item.Data.ItemType == ItemType.Equipment)
+            {
+                return;
+            }
 
-            case ItemType.Resource:
-                ResourceList.Remove(item);
-                break;
+            item.UseItem();
+
+            if (item.Quantity <= 0)
+            {
+                RemoveItem(item);
+            }
+        }
+
+        public void RemoveItem(ItemInstance item)
+        {
+            switch (item.Data.ItemType)
+            {
+                case ItemType.Gem:
+                    GemList.Remove(item);
+                    break;
+
+                case ItemType.Resource:
+                    ResourceList.Remove(item);
+                    break;
+            }
         }
     }
 }

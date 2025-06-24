@@ -12,7 +12,7 @@ public class ItemInstance
     public ItemInstance()
     {
         Quantity = 1;
-        EnhanceLevel = 1;
+        EnhanceLevel = 0;
         IsEquipped = false;
     }
 
@@ -40,5 +40,35 @@ public class ItemInstance
     {
         Debug.Log("Use Item");
         Quantity -= 1;
+    }
+
+    public bool EnhanceItem()
+    {
+        if (EnhanceLevel >= Data.EquipmentStats.EnhanceLevel)
+        {
+            Debug.Log("최대강화치");
+            return false;
+        }
+
+        EnhanceLevel++;
+        return true;
+    }
+
+    public float GetTotalAttack()
+    {
+        float multiplier = (EnhanceLevel + 1) * 1.5f;
+
+        if (Data.ItemType != ItemType.Equipment)
+            return 0;
+
+        return Data.EquipmentStats.Attack * multiplier;
+    }
+
+    public float GetTotalInterval()
+    {
+        if (Data.ItemType != ItemType.Equipment)
+            return 0;
+
+        return Mathf.Max(0.1f, Data.EquipmentStats.AttackInterval - (EnhanceLevel + 1) * 0.2f);
     }
 }

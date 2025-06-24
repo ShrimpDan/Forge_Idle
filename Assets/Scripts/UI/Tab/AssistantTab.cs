@@ -4,8 +4,8 @@ using UnityEngine.UI;
 
 public class AssistantTab : MonoBehaviour
 {
-    private AssistantManager assistant;
-
+    private TraineeManager assistantManager;
+    
     [Header("Tab Buttons")]
     [SerializeField] private Button[] tabButtons;
     [SerializeField] private Color selectedColor = Color.white;

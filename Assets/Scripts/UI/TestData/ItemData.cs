@@ -4,9 +4,29 @@ using UnityEngine;
 [System.Serializable]
 public class EquipmentStats
 {
-    public int Attack;
-    public int Defense;
-    public int EnhanceMax;
+    public float Attack;
+    public float AttackInterval;
+    public int EnhanceLevel;
+}
+
+[System.Serializable]
+public class UpgradeInfo
+{
+    public int CurrentEnhanceLevel;
+    public int MaxEnhanceLevel;
+
+    public float AttackBonusPerLevel;
+    public float IntervalReductionPerLevel;
+
+    public float GetEnhancedAttack(float baseAttack)
+    {
+        return baseAttack + AttackBonusPerLevel * CurrentEnhanceLevel;
+    }
+
+    public float GetEnhancedInterval(float baseInterval)
+    {
+        return Mathf.Max(0.1f, baseInterval - IntervalReductionPerLevel * CurrentEnhanceLevel);
+    }
 }
 
 [System.Serializable]
@@ -26,6 +46,7 @@ public class ItemData
     public string IconPath;
 
     public EquipmentStats EquipmentStats;
+    public UpgradeInfo UpgradeInfo;
     public GemStats GemStats;
 }
 

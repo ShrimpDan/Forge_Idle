@@ -49,8 +49,7 @@ public class InventoryPopup : BaseUI
             case ItemType.Equipment:
                 desc += $"\n\n<color=#00c3ff><b>▶ Stats</b></color>\n";
                 desc += $"공격력: <b>{item.Data.EquipmentStats.Attack}</b>\n";
-                desc += $"방어력: <b>{item.Data.EquipmentStats.Defense}</b>\n";
-                desc += $"강화 최대치: <b>{item.Data.EquipmentStats.EnhanceMax}</b>";
+                desc += $"공격 간격: <b>{item.Data.EquipmentStats.AttackInterval}초</b>\n";
                 break;
 
             case ItemType.Gem:
