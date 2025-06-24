@@ -8,8 +8,8 @@ public enum UIType
 public enum ItemType
 {
     Equipment = 0,
-    Gem = 1,
-    Resource = 2,
+    Resource = 1,
+    Gem = 2,
 }
 
 public enum ButtonType
@@ -21,7 +21,8 @@ public enum ButtonType
     Mine,
     Dungeon,
     Gem,      // 추가
-    Refine   // 추가
+    Refine,   // 추가
+    MineDetail // 추가
 }
 
 public static class UIName
@@ -40,6 +41,7 @@ public static class UIName
     public const string RefineSystemWindow = "RefineSystemWindow";
     public const string InventoryPopup = "InventoryPopup";
     public const string AssistantPopup = "AssistantPopup";
+    public const string MineDetailWindow = "MineDetailWindow";
 
     public static string GetUINameByType(ButtonType type)
     {
@@ -53,6 +55,7 @@ public static class UIName
             ButtonType.Dungeon => DungeonWindow,
             ButtonType.Gem => GemsSystemWindow,
             ButtonType.Refine => RefineSystemWindow,
+            ButtonType.MineDetail => MineDetailWindow,
             _ => string.Empty
         };
     }

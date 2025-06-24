@@ -29,38 +29,6 @@ public class ItemData
     public GemStats GemStats;
 }
 
-[System.Serializable]
-public class ItemInstance
-{
-    public string ItemKey;
-    public int Quantity;
-
-    public int EnhanceLevel;
-    public bool IsEquipped;
-
-    [System.NonSerialized]
-    public ItemData Data;
-
-    public void EquipItem()
-    {
-        Debug.Log("Equip Item");
-        IsEquipped = true;
-    }
-
-    public void UnEquipItem()
-    {
-        Debug.Log("UnEquip Item");
-        IsEquipped = false;
-    }
-
-    public void UseItem()
-    {
-        Debug.Log("Use Item");
-        Quantity -= 1;
-    }
-}
-
-
 public class ItemDataLoader
 {
     public List<ItemData> ItemList { get; private set; }
@@ -95,6 +63,11 @@ public class ItemDataLoader
     {
         ItemDict.TryGetValue(key, out ItemData data);
         return data;
+    }
+
+    public ItemData GetRandomItem()
+    {
+        return ItemList[Random.Range(0, ItemList.Count)];
     }
 }
 

@@ -1,16 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class TestDataManger : MonoBehaviour
+public class TestDataManger
 {
-    public static TestDataManger Instance { get; private set; }
-
     public ItemDataLoader ItemLoader { get; private set; }
 
-    void Awake()
+    public TestDataManger()
     {
-        Instance = this;
         ItemLoader = new ItemDataLoader();
     }
 }

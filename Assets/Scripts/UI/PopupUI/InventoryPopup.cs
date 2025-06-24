@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,8 +8,6 @@ public class InventoryContext
     public string Name;
     public int Count;
     public string Description;
-
-    public List<(string label, UnityEngine.Events.UnityAction action)> Actions = new();
 }
 
 public class InventoryPopup : BaseUI
@@ -29,33 +26,60 @@ public class InventoryPopup : BaseUI
     [SerializeField] private GameObject buttonPrefab;
     [SerializeField] private Transform buttonContainer;
 
+    private ItemInstance slotItem;
+    private Button equipBtn;
+
     public override void Init(UIManager uIManager)
     {
         base.Init(uIManager);
         exitButton.onClick.AddListener(() => uIManager.CloseUI(UIName.InventoryPopup));
     }
 
-    public void SetContext(InventoryContext context)
+    public void SetItemInfo(ItemInstance item)
     {
-        icon.sprite = context.Icon;
-        objectName.text = context.Name;
-        value.text = context.Count.ToString();
-        description.text = context.Description;
+        slotItem = item;
+        icon.sprite = Resources.Load<Sprite>(item.Data.IconPath);
+        objectName.text = item.Data.Name;
+        value.text = item.Quantity.ToString("F0");
 
-        foreach (var btnAction in context.Actions)
+        string desc = item.Data.Description;
+
+        switch (item.Data.ItemType)
         {
-            CreateButton(btnAction.label, btnAction.action);
+            case ItemType.Equipment:
+                desc += $"\n\n<color=#00c3ff><b>▶ Stats</b></color>\n";
+                desc += $"공격력: <b>{item.Data.EquipmentStats.Attack}</b>\n";
+                desc += $"방어력: <b>{item.Data.EquipmentStats.Defense}</b>\n";
+                desc += $"강화 최대치: <b>{item.Data.EquipmentStats.EnhanceMax}</b>";
+                break;
+
+            case ItemType.Gem:
+                desc += $"\n\n<color=#ffcc00><b>▶ 효과</b></color>\n";
+                desc += $"강화 배율: <b>{item.Data.GemStats.EnhanceMultiplier:F1}x</b>\n";
+                desc += $"{item.Data.GemStats.EffectDescription}";
+                break;
+        }
+
+        description.text = desc;
+        
+        if (item.Data.ItemType == ItemType.Equipment)
+        {
+            CreateButton(item);
         }
     }
 
-    private void CreateButton(string label, UnityEngine.Events.UnityAction action)
+    private void CreateButton(ItemInstance item)
     {
         GameObject go = Instantiate(buttonPrefab, buttonContainer);
-        var button = go.GetComponent<Button>();
+        equipBtn = go.GetComponent<Button>();
         var btnName = go.GetComponentInChildren<TextMeshProUGUI>();
 
-        btnName.text = label;
-        button.onClick.AddListener(action);
+        if (!item.IsEquipped)
+            btnName.text = "Equip";
+        else
+            btnName.text = "UnEquip";
+
+        equipBtn.onClick.AddListener(SetEquip);
     }
 
     public override void Open()
@@ -66,5 +90,22 @@ public class InventoryPopup : BaseUI
     public override void Close()
     {
         base.Close();
+    }
+
+    public void SetEquip()
+    {
+        if (equipBtn == null) return;
+        var btnName = equipBtn.GetComponentInChildren<TextMeshProUGUI>();
+
+        if (slotItem.IsEquipped)
+        {
+            slotItem.UnEquipItem();
+            btnName.text = "Equip";
+        }
+        else
+        {
+            slotItem.EquipItem();
+            btnName.text = "UnEquip";
+        }
     }
 }
