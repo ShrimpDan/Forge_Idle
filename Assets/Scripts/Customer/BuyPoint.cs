@@ -43,6 +43,7 @@ public class BuyPoint : MonoBehaviour
     public bool IsCustomFirst(Customer customer)
     {
         return waitingCustomers.Count > 0 && waitingCustomers.Peek() == customer;
+        
     }
 
 
