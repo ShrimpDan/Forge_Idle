@@ -41,8 +41,7 @@ public class MineDetailWindow : BaseUI
     {
         // 인벤토리/조수 팝업 UI 연결 (추후 구현)
         Debug.Log($"조수 배치 팝업: {mineralIndex}");
-        UIManager.Instance.OpenUI<InventoryPopup>;
+        UIManager.Instance.OpenUI<InventoryPopup>(UIName.InventoryPopup);
         // 우선 인벤토리 팝업 염
-        // UIManager.Instance.OpenUI<AssistantPopup>(UIName.AssistantPopup);
     }
 }
