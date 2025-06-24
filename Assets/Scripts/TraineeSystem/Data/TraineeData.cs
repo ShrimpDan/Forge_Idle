@@ -23,6 +23,15 @@ public class TraineeData : ScriptableObject
     [Tooltip("특화에 따라 부여된 능력치 배율 목록입니다. 각 항목은 특정 효과와 배율을 포함합니다.")]
     [SerializeField] private List<AbilityMultiplier> multipliers = new List<AbilityMultiplier>();
 
+    [Header("사용 상태")]
+
+    [Tooltip("현재 제자가 착용 중인지 여부입니다.")]
+    [SerializeField] private bool isEquipped = false;
+
+    [Tooltip("현재 제자가 사용 가능한 상태인지 여부입니다.")]
+    [SerializeField] private bool isUsable = true;
+
+
     // 외부 접근용 Getter
 
     public string TraineeName => traineeName;
@@ -30,6 +39,18 @@ public class TraineeData : ScriptableObject
     public PersonalityData Personality => personality;
     public SpecializationType Specialization => specialization;
     public List<AbilityMultiplier> Multipliers => multipliers;
+
+    public bool IsEquipped
+    {
+        get => isEquipped;
+        set => isEquipped = value;
+    }
+
+    public bool IsUsable
+    {
+        get => isUsable;
+        set => isUsable = value;
+    }
 
     [System.Serializable]
     public class AbilityMultiplier
