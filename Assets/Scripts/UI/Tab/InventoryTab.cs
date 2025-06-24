@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class InventoryTab : MonoBehaviour
 {
-    private Inventory inventory;
+    private InventoryManager inventory;
 
     [Header("Tab Buttons")]
     [SerializeField] private Button[] tabButtons;
@@ -52,7 +52,7 @@ public class InventoryTab : MonoBehaviour
         inventory.onItemAdded -= AddItemToInven;       
     }
 
-    public void Init(Inventory inventory)
+    public void Init(InventoryManager inventory)
     {
         this.inventory = inventory;
         RefreshSlots();

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-public class Inventory
+public class InventoryManager
 {
     public List<ItemInstance> ResourceList { get; private set; }
     public List<ItemInstance> EquipmentList { get; private set; }
@@ -9,7 +9,7 @@ public class Inventory
 
     public event Action onItemAdded;
 
-    public Inventory()
+    public InventoryManager()
     {
         ResourceList = new();
         EquipmentList = new();

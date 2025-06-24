@@ -2,14 +2,14 @@ using UnityEngine;
 
 public class GameManager : MonoSingleton<GameManager>
 {
-    public Inventory Inventory { get; private set; }
+    public InventoryManager Inventory{ get; private set; }
     public TestDataManger TestDataManager { get; private set; }
 
     protected override void Awake()
     {
         base.Awake();
 
-        Inventory = new Inventory();
+        Inventory = new InventoryManager();
         TestDataManager = new TestDataManger();
     }
 
