@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class NormalCustomer : Customer
 {
+    
+
     protected virtual void Start()
     {
         base.Start();
@@ -13,7 +15,9 @@ public class NormalCustomer : Customer
    
     public override void Interact()
     {
-        Debug.Log("시작");
+        // 상점 시스템이 필요함
+        Debug.Log("+500G");
+
     }
 
     //Make Prefabs

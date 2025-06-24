@@ -5,10 +5,11 @@ public enum UIType
     Popup
 }
 
-public enum InvenSlotType
+public enum ItemType
 {
-    Resource,
-    Useable,
+    Equipment = 0,
+    Gem = 1,
+    Resource = 2,
 }
 
 public enum ButtonType
@@ -23,16 +24,12 @@ public enum ButtonType
     Refine   // 추가
 }
 
-public enum ObjectType
-{
-    Item,
-    Assistant,
-    Weapon
-}
-
 public static class UIName
 {
+    // Fixed UI
     public const string MainUI = "MainUI";
+
+    // Window UI
     public const string SellWeaponWindow = "SellWeaponWindow";
     public const string CraftWeaponWindow = "CraftWeaponWindow";
     public const string UpgradeWeaponWindow = "UpgradeWeaponWindow";
@@ -42,6 +39,7 @@ public static class UIName
     public const string GemsSystemWindow = "GemSystemWindow";
     public const string RefineSystemWindow = "RefineSystemWindow";
     public const string InventoryPopup = "InventoryPopup";
+    public const string AssistantPopup = "AssistantPopup";
 
     public static string GetUINameByType(ButtonType type)
     {

@@ -1,18 +1,38 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class InventoryTab : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [Header("Tab Buttons")]
+    [SerializeField] private Button[] tabButtons;
+    [SerializeField] private Color selectedColor = Color.white;
+    [SerializeField] private Color defaultColor;
+
+    [Header("Tab Panels")]
+    [SerializeField] private GameObject[] tabPanels;
+
+    public void Start()
     {
-        
+        for (int i = 0; i < tabButtons.Length; i++)
+        {
+            int index = i;
+            tabButtons[i].onClick.AddListener(() => SwitchTab(index));
+        }
+
+        SwitchTab(0);
     }
 
-    // Update is called once per frame
-    void Update()
+    private void SwitchTab(int index)
     {
-        
+        for (int i = 0; i < tabPanels.Length; i++)
+        {
+            bool isSelected = i == index;
+
+            tabPanels[i].SetActive(isSelected);
+
+            tabButtons[i].image.color = isSelected ? selectedColor : defaultColor;
+        }
     }
 }

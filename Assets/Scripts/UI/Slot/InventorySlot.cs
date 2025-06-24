@@ -1,7 +1,7 @@
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class InventorySlot : MonoBehaviour
 {
@@ -12,75 +12,95 @@ public class InventorySlot : MonoBehaviour
     [SerializeField] private TextMeshProUGUI countText;
     private Button slotBtn;
 
-    public InvenSlotType SlotType { get; private set; }
-    public ItemData ItemData { get; private set; }
-
-    private ItemDataLoader itemDataLoader;
+    public ItemType ItemType { get; private set; }
+    public ItemInstance ItemInstance { get; private set; }
 
     void Awake()
     {
         slotBtn = GetComponent<Button>();
         slotBtn.onClick.AddListener(() => OnClickSlot());
-
-        itemDataLoader = new ItemDataLoader();
     }
 
     void Start()
     {
-        ItemData = itemDataLoader.GetItemByKey(itemKey);
+        ItemInstance = new ItemInstance();
+        ItemInstance.Data = TestDataManger.Instance.ItemLoader.GetItemByKey(itemKey);
     }
 
-    public void Init(ItemData itemData, InvenSlotType type)
+    public void Init(ItemInstance itemInstance)
     {
-        ItemData = itemData;
-        SlotType = type;
-        countText.text = itemData.Count.ToString();
+        ItemInstance = itemInstance;
     }
 
     private void OnClickSlot()
     {
-        if (ItemData == null) return;
+        if (ItemInstance == null) return;
+        ItemData data = ItemInstance.Data;
 
-        switch (ItemData.SlotType)
+        var ui = UIManager.Instance.OpenUI<InventoryPopup>(UIName.InventoryPopup);
+
+        switch (ItemInstance.Data.ItemType)
         {
-            case InvenSlotType.Resource:
-                OpenResourcePopup();
+            case ItemType.Equipment:
+                OpenEquipmentPopup(ui);
                 break;
 
-            case InvenSlotType.Useable:
-                OpenUsablePopup();
+            case ItemType.Gem:
+                OpenGemPopup(ui);
+                break;
+
+            case ItemType.Resource:
+                OpenResourcePopup(ui);
                 break;
         }
     }
 
-    private void OpenResourcePopup()
+    private void OpenEquipmentPopup(InventoryPopup popup)
     {
-        var popup = UIManager.Instance.OpenUI<InventoryPopup>(UIName.InventoryPopup);
+        ItemData data = ItemInstance.Data;
+
         popup.SetContext(
             new InventoryContext
             {
-                Icon = LoadIcon(ItemData.IconPath),
-                Name = ItemData.Name,
-                Count = ItemData.Count,
-                Description = ItemData.Description,
+                Icon = LoadIcon(data.IconPath),
+                Name = data.Name,
+                Count = ItemInstance.Quantity,
+                Description = data.Description,
+
+                Actions = new List<(string label, UnityEngine.Events.UnityAction action)>
+                {
+                    (label: "Equip", action: () => ItemInstance.EquipItem())
+                }
             }
         );
     }
 
-    private void OpenUsablePopup()
+    private void OpenGemPopup(InventoryPopup popup)
     {
-        var popup = UIManager.Instance.OpenUI<InventoryPopup>(UIName.InventoryPopup);
+        ItemData data = ItemInstance.Data;
+
         popup.SetContext(
             new InventoryContext
             {
-                Icon = LoadIcon(ItemData.IconPath),
-                Name = ItemData.Name,
-                Count = ItemData.Count,
-                Description = ItemData.Description,
-                Actions = new List<(string label, UnityEngine.Events.UnityAction action)>
-                {
-                    (label: "Use", action: () => ItemData.UseItem()),
-                }
+                Icon = LoadIcon(data.IconPath),
+                Name = data.Name,
+                Count = ItemInstance.Quantity,
+                Description = data.Description,
+            }
+        );
+    }
+
+    private void OpenResourcePopup(InventoryPopup popup)
+    {
+        ItemData data = ItemInstance.Data;
+
+        popup.SetContext(
+            new InventoryContext
+            {
+                Icon = LoadIcon(data.IconPath),
+                Name = data.Name,
+                Count = ItemInstance.Quantity,
+                Description = data.Description,
             }
         );
     }

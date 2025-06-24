@@ -1,11 +1,14 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class TestAssistantData
 {
-
+    public string IconPath;
+    public string TypeIconPath;
+    public string Type;
+    public string Name;
+    public List<string> OptionList;
 }
 
 public class AssistantSlot : MonoBehaviour
@@ -23,6 +26,6 @@ public class AssistantSlot : MonoBehaviour
 
     private void OpenPopup()
     {
-        
+
     }
 }
