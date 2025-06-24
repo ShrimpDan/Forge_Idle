@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UpgradeWeaponWindow : BaseUI
+public class MineWindow : BaseUI
 {
     public override UIType UIType => UIType.Window;
     [SerializeField] Button exitBtn;
@@ -9,7 +9,9 @@ public class UpgradeWeaponWindow : BaseUI
     public override void Init(UIManager uIManager)
     {
         base.Init(uIManager);
-        exitBtn.onClick.AddListener(() => uIManager.CloseUI(UIName.UpgradeWeaponWindow));
+        
+        exitBtn.onClick.RemoveAllListeners();
+        exitBtn.onClick.AddListener(() => uIManager.CloseUI(UIName.MineWindow));
     }
 
     public override void Open()

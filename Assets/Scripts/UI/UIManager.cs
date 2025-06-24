@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
@@ -8,6 +10,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Transform fixedRoot;
     [SerializeField] private Transform windowRoot;
     [SerializeField] private Transform popupRoot;
+
+    private Image popupBlockRay;
 
     private Dictionary<string, BaseUI> activeUIs = new();
     private Dictionary<string, GameObject> loadedPrefabs = new();
@@ -32,6 +36,8 @@ public class UIManager : MonoBehaviour
             mainUI.gameObject.SetActive(true);
             mainUI.Open();
         }
+
+        popupBlockRay = popupRoot.GetComponent<Image>();
     }
 
     public T OpenUI<T>(string uiName) where T : BaseUI
@@ -51,6 +57,11 @@ public class UIManager : MonoBehaviour
         ui.Init(this);
         activeUIs.Add(uiName, ui);
 
+        if (ui.UIType == UIType.Popup)
+        {
+            popupBlockRay.enabled = true;
+        }
+
         return ui;
     }
 
@@ -63,6 +74,11 @@ public class UIManager : MonoBehaviour
             {
                 Destroy(ui.gameObject);
                 activeUIs.Remove(uiName);
+            }
+
+            if (ui.UIType == UIType.Popup)
+            {
+                popupBlockRay.enabled = false;
             }
         }
     }
@@ -87,5 +103,18 @@ public class UIManager : MonoBehaviour
             UIType.Popup => popupRoot,
             _ => windowRoot,
         };
+    }
+
+    public void CloseAllWindowUI()
+    {
+        foreach (var uiName in activeUIs.Keys.ToList())
+        {
+            UIType type = activeUIs[uiName].UIType;
+
+            if (type == UIType.Window)
+            {
+                CloseUI(uiName);
+            }
+        }
     }
 }
