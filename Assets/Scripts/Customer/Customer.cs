@@ -44,6 +44,9 @@ public abstract class Customer : MonoBehaviour
     public CustomerJob Job => job;
     public CustomerState State => state;
     public int BuyCount => buyCount;
+    public float Frequency => frequency;
+    public float BuyingTime => buyingTime;
+    
 
     [SerializeField] private BuyPoint buyPoint;
 
@@ -52,7 +55,7 @@ public abstract class Customer : MonoBehaviour
     [SerializeField] private CustomerJob job;
     [SerializeField] private Transform[] moveWayPoint;
     [SerializeField] private int buyCount;
-    [SerializeField] private float Frequency;
+    [SerializeField] private float frequency;
     [SerializeField] private float buyingTime = 1.5f;
     [SerializeField] private float moveSpeed = 3f;
 
@@ -131,7 +134,8 @@ public abstract class Customer : MonoBehaviour
     {
         state = CustomerState.Exiting;
         yield return MoveingWayPoint(moveWayPoint[1].position); //이거 고정시키는거 좋은 방법 없을까
-    
+
+        CustomerExit();
     }
 
 
@@ -157,6 +161,12 @@ public abstract class Customer : MonoBehaviour
         
     }
     
+    protected virtual void CustomerExit()
+    {
+        CustomerManager.Instance.CustomerExit(this);
+
+        Destroy(gameObject);
+    }
 
     public abstract void Interact();
 
