@@ -4,17 +4,39 @@ using UnityEngine.UI;
 public class UpgradeWeaponWindow : BaseUI
 {
     public override UIType UIType => UIType.Window;
-    [SerializeField] Button exitBtn;
 
-    public override void Init(UIManager uIManager)
+    [Header("UI Elements")]
+    [SerializeField] private Button exitBtn;
+    [SerializeField] private Button inputWeaponSlotBtn; // ºó ¹«±â ½½·Ô ¹öÆ°
+    [SerializeField] private Image inputWeaponIcon;     // ºó ¹«±â ½½·Ô ¾ÆÀÌÄÜ (Image)
+
+    private void Awake()
     {
-        base.Init(uIManager);
-        exitBtn.onClick.AddListener(() => uIManager.CloseUI(UIName.UpgradeWeaponWindow));
+        exitBtn.onClick.AddListener(Close);
+        inputWeaponSlotBtn.onClick.AddListener(OnClickInputWeaponSlot);
+    }
+
+    private void OnClickInputWeaponSlot()
+    {
+        // ÀÎº¥Åä¸® ÆË¾÷
+        UIManager.Instance.OpenUI<InventoryPopup>(UIName.InventoryPopup);
+    }
+
+    public void OnWeaponSelected(ItemData weapon)
+    {
+        inputWeaponIcon.sprite = LoadIcon(weapon.IconPath);
+    }
+
+    private Sprite LoadIcon(string path)
+    {
+        Sprite icon = Resources.Load<Sprite>(path);
+        return icon ? icon : null;
     }
 
     public override void Open()
     {
         base.Open();
+        inputWeaponIcon.sprite = null;
     }
 
     public override void Close()
