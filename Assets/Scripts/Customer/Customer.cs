@@ -101,8 +101,14 @@ public abstract class Customer : MonoBehaviour
     private IEnumerator MoveToBuyZone()
     {
         state = CustomerState.MovingToBuyZone;
-        yield return MoveingWayPoint(moveWayPoint[0].position);
+        Vector2 qPos = buyPoint.GetLastPosition();
+        yield return MoveingWayPoint(qPos);
+
+
+        //yield return MoveingWayPoint(moveWayPoint[0].position);
     }
+
+   
 
     private IEnumerator JoinQueue()
     {

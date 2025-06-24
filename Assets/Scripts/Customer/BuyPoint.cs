@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using UnityEngine;
 
@@ -47,7 +48,17 @@ public class BuyPoint : MonoBehaviour
     }
 
 
+    //마지막 위치를 반환해줘야 할듯한데
+    public Vector2 GetLastPosition()
+    {
+        int index = waitingCustomers.Count;
+        if (index >= queuePos.Length)
+        {
+            return queuePos[queuePos.Length - 1].position;//맨끝 반환
+        }
 
+        return queuePos[index].position;
+    }
 
 
 }
