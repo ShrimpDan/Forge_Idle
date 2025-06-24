@@ -1,10 +1,11 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class InventoryTab : MonoBehaviour
 {
+    private Inventory inventory;
+
     [Header("Tab Buttons")]
     [SerializeField] private Button[] tabButtons;
     [SerializeField] private Color selectedColor = Color.white;
@@ -12,6 +13,15 @@ public class InventoryTab : MonoBehaviour
 
     [Header("Tab Panels")]
     [SerializeField] private GameObject[] tabPanels;
+
+    [Header("To Create InvenSlot Root")]
+    [SerializeField] GameObject slotPrefab;
+    [SerializeField] Transform EquipRoot;
+    [SerializeField] Transform GemRoot;
+    [SerializeField] Transform ResourceRoot;
+
+    private Queue<GameObject> pooledSlots = new Queue<GameObject>();
+    private List<GameObject> activeSlots = new List<GameObject>();
 
     public void Start()
     {
@@ -24,6 +34,30 @@ public class InventoryTab : MonoBehaviour
         SwitchTab(0);
     }
 
+    void OnEnable()
+    {
+        if (inventory == null)
+        {
+            inventory = GameManager.Instance.Inventory;
+        }
+        
+        inventory.onItemAdded += AddItemToInven;
+
+        RefreshSlots();
+    }
+
+    void OnDisable()
+    {
+        if (inventory == null) return;
+        inventory.onItemAdded -= AddItemToInven;       
+    }
+
+    public void Init(Inventory inventory)
+    {
+        this.inventory = inventory;
+        RefreshSlots();
+    }
+
     private void SwitchTab(int index)
     {
         for (int i = 0; i < tabPanels.Length; i++)
@@ -34,5 +68,49 @@ public class InventoryTab : MonoBehaviour
 
             tabButtons[i].image.color = isSelected ? selectedColor : defaultColor;
         }
+    }
+
+    public void RefreshSlots()
+    {
+        foreach (var slot in activeSlots)
+        {
+            slot.SetActive(false);
+            pooledSlots.Enqueue(slot);
+        }
+        activeSlots.Clear();
+
+        CreateSlots(inventory.EquipmentList, EquipRoot);
+        CreateSlots(inventory.GemList, GemRoot);
+        CreateSlots(inventory.ResourceList, ResourceRoot);
+    }
+
+    private void CreateSlots(List<ItemInstance> itemList, Transform parent)
+    {
+        foreach (var item in itemList)
+        {
+            if (item.Quantity <= 0) continue;
+
+            GameObject slotObj = GetSlotFromPool();
+            slotObj.transform.SetParent(parent, false);
+            slotObj.SetActive(true);
+
+            var slot = slotObj.GetComponent<InventorySlot>();
+            slot.Init(item);
+
+            activeSlots.Add(slotObj);
+        }
+    }
+
+    public void AddItemToInven()
+    {
+        RefreshSlots();
+    }
+
+    private GameObject GetSlotFromPool()
+    {
+        if (pooledSlots.Count > 0)
+            return pooledSlots.Dequeue();
+
+        return Instantiate(slotPrefab);
     }
 }

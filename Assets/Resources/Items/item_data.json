@@ -1,18 +1,72 @@
 {
-  "Items" : [
+  "Items": [
     {
-      "Key": "testItem1",
-      "ItemType": 1,
-      "IconPath": "Icons/test",
-      "Name": "Wood",
-      "Description": "Basic resource"
+      "Key": "equip_sword_bronze",
+      "ItemType": 0,
+      "IconPath": "Icons/equip_sword_bronze",
+      "Name": "Bronze Sword",
+      "Description": "A beginner's sword with low damage.",
+      "EquipmentStats": {
+        "Attack": 5,
+        "Defense": 0,
+        "EnhanceMax": 3
+      },
+      "GemStats": null
     },
     {
-      "Key": "testItem2",
+      "Key": "equip_armor_steel",
+      "ItemType": 0,
+      "IconPath": "Icons/equip_armor_steel",
+      "Name": "Steel Armor",
+      "Description": "Heavy armor for maximum defense.",
+      "EquipmentStats": {
+        "Attack": 0,
+        "Defense": 10,
+        "EnhanceMax": 5
+      },
+      "GemStats": null
+    },
+    {
+      "Key": "gem_speed",
       "ItemType": 2,
-      "IconPath": "Icons/gem",
+      "IconPath": "Icons/gem_speed",
       "Name": "Speed Gem",
-      "Description": "Enhances speed."
+      "Description": "Increases movement speed when equipped.",
+      "EquipmentStats": null,
+      "GemStats": {
+        "EnhanceMultiplier": 1.1,
+        "EffectDescription": "Grants +10% speed boost."
+      }
+    },
+    {
+      "Key": "gem_power",
+      "ItemType": 2,
+      "IconPath": "Icons/gem_power",
+      "Name": "Power Gem",
+      "Description": "Boosts attack damage significantly.",
+      "EquipmentStats": null,
+      "GemStats": {
+        "EnhanceMultiplier": 1.5,
+        "EffectDescription": "Increases attack power by 50%."
+      }
+    },
+    {
+      "Key": "resource_wood",
+      "ItemType": 1,
+      "IconPath": "Icons/resource_wood",
+      "Name": "Wood",
+      "Description": "Basic material for crafting.",
+      "EquipmentStats": null,
+      "GemStats": null
+    },
+    {
+      "Key": "resource_fabric",
+      "ItemType": 1,
+      "IconPath": "Icons/resource_fabric",
+      "Name": "Fabric",
+      "Description": "Used for tailoring and light crafting.",
+      "EquipmentStats": null,
+      "GemStats": null
     }
   ]
 }

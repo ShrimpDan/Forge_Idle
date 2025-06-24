@@ -1,27 +1,13 @@
 ﻿using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-public enum CustomerType
-{
-    Normal,
-    Regular,
-    Nuisance
 
-}
 
-public enum CustomerJob
-{
-    Woodcutter,
-    Farmer,
-    Miner,
-    Warrior,
-    Archer,
-    Assassin
-}
 
 public enum CustomerState
 { 
@@ -33,31 +19,32 @@ public enum CustomerState
     Exiting
 }
 
-
 //enum추가 하는것도 괜찮다. 
 //will be SO
 
 public abstract class Customer : MonoBehaviour
 {
     public static readonly int maxCount = 5; //5명 이상은 존재 안할꺼다
-    public CustomerType Type => type;
-    public CustomerJob Job => job;
-    public CustomerState State => state;
-    public int BuyCount => buyCount;
-    public float Frequency => frequency;
-    public float BuyingTime => buyingTime;
+
+    public CustomerType Type => data.Type;
+    public CustomerJob Job => data.Job;
+
+    public int BuyCount => data.buyCount;
+    public float Frequency => data.frequency;
+    public float BuyingTime => data.buyingTime;
     
 
     [SerializeField] private BuyPoint buyPoint;
 
+    
+
     [Header("Customerinfo")]
-    [SerializeField] private CustomerType type;
-    [SerializeField] private CustomerJob job;
+    [SerializeField] CustomerData data;
     [SerializeField] private Transform[] moveWayPoint;
-    [SerializeField] private int buyCount;
-    [SerializeField] private float frequency;
-    [SerializeField] private float buyingTime = 1.5f;
-    [SerializeField] private float moveSpeed = 3f;
+
+
+   
+    
 
     private bool isMoving = false;
     private CustomerState state;
@@ -74,8 +61,9 @@ public abstract class Customer : MonoBehaviour
 
     protected virtual void Start()
     {
-       
+
         
+
         StartCoroutine(CustomerFlow());
     }
 
@@ -103,9 +91,6 @@ public abstract class Customer : MonoBehaviour
         state = CustomerState.MovingToBuyZone;
         Vector2 qPos = buyPoint.GetLastPosition();
         yield return MoveingWayPoint(qPos);
-
-
-        //yield return MoveingWayPoint(moveWayPoint[0].position);
     }
 
    
@@ -123,7 +108,7 @@ public abstract class Customer : MonoBehaviour
     {
         state = CustomerState.WaitintTurn;
         yield return new WaitUntil(() => buyPoint.IsCustomFirst(this));
-        yield return new WaitForSeconds(buyingTime);
+        yield return new WaitForSeconds(data.buyingTime);
         
     }
 
@@ -150,7 +135,7 @@ public abstract class Customer : MonoBehaviour
             while (Vector2.Distance(transform.position, wayPoint) > 0.1f)
             { 
             Vector2 dir = (wayPoint - (Vector2)transform.position).normalized;
-            rigid2D.MovePosition(rigid2D.position + dir * Time.deltaTime* moveSpeed);
+            rigid2D.MovePosition(rigid2D.position + dir * Time.deltaTime* data.moveSpeed);
             
             yield return new WaitForFixedUpdate();
             }
