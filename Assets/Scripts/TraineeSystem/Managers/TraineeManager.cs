@@ -107,5 +107,30 @@ public class TraineeManager : MonoBehaviour
 
         return $"제자_{spec} {count}";
     }
+
+    /// <summary>
+    /// 제자를 착용 가능한 상태인지 확인한 후, 착용 처리합니다.
+    /// - 사용 불가능하거나 이미 착용 중인 경우에는 착용되지 않습니다.
+    /// </summary>
+    public bool TryEquipTrainee(TraineeData data)
+    {
+        // 외부에서 사용 중인 제자는 착용할 수 없음
+        if (data.IsUsable)
+        {
+            Debug.Log("이 제자는 현재 사용할 수 없습니다.");
+            return false;
+        }
+
+        // 이미 착용 중인 제자는 다시 착용할 수 없음
+        if (data.IsEquipped)
+        {
+            Debug.Log("이미 착용 중입니다.");
+            return false;
+        }
+
+        // 조건을 모두 통과했으면 착용 처리
+        data.IsEquipped = true;
+        return true;
+    }
 }
 
