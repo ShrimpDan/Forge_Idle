@@ -1,61 +1,25 @@
-using System.Collections.Generic;
 using UnityEngine;
+using System.Collections.Generic;
 
 public class InventoryManager : MonoBehaviour
 {
     public static InventoryManager Instance { get; private set; }
 
     public List<Item> items = new List<Item>();
-    public int gold = 1000;
 
     private void Awake()
     {
-        if (Instance == null)
-            Instance = this;
-        else
-            Destroy(gameObject);
-
-        DontDestroyOnLoad(gameObject);
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
     }
 
-    public void AddItem(Item item)
+    public List<Item> GetAllWeapons()
     {
-        items.Add(item);
+        return items.FindAll(i => i is Weapon);
     }
 
-    public void RemoveItem(Item item)
+    public List<Item> GetAllGems()
     {
-        items.Remove(item);
-    }
-
-    public int CountItem(Item item)
-    {
-        int count = 0;
-        foreach (var i in items)
-        {
-            if (i == item)
-                count++;
-        }
-        return count;
-    }
-
-    public bool HasEnoughItems(Item item, int count)
-    {
-        return CountItem(item) >= count;
-    }
-
-    public bool SpendGold(int amount)
-    {
-        if (gold >= amount)
-        {
-            gold -= amount;
-            return true;
-        }
-        return false;
-    }
-
-    public void EarnGold(int amount)
-    {
-        gold += amount;
+        return items.FindAll(i => i is Gem);
     }
 }

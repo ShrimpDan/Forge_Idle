@@ -14,7 +14,9 @@ public enum ButtonType
     Upgrade,
     Quest,
     Mine,
-    Dungeon
+    Dungeon,
+    Gem,      // 추가
+    Refine   // 추가 
 }
 
 public static class UIName
@@ -26,6 +28,9 @@ public static class UIName
     public const string QuestWindow = "QuestWindow";
     public const string MineWindow = "MineWindow";
     public const string DungeonWindow = "DungeonWindow";
+    public const string GemsSystemWindow = "GemSystemWindow";
+    public const string RefineSystemWindow = "RefineSystemWindow";
+    public const string InventoryPopup = "InventoryPopup";
 
     public static string GetUINameByForgeType(ButtonType type)
     {
@@ -37,6 +42,8 @@ public static class UIName
             ButtonType.Quest => QuestWindow,
             ButtonType.Mine => MineWindow,
             ButtonType.Dungeon => DungeonWindow,
+            ButtonType.Gem => GemsSystemWindow,
+            ButtonType.Refine => RefineSystemWindow,
             _ => string.Empty
         };
     }

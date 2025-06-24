@@ -1,8 +1,7 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Gem", menuName = "Game/Gem")]
+[CreateAssetMenu(menuName = "Game/Gem")]
 public class Gem : Item
 {
-    public StatType statType;
-    public int bonusValue;
+    // 필요에 따라 스탯, 타입 등 확장
 }

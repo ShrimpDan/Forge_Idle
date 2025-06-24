@@ -1,30 +1,28 @@
 using UnityEngine;
+using System;
 using System.Collections.Generic;
 
-public class InventoryPopup : MonoBehaviour
+public class InventoryPopup : BaseUI
 {
-    public GameObject slotPrefab;
-    public Transform contentParent;
+    public override UIType UIType => UIType.Popup;
 
-    System.Action<Item> onSelect;
+    // [SerializeField] 등으로 슬롯/리스트 필드 선언
 
-    public void Show(List<Item> items, System.Action<Item> callback)
+    private Action<Item> onSelectCallback;
+
+    public void Show(List<Item> items, Action<Item> onSelect)
     {
-        onSelect = callback;
-        foreach (Transform child in contentParent)
-            Destroy(child.gameObject);
-
-        foreach (var item in items)
-        {
-            var slot = Instantiate(slotPrefab, contentParent).GetComponent<ItemSlot>();
-            slot.Set(item, SelectItem);
-        }
-        gameObject.SetActive(true);
+        // 슬롯 리스트 UI 갱신
+        onSelectCallback = onSelect;
+        // 각 슬롯에 버튼 연결 시: => OnItemClick(item)
     }
 
-    void SelectItem(Item item)
+    public void OnItemClick(Item item)
     {
-        gameObject.SetActive(false);
-        onSelect?.Invoke(item);
+        onSelectCallback?.Invoke(item);
+        UIManager.Instance.CloseUI(UIName.InventoryPopup);
     }
+
+    public override void Open() => gameObject.SetActive(true);
+    public override void Close() => gameObject.SetActive(false);
 }

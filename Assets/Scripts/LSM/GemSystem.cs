@@ -2,39 +2,24 @@ using UnityEngine;
 
 public class GemSystem : MonoBehaviour
 {
-    public int removeGemCost = 200;
+    public static GemSystem Instance { get; private set; }
 
-    public string AttachGem(Weapon weapon, Gem gem)
+    private void Awake()
     {
-        if (weapon.equippedGems.Count >= weapon.maxGemSlots)
-            return "장착 가능한 소켓이 없습니다.";
-
-        if (InventoryManager.Instance.HasEnoughItems(gem, 1))
-        {
-            weapon.equippedGems.Add(gem);
-            InventoryManager.Instance.RemoveItem(gem);
-            return $"{gem.itemName} 보석 장착 성공!";
-        }
-        else
-        {
-            return "보석이 인벤토리에 없습니다.";
-        }
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
     }
 
-    public string DetachGem(Weapon weapon, Gem gem)
+    public void AttachGem(Weapon weapon, Gem gem, int socketIndex)
     {
-        if (!weapon.equippedGems.Contains(gem))
-            return "이 보석은 장착되어 있지 않습니다.";
-
-        if (InventoryManager.Instance.SpendGold(removeGemCost))
+        if (weapon == null || gem == null) return;
+        if (weapon.equippedGems.Count < weapon.maxGemSlots)
         {
-            weapon.equippedGems.Remove(gem);
-            InventoryManager.Instance.AddItem(gem);
-            return $"{gem.itemName} 보석 제거 성공! ({removeGemCost}골드 소모)";
+            // 소켓 개수 맞추기
+            while (weapon.equippedGems.Count < weapon.maxGemSlots)
+                weapon.equippedGems.Add(null);
         }
-        else
-        {
-            return "골드가 부족하여 보석을 제거할 수 없습니다.";
-        }
+        weapon.equippedGems[socketIndex] = gem;
+        // 추가로 인벤토리/데이터 갱신 필요시 여기에
     }
 }
