@@ -385,10 +385,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Click!
+  m_text: "\uD074\uB9AD"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 2e498d1c8094910479dc3e1b768306a4, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 2e498d1c8094910479dc3e1b768306a4, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 397bc2a194db0c74991cd3bf0783e34e, type: 2}
+  m_sharedMaterial: {fileID: 1075219672209831941, guid: 397bc2a194db0c74991cd3bf0783e34e, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -412,13 +412,13 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 100
-  m_fontSizeBase: 100
+  m_fontSize: 50
+  m_fontSizeBase: 50
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -600,8 +600,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 300, y: 300}
+  m_AnchoredPosition: {x: -215, y: -499}
+  m_SizeDelta: {x: 200.6112, y: 207.2371}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1766640219
 MonoBehaviour:
@@ -649,7 +649,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1818323951}
         m_TargetAssemblyTypeName: TraineeManager, Assembly-CSharp
-        m_MethodName: OnClick_CreateTrainee
+        m_MethodName: RecruitAndSpawnTrainee
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -726,9 +726,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 733d7b94f54bf2844a8d5fc22f781150, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  personalityDB: {fileID: 11400000, guid: 140e111ef5ba2964c958d8700e09d47a, type: 2}
-  traineePrefab: {fileID: 3673451484166618057, guid: e97f7aa6cc109564c87e0d3aa85f5c0f, type: 3}
-  spawnPoint: {fileID: 2935047909165116657, guid: e97f7aa6cc109564c87e0d3aa85f5c0f, type: 3}
+  traineePrefab: {fileID: 6647188539999384508, guid: 0720cc3f50895dc4e924f1b0aeab3dff, type: 3}
+  spawnParent: {fileID: 1493356637291815060, guid: 0720cc3f50895dc4e924f1b0aeab3dff, type: 3}
+  spawnPosition: {x: 0, y: 0, z: 0}
+  personalityDatabase: {fileID: 11400000, guid: 140e111ef5ba2964c958d8700e09d47a, type: 2}
+  runtimeTraineeList: {fileID: 11400000, guid: b2e47b81178a662468360660531e9365, type: 2}
 --- !u!4 &1818323952
 Transform:
   m_ObjectHideFlags: 0

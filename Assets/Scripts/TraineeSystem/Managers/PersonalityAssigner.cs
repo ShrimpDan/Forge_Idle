@@ -93,53 +93,65 @@ public class PersonalityAssigner
 
     /// <summary>
     /// 선택된 특화 타입에 따라 능력 배율 리스트를 자동 설정합니다.
+    /// 성격에 따라 변화하는 값을 곱하여 최종 능력치를 정해줍니다.
     /// </summary>
     private void SetMultipliers(TraineeData trainee)
     {
-        // 특화 유형별 능력 배율 구성
+        float personalityMultiplier = 1f;
+
         switch (trainee.Specialization)
         {
             case SpecializationType.Crafting:
+                personalityMultiplier = trainee.Personality.CraftingMultiplier;
+
                 trainee.Multipliers.Add(new TraineeData.AbilityMultiplier
                 {
                     abilityName = "제작 속도 증가",
-                    multiplier = 1.3f
+                    multiplier = 1.3f * personalityMultiplier
                 });
+
                 trainee.Multipliers.Add(new TraineeData.AbilityMultiplier
                 {
                     abilityName = "고급 제작 확률 증가",
-                    multiplier = 1.5f
+                    multiplier = 1.5f * personalityMultiplier
                 });
                 break;
 
             case SpecializationType.Enhancing:
+                personalityMultiplier = trainee.Personality.EnhancingMultiplier;
+
                 trainee.Multipliers.Add(new TraineeData.AbilityMultiplier
                 {
                     abilityName = "강화 확률 증가",
-                    multiplier = 1.2f
+                    multiplier = 1.2f * personalityMultiplier
                 });
+
                 trainee.Multipliers.Add(new TraineeData.AbilityMultiplier
                 {
                     abilityName = "파괴 확률 감소",
-                    multiplier = 0.8f
+                    multiplier = 0.8f * personalityMultiplier
                 });
+
                 trainee.Multipliers.Add(new TraineeData.AbilityMultiplier
                 {
                     abilityName = "강화 비용 감소",
-                    multiplier = 0.9f
+                    multiplier = 0.9f * personalityMultiplier
                 });
                 break;
 
             case SpecializationType.Selling:
+                personalityMultiplier = trainee.Personality.SellingMultiplier;
+
                 trainee.Multipliers.Add(new TraineeData.AbilityMultiplier
                 {
                     abilityName = "판매 수익 증가",
-                    multiplier = 1.4f
+                    multiplier = 1.4f * personalityMultiplier
                 });
+
                 trainee.Multipliers.Add(new TraineeData.AbilityMultiplier
                 {
                     abilityName = "손님 수 증가",
-                    multiplier = 1.3f
+                    multiplier = 1.3f * personalityMultiplier
                 });
                 break;
         }
