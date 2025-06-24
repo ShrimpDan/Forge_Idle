@@ -1,50 +1,47 @@
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 using System.Collections.Generic;
 
 public class MineDetailWindow : BaseUI
 {
     public override UIType UIType => UIType.Window;
 
-    [SerializeField] Button exitBtn;
-    [SerializeField] TMP_Text titleText;
-    [SerializeField] Transform mineralSlotParent;
-    [SerializeField] GameObject mineralSlotPrefab; // 아래 스크립트 참고
+    [SerializeField] private Button exitBtn;
+    [SerializeField] private Transform mineralSlotParent;
+    [SerializeField] private GameObject mineralSlotPrefab;
 
-    private MineData mineData;
+    private List<MineralSlot> mineralSlots = new();
 
     public override void Init(UIManager uIManager)
     {
         base.Init(uIManager);
+
         exitBtn.onClick.RemoveAllListeners();
         exitBtn.onClick.AddListener(() => uIManager.CloseUI(UIName.MineDetailWindow));
     }
 
-    public void Setup(MineData data)
+    public void SetupMine(int mineId)
     {
-        mineData = data;
-        titleText.text = data.Name;
-        PopulateMineralSlots();
-    }
-
-    private void PopulateMineralSlots()
-    {
+        // 예시: 광물 5개 생성
         foreach (Transform child in mineralSlotParent)
             Destroy(child.gameObject);
+        mineralSlots.Clear();
 
         for (int i = 0; i < 5; i++)
         {
-            var go = Instantiate(mineralSlotPrefab, mineralSlotParent);
-            var slot = go.GetComponent<MineralSlot>();
-            slot.Setup($"광물 {i + 1}", null, OnClickAssignAssistant);
+            GameObject go = Instantiate(mineralSlotPrefab, mineralSlotParent);
+            MineralSlot slot = go.GetComponent<MineralSlot>();
+            // 실제 광물명/아이콘/조수정보로 대체
+            slot.Init($"광물{i + 1}", null, () => OpenAssistantPopup(i));
+            mineralSlots.Add(slot);
         }
     }
 
-    // 조수 배정(팝업 오픈)
-    private void OnClickAssignAssistant(MineralSlot slot)
+    private void OpenAssistantPopup(int mineralIndex)
     {
-        UIManager.Instance.OpenUI<BaseUI>(UIName.AssistantPopup); // 조수 인벤토리 팝업 오픈
-        // 이후: 선택 콜백 넘겨주면 됨
+        // 인벤토리/조수 팝업 UI 연결 (추후 구현)
+        Debug.Log($"조수 배치 팝업: {mineralIndex}");
+        UIManager.Instance.OpenUI<InventoryPopup>(UIName.InventoryPopup);
+        // 우선 인벤토리 팝업 염
     }
 }
