@@ -14,6 +14,6 @@ public class WindowButton : MonoBehaviour
 
     private void OpenWindowUI()
     {
-        UIManager.Instance.OpenUI<BaseUI>(UIName.GetUINameByForgeType(type));
+        UIManager.Instance.OpenUI<BaseUI>(UIName.GetUINameByType(type));
     }
 }

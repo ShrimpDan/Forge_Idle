@@ -58,5 +58,7 @@ public class MainUI : BaseUI
             tabButtons[i].transform.localScale = isSelected ? selectedScale : defaultScale;
             tabButtons[i].image.color = isSelected ? selectedColor : defaultColor;
         }
+
+        uIManager.CloseAllWindowUI();
     }
 }

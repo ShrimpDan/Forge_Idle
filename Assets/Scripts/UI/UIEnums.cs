@@ -1,10 +1,14 @@
-using Unity.VisualScripting;
-
 public enum UIType
 {
     Fixed,
     Window,
     Popup
+}
+
+public enum InvenSlotType
+{
+    Resource,
+    Useable,
 }
 
 public enum ButtonType
@@ -17,6 +21,13 @@ public enum ButtonType
     Dungeon
 }
 
+public enum ObjectType
+{
+    Item,
+    Assistant,
+    Weapon
+}
+
 public static class UIName
 {
     public const string MainUI = "MainUI";
@@ -26,8 +37,9 @@ public static class UIName
     public const string QuestWindow = "QuestWindow";
     public const string MineWindow = "MineWindow";
     public const string DungeonWindow = "DungeonWindow";
+    public const string InventoryPopup = "InventoryPopup";
 
-    public static string GetUINameByForgeType(ButtonType type)
+    public static string GetUINameByType(ButtonType type)
     {
         return type switch
         {

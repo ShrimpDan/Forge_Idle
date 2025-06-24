@@ -9,13 +9,12 @@ public class CraftWeaponWindow : BaseUI
     public override void Init(UIManager uIManager)
     {
         base.Init(uIManager);
+        exitBtn.onClick.AddListener(() => uIManager.CloseUI(UIName.CraftWeaponWindow));
     }
 
     public override void Open()
     {
         base.Open();
-        exitBtn.onClick.AddListener(Close);
-
     }
 
     public override void Close()
