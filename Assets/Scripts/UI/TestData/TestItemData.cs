@@ -8,7 +8,7 @@ public class ItemData
     public InvenSlotType SlotType;
     public string IconPath;
     public string Name;
-    public float Value;
+    public int Count;
     public string Description;
 
     public void UseItem()
@@ -32,7 +32,7 @@ public class ItemDataLoader
                 SlotType = InvenSlotType.Resource,
                 IconPath = string.Empty,
                 Name = "TestItem",
-                Value = 51000,
+                Count = 10,
                 Description = "I'm Stupid"
             },
 
@@ -42,7 +42,7 @@ public class ItemDataLoader
                 SlotType = InvenSlotType.Useable,
                 IconPath = null,
                 Name = "testUsable",
-                Value = 5000,
+                Count = 20,
                 Description = "Recovery 500 Health",
             },
         };

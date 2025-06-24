@@ -7,7 +7,7 @@ public class InventoryContext
 {
     public Sprite Icon;
     public string Name;
-    public float Value;
+    public int Count;
     public string Description;
 
     public List<(string label, UnityEngine.Events.UnityAction action)> Actions = new();
@@ -39,7 +39,7 @@ public class InventoryPopup : BaseUI
     {
         icon.sprite = context.Icon;
         objectName.text = context.Name;
-        value.text = context.Value.ToString("F0");
+        value.text = context.Count.ToString();
         description.text = context.Description;
 
         foreach (var btnAction in context.Actions)

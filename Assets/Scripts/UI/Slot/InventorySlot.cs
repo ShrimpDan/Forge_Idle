@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,6 +9,7 @@ public class InventorySlot : MonoBehaviour
     [SerializeField] private string itemKey;
 
     [SerializeField] private Image icon;
+    [SerializeField] private TextMeshProUGUI countText;
     private Button slotBtn;
 
     public InvenSlotType SlotType { get; private set; }
@@ -32,7 +34,7 @@ public class InventorySlot : MonoBehaviour
     {
         ItemData = itemData;
         SlotType = type;
-
+        countText.text = itemData.Count.ToString();
     }
 
     private void OnClickSlot()
@@ -59,7 +61,7 @@ public class InventorySlot : MonoBehaviour
             {
                 Icon = LoadIcon(ItemData.IconPath),
                 Name = ItemData.Name,
-                Value = ItemData.Value,
+                Count = ItemData.Count,
                 Description = ItemData.Description,
             }
         );
@@ -73,7 +75,7 @@ public class InventorySlot : MonoBehaviour
             {
                 Icon = LoadIcon(ItemData.IconPath),
                 Name = ItemData.Name,
-                Value = ItemData.Value,
+                Count = ItemData.Count,
                 Description = ItemData.Description,
                 Actions = new List<(string label, UnityEngine.Events.UnityAction action)>
                 {
