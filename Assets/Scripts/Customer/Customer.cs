@@ -54,6 +54,7 @@ public abstract class Customer : MonoBehaviour
     [SerializeField] private int buyCount;
     [SerializeField] private float Frequency;
     [SerializeField] private float buyingTime = 1.5f;
+    [SerializeField] private float moveSpeed = 3f;
 
     private bool isMoving = false;
     private CustomerState state;
@@ -139,7 +140,7 @@ public abstract class Customer : MonoBehaviour
             while (Vector2.Distance(transform.position, wayPoint) > 0.1f)
             { 
             Vector2 dir = (wayPoint - (Vector2)transform.position).normalized;
-            rigid2D.MovePosition(rigid2D.position + dir * Time.deltaTime);
+            rigid2D.MovePosition(rigid2D.position + dir * Time.deltaTime* moveSpeed);
             
             yield return new WaitForFixedUpdate();
             }
