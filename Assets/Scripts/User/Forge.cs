@@ -22,10 +22,14 @@ public class Forge : MonoBehaviour
     public int Gold { get; private set; }
     public int Dia { get; private set; }
 
-    private void Start()
+    // 이벤트 핸들러
+    public ForgeEventHandler Events { get; private set; }
+
+    void Awake()
     {
+        Events = new ForgeEventHandler();
         SetData();
-    }
+    }   
 
     private void SetData()
     {
@@ -55,17 +59,23 @@ public class Forge : MonoBehaviour
             Level++;
             CurrentFame -= MaxFame;
             MaxFame *= 1.25f;
+
+            Events.RaiseLevelChanged(Level);
         }
+
+        Events.RaiseFameChanged(CurrentFame, MaxFame);
     }
 
     public void AddGold(int amount)
     {
         Gold += amount;
+        Events.RaiseGoldChanged(Gold);
     }
 
     public void AddDia(int amount)
     {
         Dia += amount;
+        Events.RaiseDiaChanged(Dia);
     }
 
     public bool UseGold(int amount)
@@ -73,6 +83,7 @@ public class Forge : MonoBehaviour
         if (Gold >= amount)
         {
             Gold -= amount;
+            Events.RaiseGoldChanged(Gold);
             return true;
         }
 
@@ -84,6 +95,7 @@ public class Forge : MonoBehaviour
         if (Dia >= amount)
         {
             Dia -= amount;
+            Events.RaiseDiaChanged(Dia);
             return true;
         }
 

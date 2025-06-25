@@ -29,7 +29,7 @@ public class CraftingDataLoader
 
         if (json == null)
         {
-            Debug.LogWarning("데이터가 존재하지 않습니다.");
+            Debug.LogWarning("Crafting 데이터가 존재하지 않습니다.");
             return;
         }
 
