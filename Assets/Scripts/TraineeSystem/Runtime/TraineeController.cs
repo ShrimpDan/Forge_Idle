@@ -7,17 +7,10 @@ using TMPro;
 public class TraineeController : MonoBehaviour
 {
     [Header("UI 요소")]
-
-    [Tooltip("제자의 이름을 표시할 TextMeshPro 텍스트입니다.")]
     [SerializeField] private TMP_Text nameText;
-
-    [Tooltip("제자의 상세 정보를 표시할 TextMeshPro 텍스트입니다.")]
     [SerializeField] private TMP_Text detailText;
 
-    // 현재 제자의 데이터 참조
     private TraineeData data;
-
-    // 제자를 관리하는 매니저 참조 (삭제 시 호출용)
     private TraineeManager manager;
 
     /// <summary>
@@ -27,12 +20,14 @@ public class TraineeController : MonoBehaviour
     {
         data = traineeData;
         manager = traineeManager;
+        RefreshUI();
+    }
 
-        // 이름 출력
+    public void RefreshUI()
+    {
         if (nameText != null)
-            nameText.text = data.TraineeName;
+            nameText.text = data.Name;
 
-        // 상세 정보 출력
         if (detailText != null)
             detailText.text = GetFormattedDetailText();
     }
@@ -48,23 +43,10 @@ public class TraineeController : MonoBehaviour
         string multiplierLines = "";
         foreach (var mul in data.Multipliers)
         {
-            multiplierLines += $"\n- {mul.abilityName} x{mul.multiplier:F2}";
+            multiplierLines += $"\n- {mul.AbilityName} x{mul.Multiplier:F2}";
         }
 
         return $"{header}{multiplierLines}";
-    }
-
-    /// <summary>
-    /// 콘솔에 제자 정보를 출력합니다. - 디버그용 , 추후 삭제
-    /// </summary>
-    public void OnClick_ShowDetails()
-    {
-        Debug.Log($"[정보 출력] 이름: {data.TraineeName} / 성격: {data.Personality.PersonalityName}");
-
-        foreach (var mul in data.Multipliers)
-        {
-            Debug.Log($"- {mul.abilityName}: {mul.multiplier}");
-        }
     }
 
     /// <summary>
