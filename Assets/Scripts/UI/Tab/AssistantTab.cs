@@ -4,9 +4,21 @@ using UnityEngine.UI;
 
 public class AssistantTab : MonoBehaviour
 {
-    [Header("To Create Assistant Slot")]
-    [SerializeField] GameObject assiPrefab;
-    [SerializeField] Transform assiRoot;
+    private TraineeManager assistantManager;
+    
+    [Header("Tab Buttons")]
+    [SerializeField] private Button[] tabButtons;
+    [SerializeField] private Color selectedColor = Color.white;
+    [SerializeField] private Color defaultColor;
+
+    [Header("Tab Panels")]
+    [SerializeField] private GameObject[] tabPanels;
+
+    [Header("To Create Assistant")]
+    [SerializeField] GameObject assiSlotPrefab;
+    [SerializeField] Transform craftSlotRoot;
+    [SerializeField] Transform gemSlotRoot;
+    [SerializeField] Transform upgradeSlotRoot;
 
     [Header("Selected Assistant")]
     [SerializeField] Image craftAssi;
@@ -15,22 +27,41 @@ public class AssistantTab : MonoBehaviour
 
     [Header("To Create Bonus Stat")]
     [SerializeField] GameObject bonusStatPrefab;
-    [SerializeField] Transform craftRoot;
-    [SerializeField] Transform sellRoot;
-    [SerializeField] Transform upgradeRoot;
+    [SerializeField] Transform craftStatRoot;
+    [SerializeField] Transform sellStatRoot;
+    [SerializeField] Transform upgradeStatRoot;
 
-    private List<AssistantSlot> assistantSlots;
+    private Queue<GameObject> pooledSlots = new Queue<GameObject>();
+    private List<GameObject> activeSlots = new List<GameObject>();
 
-    public void AddAssistant(TestAssistantData data)
+    public void Start()
     {
-        if (data == null) return;
-
-        GameObject obj = Instantiate(assiPrefab, assiRoot);
-
-        if (obj.TryGetComponent(out AssistantSlot assiSlot))
+        for (int i = 0; i < tabButtons.Length; i++)
         {
-            assiSlot.Init(data);
-            assistantSlots.Add(assiSlot);
+            int index = i;
+            tabButtons[i].onClick.AddListener(() => SwitchTab(index));
         }
+
+        SwitchTab(0);
+    }
+
+    private void SwitchTab(int index)
+    {
+        for (int i = 0; i < tabPanels.Length; i++)
+        {
+            bool isSelected = i == index;
+
+            tabPanels[i].SetActive(isSelected);
+
+            tabButtons[i].image.color = isSelected ? selectedColor : defaultColor;
+        }
+    }
+
+    private GameObject GetSlotFromPool()
+    {
+        if (pooledSlots.Count > 0)
+            return pooledSlots.Dequeue();
+
+        return Instantiate(assiSlotPrefab);
     }
 }

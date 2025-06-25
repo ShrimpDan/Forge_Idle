@@ -2,15 +2,17 @@ using UnityEngine;
 
 public class GameManager : MonoSingleton<GameManager>
 {
-    public Inventory Inventory { get; private set; }
+    public Jang.InventoryManager Inventory{ get; private set; }
     public TestDataManger TestDataManager { get; private set; }
-
+    public TraineeManager AssistantManager { get; private set; }
     protected override void Awake()
     {
         base.Awake();
 
-        Inventory = new Inventory();
+        Inventory = new Jang.InventoryManager();
         TestDataManager = new TestDataManger();
+
+        AssistantManager = FindObjectOfType<TraineeManager>();
     }
 
     [ContextMenu("Get Random Item")]
