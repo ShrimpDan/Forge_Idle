@@ -3,8 +3,8 @@ using System.Linq;
 using UnityEngine;
 
 /// <summary>
-/// 제자를 생성하고, 성격과 특화를 랜덤하게 부여한 후
-/// 해당 데이터를 기반으로 게임 내 오브젝트를 소환하는 매니저 클래스입니다.
+/// 제자를 생성하고, 게임 내에 소환하며, 관련 데이터를 관리하는 핵심 매니저 클래스입니다.
+/// 소환 제어, 삭제 처리, 착용 로직 등을 포함합니다.
 /// </summary>
 public class TraineeManager : MonoBehaviour
 {
@@ -14,11 +14,6 @@ public class TraineeManager : MonoBehaviour
     [Header("성격 데이터베이스")]
     public PersonalityTierDatabase personalityDatabase;
 
-    [Header("소환 이펙트 매니저")]
-    [SerializeField] private TraineeSummonManager summonEffectManager;
-
-    [SerializeField] private TraineeController cardViewer;
-
     private List<TraineeData> runtimeTrainees = new List<TraineeData>();
 
     private List<GameObject> activeTrainees = new List<GameObject>();
@@ -27,24 +22,25 @@ public class TraineeManager : MonoBehaviour
 
     private PersonalityAssigner assigner;
 
+    private bool canRecruit = true;
+
     private void Awake()
     {
         assigner = new PersonalityAssigner(personalityDatabase);
     }
 
-    public void OnClick_ViewTrainee(TraineeData trainee)
-    {
-        if (trainee == null)
-        {
-            Debug.LogWarning("조회할 제자 데이터가 없습니다.");
-            return;
-        }
-
-        cardViewer.Setup(trainee, this);
-    }
-
+    /// <summary>
+    /// 랜덤으로 제자 데이터를 생성합니다.
+    /// 제자 랜덤 뽑기 버튼에 함수를 등록해서 사용할 수 있습니다.
+    /// </summary>
     public void RecruitAndSpawnTrainee()
     {
+
+        if (!canRecruit)
+            return; // 버튼은 눌려도 아무 반응 없음
+
+        canRecruit = false;
+
         if (assigner == null)
         {
             if (personalityDatabase == null)
@@ -84,10 +80,10 @@ public class TraineeManager : MonoBehaviour
 
         controller.Setup(newTrainee, this);
 
+        controller.PlaySpawnEffect();
+
         runtimeTrainees.Add(newTrainee);
         activeTrainees.Add(obj);
-
-        summonEffectManager?.SummonEffectByTier(TraineeTier.Tier5);
     }
 
     /// <summary>
@@ -161,6 +157,11 @@ public class TraineeManager : MonoBehaviour
         newTrainee.SetName(traineeName);
 
         return newTrainee;
+    }
+
+    public void SetCanRecruit(bool value)
+    {
+        canRecruit = value;
     }
 }
 

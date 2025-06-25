@@ -1,5 +1,10 @@
 ﻿using System.Collections.Generic;
 
+
+/// <summary>
+/// 개별 제자 정보를 담고 있는 데이터 클래스입니다.
+/// 이름, 성격, 특화, 능력치 계수 등을 포함합니다.
+/// </summary>
 public class TraineeData
 {
     public string Name { get; private set; }
