@@ -376,6 +376,28 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1048299110 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3367438687136543233, guid: 06d43ed767e84b644a33f1d12b2d374d, type: 3}
+  m_PrefabInstance: {fileID: 6922177413382354787}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6cfb159779597c4429aa6d71a593d23d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1438932211 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3367438687136543233, guid: 5ee67ca923afb80428b5c61afda36939, type: 3}
+  m_PrefabInstance: {fileID: 6790029489108364440}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6cfb159779597c4429aa6d71a593d23d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2092933517
 GameObject:
   m_ObjectHideFlags: 0
@@ -405,13 +427,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfce5597ba1f35843ae1fca6131d7f7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Reputation: 0
   spawnPoint: {fileID: 635920892}
   spawnDelay: 1
   customerPrefabs:
   - prefabs: {fileID: 7634530231060669648, guid: baa0da5450ee9924698d410a18dcd859, type: 3}
     type: 0
+    job: 0
+    curCount: 0
   - prefabs: {fileID: 7634530231060669648, guid: 6e617dd73cae4b449a8a527bf5811bf2, type: 3}
     type: 0
+    job: 0
+    curCount: 0
+  - prefabs: {fileID: 519940071911044702, guid: 1ad6b2711363a0649847e31c017bc228, type: 3}
+    type: 1
+    job: 0
+    curCount: 0
+  - prefabs: {fileID: 519940071911044702, guid: e9506efc5116bd541852b48d62ec38b8, type: 3}
+    type: 1
+    job: 1
+    curCount: 0
+  - prefabs: {fileID: 7199352319057860205, guid: e3f187ba8304f0e488dc516b1c909605, type: 3}
+    type: 2
+    job: 0
+    curCount: 0
+  nuisanceSpawnTime: 10
+  nuisnaceSpawnChance: 0.5
+  allBuyPoints:
+  - {fileID: 1438932211}
+  - {fileID: 1048299110}
+  callingCount: 5
 --- !u!4 &2092933519
 Transform:
   m_ObjectHideFlags: 0
