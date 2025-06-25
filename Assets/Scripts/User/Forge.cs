@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Forge : MonoBehaviour
@@ -24,6 +22,7 @@ public class Forge : MonoBehaviour
 
     // 이벤트 핸들러
     public ForgeEventHandler Events { get; private set; }
+    
 
     void Awake()
     {

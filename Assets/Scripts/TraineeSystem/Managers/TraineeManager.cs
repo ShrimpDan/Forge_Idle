@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 /// <summary>
@@ -112,6 +113,11 @@ public class TraineeManager : MonoBehaviour
     public List<TraineeData> GetAllTrainees()
     {
         return runtimeTrainees;
+    }
+
+    public List<TraineeData> GetTraineesByType(SpecializationType type)
+    {
+        return runtimeTrainees.Where(t => t.Specialization == type).ToList();
     }
 }
 
