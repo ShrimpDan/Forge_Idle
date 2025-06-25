@@ -34,20 +34,20 @@ public abstract class Customer : MonoBehaviour
     public float BuyingTime => data.buyingTime;
     
 
-    [SerializeField] private BuyPoint buyPoint;
+    [SerializeField] protected BuyPoint buyPoint;
 
     
 
     [Header("Customerinfo")]
     [SerializeField] CustomerData data;
-    [SerializeField] private Transform[] moveWayPoint;
+    [SerializeField] protected Transform[] moveWayPoint;
 
 
    
     
 
     private bool isMoving = false;
-    private CustomerState state;
+    protected CustomerState state;
 
     private Transform targetPos;
     protected Rigidbody2D rigid2D; //buyingLine 
@@ -76,8 +76,7 @@ public abstract class Customer : MonoBehaviour
 
     private IEnumerator CustomerFlow()
     {
-        //코루틴을 세분화 시킬꺼임
-
+       
         yield return MoveToBuyZone();
         yield return JoinQueue();
         yield return WaitMyTurn();
@@ -112,7 +111,7 @@ public abstract class Customer : MonoBehaviour
         
     }
 
-    private IEnumerator PerformPurChase()
+    protected virtual IEnumerator PerformPurChase()
     {
         state = CustomerState.Purchasing;
         Interact();
@@ -130,7 +129,7 @@ public abstract class Customer : MonoBehaviour
     }
 
 
-    private IEnumerator MoveingWayPoint(Vector2 wayPoint)
+    protected IEnumerator MoveingWayPoint(Vector2 wayPoint)
     {
             while (Vector2.Distance(transform.position, wayPoint) > 0.1f)
             { 
@@ -152,7 +151,7 @@ public abstract class Customer : MonoBehaviour
         
     }
     
-    protected virtual void CustomerExit()
+    protected virtual void CustomerExit() //큐에서 나가는 메서드
     {
         CustomerManager.Instance.CustomerExit(this);
 

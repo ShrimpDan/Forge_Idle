@@ -17,6 +17,7 @@ public class NormalCustomer : Customer
     {
         // 상점 시스템이 필요함
         Debug.Log("+500G");
+        CustomerManager.Instance.RegualrCounting(this.Job);
 
     }
 
