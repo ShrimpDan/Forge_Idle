@@ -18,7 +18,7 @@ public class MainUI : BaseUI
 
     [Header("Top Info")]
     [SerializeField] private TextMeshProUGUI levelText;
-    [SerializeField] private Image fameBar;
+    [SerializeField] private Image fameFill;
     [SerializeField] private TextMeshProUGUI fameText;
     [SerializeField] private TextMeshProUGUI forgeNameText;
     [SerializeField] private TextMeshProUGUI goldText;
@@ -26,9 +26,19 @@ public class MainUI : BaseUI
 
     public override UIType UIType => UIType.Fixed;
 
-    public override void Init(UIManager uIManager)
+    public override void Init(GameManager gameManager, UIManager uIManager)
     {
-        base.Init(uIManager);
+        base.Init(gameManager, uIManager);
+
+        forge = gameManager.Forge;
+
+        foreach (var tab in tabPanels)
+        {
+            if (tab.TryGetComponent(out BaseTab tabUI))
+            {
+                tabUI.Init(gameManager, uIManager);
+            }
+        }
 
         for (int i = 0; i < tabButtons.Length; i++)
         {
@@ -38,8 +48,6 @@ public class MainUI : BaseUI
         }
 
         SwitchTab(2);
-
-        forge = GameManager.Instance.Forge;
         OnEnable();
     }
 
@@ -69,7 +77,17 @@ public class MainUI : BaseUI
         {
             bool isSelected = i == index;
 
-            tabPanels[i].SetActive(isSelected);
+            if (tabPanels[i].TryGetComponent(out BaseTab tabUI))
+            {
+                if (isSelected)
+                    tabUI.OpenTab();
+                else
+                    tabUI.CloseTab();
+            }
+            else
+            {
+                tabPanels[i].SetActive(isSelected);
+            }
 
             tabButtons[i].transform.localScale = isSelected ? selectedScale : defaultScale;
             tabButtons[i].image.color = isSelected ? selectedColor : defaultColor;
@@ -95,7 +113,7 @@ public class MainUI : BaseUI
 
     private void SetFameBarUI(int curFame, int maxFame)
     {
-        fameBar.fillAmount = (float)curFame / maxFame;
+        fameFill.fillAmount = (float)curFame / maxFame;
     }
 
     private void SetTotalFameUI(int totalFame)

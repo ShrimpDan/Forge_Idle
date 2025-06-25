@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class AssistantTab : MonoBehaviour
+public class AssistantTab : BaseTab
 {
     private TraineeManager assistantManager;
 
@@ -34,8 +34,10 @@ public class AssistantTab : MonoBehaviour
     private Queue<GameObject> pooledSlots = new Queue<GameObject>();
     private List<GameObject> activeSlots = new List<GameObject>();
 
-    public void Start()
+    public override void Init(GameManager gameManager, UIManager uIManager)
     {
+        base.Init(gameManager, uIManager);
+
         for (int i = 0; i < tabButtons.Length; i++)
         {
             int index = i;
@@ -44,12 +46,18 @@ public class AssistantTab : MonoBehaviour
 
         SwitchTab(0);
 
-        assistantManager = GameManager.Instance.AssistantManager;
+        assistantManager = gameManager.AssistantManager;
     }
 
-    private void OnEnable()
+    public override void OpenTab()
     {
+        base.OpenTab();
         RefreshSlots();
+    }
+
+    public override void CloseTab()
+    {
+        base.CloseTab();
     }
 
     private void RefreshSlots()

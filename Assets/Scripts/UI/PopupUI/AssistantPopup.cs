@@ -23,9 +23,10 @@ public class AssistantPopup : BaseUI
 
     TraineeData assiData;
 
-    public override void Init(UIManager uIManager)
+    public override void Init(GameManager gameManager, UIManager uIManager)
     {
-        base.Init(uIManager);
+        base.Init(gameManager, uIManager);
+        
         exitButton.onClick.AddListener(() => uIManager.CloseUI(UIName.AssistantPopup));
         applyButton.onClick.AddListener(ApplyAssistant);
         deApplyButton.onClick.AddListener(DeApplyAssistant);

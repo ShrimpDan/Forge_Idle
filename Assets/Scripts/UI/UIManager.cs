@@ -22,7 +22,7 @@ public class UIManager : MonoBehaviour
 
         foreach (var ui in fixedRoot.GetComponentsInChildren<BaseUI>(true))
         {
-            ui.Init(this);
+            ui.Init(gameManager, this);
             ui.gameObject.SetActive(false);
         }
 
@@ -50,7 +50,7 @@ public class UIManager : MonoBehaviour
 
         T ui = go.GetComponent<T>();
         ui.Open();
-        ui.Init(this);
+        ui.Init(gameManager, this);
         activeUIs.Add(uiName, ui);
 
         if (ui.UIType == UIType.Popup)

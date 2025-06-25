@@ -12,9 +12,9 @@ public class MineDetailWindow : BaseUI
 
     private List<MineralSlot> mineralSlots = new();
 
-    public override void Init(UIManager uIManager)
+    public override void Init(GameManager gameManager, UIManager uIManager)
     {
-        base.Init(uIManager);
+        base.Init(gameManager, uIManager);
 
         exitBtn.onClick.RemoveAllListeners();
         exitBtn.onClick.AddListener(() => uIManager.CloseUI(UIName.MineDetailWindow));
