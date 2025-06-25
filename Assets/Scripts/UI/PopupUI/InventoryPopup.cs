@@ -46,10 +46,10 @@ public class InventoryPopup : BaseUI
 
         switch (item.Data.ItemType)
         {
-            case ItemType.Equipment:
+            case ItemType.Weapon:
                 desc += $"\n\n<color=#00c3ff><b>▶ Stats</b></color>\n";
-                desc += $"공격력: <b>{item.Data.EquipmentStats.Attack}</b>\n";
-                desc += $"공격 간격: <b>{item.Data.EquipmentStats.AttackInterval}초</b>\n";
+                desc += $"공격력: <b>{item.Data.WeaponStats.Attack}</b>\n";
+                desc += $"공격 간격: <b>{item.Data.WeaponStats.AttackInterval}초</b>\n";
                 break;
 
             case ItemType.Gem:
@@ -61,7 +61,7 @@ public class InventoryPopup : BaseUI
 
         description.text = desc;
         
-        if (item.Data.ItemType == ItemType.Equipment)
+        if (item.Data.ItemType == ItemType.Weapon)
         {
             CreateButton(item);
         }

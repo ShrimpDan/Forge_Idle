@@ -6,11 +6,7 @@
       "IconPath": "Icons/equip_sword_bronze",
       "Name": "Bronze Sword",
       "Description": "A beginner's sword with low damage.",
-      "EquipmentStats": {
-        "Attack": 5,
-        "Defense": 0,
-        "EnhanceMax": 3
-      },
+      "EquipmentStats": { "Attack": 5, "Defense": 0, "EnhanceMax": 3 },
       "GemStats": null
     },
     {
@@ -19,11 +15,25 @@
       "IconPath": "Icons/equip_armor_steel",
       "Name": "Steel Armor",
       "Description": "Heavy armor for maximum defense.",
-      "EquipmentStats": {
-        "Attack": 0,
-        "Defense": 10,
-        "EnhanceMax": 5
-      },
+      "EquipmentStats": { "Attack": 0, "Defense": 10, "EnhanceMax": 5 },
+      "GemStats": null
+    },
+    {
+      "Key": "equip_spear_iron",
+      "ItemType": 0,
+      "IconPath": "Icons/equip_spear_iron",
+      "Name": "Iron Spear",
+      "Description": "A long-range melee weapon.",
+      "EquipmentStats": { "Attack": 8, "Defense": 1, "EnhanceMax": 4 },
+      "GemStats": null
+    },
+    {
+      "Key": "equip_bow_wooden",
+      "ItemType": 0,
+      "IconPath": "Icons/equip_bow_wooden",
+      "Name": "Wooden Bow",
+      "Description": "Simple bow for ranged attacks.",
+      "EquipmentStats": { "Attack": 6, "Defense": 0, "EnhanceMax": 2 },
       "GemStats": null
     },
     {
@@ -65,6 +75,24 @@
       "IconPath": "Icons/resource_fabric",
       "Name": "Fabric",
       "Description": "Used for tailoring and light crafting.",
+      "EquipmentStats": null,
+      "GemStats": null
+    },
+    {
+      "Key": "resource_iron",
+      "ItemType": 1,
+      "IconPath": "Icons/resource_iron",
+      "Name": "Iron",
+      "Description": "Sturdy metal used for weapons and armor.",
+      "EquipmentStats": null,
+      "GemStats": null
+    },
+    {
+      "Key": "resource_string",
+      "ItemType": 1,
+      "IconPath": "Icons/resource_string",
+      "Name": "String",
+      "Description": "Used in bows and tailoring.",
       "EquipmentStats": null,
       "GemStats": null
     }

@@ -79,7 +79,7 @@ public class InventoryTab : MonoBehaviour
         }
         activeSlots.Clear();
 
-        CreateSlots(inventory.EquipmentList, EquipRoot);
+        CreateSlots(inventory.WeaponList, EquipRoot);
         CreateSlots(inventory.GemList, GemRoot);
         CreateSlots(inventory.ResourceList, ResourceRoot);
     }

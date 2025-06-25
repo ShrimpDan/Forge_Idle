@@ -2,11 +2,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class EquipmentStats
+public class WeaponStats
 {
     public float Attack;
     public float AttackInterval;
-    public int EnhanceLevel;
+    public int EnhanceMax;
 }
 
 [System.Serializable]
@@ -39,13 +39,13 @@ public class GemStats
 [System.Serializable]
 public class ItemData
 {
-    public string Key;
+    public string ItemKey;
     public ItemType ItemType;
     public string Name;
     public string Description;
     public string IconPath;
 
-    public EquipmentStats EquipmentStats;
+    public WeaponStats WeaponStats;
     public UpgradeInfo UpgradeInfo;
     public GemStats GemStats;
 }
@@ -61,7 +61,7 @@ public class ItemDataLoader
 
         if (json == null)
         {
-            Debug.Log("Data가 존재하지않습니다.");
+            Debug.LogWarning("Data가 존재하지않습니다.");
             return;
         }
 
@@ -70,7 +70,7 @@ public class ItemDataLoader
 
         foreach (var item in ItemList)
         {
-            ItemDict[item.Key] = item;
+            ItemDict[item.ItemKey] = item;
         }
     }
 

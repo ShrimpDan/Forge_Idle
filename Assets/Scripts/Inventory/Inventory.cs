@@ -6,7 +6,7 @@ namespace Jang
     public class InventoryManager
     {
         public List<ItemInstance> ResourceList { get; private set; }
-        public List<ItemInstance> EquipmentList { get; private set; }
+        public List<ItemInstance> WeaponList { get; private set; }
         public List<ItemInstance> GemList { get; private set; }
 
         public event Action onItemAdded;
@@ -14,7 +14,7 @@ namespace Jang
         public InventoryManager()
         {
             ResourceList = new();
-            EquipmentList = new();
+            WeaponList = new();
             GemList = new();
         }
 
@@ -22,8 +22,8 @@ namespace Jang
         {
             switch (item.Data.ItemType)
             {
-                case ItemType.Equipment:
-                    EquipmentList.Add(item);
+                case ItemType.Weapon:
+                    WeaponList.Add(item);
                     break;
 
                 case ItemType.Gem:
@@ -54,7 +54,7 @@ namespace Jang
 
         public void UseItem(ItemInstance item)
         {
-            if (item.Data.ItemType == ItemType.Equipment)
+            if (item.Data.ItemType == ItemType.Weapon)
             {
                 return;
             }

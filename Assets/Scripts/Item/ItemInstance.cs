@@ -44,7 +44,7 @@ public class ItemInstance
 
     public bool EnhanceItem()
     {
-        if (EnhanceLevel >= Data.EquipmentStats.EnhanceLevel)
+        if (EnhanceLevel >= Data.WeaponStats.EnhanceMax)
         {
             Debug.Log("최대강화치");
             return false;
@@ -58,17 +58,17 @@ public class ItemInstance
     {
         float multiplier = (EnhanceLevel + 1) * 1.5f;
 
-        if (Data.ItemType != ItemType.Equipment)
+        if (Data.ItemType != ItemType.Weapon)
             return 0;
 
-        return Data.EquipmentStats.Attack * multiplier;
+        return Data.WeaponStats.Attack * multiplier;
     }
 
     public float GetTotalInterval()
     {
-        if (Data.ItemType != ItemType.Equipment)
+        if (Data.ItemType != ItemType.Weapon)
             return 0;
 
-        return Mathf.Max(0.1f, Data.EquipmentStats.AttackInterval - (EnhanceLevel + 1) * 0.2f);
+        return Mathf.Max(0.1f, Data.WeaponStats.AttackInterval - (EnhanceLevel + 1) * 0.2f);
     }
 }
