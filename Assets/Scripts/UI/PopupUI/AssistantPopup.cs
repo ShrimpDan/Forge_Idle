@@ -63,11 +63,13 @@ public class AssistantPopup : BaseUI
     private void ApplyAssistant()
     {
         assiData.IsEquipped = true;
+        SetApplyButton();
     }
 
     private void DeApplyAssistant()
     {
         assiData.IsEquipped = false;
+        SetApplyButton();
     }
 
     private void SetApplyButton()

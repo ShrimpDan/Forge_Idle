@@ -7,9 +7,9 @@ public class CraftWeaponWindow : BaseUI
 
     [Header("UI Elements")]
     [SerializeField] private Button exitBtn;
-    [SerializeField] private Button inputWeaponSlotBtn; // ºó ¹«±â ½½·Ô
-    [SerializeField] private Image inputWeaponIcon;     // ºó ¹«±â ½½·Ô ¾ÆÀÌÄÜ (Image)
-    [SerializeField] private Image resultWeaponIcon;    // °­È­ ÈÄ ¹«±â ½½·Ô ¾ÆÀÌÄÜ (Image)
+    [SerializeField] private Button inputWeaponSlotBtn; // ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    [SerializeField] private Image inputWeaponIcon;     // ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (Image)
+    [SerializeField] private Image resultWeaponIcon;    // ï¿½ï¿½È­ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (Image)
 
     private ItemData selectedWeapon;
 
@@ -21,19 +21,19 @@ public class CraftWeaponWindow : BaseUI
 
     private void OnClickInputWeaponSlot()
     {
-        // ÀÎº¥Åä¸® ÆË¾÷¸¸ ¿¬´Ù (½ÇÁ¦ ¾ÆÀÌÅÛ ¼±ÅÃÀº ÆÀ¿øÀÌ ´ã´ç)
-        UIManager.Instance.OpenUI<InventoryPopup>(UIName.InventoryPopup);
+        // ï¿½Îºï¿½ï¿½ä¸® ï¿½Ë¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½)
+        uIManager.OpenUI<InventoryPopup>(UIName.InventoryPopup);
 
     }
 
-    // ¿¹½Ã: ÀÎº¥Åä¸® ÆË¾÷¿¡¼­ ¹«±â ¼±ÅÃ ÈÄ È£ÃâµÉ ÇÔ¼ö
+    // ï¿½ï¿½ï¿½ï¿½: ï¿½Îºï¿½ï¿½ä¸® ï¿½Ë¾ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ È£ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½
     public void OnWeaponSelected(ItemData weapon)
     {
         selectedWeapon = weapon;
-        inputWeaponIcon.sprite = LoadIcon(weapon.IconPath);      // ºó ¹«±â ½½·Ô¿¡ ¾ÆÀÌÄÜ Ç¥½Ã
-        resultWeaponIcon.sprite = LoadIcon(weapon.IconPath);     // °­È­ ÈÄ ½½·Ô¿¡µµ µ¿ÀÏ ¾ÆÀÌÄÜ Ç¥½Ã
+        inputWeaponIcon.sprite = LoadIcon(weapon.IconPath);      // ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ô¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½
+        resultWeaponIcon.sprite = LoadIcon(weapon.IconPath);     // ï¿½ï¿½È­ ï¿½ï¿½ ï¿½ï¿½ï¿½Ô¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½
 
-        // ÇâÈÄ resultWeaponIcon ¿·¿¡ "+1" µî ¼ýÀÚ Ãß°¡´Â º°µµ Text·Î ÈÄÃ³¸®
+        // ï¿½ï¿½ï¿½ï¿½ resultWeaponIcon ï¿½ï¿½ï¿½ï¿½ "+1" ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Textï¿½ï¿½ ï¿½ï¿½Ã³ï¿½ï¿½
     }
 
     private Sprite LoadIcon(string path)

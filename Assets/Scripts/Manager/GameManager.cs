@@ -6,6 +6,7 @@ public class GameManager : MonoSingleton<GameManager>
     public DataManger TestDataManager { get; private set; }
     public TraineeManager AssistantManager { get; private set; }
     public Forge Forge { get; private set; }
+    public UIManager UIManager { get; private set; }
 
     protected override void Awake()
     {
@@ -15,7 +16,15 @@ public class GameManager : MonoSingleton<GameManager>
         TestDataManager = new DataManger();
 
         AssistantManager = FindObjectOfType<TraineeManager>();
+        UIManager = FindObjectOfType<UIManager>();
+
         Forge = FindObjectOfType<Forge>();
+
+        if (UIManager)
+            UIManager.Init(this);
+        
+        if (Forge)
+            Forge.Init();
     }
 
     [ContextMenu("Get Random Item")]

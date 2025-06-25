@@ -7,8 +7,8 @@ public class UpgradeWeaponWindow : BaseUI
 
     [Header("UI Elements")]
     [SerializeField] private Button exitBtn;
-    [SerializeField] private Button inputWeaponSlotBtn; // ºó ¹«±â ½½·Ô ¹öÆ°
-    [SerializeField] private Image inputWeaponIcon;     // ºó ¹«±â ½½·Ô ¾ÆÀÌÄÜ (Image)
+    [SerializeField] private Button inputWeaponSlotBtn; // ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ°
+    [SerializeField] private Image inputWeaponIcon;     // ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (Image)
 
     private void Awake()
     {
@@ -18,8 +18,8 @@ public class UpgradeWeaponWindow : BaseUI
 
     private void OnClickInputWeaponSlot()
     {
-        // ÀÎº¥Åä¸® ÆË¾÷
-        UIManager.Instance.OpenUI<InventoryPopup>(UIName.InventoryPopup);
+        // ï¿½Îºï¿½ï¿½ä¸® ï¿½Ë¾ï¿½
+        uIManager.OpenUI<InventoryPopup>(UIName.InventoryPopup);
     }
 
     public void OnWeaponSelected(ItemData weapon)

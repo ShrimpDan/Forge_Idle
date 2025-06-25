@@ -4,6 +4,8 @@ using UnityEngine.UI;
 
 public class MainUI : BaseUI
 {
+    private Forge forge;
+
     [Header("Tab Buttons")]
     [SerializeField] private Button[] tabButtons;
     [SerializeField] private Vector3 selectedScale;
@@ -16,7 +18,7 @@ public class MainUI : BaseUI
 
     [Header("Top Info")]
     [SerializeField] private TextMeshProUGUI levelText;
-    [SerializeField] private Image levelFill;
+    [SerializeField] private Image fameBar;
     [SerializeField] private TextMeshProUGUI fameText;
     [SerializeField] private TextMeshProUGUI forgeNameText;
     [SerializeField] private TextMeshProUGUI goldText;
@@ -32,20 +34,33 @@ public class MainUI : BaseUI
         {
             int index = i;
             tabButtons[i].onClick.AddListener(() => SwitchTab(index));
-            
+
         }
 
         SwitchTab(2);
+
+        forge = GameManager.Instance.Forge;
+        OnEnable();
     }
 
-    public override void Open()
+    void OnEnable()
     {
-        base.Open();
+        if (forge == null) return;
+
+        forge.Events.OnGoldChanged += SetGoldUI;
+        forge.Events.OnDiaChanged += SetDiaUI;
+        forge.Events.OnLevelChanged += SetLevelUI;
+        forge.Events.OnFameChanged += SetFameBarUI;
+        forge.Events.OnTotalFameChanged += SetTotalFameUI;
     }
 
-    public override void Close()
+    void OnDisable()
     {
-        base.Close();
+        forge.Events.OnGoldChanged -= SetGoldUI;
+        forge.Events.OnDiaChanged -= SetDiaUI;
+        forge.Events.OnLevelChanged -= SetLevelUI;
+        forge.Events.OnFameChanged -= SetFameBarUI;
+        forge.Events.OnTotalFameChanged -= SetTotalFameUI;
     }
 
     private void SwitchTab(int index)
@@ -61,5 +76,30 @@ public class MainUI : BaseUI
         }
 
         uIManager.CloseAllWindowUI();
+    }
+
+    private void SetGoldUI(int gold)
+    {
+        goldText.text = gold.ToString();
+    }
+
+    private void SetDiaUI(int dia)
+    {
+        diaText.text = dia.ToString();
+    }
+
+    private void SetLevelUI(int level)
+    {
+        levelText.text = level.ToString();
+    }
+
+    private void SetFameBarUI(int curFame, int maxFame)
+    {
+        fameBar.fillAmount = (float)curFame / maxFame;
+    }
+
+    private void SetTotalFameUI(int totalFame)
+    {
+        fameText.text = totalFame.ToString();
     }
 }

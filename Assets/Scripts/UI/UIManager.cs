@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
-    public static UIManager Instance { get; private set; }
+    private GameManager gameManager;
 
     [SerializeField] private Transform fixedRoot;
     [SerializeField] private Transform windowRoot;
@@ -16,14 +16,10 @@ public class UIManager : MonoBehaviour
     private Dictionary<string, BaseUI> activeUIs = new();
     private Dictionary<string, GameObject> loadedPrefabs = new();
 
-    private void Awake()
+    public void Init(GameManager gameManager)
     {
-        if (Instance == null) Instance = this;
-        else Destroy(gameObject);
-    }
+        this.gameManager = gameManager;
 
-    private void Start()
-    {
         foreach (var ui in fixedRoot.GetComponentsInChildren<BaseUI>(true))
         {
             ui.Init(this);

@@ -16,7 +16,7 @@ public class GemsSystemWindow : BaseUI
 
     void OpenWeaponInventoryPopup()
     {
-        UIManager.Instance.OpenUI<InventoryPopup>(UIName.InventoryPopup);
+        uIManager.OpenUI<InventoryPopup>(UIName.InventoryPopup);
     }
 
     public override void Open()

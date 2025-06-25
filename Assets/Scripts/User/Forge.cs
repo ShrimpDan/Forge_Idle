@@ -12,9 +12,9 @@ public class Forge : MonoBehaviour
 
     // 레벨 & 명성치
     public int Level { get; private set; }
-    public float CurrentFame { get; private set; }
-    public float MaxFame { get; private set; }
-    public float TotalFame { get; private set; }
+    public int CurrentFame { get; private set; }
+    public int MaxFame { get; private set; }
+    public int TotalFame { get; private set; }
 
     // 골드 & 다이아
     public int Gold { get; private set; }
@@ -22,13 +22,16 @@ public class Forge : MonoBehaviour
 
     // 이벤트 핸들러
     public ForgeEventHandler Events { get; private set; }
-    
 
     void Awake()
     {
         Events = new ForgeEventHandler();
+    }
+
+    public void Init()
+    {
         SetData();
-    }   
+    }
 
     private void SetData()
     {
@@ -46,9 +49,31 @@ public class Forge : MonoBehaviour
 
         Gold = forgeData.Gold;
         Dia = forgeData.Dia;
+
+        Events.RaiseGoldChanged(Gold);
+        Events.RaiseDiaChanged(Dia);
+        Events.RaiseFameChanged(CurrentFame, MaxFame);
+        Events.RaiseLevelChanged(Level);
     }
 
-    public void AddFame(float amount)
+    public void SaveData()
+    {
+        ForgeData data = new ForgeData
+        {
+            CraftTimeMultiplier = CraftTimeMultiplier,
+            SellPriceMultiplier = SellPriceMultiplier,
+            RareItemChance = RareItemChance,
+            CustomerPerSecond = CustomerPerSecond,
+            Level = Level,
+            MaxFame = MaxFame,
+            CurrentFame = CurrentFame,
+            TotalFame = TotalFame,
+            Gold = Gold,
+            Dia = Dia
+        };
+    }
+
+    public void AddFame(int amount)
     {
         CurrentFame += amount;
         TotalFame += amount;
@@ -57,12 +82,13 @@ public class Forge : MonoBehaviour
         {
             Level++;
             CurrentFame -= MaxFame;
-            MaxFame *= 1.25f;
+            MaxFame = (int)(MaxFame * 1.25f);
 
             Events.RaiseLevelChanged(Level);
         }
 
         Events.RaiseFameChanged(CurrentFame, MaxFame);
+        Events.RasieTotalFameChanged(TotalFame);
     }
 
     public void AddGold(int amount)

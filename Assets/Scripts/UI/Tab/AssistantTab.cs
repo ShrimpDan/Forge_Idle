@@ -52,11 +52,6 @@ public class AssistantTab : MonoBehaviour
         RefreshSlots();
     }
 
-    private void OnDisable()
-    {
-
-    }
-
     private void RefreshSlots()
     {
         if (assistantManager == null)
