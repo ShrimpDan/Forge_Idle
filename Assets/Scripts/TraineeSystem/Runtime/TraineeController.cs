@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using DG.Tweening;
+using UnityEngine;
 using TMPro;
 
 /// <summary>
@@ -7,18 +8,19 @@ using TMPro;
 public class TraineeController : MonoBehaviour
 {
     [Header("UI 요소")]
-
-    [Tooltip("제자의 이름을 표시할 TextMeshPro 텍스트입니다.")]
     [SerializeField] private TMP_Text nameText;
+    [SerializeField] private TMP_Text specializationText;
+    [SerializeField] private TMP_Text personalityText;
+    [SerializeField] private TMP_Text abilitiesText;
 
-    [Tooltip("제자의 상세 정보를 표시할 TextMeshPro 텍스트입니다.")]
-    [SerializeField] private TMP_Text detailText;
+    [Header("카드 앞 뒷면")]
+    [SerializeField] private GameObject frontSide;
+    [SerializeField] private GameObject backSide;
 
-    // 현재 제자의 데이터 참조
     private TraineeData data;
-
-    // 제자를 관리하는 매니저 참조 (삭제 시 호출용)
     private TraineeManager manager;
+
+    private bool isFlipped = false;
 
     /// <summary>
     /// 제자 데이터를 받아 UI를 초기화합니다.
@@ -27,44 +29,43 @@ public class TraineeController : MonoBehaviour
     {
         data = traineeData;
         manager = traineeManager;
+        isFlipped = false;
 
-        // 이름 출력
+        if (frontSide != null) frontSide.SetActive(false);
+        if (backSide != null) backSide.SetActive(true);
+
+        if (frontSide != null)
+            frontSide.transform.localEulerAngles = new Vector3(0, 270, 0);
+
+        RefreshUI();
+    }
+
+    public void RefreshUI()
+    {
         if (nameText != null)
-            nameText.text = data.TraineeName;
+            nameText.text = data.Name;
 
-        // 상세 정보 출력
-        if (detailText != null)
-            detailText.text = GetFormattedDetailText();
+        if (specializationText != null)
+            specializationText.text = GetSpecializationKorean(data.Specialization);
+
+        if (personalityText != null)
+            personalityText.text = $"{data.Personality.PersonalityName} (티어 {data.Personality.Tier})";
+
+        if (abilitiesText != null)
+            abilitiesText.text = GetFormattedAbilitiesText();
     }
 
     /// <summary>
     /// 제자의 상세 정보를 텍스트로 구성하여 반환합니다.
     /// </summary>
-    private string GetFormattedDetailText()
+    private string GetFormattedAbilitiesText()
     {
-        string tierText = $"(티어 {data.Personality.Tier})";
-        string header = $"특화: {data.Specialization}\n성격: {data.Personality.PersonalityName} {tierText}";
-
-        string multiplierLines = "";
+        string text = "";
         foreach (var mul in data.Multipliers)
         {
-            multiplierLines += $"\n- {mul.abilityName} x{mul.multiplier:F2}";
+            text += $"- {mul.AbilityName} x{mul.Multiplier:F2}\n";
         }
-
-        return $"{header}{multiplierLines}";
-    }
-
-    /// <summary>
-    /// 콘솔에 제자 정보를 출력합니다. - 디버그용 , 추후 삭제
-    /// </summary>
-    public void OnClick_ShowDetails()
-    {
-        Debug.Log($"[정보 출력] 이름: {data.TraineeName} / 성격: {data.Personality.PersonalityName}");
-
-        foreach (var mul in data.Multipliers)
-        {
-            Debug.Log($"- {mul.abilityName}: {mul.multiplier}");
-        }
+        return text.TrimEnd('\n');
     }
 
     /// <summary>
@@ -76,5 +77,55 @@ public class TraineeController : MonoBehaviour
     {
         if (manager != null)
             manager.RemoveTrainee(gameObject, data);
+    }
+
+    private string GetSpecializationKorean(SpecializationType spec)
+    {
+        return spec switch
+        {
+            SpecializationType.Crafting => "제작 특화",
+            SpecializationType.Enhancing => "강화 특화",
+            SpecializationType.Selling => "판매 특화",
+            _ => "알 수 없음"
+        };
+    }
+
+    public void OnClick_FlipCard()
+    {
+        if (isFlipped) return;
+
+        TraineeData trainee = manager?.GenerateOneTimeTrainee();
+        if (trainee == null)
+        {
+            Debug.LogError("랜덤 제자 생성 실패!");
+            return;
+        }
+
+        Setup(trainee, manager); 
+
+        frontSide.transform.localEulerAngles = new Vector3(0, 270, 0);
+
+        backSide.transform.DORotate(new Vector3(0, 90, 0), 0.3f)
+            .SetEase(Ease.InQuad)
+            .OnComplete(() =>
+            {
+                frontSide.SetActive(true);
+
+                RefreshUI();
+
+                frontSide.transform.DORotate(new Vector3(0, 360, 0), 0.3f)
+                    .SetEase(Ease.OutQuad)
+                    .OnComplete(() =>
+                    {
+                        backSide.SetActive(false);
+                    });
+            });
+
+        isFlipped = true;
+    }
+
+    public void OnClick_FrontCard()
+    {
+        Destroy(gameObject);
     }
 }

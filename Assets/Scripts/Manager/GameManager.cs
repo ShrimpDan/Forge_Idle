@@ -1,0 +1,35 @@
+using UnityEngine;
+
+public class GameManager : MonoSingleton<GameManager>
+{
+    public Jang.InventoryManager Inventory { get; private set; }
+    public DataManger TestDataManager { get; private set; }
+    public TraineeManager AssistantManager { get; private set; }
+    public Forge Forge { get; private set; }
+
+    protected override void Awake()
+    {
+        base.Awake();
+
+        Inventory = new Jang.InventoryManager();
+        TestDataManager = new DataManger();
+
+        AssistantManager = FindObjectOfType<TraineeManager>();
+        Forge = FindObjectOfType<Forge>();
+    }
+
+    [ContextMenu("Get Random Item")]
+    public void GetRandomItem()
+    {
+        for (int i = 0; i < 20; i++)
+        {
+            Debug.Log("Add Item!");
+            var itemData = TestDataManager.ItemLoader.GetRandomItem();
+
+            ItemInstance item = new ItemInstance();
+            item.Data = itemData;
+
+            Inventory.AddItem(item);
+        }
+    }
+}

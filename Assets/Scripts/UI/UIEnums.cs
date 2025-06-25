@@ -7,9 +7,9 @@ public enum UIType
 
 public enum ItemType
 {
-    Equipment = 0,
-    Gem = 1,
-    Resource = 2,
+    Weapon = 0,
+    Resource = 1,
+    Gem = 2,
 }
 
 public enum ButtonType

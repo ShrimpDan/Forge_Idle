@@ -13,12 +13,12 @@ public class MonoSingleton<T> : MonoBehaviour where T : MonoSingleton<T>
                 return null;
             if (instance == null)
             {
-                instance = GameObject.FindObjectOfType<T>();
+                instance = (T)FindAnyObjectByType(typeof(T));
 
                 if (instance == null)
                 {
-                    GameObject go = new GameObject(typeof(T).Name);
-                    instance = go.AddComponent<T>();
+                    GameObject obj = new GameObject(typeof(T).Name, typeof(T));
+                    instance = obj.GetComponent<T>();
                 }
 
                 DontDestroyOnLoad(instance.gameObject);
@@ -30,13 +30,15 @@ public class MonoSingleton<T> : MonoBehaviour where T : MonoSingleton<T>
     protected virtual void Awake()
     {
         isApplicationQuit = false;
-        if (instance != null && instance != this)
+
+        if (instance == null)
         {
-            Destroy(gameObject);
-            return;
+            instance = this as T;
+            DontDestroyOnLoad(this.gameObject);
         }
 
-        instance = (T)this;
+        else if (instance != null)
+            Destroy(gameObject);
     }
 
     private void OnDestroy()

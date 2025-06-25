@@ -3,7 +3,7 @@
 /// </summary>
 public enum SpecializationType
 {
-    Crafting,   // 제작
-    Enhancing,  // 강화
-    Selling     // 판매
+    Crafting,
+    Enhancing,
+    Selling
 }

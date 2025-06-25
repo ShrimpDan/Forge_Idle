@@ -1,32 +1,19 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using System;
-using System.Collections.Generic;
 
 public class MineListSlot : MonoBehaviour
 {
-    [SerializeField] TMP_Text nameText;
-    [SerializeField] Image[] dropItemIcons;
-    [SerializeField] Button selectBtn;
+    [SerializeField] private TMP_Text mineNameText;
+    [SerializeField] private Image[] dropIcons; // 2개
+    [SerializeField] private Button selectBtn;
 
-    private MineData data;
-    private Action<MineData> onSelect;
-
-    public void Setup(MineData data, Action<MineData> onSelect)
+    public void Init(string mineName, Sprite[] drops, UnityEngine.Events.UnityAction onClick)
     {
-        this.data = data;
-        this.onSelect = onSelect;
-        nameText.text = data.Name;
-
-        // 아이콘 2개 세팅
-        for (int i = 0; i < dropItemIcons.Length; i++)
-        {
-            dropItemIcons[i].sprite = (i < data.DropSprites.Count) ? data.DropSprites[i] : null;
-            dropItemIcons[i].gameObject.SetActive(data.DropSprites[i] != null);
-        }
-
+        mineNameText.text = mineName;
+        for (int i = 0; i < dropIcons.Length; i++)
+            dropIcons[i].sprite = (drops != null && i < drops.Length) ? drops[i] : null;
         selectBtn.onClick.RemoveAllListeners();
-        selectBtn.onClick.AddListener(() => onSelect?.Invoke(data));
+        selectBtn.onClick.AddListener(onClick);
     }
 }

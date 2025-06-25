@@ -1,16 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class TestDataManger : MonoBehaviour
+public class DataManger
 {
-    public static TestDataManger Instance { get; private set; }
-
     public ItemDataLoader ItemLoader { get; private set; }
+    public CraftingDataLoader CraftingLoader{ get; private set; }
 
-    void Awake()
+    public DataManger()
     {
-        Instance = this;
         ItemLoader = new ItemDataLoader();
+        CraftingLoader = new CraftingDataLoader();
     }
 }

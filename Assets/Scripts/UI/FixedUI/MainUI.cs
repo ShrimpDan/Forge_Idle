@@ -32,6 +32,7 @@ public class MainUI : BaseUI
         {
             int index = i;
             tabButtons[i].onClick.AddListener(() => SwitchTab(index));
+            
         }
 
         SwitchTab(2);

@@ -49,7 +49,7 @@ public class CustomerManager : MonoSingleton<CustomerManager>
             {
                 spawnDict[job] = data;
                 customerCount[job] = 0;
-            }        
+            }
         }
 
 
