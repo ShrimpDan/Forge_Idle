@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class AssistantTab : MonoBehaviour
 {
     private TraineeManager assistantManager;
-    
+
     [Header("Tab Buttons")]
     [SerializeField] private Button[] tabButtons;
     [SerializeField] private Color selectedColor = Color.white;
@@ -43,6 +43,59 @@ public class AssistantTab : MonoBehaviour
         }
 
         SwitchTab(0);
+
+        assistantManager = GameManager.Instance.AssistantManager;
+    }
+
+    private void OnEnable()
+    {
+        RefreshSlots();
+    }
+
+    private void OnDisable()
+    {
+
+    }
+
+    private void RefreshSlots()
+    {
+        if (assistantManager == null)
+        {
+            assistantManager = GameManager.Instance.AssistantManager;
+        }
+
+        foreach (var slot in activeSlots)
+        {
+            slot.SetActive(false);
+            pooledSlots.Enqueue(slot);
+        }
+        activeSlots.Clear();
+
+        List<TraineeData> craftingList = assistantManager.GetTraineesByType(SpecializationType.Crafting);
+        List<TraineeData> enhancingList = assistantManager.GetTraineesByType(SpecializationType.Enhancing);
+        List<TraineeData> sellingList = assistantManager.GetTraineesByType(SpecializationType.Selling);
+
+        CreateSlots(craftingList, craftSlotRoot);
+        CreateSlots(enhancingList, upgradeSlotRoot);
+        CreateSlots(sellingList, gemSlotRoot);
+    }
+
+
+    private void CreateSlots(List<TraineeData> assiList, Transform parent)
+    {
+        foreach (var assi in assiList)
+        {
+            if (assi == null) continue;
+
+            GameObject slotObj = GetSlotFromPool();
+            slotObj.transform.SetParent(parent, false);
+            slotObj.SetActive(true);
+
+            var slot = slotObj.GetComponent<AssistantSlot>();
+            slot.Init(assi);
+
+            activeSlots.Add(slotObj);
+        }
     }
 
     private void SwitchTab(int index)
@@ -56,6 +109,7 @@ public class AssistantTab : MonoBehaviour
             tabButtons[i].image.color = isSelected ? selectedColor : defaultColor;
         }
     }
+
 
     private GameObject GetSlotFromPool()
     {
