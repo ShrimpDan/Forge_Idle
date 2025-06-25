@@ -147,6 +147,11 @@ public class TraineeManager : MonoBehaviour
         return runtimeTrainees;
     }
 
+    public List<TraineeData> GetTraineesByType(SpecializationType type)
+    {
+        return runtimeTrainees.Where(t => t.Specialization == type).ToList();
+    }
+
     public TraineeData GenerateOneTimeTrainee()
     {
         TraineeData newTrainee = assigner.GenerateTrainee();
@@ -156,10 +161,6 @@ public class TraineeManager : MonoBehaviour
         newTrainee.SetName(traineeName);
 
         return newTrainee;
-
-    public List<TraineeData> GetTraineesByType(SpecializationType type)
-    {
-        return runtimeTrainees.Where(t => t.Specialization == type).ToList();
     }
 }
 
