@@ -8,7 +8,19 @@ public class Forge : MonoBehaviour
     public float CraftTimeMultiplier { get; private set; }
     public float SellPriceMultiplier { get; private set; }
     public float RareItemChance { get; private set; }
-    public float CustomerPerSecond { get; private set; }
+    public float CustomerSpawnDelay  { get; private set; }
+
+    // 보너스 스탯
+    public float BonusCraftTimeMultiplier { get; private set; }
+    public float BonusSellPriceMultiplier { get; private set; }
+    public float BonusRareItemChance { get; private set; }
+    public float BonusCustomerSpawnDelay { get; private set; }
+
+    // 최종 스탯
+    public float FinalCraftTimeMulitiplier => CraftTimeMultiplier + BonusCraftTimeMultiplier;
+    public float FinalSellPriceMultiplier => SellPriceMultiplier + BonusSellPriceMultiplier;
+    public float FinalRareItemChance => RareItemChance + BonusRareItemChance;
+    public float FinalCustomerSpawnDelay  => CustomerSpawnDelay - BonusCustomerSpawnDelay;
 
     // 레벨 & 명성치
     public int Level { get; private set; }
@@ -40,7 +52,7 @@ public class Forge : MonoBehaviour
         CraftTimeMultiplier = forgeData.CraftTimeMultiplier;
         SellPriceMultiplier = forgeData.SellPriceMultiplier;
         RareItemChance = forgeData.RareItemChance;
-        CustomerPerSecond = forgeData.CustomerPerSecond;
+        CustomerSpawnDelay  = forgeData.CustomerSpawnDelay ;
 
         Level = forgeData.Level;
         CurrentFame = forgeData.CurrentFame;
@@ -69,7 +81,7 @@ public class Forge : MonoBehaviour
             CraftTimeMultiplier = CraftTimeMultiplier,
             SellPriceMultiplier = SellPriceMultiplier,
             RareItemChance = RareItemChance,
-            CustomerPerSecond = CustomerPerSecond,
+            CustomerSpawnDelay  = CustomerSpawnDelay ,
             Level = Level,
             MaxFame = MaxFame,
             CurrentFame = CurrentFame,

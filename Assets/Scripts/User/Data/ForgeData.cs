@@ -7,7 +7,7 @@ public class ForgeData
     public float CraftTimeMultiplier;
     public float SellPriceMultiplier;
     public float RareItemChance;
-    public float CustomerPerSecond;
+    public float CustomerSpawnDelay ;
 
     public int Level;
     public int CurrentFame;
@@ -60,7 +60,7 @@ public static class ForgeDataSaveLoader
             CraftTimeMultiplier = 1f,
             SellPriceMultiplier = 1f,
             RareItemChance = 0.1f,
-            CustomerPerSecond = 1f,
+            CustomerSpawnDelay  = 5f,
             Level = 1,
             MaxFame = 100,
             CurrentFame = 0,
