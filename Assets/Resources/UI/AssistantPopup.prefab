@@ -160,7 +160,7 @@ MonoBehaviour:
   m_ChildAlignment: 4
   m_Spacing: 0
   m_ChildForceExpandWidth: 1
-  m_ChildForceExpandHeight: 1
+  m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 0
   m_ChildControlHeight: 0
   m_ChildScaleWidth: 0
@@ -717,6 +717,7 @@ GameObject:
   - component: {fileID: 2731919579227394387}
   - component: {fileID: 101437384063060983}
   - component: {fileID: 348068821700496767}
+  - component: {fileID: 7768864574416418053}
   m_Layer: 0
   m_Name: AssistantPopup
   m_TagString: Untagged
@@ -787,6 +788,27 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 0.7
+--- !u!114 &7768864574416418053
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3888800632961818737}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 853d64dc48cb891418c0ade167355b31, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  icon: {fileID: 3460510684394956379}
+  typeIcon: {fileID: 7957927581392068988}
+  assiName: {fileID: 2390122813249711017}
+  assiType: {fileID: 8198624668025567987}
+  optionTextPrefab: {fileID: 6598510717926804376, guid: 19bc701b75cd60e46819736964a614ac, type: 3}
+  optionRoot: {fileID: 7144138821645899357}
+  applyButton: {fileID: 797970378086025162}
+  deApplyButton: {fileID: 9128774933714746406}
+  exitButton: {fileID: 4438237898186072754}
 --- !u!1 &4431383496230871063
 GameObject:
   m_ObjectHideFlags: 0

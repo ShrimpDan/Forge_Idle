@@ -21,34 +21,36 @@ public class AssistantPopup : BaseUI
     [SerializeField] private Button deApplyButton;
     [SerializeField] private Button exitButton;
 
+    TraineeData assiData;
+
     public override void Init(UIManager uIManager)
     {
         base.Init(uIManager);
         exitButton.onClick.AddListener(() => uIManager.CloseUI(UIName.AssistantPopup));
+        applyButton.onClick.AddListener(ApplyAssistant);
+        deApplyButton.onClick.AddListener(DeApplyAssistant);
     }
 
     public override void Open()
     {
         base.Open();
-
-
     }
 
-    public void SetUI(TestAssistantData data)
+    public void SetAssistant(TraineeData data)
     {
-        // 아이콘 설정
+        assiData = data;
+        // 캐릭터 아이콘 & 타입별 아이콘 설정
 
         assiName.text = data.Name;
-        assiType.text = data.Type;
+        assiType.text = data.Specialization.ToString();
 
-        foreach (var option in data.OptionList)
+        foreach (var option in data.Multipliers)
         {
             GameObject obj = Instantiate(optionTextPrefab, optionRoot);
 
-            if (obj.TryGetComponent(out AssistantSlot assiSlot))
-            {
-                
-            }
+            TextMeshProUGUI optionText = obj.GetComponent<TextMeshProUGUI>();
+            optionText.text = option.AbilityName;
+            optionText.text += $"\nx{option.Multiplier}";
         }
     }
 
@@ -56,5 +58,29 @@ public class AssistantPopup : BaseUI
     {
         base.Close();
         exitButton.onClick.RemoveAllListeners();
+    }
+
+    private void ApplyAssistant()
+    {
+        assiData.IsEquipped = true;
+    }
+
+    private void DeApplyAssistant()
+    {
+        assiData.IsEquipped = false;
+    }
+
+    private void SetApplyButton()
+    {
+        if (assiData.IsEquipped)
+        {
+            applyButton.gameObject.SetActive(false);
+            deApplyButton.gameObject.SetActive(true);
+        }
+        else
+        {
+            applyButton.gameObject.SetActive(true);
+            deApplyButton.gameObject.SetActive(false);
+        }
     }
 }

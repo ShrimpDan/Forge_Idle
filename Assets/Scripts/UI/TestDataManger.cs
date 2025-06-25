@@ -1,9 +1,9 @@
-public class TestDataManger
+public class DataManger
 {
     public ItemDataLoader ItemLoader { get; private set; }
     public CraftingDataLoader CraftingLoader{ get; private set; }
 
-    public TestDataManger()
+    public DataManger()
     {
         ItemLoader = new ItemDataLoader();
         CraftingLoader = new CraftingDataLoader();

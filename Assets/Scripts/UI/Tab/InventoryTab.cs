@@ -41,7 +41,7 @@ public class InventoryTab : MonoBehaviour
             inventory = GameManager.Instance.Inventory;
         }
         
-        inventory.onItemAdded += AddItemToInven;
+        inventory.onItemAdded += Refresh;
 
         RefreshSlots();
     }
@@ -49,7 +49,7 @@ public class InventoryTab : MonoBehaviour
     void OnDisable()
     {
         if (inventory == null) return;
-        inventory.onItemAdded -= AddItemToInven;       
+        inventory.onItemAdded -= Refresh;       
     }
 
     public void Init(Jang.InventoryManager inventory)
@@ -101,7 +101,7 @@ public class InventoryTab : MonoBehaviour
         }
     }
 
-    public void AddItemToInven()
+    public void Refresh()
     {
         RefreshSlots();
     }
