@@ -100,6 +100,6 @@ public class MainUI : BaseUI
 
     private void SetTotalFameUI(int totalFame)
     {
-        fameText.text = totalFame.ToString();
+        fameText.text = $"Fame: {totalFame}";
     }
 }

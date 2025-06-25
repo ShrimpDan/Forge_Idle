@@ -50,10 +50,16 @@ public class Forge : MonoBehaviour
         Gold = forgeData.Gold;
         Dia = forgeData.Dia;
 
+        RaiseAllEvents();
+    }
+
+    private void RaiseAllEvents()
+    {
         Events.RaiseGoldChanged(Gold);
         Events.RaiseDiaChanged(Dia);
         Events.RaiseFameChanged(CurrentFame, MaxFame);
         Events.RaiseLevelChanged(Level);
+        Events.RasieTotalFameChanged(TotalFame);
     }
 
     public void SaveData()
@@ -71,6 +77,8 @@ public class Forge : MonoBehaviour
             Gold = Gold,
             Dia = Dia
         };
+
+        ForgeDataSaveLoader.Save(data);
     }
 
     public void AddFame(int amount)
