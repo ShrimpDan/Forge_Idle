@@ -9,14 +9,14 @@ public class TraineeManager : MonoBehaviour
 {
     [Header("제자 소환 설정")]
     [SerializeField] private GameObject traineePrefab;
-    [SerializeField] private Transform spawnParent;
-    [SerializeField] private Vector3 spawnPosition = Vector3.zero;
 
     [Header("성격 데이터베이스")]
     public PersonalityTierDatabase personalityDatabase;
 
     [Header("소환 이펙트 매니저")]
     [SerializeField] private TraineeSummonManager summonEffectManager;
+
+    [SerializeField] private TraineeController cardViewer;
 
     private List<TraineeData> runtimeTrainees = new List<TraineeData>();
 
@@ -31,29 +31,61 @@ public class TraineeManager : MonoBehaviour
         assigner = new PersonalityAssigner(personalityDatabase);
     }
 
-    public void RecruitAndSpawnTrainee()
+    public void OnClick_ViewTrainee(TraineeData trainee)
     {
-        TraineeData newTrainee = assigner.GenerateTrainee();
-
-        if (newTrainee == null)
+        if (trainee == null)
         {
-            Debug.LogWarning("제자 생성 실패");
+            Debug.LogWarning("조회할 제자 데이터가 없습니다.");
             return;
         }
 
-        // 고유 이름 생성
-        string traineeName = GenerateTraineeName(newTrainee.Specialization);
-        newTrainee.SetName(traineeName);
+        cardViewer.Setup(trainee, this);
+    }
 
-        // 프리팹 생성
-        GameObject obj = Instantiate(traineePrefab, spawnPosition, Quaternion.identity, spawnParent);
-        obj.GetComponent<TraineeController>().Setup(newTrainee, this);
+    public void RecruitAndSpawnTrainee()
+    {
+        if (assigner == null)
+        {
+            if (personalityDatabase == null)
+            {
+                Debug.LogError("제자 생성 실패: Personality Database가 연결되어 있지 않습니다.");
+                return;
+            }
 
-        // 리스트 등록
+            assigner = new PersonalityAssigner(personalityDatabase);
+            Debug.Log("assigner가 자동으로 초기화되었습니다.");
+        }
+
+        TraineeData newTrainee = assigner.GenerateTrainee();
+        if (newTrainee == null)
+        {
+            Debug.LogWarning("제자 생성 실패: 유효한 성격 데이터를 찾을 수 없습니다.");
+            return;
+        }
+
+        newTrainee.SetName(GenerateTraineeName(newTrainee.Specialization));
+
+        if (traineePrefab == null)
+        {
+            Debug.LogError("제자 프리팹이 연결되어 있지 않습니다.");
+            return;
+        }
+
+        GameObject obj = Instantiate(traineePrefab);
+        TraineeController controller = obj.GetComponent<TraineeController>();
+
+        if (controller == null)
+        {
+            Debug.LogError("프리팹에 TraineeController가 없습니다.");
+            Destroy(obj);
+            return;
+        }
+
+        controller.Setup(newTrainee, this);
+
         runtimeTrainees.Add(newTrainee);
         activeTrainees.Add(obj);
 
-        // 이펙트 출력
         summonEffectManager?.SummonEffectByTier(TraineeTier.Tier5);
     }
 
@@ -112,6 +144,17 @@ public class TraineeManager : MonoBehaviour
     public List<TraineeData> GetAllTrainees()
     {
         return runtimeTrainees;
+    }
+
+    public TraineeData GenerateOneTimeTrainee()
+    {
+        TraineeData newTrainee = assigner.GenerateTrainee();
+        if (newTrainee == null) return null;
+
+        string traineeName = GenerateTraineeName(newTrainee.Specialization);
+        newTrainee.SetName(traineeName);
+
+        return newTrainee;
     }
 }
 
