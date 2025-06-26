@@ -22,13 +22,6 @@ public class CraftWeaponWindow : BaseUI
     {
         exitBtn.onClick.AddListener(Close);
 
-        // 기존 수동 생성 슬롯 오브젝트 제거
-        foreach (Transform child in inputWeaponSlots)
-            Destroy(child.gameObject);
-
-        slotButtons.Clear();
-        slotIcons.Clear();
-
         // 슬롯 자동 생성
         for (int i = 0; i < slotCount; i++)
         {
@@ -40,8 +33,6 @@ public class CraftWeaponWindow : BaseUI
             slotButtons.Add(btn);
             slotIcons.Add(icon);
 
-            // 초기화: 아이콘 비움 등
-            icon.sprite = null;
         }
     }
 

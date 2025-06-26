@@ -41,7 +41,7 @@ public class Forge_AssistantPopup : BaseUI
 
     private void OpenInventoryPopup()
     {
-        UIManager.Instance.OpenUI<InventoryPopup>(UIName.Forge_Inventory_Popup);
+        UIManager.Instance.OpenUI<Forge_Inventory_Popup>(UIName.Forge_Inventory_Popup);
     }
 
     public override void Open()
