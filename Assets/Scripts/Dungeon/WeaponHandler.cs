@@ -8,21 +8,26 @@ public class WeaponHandler : MonoBehaviour
 {
     private MonsterHandler monsterHandler;
 
-    private EquippedWeaponSlot[] equippedSlots;
+    [SerializeField] private EquippedWeaponSlot[] equippedSlots;
     private Queue<EquippedWeaponSlot> attackQueue = new Queue<EquippedWeaponSlot>();
 
+    [Header("Weapon Prefab")]
     [SerializeField] private RectTransform projectileRoot;
     [SerializeField] private GameObject projectilePrefab;
+
+    [Header("Attack Setting")]
+    [SerializeField] float attackDelay;
+    private bool isAttack = false;
 
     public void Init(List<ItemInstance> equippedWeapons, MonsterHandler monsterHandler)
     {
         this.monsterHandler = monsterHandler;
 
-        for (int i = 0; i < equippedWeapons.Count; i++)
+        for (int i = 0; i < equippedSlots.Length; i++)
         {
             var slot = equippedSlots[i];
 
-            if (i < equippedWeapons.Count)
+            if (equippedWeapons[i] != null)
             {
                 slot.gameObject.SetActive(true);
                 slot.Init(equippedWeapons[i]);
@@ -44,7 +49,16 @@ public class WeaponHandler : MonoBehaviour
             slot.Tick(deltaTime);
         }
 
-        if (attackQueue.Count > 0)
+        if (attackQueue.Count > 0 && !isAttack)
+        {
+            StartCoroutine(AttackCoroutine());
+            isAttack = true;
+        }
+    }
+
+    private IEnumerator AttackCoroutine()
+    {
+        while (attackQueue.Count > 0)
         {
             var slot = attackQueue.Peek();
             if (slot.IsReady)
@@ -54,7 +68,11 @@ public class WeaponHandler : MonoBehaviour
                 slot.StartCooldown();
                 StartCoroutine(WaitAndRequeue(slot));
             }
+
+            yield return new WaitForSeconds(attackDelay);
         }
+
+        isAttack = false;
     }
 
     private void Attack(EquippedWeaponSlot slot)
@@ -74,28 +92,24 @@ public class WeaponHandler : MonoBehaviour
 
         RectTransform projectileRT = go.GetComponent<RectTransform>();
 
-        // 시작 위치: 플레이어 위치
         Vector2 startPos = WorldToLocalUIPosition(projectileRoot.position, projectileRoot);
         projectileRT.anchoredPosition = startPos;
 
-        // 도착 위치: 몬스터 위치
         Vector2 targetPos = WorldToLocalUIPosition(monster.transform.position, projectileRoot);
 
-        float jumpPower = 100f;      // 포물선 높이
+        float jumpPower = 100f;
         float duration = 0.5f;
 
-        // 포물선 이동 + 회전 + 끝나면 제거
         projectileRT
             .DOJumpAnchorPos(targetPos, jumpPower, 1, duration)
             .SetEase(Ease.OutQuad)
             .OnComplete(() => Destroy(go));
 
-        // 회전 연출 (360도 회전)
         projectileRT
             .DORotate(new Vector3(0, 0, 360f), duration, RotateMode.FastBeyond360)
             .SetEase(Ease.Linear);
     }
-    
+
     // 쿨타임이 끝나면 무기 다시 공격 큐로
     private IEnumerator WaitAndRequeue(EquippedWeaponSlot slot)
     {

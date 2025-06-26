@@ -17,6 +17,8 @@ public class MonsterHandler : MonoBehaviour
 
     public void Init(TestDungeonData data)
     {
+        if (data == null) return;
+        
         dungeonData = data;
 
         for (int i = 0; i < 40; i++)

@@ -29,7 +29,7 @@ public class InventorySlot : MonoBehaviour
         if (uIManager == null)
             uIManager = GameManager.Instance.UIManager;
 
-        SetEquipped(false);
+        SetEquipped(SlotItem.IsEquipped);
     }
 
     private void OnClickSlot()

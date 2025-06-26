@@ -105,6 +105,7 @@ namespace Jang
                 if (EquippedWeaponDict[i] == null)
                 {
                     EquippedWeaponDict[i] = item;
+                    item.EquipItem();
                     OnItemEquipped?.Invoke(i, item);
                     return;
                 }
@@ -121,6 +122,7 @@ namespace Jang
                 if (EquippedWeaponDict[key] == item)
                 {
                     EquippedWeaponDict[key] = null;
+                    item.UnEquipItem();
                     OnItemUnEquipped?.Invoke(key, item);
                     return;
                 }

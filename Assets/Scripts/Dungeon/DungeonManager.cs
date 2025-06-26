@@ -12,10 +12,14 @@ public class DungeonManager : MonoBehaviour
     private MonsterHandler monsterHandler;
     private RewardHandler rewardHandler;
 
-    public void Init(GameManager gameManager)
+    void Start()
     {
-        this.gameManager = gameManager;
+        gameManager = GameManager.Instance;
+        Init();
+    }
 
+    public void Init()
+    {
         weaponHandler = GetComponent<WeaponHandler>();
         monsterHandler = GetComponent<MonsterHandler>();
         rewardHandler = GetComponent<RewardHandler>();
