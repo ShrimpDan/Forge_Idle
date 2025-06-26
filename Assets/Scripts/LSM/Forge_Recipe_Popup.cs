@@ -16,6 +16,7 @@ public class Forge_Recipe_Popup : BaseUI
     private Forge forge;
     private Jang.InventoryManager inventory;
 
+    // 팝업 초기화
     public void Init(DataManger dataManager, UIManager uiManager)
     {
         this.dataManager = dataManager;
@@ -23,21 +24,23 @@ public class Forge_Recipe_Popup : BaseUI
 
         exitBtn.onClick.RemoveAllListeners();
         exitBtn.onClick.AddListener(() => uIManager.CloseUI(UIName.Forge_Recipe_Popup));
-        PopulateRecipeList();
     }
 
+    // 레시피 선택 콜백 세팅
     public void SetRecipeSelectCallback(Action<ItemData, CraftingData> callback)
     {
         onRecipeSelect = callback;
     }
 
-    // 추가: Forge와 Inventory를 세팅할 수 있도록
+    // Forge 및 Inventory 세팅
     public void SetForgeAndInventory(Forge forge, Jang.InventoryManager inventory)
     {
         this.forge = forge;
         this.inventory = inventory;
+        PopulateRecipeList();
     }
 
+    // 레시피 목록 세팅
     private void PopulateRecipeList()
     {
         foreach (Transform child in contentRoot)
@@ -59,11 +62,13 @@ public class Forge_Recipe_Popup : BaseUI
             if (slot != null)
             {
                 slot.Setup(data, itemLoader);
-                // 인벤토리/포지 정보를 넘겨주고, 선택시 이벤트 연결
                 slot.SetSelectContext(itemLoader, forge, inventory, () =>
                 {
-                    onRecipeSelect?.Invoke(itemLoader.GetItemByKey(data.ItemKey), data);
-                    uIManager.CloseUI(UIName.Forge_Recipe_Popup);
+                    if (onRecipeSelect != null)
+                    {
+                        onRecipeSelect(itemLoader.GetItemByKey(data.ItemKey), data);
+                        uIManager.CloseUI(UIName.Forge_Recipe_Popup);
+                    }
                 });
             }
         }

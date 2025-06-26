@@ -49,19 +49,16 @@ public class CraftWeaponWindow : BaseUI
         selectedSlotIndex = index;
         var popup = uiManager.OpenUI<Forge_Recipe_Popup>(UIName.Forge_Recipe_Popup);
         popup.Init(gameManager.TestDataManager, uiManager);
+
         popup.SetRecipeSelectCallback(OnRecipeSelected);
-
-
         popup.SetForgeAndInventory(gameManager.Forge, gameManager.Inventory);
     }
 
-    // 레시피 선택시 슬롯에 아이콘 넣기
     private void OnRecipeSelected(ItemData itemData, CraftingData craftingData)
     {
         if (itemData == null || craftingData == null) return;
         if (selectedSlotIndex < 0 || selectedSlotIndex >= slotIcons.Count) return;
 
-        // 성공한 경우만 아이콘 넣기
         slotIcons[selectedSlotIndex].sprite = Resources.Load<Sprite>(itemData.IconPath);
     }
 

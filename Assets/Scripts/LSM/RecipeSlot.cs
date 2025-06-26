@@ -69,7 +69,6 @@ public class RecipeSlot : MonoBehaviour
 
     private void OnSelectTryCraft()
     {
-        // 1. 골드 체크
         if (myForge == null || myInventory == null || myCraftingData == null)
         {
             Debug.LogError("[RecipeSlot] 제작 시스템 연결 안됨!");
@@ -81,7 +80,6 @@ public class RecipeSlot : MonoBehaviour
             return;
         }
 
-        // 2. 재료 체크 (모든 자원 만족해야 함)
         bool hasAll = true;
         foreach (var req in myCraftingData.RequiredResources)
         {
@@ -97,7 +95,6 @@ public class RecipeSlot : MonoBehaviour
             return;
         }
 
-        // 3. 가능! (슬롯에 할당 콜백 호출)
         onSelectCallback?.Invoke();
     }
 }
