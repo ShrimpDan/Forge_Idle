@@ -98,5 +98,25 @@ public class PersonalityAssigner
 
         return list;
     }
+
+    public TraineeData GenerateTrainee(SpecializationType fixedType)
+    {
+        var personality = GetRandomPersonality();
+        if (personality == null)
+            return null;
+
+        var multipliers = GenerateMultipliers(personality, fixedType);
+        string name = $"제자{traineeCount++}_{fixedType}";
+
+        return new TraineeData(
+            name,
+            personality,
+            fixedType,
+            multipliers,
+            level: 1,
+            isEquipped: false,
+            isInuse: false
+        );
+    }
 }
 
