@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
+using System.Linq;
 
 public class CraftWeaponWindow : BaseUI
 {
@@ -23,7 +24,7 @@ public class CraftWeaponWindow : BaseUI
         public float timeLeft = 0f;
         public Image progressBar;
         public TMP_Text timeText;
-        public CraftingData data; 
+        public CraftingData data;
         public ItemData itemData;
     }
     private List<SlotCraftProgress> slotProgressList = new List<SlotCraftProgress>();
@@ -58,9 +59,12 @@ public class CraftWeaponWindow : BaseUI
             slotButtons.Add(btn);
             slotIcons.Add(icon);
 
-            // 진행바/텍스트 연결
+            // 계층 구조 정확하게 확인 및 로그 추가
             var progressBar = go.transform.Find("CraftProgressBarBG/CraftProgressBar")?.GetComponent<Image>();
+            if (progressBar == null) Debug.LogError("CraftProgressBar를 찾을 수 없음!");
             var progressText = go.transform.Find("CraftProgressBarBG/CraftProgressText")?.GetComponent<TMP_Text>();
+            if (progressText == null) Debug.LogError("CraftProgressText를 찾을 수 없음!");
+
             if (progressBar) progressBar.fillAmount = 0;
             if (progressBar) progressBar.gameObject.SetActive(false);
             if (progressText) progressText.gameObject.SetActive(false);
@@ -100,6 +104,17 @@ public class CraftWeaponWindow : BaseUI
     {
         if (itemData == null || craftingData == null) return;
         if (selectedSlotIndex < 0 || selectedSlotIndex >= slotIcons.Count) return;
+
+        // 추가: 제작 재료 실제 차감
+        var inventory = gameManager.Inventory;
+        var required = craftingData.RequiredResources
+            .Select(r => (r.ResourceKey, r.Amount)).ToList();
+
+        if (!inventory.UseCraftingMaterials(required))
+        {
+            Debug.LogWarning("[제작실패] 재료가 부족하거나 차감 불가!");
+            return;
+        }
 
         // 아이콘 적용
         slotIcons[selectedSlotIndex].sprite = Resources.Load<Sprite>(itemData.IconPath);

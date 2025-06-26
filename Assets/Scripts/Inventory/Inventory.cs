@@ -115,8 +115,8 @@ namespace Jang
                 }
             }
 
-            // ë¹ˆ ìŠ¬ë¡¯ ì—†ìŒ
-            UnityEngine.Debug.LogWarning("ì¥ì°© ê°€ëŠ¥í•œ ìŠ¬ë¡¯ì´ ì—†ìŠµë‹ˆë‹¤.");
+            // ¹«±â Ä­ ¾øÀ½
+            UnityEngine.Debug.LogWarning("ÀåÂø °¡´ÉÇÑ ¹«±â Ä­ÀÌ ¾ø½À´Ï´Ù.");
         }
 
         public void UnEquipItem(ItemInstance item)
@@ -137,5 +137,36 @@ namespace Jang
         {
             return EquippedWeaponDict.Values.ToList();
         }
+
+        // Á¦ÀÛ Àç·á ½ÇÁ¦ Â÷°¨ ÇÔ¼ö Ãß°¡
+        public bool UseCraftingMaterials(List<(string resourceKey, int amount)> requiredList)
+        {
+            // 1. ÀüÃ¼ Àç·á ¼ö·® È®ÀÎ
+            foreach (var req in requiredList)
+            {
+                int have = ResourceList.Where(x => x.ItemKey == req.resourceKey).Sum(x => x.Quantity);
+                if (have < req.amount)
+                    return false;
+            }
+
+            // 2. ½ÇÁ¦·Î Â÷°¨
+            foreach (var req in requiredList)
+            {
+                int remain = req.amount;
+                // ¿©·¯ ½ºÅÃ¿¡¼­ Â÷°¨
+                foreach (var inst in ResourceList.Where(x => x.ItemKey == req.resourceKey && x.Quantity > 0).ToList())
+                {
+                    int consume = Math.Min(remain, inst.Quantity);
+                    inst.Quantity -= consume;
+                    remain -= consume;
+                    if (inst.Quantity <= 0)
+                        RemoveItem(inst);
+                    if (remain <= 0) break;
+                }
+            }
+            OnItemAdded?.Invoke();
+            return true;
+        }
     }
 }
+

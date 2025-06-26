@@ -44,7 +44,6 @@ public static class UIName
     // Popup UI
     public const string InventoryPopup = "InventoryPopup";
     public const string AssistantPopup = "AssistantPopup";
-    public const string MineDetailWindow = "MineDetailWindow";
     public const string Forge_Inventory_Popup = "Forge_Inventory_Popup";
     public const string Forge_AssistantPopup = "Forge_AssistantPopup";
     public const string Forge_Recipe_Popup = "Forge_Recipe_Popup";
