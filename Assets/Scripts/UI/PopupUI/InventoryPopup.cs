@@ -99,11 +99,13 @@ public class InventoryPopup : BaseUI
         if (slotItem.IsEquipped)
         {
             slotItem.UnEquipItem();
+            gameManager.Inventory.UnEquipItem(slotItem);
             btnName.text = "Equip";
         }
         else
         {
             slotItem.EquipItem();
+            gameManager.Inventory.EquipItem(slotItem);
             btnName.text = "UnEquip";
         }
     }
