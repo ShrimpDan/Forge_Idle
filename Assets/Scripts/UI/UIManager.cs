@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
-    public static UIManager Instance { get; private set; }
+    private GameManager gameManager;
 
     [SerializeField] private Transform fixedRoot;
     [SerializeField] private Transform windowRoot;
@@ -16,17 +16,13 @@ public class UIManager : MonoBehaviour
     private Dictionary<string, BaseUI> activeUIs = new();
     private Dictionary<string, GameObject> loadedPrefabs = new();
 
-    private void Awake()
+    public void Init(GameManager gameManager)
     {
-        if (Instance == null) Instance = this;
-        else Destroy(gameObject);
-    }
+        this.gameManager = gameManager;
 
-    private void Start()
-    {
         foreach (var ui in fixedRoot.GetComponentsInChildren<BaseUI>(true))
         {
-            ui.Init(this);
+            ui.Init(gameManager, this);
             ui.gameObject.SetActive(false);
         }
 
@@ -44,21 +40,40 @@ public class UIManager : MonoBehaviour
         {
     if (activeUIs.ContainsKey(uiName))
     {
-        activeUIs[uiName].Open();
-        return activeUIs[uiName] as T;
+        if (activeUIs.ContainsKey(uiName))
+        {
+            activeUIs[uiName].Open();
+            return activeUIs[uiName] as T;
+        }
+
+        GameObject prefab = LoadPrefab(uiName);
+        Transform parent = GetParentByType(prefab.GetComponent<BaseUI>().UIType);
+        GameObject go = Instantiate(prefab, parent);
+
+        T ui = go.GetComponent<T>();
+        ui.Open();
+        ui.Init(gameManager, this);
+        activeUIs.Add(uiName, ui);
+
+        if (ui.UIType == UIType.Popup)
+        {
+            popupBlockRay.enabled = true;
+        }
+
+        return ui;
     }
 
     GameObject prefab = LoadPrefab(uiName);
     if (prefab == null)
     {
-        Debug.LogError($"[UIManager] ÇÁ¸®ÆÕÀ» Ã£Áö ¸øÇß½À´Ï´Ù: Resources/UI/{uiName}");
+        Debug.LogError($"[UIManager] ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ï¿½ß½ï¿½ï¿½Ï´ï¿½: Resources/UI/{uiName}");
         return null;
     }
 
     BaseUI baseUI = prefab.GetComponent<BaseUI>();
     if (baseUI == null)
     {
-        Debug.LogError($"[UIManager] ÇÁ¸®ÆÕ¿¡ BaseUI(¶Ç´Â ÆÄ»ý ÄÄÆ÷³ÍÆ®)°¡ ¾ø½À´Ï´Ù: {uiName}");
+        Debug.LogError($"[UIManager] ï¿½ï¿½ï¿½ï¿½ï¿½Õ¿ï¿½ BaseUI(ï¿½Ç´ï¿½ ï¿½Ä»ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½: {uiName}");
         return null;
     }
 
@@ -68,7 +83,7 @@ public class UIManager : MonoBehaviour
     T ui = go.GetComponent<T>();
     if (ui == null)
     {
-        Debug.LogError($"[UIManager] ÀÎ½ºÅÏ½ºÈ­ÇÑ ÇÁ¸®ÆÕ¿¡¼­ {typeof(T)} ÄÄÆ÷³ÍÆ®¸¦ Ã£Áö ¸øÇß½À´Ï´Ù: {uiName}");
+        Debug.LogError($"[UIManager] ï¿½Î½ï¿½ï¿½Ï½ï¿½È­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Õ¿ï¿½ï¿½ï¿½ {typeof(T)} ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ï¿½ß½ï¿½ï¿½Ï´ï¿½: {uiName}");
         return null;
     }
 

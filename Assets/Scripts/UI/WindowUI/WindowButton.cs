@@ -14,6 +14,6 @@ public class WindowButton : MonoBehaviour
 
     private void OpenWindowUI()
     {
-        UIManager.Instance.OpenUI<BaseUI>(UIName.GetUINameByType(type));
+        GameManager.Instance.UIManager.OpenUI<BaseUI>(UIName.GetUINameByType(type));
     }
 }

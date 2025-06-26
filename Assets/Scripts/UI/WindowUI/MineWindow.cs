@@ -7,14 +7,14 @@ public class MineWindow : BaseUI
     public override UIType UIType => UIType.Window;
 
     [SerializeField] private Button exitBtn;
-    [SerializeField] private Transform mineSlotParent; // ½½·Ô »ý¼º ºÎ¸ð
-    [SerializeField] private GameObject mineSlotPrefab; // MineListSlot ÇÁ¸®ÆÕ
+    [SerializeField] private Transform mineSlotParent; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Î¸ï¿½
+    [SerializeField] private GameObject mineSlotPrefab; // MineListSlot ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
     private List<MineListSlot> mineSlots = new();
 
-    public override void Init(UIManager uIManager)
+    public override void Init(GameManager gameManager, UIManager uIManager)
     {
-        base.Init(uIManager);
+        base.Init(gameManager, uIManager);
 
         exitBtn.onClick.RemoveAllListeners();
         exitBtn.onClick.AddListener(() => uIManager.CloseUI(UIName.MineWindow));
@@ -32,8 +32,8 @@ public class MineWindow : BaseUI
         {
             GameObject go = Instantiate(mineSlotPrefab, mineSlotParent);
             MineListSlot slot = go.GetComponent<MineListSlot>();
-            string mineName = $"±¤»ê {i}";
-            Sprite[] drops = new Sprite[2]; // ½ÇÁ¦ µå¶ø ¾ÆÀÌÅÛ ½ºÇÁ¶óÀÌÆ®·Î Ã¤¿ì±â
+            string mineName = $"ï¿½ï¿½ï¿½ï¿½ {i}";
+            Sprite[] drops = new Sprite[2]; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ Ã¤ï¿½ï¿½ï¿½
             slot.Init(mineName, drops, () => OpenMineDetail(i));
             mineSlots.Add(slot);
         }
@@ -41,7 +41,7 @@ public class MineWindow : BaseUI
 
     private void OpenMineDetail(int mineId)
     {
-        var detailWin = UIManager.Instance.OpenUI<MineDetailWindow>(UIName.MineDetailWindow);
+        var detailWin = uIManager.OpenUI<MineDetailWindow>(UIName.MineDetailWindow);
         detailWin.SetupMine(mineId);
     }
 }

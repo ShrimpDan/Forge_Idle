@@ -9,12 +9,13 @@ public class CraftWeaponWindow : BaseUI
     [Header("UI Elements")]
     [SerializeField] private Button exitBtn;
 
-    [SerializeField] private Transform inputWeaponSlots;   // ½½·ÔµéÀÇ ºÎ¸ð ¿ÀºêÁ§Æ®
-    [SerializeField] private GameObject weaponSlotBtnPrefab; // ½½·Ô ¹öÆ° ÇÁ¸®ÆÕ (Button+Image Æ÷ÇÔ)
+    [SerializeField] private Transform inputWeaponSlots;   // ï¿½ï¿½ï¿½Ôµï¿½ï¿½ï¿½ ï¿½Î¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
+    [SerializeField] private GameObject weaponSlotBtnPrefab; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ° ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (Button+Image ï¿½ï¿½ï¿½ï¿½)
 
     private List<Button> slotButtons = new List<Button>();
     private List<Image> slotIcons = new List<Image>();
     private int slotCount = 6;
+
 
     private ItemData selectedWeapon;
 
@@ -22,7 +23,7 @@ public class CraftWeaponWindow : BaseUI
     {
         exitBtn.onClick.AddListener(Close);
 
-        // ½½·Ô ÀÚµ¿ »ý¼º
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½ ï¿½ï¿½ï¿½ï¿½
         for (int i = 0; i < slotCount; i++)
         {
             GameObject go = Instantiate(weaponSlotBtnPrefab, inputWeaponSlots);
@@ -38,15 +39,17 @@ public class CraftWeaponWindow : BaseUI
 
     private void OnClickInputWeaponSlot(int index)
     {
+
         UIManager.Instance.OpenUI<Forge_AssistantPopup>(UIName.Forge_AssistantPopup);
     }
 
-    // ¹«±â ¼±ÅÃ ½Ã ¾ÆÀÌÄÜ Àû¿ë
+    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     public void OnWeaponSelected(ItemData weapon)
     {
         selectedWeapon = weapon;
         if (slotIcons.Count > 0)
-            slotIcons[0].sprite = LoadIcon(weapon.IconPath); // Ã¹ ¹øÂ° ½½·Ô ¿¹½Ã
+            slotIcons[0].sprite = LoadIcon(weapon.IconPath); // Ã¹ ï¿½ï¿½Â° ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+
     }
 
     private Sprite LoadIcon(string path)
