@@ -17,7 +17,7 @@ public class AssistantSlot : MonoBehaviour
         slotBtn.onClick.RemoveAllListeners();
         slotBtn.onClick.AddListener(OnClickSlot);
 
-        //icon.sprite = Resources.Load<Sprite>(data);
+        //icon.sprite = IconLoader.GetIcon()
 
         if(uIManager == null)
             uIManager = GameManager.Instance.UIManager;

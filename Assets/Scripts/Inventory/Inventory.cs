@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Jang
 {
@@ -9,13 +10,23 @@ namespace Jang
         public List<ItemInstance> WeaponList { get; private set; }
         public List<ItemInstance> GemList { get; private set; }
 
-        public event Action onItemAdded;
+        public Dictionary<int, ItemInstance> EquippedWeaponDict { get; private set; }
+
+        public event Action OnItemAdded;
+        public event Action<int, ItemInstance> OnItemEquipped;
+        public event Action<int, ItemInstance> OnItemUnEquipped;
 
         public InventoryManager()
         {
             ResourceList = new();
             WeaponList = new();
             GemList = new();
+            EquippedWeaponDict = new();
+
+            for (int i = 0; i < 10; i++)
+            {
+                EquippedWeaponDict[i] = null;
+            }
         }
 
         public void AddItem(ItemInstance item, int amount = 1)
@@ -35,7 +46,7 @@ namespace Jang
                     break;
             }
 
-            onItemAdded?.Invoke();
+            OnItemAdded?.Invoke();
         }
 
         private void AddOrMergeItem(List<ItemInstance> list, ItemInstance newItem, int amount)
@@ -83,6 +94,48 @@ namespace Jang
                     ResourceList.Remove(item);
                     break;
             }
+        }
+
+        public void EquipItem(ItemInstance item)
+        {
+            if (item.Data.ItemType != ItemType.Weapon)
+                return;
+
+            if (EquippedWeaponDict.ContainsValue(item))
+                return;
+
+            for (int i = 0; i < EquippedWeaponDict.Count; i++)
+            {
+                if (EquippedWeaponDict[i] == null)
+                {
+                    EquippedWeaponDict[i] = item;
+                    item.EquipItem();
+                    OnItemEquipped?.Invoke(i, item);
+                    return;
+                }
+            }
+
+            // 빈 슬롯 없음
+            UnityEngine.Debug.LogWarning("장착 가능한 슬롯이 없습니다.");
+        }
+
+        public void UnEquipItem(ItemInstance item)
+        {
+            foreach (var key in EquippedWeaponDict.Keys)
+            {
+                if (EquippedWeaponDict[key] == item)
+                {
+                    EquippedWeaponDict[key] = null;
+                    item.UnEquipItem();
+                    OnItemUnEquipped?.Invoke(key, item);
+                    return;
+                }
+            }
+        }
+
+        public List<ItemInstance> GetEquippedWeapons()
+        {
+            return EquippedWeaponDict.Values.ToList();
         }
     }
 }

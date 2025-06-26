@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -16,6 +17,11 @@ public class TraineeManager : MonoBehaviour
     [Header("런타임 관리")]
     private List<TraineeData> runtimeTrainees = new();
     private List<GameObject> activeTrainees = new();
+    private List<TraineeData> currentBatch = new();
+
+    private bool isRecruiting = false;
+    private bool isSkipping = false;
+    private SpecializationType? currentDrawType = null;
 
     private TraineeFactory factory;
 
@@ -24,61 +30,43 @@ public class TraineeManager : MonoBehaviour
         factory = new TraineeFactory(personalityDatabase);
     }
 
-    /// <summary>
-    /// 무작위 특화의 제자를 소환합니다 (랜덤 버튼).
-    /// </summary>
     public void OnClickRecruitRandomTrainee() => RecruitAndSpawnTrainee();
-
-    /// <summary>
-    /// 제작 특화 제자를 소환합니다.
-    /// </summary>
     public void OnClickRecruitCraftingTrainee() => RecruitAndSpawnFixed(SpecializationType.Crafting);
-
-    /// <summary>
-    /// 강화 특화 제자를 소환합니다.
-    /// </summary>
     public void OnClickRecruitEnhancingTrainee() => RecruitAndSpawnFixed(SpecializationType.Enhancing);
-
-    /// <summary>
-    /// 판매 특화 제자를 소환합니다.
-    /// </summary>
     public void OnClickRecruitSellingTrainee() => RecruitAndSpawnFixed(SpecializationType.Selling);
 
-    /// <summary>
-    /// 랜덤 제자 데이터를 생성하고 게임 내에 배치합니다.
-    /// </summary>
+    public void OnClickRecruit10Random() => StartMultipleRecruit(10);
+    public void OnClickRecruit10Crafting() => StartMultipleRecruit(10, SpecializationType.Crafting);
+    public void OnClickRecruit10Enhancing() => StartMultipleRecruit(10, SpecializationType.Enhancing);
+    public void OnClickRecruit10Selling() => StartMultipleRecruit(10, SpecializationType.Selling);
+
     public void RecruitAndSpawnTrainee()
     {
+        if (isRecruiting) return;
+
         TraineeData data = factory.CreateRandomTrainee();
-        if (data == null)
-        {
-            return;
-        }
-        SpawnTrainee(data);
+        if (data == null) return;
+
+        SpawnTrainee(data, 0);
+        ConfirmTrainee(data);
     }
 
-    /// <summary>
-    /// 특정 특화 제자를 생성하고 게임 내에 배치합니다.
-    /// </summary>
     public void RecruitAndSpawnFixed(SpecializationType type)
     {
-        TraineeData data = factory.CreateFixedTrainee(type);
-        if (data == null)
-        {
-            return;
-        }
+        if (isRecruiting) return;
 
-        SpawnTrainee(data);
+        TraineeData data = factory.CreateFixedTrainee(type);
+        if (data == null) return;
+
+        SpawnTrainee(data, 0);
+        ConfirmTrainee(data);
     }
 
-    /// <summary>
-    /// 제자 오브젝트를 씬에 생성하고 초기화합니다.
-    /// </summary>
-    private void SpawnTrainee(TraineeData data)
+    private void SpawnTrainee(TraineeData data, int index)
     {
         if (traineePrefab == null)
         {
-            Debug.LogError("제자 프리팹이 연결되어 있지 않습니다.");
+            Debug.LogError("제자 프리팹이 없습니다.");
             return;
         }
 
@@ -92,32 +80,122 @@ public class TraineeManager : MonoBehaviour
             return;
         }
 
-        controller.Setup(data, factory);
+        controller.Setup(data, factory, index, OnSkipFromIndex, ConfirmTrainee);
         controller.PlaySpawnEffect();
 
-        runtimeTrainees.Add(data);
         activeTrainees.Add(obj);
     }
 
+    public void StartMultipleRecruit(int count, SpecializationType? fixedType = null)
+    {
+        if (isRecruiting) return;
 
-    /// <summary>
-    /// 제자를 삭제하고 관리 목록에서도 제거합니다.
-    /// </summary>
+        isRecruiting = true;
+        currentBatch.Clear();
+        isSkipping = false;
+        currentDrawType = fixedType;
+
+        factory.SetCanRecruit(true);
+        StartCoroutine(RecruitMultipleCoroutine(count));
+    }
+
+    private IEnumerator RecruitMultipleCoroutine(int count)
+    {
+        for (int i = 0; i < count; i++)
+        {
+            if (isSkipping) break;
+
+            TraineeData data = currentDrawType == null
+                ? factory.CreateRandomTrainee()
+                : factory.CreateFixedTrainee(currentDrawType.Value);
+
+            if (data == null) break;
+
+            SpawnTrainee(data, i);
+
+            yield return new WaitUntil(() => factory.CanRecruit);
+        }
+
+        EndRecruiting();
+    }
+
+    private void ConfirmTrainee(TraineeData data)
+    {
+        currentBatch.Add(data);
+        AddAndReindex(data);
+    }
+
+    private void OnSkipFromIndex(int currentIndex)
+    {
+        isSkipping = true;
+
+        foreach (var obj in activeTrainees)
+        {
+            Destroy(obj);
+        }
+        activeTrainees.Clear();
+
+        int alreadyCount = currentBatch.Count;
+        int remaining = Mathf.Max(0, 10 - alreadyCount);
+
+        for (int i = 0; i < remaining; i++)
+        {
+            TraineeData data = currentDrawType == null
+                ? factory.CreateRandomTrainee(bypassRecruitCheck: true)
+                : factory.CreateFixedTrainee(currentDrawType.Value, bypassRecruitCheck: true);
+
+            if (data != null)
+            {
+                currentBatch.Add(data);
+                AddAndReindex(data);
+            }
+        }
+
+        factory.SetCanRecruit(true);
+        StopAllCoroutines();
+        EndRecruiting();
+        DebugPrintAllTrainees();
+    }
+
+    private void AddAndReindex(TraineeData data)
+    {
+        runtimeTrainees.Add(data);
+        var sameType = runtimeTrainees.FindAll(t => t.Specialization == data.Specialization);
+        for (int i = 0; i < sameType.Count; i++)
+            sameType[i].SpecializationIndex = i + 1;
+    }
+
     public void RemoveTrainee(GameObject obj, TraineeData data)
     {
         runtimeTrainees.Remove(data);
         activeTrainees.Remove(obj);
         Destroy(obj);
+
+        var sameType = runtimeTrainees.FindAll(t => t.Specialization == data.Specialization);
+        for (int i = 0; i < sameType.Count; i++)
+            sameType[i].SpecializationIndex = i + 1;
     }
 
-    /// <summary>
-    /// 현재 존재하는 모든 제자 데이터를 반환합니다.
-    /// </summary>
+    public void DebugPrintAllTrainees()
+    {
+        Debug.Log($"[전체 제자 수]: {runtimeTrainees.Count}");
+
+        for (int i = 0; i < runtimeTrainees.Count; i++)
+        {
+            var t = runtimeTrainees[i];
+            Debug.Log($"[{i + 1}] 이름: {t.Name} / 특화: {t.Specialization} / 번호: {t.SpecializationIndex}");
+        }
+    }
+
+    private void EndRecruiting()
+    {
+        isRecruiting = false;
+    }
+
     public List<TraineeData> GetAllTrainees() => runtimeTrainees;
 
-    /// <summary>
-    /// 특정 특화의 제자 목록을 반환합니다.
-    /// </summary>
     public List<TraineeData> GetTraineesByType(SpecializationType type) =>
         runtimeTrainees.FindAll(t => t.Specialization == type);
+
+    public List<TraineeData> GetLastDrawResult() => currentBatch;
 }
