@@ -37,8 +37,6 @@ public class UIManager : MonoBehaviour
     }
 
     public T OpenUI<T>(string uiName) where T : BaseUI
-        {
-    if (activeUIs.ContainsKey(uiName))
     {
         if (activeUIs.ContainsKey(uiName))
         {
@@ -62,65 +60,6 @@ public class UIManager : MonoBehaviour
 
         return ui;
     }
-
-    GameObject prefab = LoadPrefab(uiName);
-    if (prefab == null)
-    {
-        Debug.LogError($"[UIManager] �������� ã�� ���߽��ϴ�: Resources/UI/{uiName}");
-        return null;
-    }
-
-    BaseUI baseUI = prefab.GetComponent<BaseUI>();
-    if (baseUI == null)
-    {
-        Debug.LogError($"[UIManager] �����տ� BaseUI(�Ǵ� �Ļ� ������Ʈ)�� �����ϴ�: {uiName}");
-        return null;
-    }
-
-    Transform parent = GetParentByType(baseUI.UIType);
-    GameObject go = Instantiate(prefab, parent);
-
-    T ui = go.GetComponent<T>();
-    if (ui == null)
-    {
-        Debug.LogError($"[UIManager] �ν��Ͻ�ȭ�� �����տ��� {typeof(T)} ������Ʈ�� ã�� ���߽��ϴ�: {uiName}");
-        return null;
-    }
-
-    ui.Open();
-    ui.Init(this);
-    activeUIs.Add(uiName, ui);
-
-    if (ui.UIType == UIType.Popup)
-    {
-        popupBlockRay.enabled = true;
-    }
-
-    return ui;
-}
-    //{
-    //    if (activeUIs.ContainsKey(uiName))
-    //    {
-    //        activeUIs[uiName].Open();
-    //        return activeUIs[uiName] as T;
-    //    }
-
-    //    GameObject prefab = LoadPrefab(uiName);
-    //    Transform parent = GetParentByType(prefab.GetComponent<BaseUI>().UIType);
-    //    GameObject go = Instantiate(prefab, parent);
-
-    //    T ui = go.GetComponent<T>();
-    //    ui.Open();
-    //    ui.Init(this);
-    //    activeUIs.Add(uiName, ui);
-
-    //    if (ui.UIType == UIType.Popup)
-    //    {
-    //        popupBlockRay.enabled = true;
-    //    }
-
-    //    return ui;
-    //}
 
     public void CloseUI(string uiName)
     {

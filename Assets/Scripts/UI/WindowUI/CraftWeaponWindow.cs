@@ -8,22 +8,30 @@ public class CraftWeaponWindow : BaseUI
 
     [Header("UI Elements")]
     [SerializeField] private Button exitBtn;
-
-    [SerializeField] private Transform inputWeaponSlots;   // ���Ե��� �θ� ������Ʈ
-    [SerializeField] private GameObject weaponSlotBtnPrefab; // ���� ��ư ������ (Button+Image ����)
+    [SerializeField] private Transform inputWeaponSlots;
+    [SerializeField] private GameObject weaponSlotBtnPrefab;
 
     private List<Button> slotButtons = new List<Button>();
     private List<Image> slotIcons = new List<Image>();
     private int slotCount = 6;
+    private int selectedSlotIndex = -1;
+    private UIManager uiManager;
+    private GameManager gameManager;
 
-
-    private ItemData selectedWeapon;
-
-    private void Awake()
+    public override void Init(GameManager gameManager, UIManager uiManager)
     {
+        base.Init(gameManager, uiManager);
+        this.uiManager = uiManager;
+        this.gameManager = gameManager;
+
+        exitBtn.onClick.RemoveAllListeners();
         exitBtn.onClick.AddListener(Close);
 
-        // ���� �ڵ� ����
+        foreach (Transform child in inputWeaponSlots)
+            Destroy(child.gameObject);
+        slotButtons.Clear();
+        slotIcons.Clear();
+
         for (int i = 0; i < slotCount; i++)
         {
             GameObject go = Instantiate(weaponSlotBtnPrefab, inputWeaponSlots);
@@ -33,29 +41,28 @@ public class CraftWeaponWindow : BaseUI
             btn.onClick.AddListener(() => OnClickInputWeaponSlot(idx));
             slotButtons.Add(btn);
             slotIcons.Add(icon);
-
         }
     }
 
     private void OnClickInputWeaponSlot(int index)
     {
+        selectedSlotIndex = index;
+        var popup = uiManager.OpenUI<Forge_Recipe_Popup>(UIName.Forge_Recipe_Popup);
+        popup.Init(gameManager.TestDataManager, uiManager);
+        popup.SetRecipeSelectCallback(OnRecipeSelected);
 
-        UIManager.Instance.OpenUI<Forge_AssistantPopup>(UIName.Forge_AssistantPopup);
+
+        popup.SetForgeAndInventory(gameManager.Forge, gameManager.Inventory);
     }
 
-    // ���� ���� �� ������ ����
-    public void OnWeaponSelected(ItemData weapon)
+    // 레시피 선택시 슬롯에 아이콘 넣기
+    private void OnRecipeSelected(ItemData itemData, CraftingData craftingData)
     {
-        selectedWeapon = weapon;
-        if (slotIcons.Count > 0)
-            slotIcons[0].sprite = LoadIcon(weapon.IconPath); // ù ��° ���� ����
+        if (itemData == null || craftingData == null) return;
+        if (selectedSlotIndex < 0 || selectedSlotIndex >= slotIcons.Count) return;
 
-    }
-
-    private Sprite LoadIcon(string path)
-    {
-        Sprite icon = Resources.Load<Sprite>(path);
-        return icon ? icon : null;
+        // 성공한 경우만 아이콘 넣기
+        slotIcons[selectedSlotIndex].sprite = Resources.Load<Sprite>(itemData.IconPath);
     }
 
     public override void Open()
@@ -63,7 +70,7 @@ public class CraftWeaponWindow : BaseUI
         base.Open();
         foreach (var icon in slotIcons)
             icon.sprite = null;
-        selectedWeapon = null;
+        selectedSlotIndex = -1;
     }
 
     public override void Close()

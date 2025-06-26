@@ -24,7 +24,7 @@ public class Forge_AssistantPopup : BaseUI
 
     private TraineeData assiData;
 
-    public override void Init(GameManager gameManager, UIManager uIManager) // ★ 수정 : override
+    public override void Init(GameManager gameManager, UIManager uIManager)
     {
         base.Init(gameManager, uIManager);
 
@@ -40,29 +40,25 @@ public class Forge_AssistantPopup : BaseUI
         if (iconSlotBtn != null)
         {
             iconSlotBtn.onClick.RemoveAllListeners();
-            iconSlotBtn.onClick.AddListener(OpenInventoryPopup);
+            iconSlotBtn.onClick.AddListener(OpenRecipePopup);
         }
     }
 
-    private void OpenInventoryPopup()
+    // ** 수정: 레시피 팝업을 띄울 때 반드시 Init을 호출하고, Init에서 Open 실행하도록 강제 **
+    private void OpenRecipePopup()
     {
-        // 싱글턴 Instance로 하지 말고, BaseUI의 uIManager 멤버를 씁니다!
-        uIManager.OpenUI<Forge_Inventory_Popup>(UIName.Forge_Inventory_Popup);
+        var popup = uIManager.OpenUI<Forge_Recipe_Popup>(UIName.Forge_Recipe_Popup);
+        popup.Init(gameManager.TestDataManager, uIManager); // Init 내부에서 Open() 실행
     }
 
-    public override void Open()
-    {
-        base.Open();
-    }
+    public override void Open() => base.Open();
 
     public void SetAssistant(TraineeData data)
     {
         assiData = data;
-
         assiName.text = data.Name;
         assiType.text = data.Specialization.ToString();
 
-        // 옵션 텍스트 초기화
         foreach (Transform child in optionRoot)
             Destroy(child.gameObject);
 
@@ -73,7 +69,6 @@ public class Forge_AssistantPopup : BaseUI
             optionText.text = option.AbilityName;
             optionText.text += $"\nx{option.Multiplier}";
         }
-
         SetApplyButton();
     }
 
