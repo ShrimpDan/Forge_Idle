@@ -40,7 +40,7 @@ public class PersonalityAssigner
     private PersonalityData GetRandomPersonality()
     {
         int tier = GetRandomTier();
-        PersonalityTier selectedTier = database.tiers.Find(t => t.TierLevel == tier); 
+        PersonalityTier selectedTier = database.tiers.Find(t => t.TierLevel == tier);
 
         if (selectedTier != null && selectedTier.Personalities.Count > 0)
         {
