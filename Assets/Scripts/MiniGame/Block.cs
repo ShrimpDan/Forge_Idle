@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Block : MonoBehaviour
 {
@@ -11,13 +12,12 @@ public class Block : MonoBehaviour
 
     public int TresurePartIndex { get; private set; } = -1;
 
-    SpriteRenderer spriteRenderer;
 
-
+    [SerializeField] private Image image;
     [SerializeField] private Sprite coveredSprite;
     [SerializeField] private Sprite emptySprite;
-    [SerializeField] private Sprite treasureSprite;
     [SerializeField] private GameObject Effect;
+    private Sprite treasureSprite;
     //보드 메니저 추가할 예정
 
 
@@ -26,14 +26,9 @@ public class Block : MonoBehaviour
     {
         Pos = _pos;
         manager = _manager;
-
-        if (spriteRenderer == null)
-        {
-            spriteRenderer = GetComponent<SpriteRenderer>();
-        }
         isDig = false;
-        spriteRenderer.sprite = coveredSprite;
-
+        image.sprite = coveredSprite;
+        GetComponent<Button>().onClick.AddListener(() => manager.TryDig(this)); //UI로 변경     
     }
 
 
@@ -87,7 +82,7 @@ public class Block : MonoBehaviour
         }
         bool hasTreasure = TreasureId != -1;
 
-        spriteRenderer.sprite = hasTreasure ? treasureSprite : emptySprite; 
+        image.sprite = hasTreasure ? treasureSprite : emptySprite; 
         //있으면 보물사진 없으면 빈거
     }
 

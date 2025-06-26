@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -23,7 +22,7 @@ public class BoardManager : MonoBehaviour
 
     [Header("BlockPrefabs")]
     [SerializeField] private Block blockPrefab;
-    [SerializeField] private Transform boardRoot;
+    [SerializeField] private Transform boardRoot; //GridLayoutGroup 붙여야함
 
 
     private Block[,] board;
@@ -50,8 +49,11 @@ public class BoardManager : MonoBehaviour
         {
             for (int j = 0; j < width; j++)
             {
-                var block = Instantiate(blockPrefab, boardRoot);
-                block.transform.localPosition = new Vector3(j, -i, 0);
+                Block block = Instantiate(blockPrefab, boardRoot);
+
+                int reversedY = height - 1 - i;
+                Vector2Int pos = new Vector2Int(j, reversedY);
+
                 block.Init(new Vector2Int(j, i), this);
                 board[j, i] = block;
             }
@@ -78,21 +80,23 @@ public class BoardManager : MonoBehaviour
                 );
 
             }
+            treasureCoordinate[treasure.id] = new HashSet<Vector2Int>();
 
             for (int i = 0; i < treasure.Shape.Length; i++) //보물 모양넣어주기
             {
                 Vector2Int offset = treasure.Shape[i];
                 Vector2Int pos = anchor + offset;
                 board[pos.x, pos.y].SetTreasure(treasure.id, i, treasure.pratSprite[i]);
+
+            
             }
-            treasureCoordinate[treasure.id] = new HashSet<Vector2Int>();
         }
     }
 
 
     public void TryDig(Block block)
     {
-        if (block.isDig || digCount < 0)
+        if (block.isDig || digCount <= 0)
         {
             return;        
         }
@@ -132,8 +136,9 @@ public class BoardManager : MonoBehaviour
 
     private Block GetBlock(Vector2Int pos)
     {
-        int index = pos.y * width + pos.y;
+        int index = pos.y * width + pos.x; // GetChild 인덱스 계산 수정 (x -> pos.x)
         return boardRoot.GetChild(index).GetComponent<Block>();
+        //나중에 효과 연결할때 사용할까? 
     }
 
     private bool InsideCheck(Vector2Int pos)

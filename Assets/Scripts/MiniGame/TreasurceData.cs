@@ -10,6 +10,4 @@ public class TreasureData : ScriptableObject
     public Vector2Int[] Shape;
     public Sprite[] pratSprite;
     
-
-   
 }
