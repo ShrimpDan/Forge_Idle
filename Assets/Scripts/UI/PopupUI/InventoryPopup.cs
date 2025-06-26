@@ -38,7 +38,7 @@ public class InventoryPopup : BaseUI
     public void SetItemInfo(ItemInstance item)
     {
         slotItem = item;
-        icon.sprite = Resources.Load<Sprite>(item.Data.IconPath);
+        icon.sprite = IconLoader.GetIcon(item.Data.IconPath);
         objectName.text = item.Data.Name;
         value.text = item.Quantity.ToString("F0");
 
@@ -99,11 +99,13 @@ public class InventoryPopup : BaseUI
         if (slotItem.IsEquipped)
         {
             slotItem.UnEquipItem();
+            gameManager.Inventory.UnEquipItem(slotItem);
             btnName.text = "Equip";
         }
         else
         {
             slotItem.EquipItem();
+            gameManager.Inventory.EquipItem(slotItem);
             btnName.text = "UnEquip";
         }
     }
