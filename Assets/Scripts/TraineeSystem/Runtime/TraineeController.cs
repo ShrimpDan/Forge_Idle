@@ -1,24 +1,20 @@
 ﻿using UnityEngine;
 
-
-/// <summary>
-/// TraineeData를 받아 카드 오브젝트를 초기화하고, 
-/// 카드 삭제 및 카드 뒤집기 등 주요 사용자 상호작용을 처리하는 컨트롤러입니다.
-/// </summary>/// <summary>
 public class TraineeController : MonoBehaviour
 {
     private TraineeData data;
-    private TraineeManager manager;
+    private TraineeFactory factory;
 
     [SerializeField] private TraineeCardUI cardUI;
     [SerializeField] private TraineeCardAnimator cardAnimator;
 
     private bool isFlipped = false;
+    private bool isFlipping = false;
 
-    public void Setup(TraineeData traineeData, TraineeManager traineeManager)
+    public void Setup(TraineeData traineeData, TraineeFactory traineeFactory)
     {
         data = traineeData;
-        manager = traineeManager;
+        factory = traineeFactory;
         isFlipped = false;
 
         cardUI?.UpdateUI(data);
@@ -26,33 +22,38 @@ public class TraineeController : MonoBehaviour
 
     public void OnClick_DeleteSelf()
     {
-        manager?.RemoveTrainee(gameObject, data);
+        Destroy(gameObject);
     }
 
     public void OnClick_FrontCard()
     {
         Destroy(gameObject);
-        manager?.SetCanRecruit(true);
+        factory?.SetCanRecruit(true);
     }
 
     public void OnClick_FlipCard()
     {
-        if (isFlipped) return;
+        if (isFlipped || isFlipping) return;
 
-        var oneTimeTrainee = manager?.GenerateOneTimeTrainee();
-        if (oneTimeTrainee == null) return;
+        isFlipping = true;
 
-        Setup(oneTimeTrainee, manager);
-        cardUI?.UpdateUI(oneTimeTrainee);
+        cardUI?.UpdateUI(data);
 
         cardAnimator?.FlipCard(() =>
         {
             isFlipped = true;
+            isFlipping = false;
         });
     }
 
     public void PlaySpawnEffect()
     {
         cardAnimator?.PlaySpawnEffect();
+    }
+
+    public void OnClick_LevelUp()
+    {
+        data.LevelUp();
+        cardUI?.UpdateUI(data);
     }
 }

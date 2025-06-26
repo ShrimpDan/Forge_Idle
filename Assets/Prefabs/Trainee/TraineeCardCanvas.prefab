@@ -13,6 +13,8 @@ GameObject:
   - component: {fileID: 6835186625240731234}
   - component: {fileID: 589347744364067601}
   - component: {fileID: 3379124745559313181}
+  - component: {fileID: 5848470548801468256}
+  - component: {fileID: 4409714980588246043}
   m_Layer: 5
   m_Name: TraineeCardCanvas
   m_TagString: Untagged
@@ -116,10 +118,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce5e80237cb558e4c9cd1615f53db90a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cardUI: {fileID: 5848470548801468256}
+  cardAnimator: {fileID: 4409714980588246043}
+--- !u!114 &5848470548801468256
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 294891640851535095}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0694d4caae6160749a65ad205279d05f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   nameText: {fileID: 2143317877227897126}
   specializationText: {fileID: 2454038322133285601}
   personalityText: {fileID: 2525134261401288828}
   abilitiesText: {fileID: 5223786003950203588}
+--- !u!114 &4409714980588246043
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 294891640851535095}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da6329f5f3f611c42a44859663d541bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   frontSide: {fileID: 2490871802828773915}
   backSide: {fileID: 8620891266630727624}
 --- !u!1 &1689910891716862047
@@ -679,7 +707,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1001179149506190929
 RectTransform:
   m_ObjectHideFlags: 0
@@ -760,9 +788,9 @@ MonoBehaviour:
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_PressedColor: {r: 1, g: 1, b: 1, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_DisabledColor: {r: 1, g: 1, b: 1, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
