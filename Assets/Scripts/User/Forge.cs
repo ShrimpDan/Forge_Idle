@@ -33,12 +33,7 @@ public class Forge : MonoBehaviour
     public int Dia { get; private set; }
 
     // 이벤트 핸들러
-    public ForgeEventHandler Events { get; private set; }
-
-    void Awake()
-    {
-        Events = new ForgeEventHandler();
-    }
+    public ForgeEventHandler Events { get; private set; } = new ForgeEventHandler();
 
     public void Init()
     {
