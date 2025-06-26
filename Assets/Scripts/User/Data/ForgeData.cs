@@ -65,7 +65,7 @@ public static class ForgeDataSaveLoader
             MaxFame = 100,
             CurrentFame = 0,
             TotalFame = 0,
-            Gold = 5000,
+            Gold = 0,
             Dia = 0
         };
     }

@@ -84,6 +84,7 @@ public class RecipeSlot : MonoBehaviour
         foreach (var req in myCraftingData.RequiredResources)
         {
             int ownedAmount = myInventory.ResourceList.Where(x => x.ItemKey == req.ResourceKey).Sum(x => x.Quantity);
+            Debug.Log($"[재료체크] {req.ResourceKey} 필요:{req.Amount}, 보유:{ownedAmount}");
             if (ownedAmount < req.Amount)
             {
                 Debug.Log($"[제작불가] 재료 부족: {req.ResourceKey} 필요: {req.Amount}, 보유: {ownedAmount}");
@@ -95,6 +96,7 @@ public class RecipeSlot : MonoBehaviour
             return;
         }
 
+        // 제작 가능시 콜백 실행
         onSelectCallback?.Invoke();
     }
 }

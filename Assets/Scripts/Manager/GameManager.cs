@@ -32,13 +32,24 @@ public class GameManager : MonoSingleton<GameManager>
     {
         for (int i = 0; i < 20; i++)
         {
-            Debug.Log("Add Item!");
             var itemData = TestDataManager.ItemLoader.GetRandomItem();
-
             ItemInstance item = new ItemInstance();
             item.Data = itemData;
-
             Inventory.AddItem(item);
+        }
+
+        //Fabric 3개 "누적" 추가 (한 번에 추가)
+        var fabricData = TestDataManager.ItemLoader.GetItemByKey("resource_fabric");
+        if (fabricData != null)
+        {
+            ItemInstance fabricItem = new ItemInstance();
+            fabricItem.Data = fabricData;
+            Inventory.AddItem(fabricItem, 3);
+            Debug.Log("<color=lime>[GameManager] Fabric 3개 추가 지급!</color>");
+        }
+        else
+        {
+            Debug.LogWarning("[GameManager] resource_fabric 아이템 데이터가 없습니다!");
         }
     }
 
@@ -48,6 +59,20 @@ public class GameManager : MonoSingleton<GameManager>
         for (int i = 0; i < 20; i++)
         {
             AssistantManager.RecruitAndSpawnTrainee();
+        }
+    }
+
+    [ContextMenu("Add Test Gold (5000)")]
+    public void AddTestGold()
+    {
+        if (Forge != null)
+        {
+            Forge.AddGold(5000);
+            Debug.Log("<color=yellow>[GameManager] 테스트용 골드 5000 지급!</color>");
+        }
+        else
+        {
+            Debug.LogWarning("[GameManager] Forge 인스턴스가 없습니다!");
         }
     }
 }

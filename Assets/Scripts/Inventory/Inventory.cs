@@ -40,6 +40,9 @@ namespace Jang
 
         private void AddOrMergeItem(List<ItemInstance> list, ItemInstance newItem, int amount)
         {
+            // ItemKey를 항상 Data에서 가져와서 세팅
+            newItem.ItemKey = newItem.Data.ItemKey;
+
             var existItem = list.Find(i => i.ItemKey == newItem.ItemKey);
 
             if (existItem != null)
@@ -48,6 +51,7 @@ namespace Jang
             }
             else
             {
+                newItem.Quantity = amount;
                 list.Add(newItem);
             }
         }
