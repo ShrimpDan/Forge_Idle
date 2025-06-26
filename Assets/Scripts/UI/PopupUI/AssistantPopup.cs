@@ -23,9 +23,10 @@ public class AssistantPopup : BaseUI
 
     TraineeData assiData;
 
-    public override void Init(UIManager uIManager)
+    public override void Init(GameManager gameManager, UIManager uIManager)
     {
-        base.Init(uIManager);
+        base.Init(gameManager, uIManager);
+        
         exitButton.onClick.AddListener(() => uIManager.CloseUI(UIName.AssistantPopup));
         applyButton.onClick.AddListener(ApplyAssistant);
         deApplyButton.onClick.AddListener(DeApplyAssistant);
@@ -63,11 +64,13 @@ public class AssistantPopup : BaseUI
     private void ApplyAssistant()
     {
         assiData.IsEquipped = true;
+        SetApplyButton();
     }
 
     private void DeApplyAssistant()
     {
         assiData.IsEquipped = false;
+        SetApplyButton();
     }
 
     private void SetApplyButton()

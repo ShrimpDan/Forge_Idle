@@ -4,10 +4,12 @@ public abstract class BaseUI : MonoBehaviour
 {
     public abstract UIType UIType { get; }
     protected UIManager uIManager;
+    protected GameManager gameManager;
 
-    public virtual void Init(UIManager uIManager)
+    public virtual void Init(GameManager gameManager, UIManager uIManager)
     {
         this.uIManager = uIManager;
+        this.gameManager = gameManager;
     }
 
     public virtual void Open() => gameObject.SetActive(true);

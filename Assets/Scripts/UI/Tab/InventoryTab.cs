@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class InventoryTab : MonoBehaviour
+public class InventoryTab : BaseTab
 {
     private Jang.InventoryManager inventory;
 
@@ -23,8 +23,10 @@ public class InventoryTab : MonoBehaviour
     private Queue<GameObject> pooledSlots = new Queue<GameObject>();
     private List<GameObject> activeSlots = new List<GameObject>();
 
-    public void Start()
+    public override void Init(GameManager gameManager, UIManager uIManager)
     {
+        base.Init(gameManager, uIManager);
+
         for (int i = 0; i < tabButtons.Length; i++)
         {
             int index = i;
@@ -32,30 +34,24 @@ public class InventoryTab : MonoBehaviour
         }
 
         SwitchTab(0);
+
+        inventory = gameManager.Inventory;
+        RefreshSlots();
     }
 
-    void OnEnable()
+    public override void OpenTab()
     {
-        if (inventory == null)
-        {
-            inventory = GameManager.Instance.Inventory;
-        }
-        
+        base.OpenTab();
+
         inventory.onItemAdded += Refresh;
-
         RefreshSlots();
     }
 
-    void OnDisable()
+    public override void CloseTab()
     {
-        if (inventory == null) return;
-        inventory.onItemAdded -= Refresh;       
-    }
+        base.CloseTab();
 
-    public void Init(Jang.InventoryManager inventory)
-    {
-        this.inventory = inventory;
-        RefreshSlots();
+        inventory.onItemAdded -= Refresh;
     }
 
     private void SwitchTab(int index)

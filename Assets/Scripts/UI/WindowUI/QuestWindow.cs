@@ -6,9 +6,9 @@ public class QuestWindow : BaseUI
     public override UIType UIType => UIType.Window;
     [SerializeField] Button exitBtn;
 
-    public override void Init(UIManager uIManager)
+    public override void Init(GameManager gameManager, UIManager uIManager)
     {
-        base.Init(uIManager);
+        base.Init(gameManager, uIManager);
         exitBtn.onClick.AddListener(() => uIManager.CloseUI(UIName.QuestWindow));
     }
 
