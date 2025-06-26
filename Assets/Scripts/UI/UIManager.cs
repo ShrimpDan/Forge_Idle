@@ -12,6 +12,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Transform popupRoot;
 
     private Image popupBlockRay;
+    private Image windowBlockRay;
 
     private Dictionary<string, BaseUI> activeUIs = new();
     private Dictionary<string, GameObject> loadedPrefabs = new();
@@ -34,6 +35,7 @@ public class UIManager : MonoBehaviour
         }
 
         popupBlockRay = popupRoot.GetComponent<Image>();
+        windowBlockRay = windowRoot.GetComponent<Image>();
     }
 
     public T OpenUI<T>(string uiName) where T : BaseUI
@@ -57,7 +59,11 @@ public class UIManager : MonoBehaviour
         {
             popupBlockRay.enabled = true;
         }
-
+        else if (ui.UIType == UIType.Window)
+        {
+            windowBlockRay.enabled = true;
+        }
+        
         return ui;
     }
 
@@ -75,6 +81,10 @@ public class UIManager : MonoBehaviour
             if (ui.UIType == UIType.Popup)
             {
                 popupBlockRay.enabled = false;
+            }
+            else if (ui.UIType == UIType.Window)
+            {
+                windowBlockRay.enabled = false;
             }
         }
     }

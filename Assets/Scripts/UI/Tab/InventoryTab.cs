@@ -20,6 +20,9 @@ public class InventoryTab : BaseTab
     [SerializeField] Transform GemRoot;
     [SerializeField] Transform ResourceRoot;
 
+    [Header("Equipped Weapon Slots")]
+    [SerializeField] InvenEquippedSlot[] invenEquippedSlots;
+
     private Queue<GameObject> pooledSlots = new Queue<GameObject>();
     private List<GameObject> activeSlots = new List<GameObject>();
 
@@ -43,7 +46,9 @@ public class InventoryTab : BaseTab
     {
         base.OpenTab();
 
-        inventory.onItemAdded += Refresh;
+        inventory.OnItemAdded += Refresh;
+        inventory.OnItemEquipped += OnItemEquipped;
+        inventory.OnItemUnEquipped += OnItemUnEquipped;
         RefreshSlots();
     }
 
@@ -51,7 +56,9 @@ public class InventoryTab : BaseTab
     {
         base.CloseTab();
 
-        inventory.onItemAdded -= Refresh;
+        inventory.OnItemAdded -= Refresh;
+        inventory.OnItemEquipped -= OnItemEquipped;
+        inventory.OnItemUnEquipped -= OnItemUnEquipped;
     }
 
     private void SwitchTab(int index)
@@ -108,5 +115,30 @@ public class InventoryTab : BaseTab
             return pooledSlots.Dequeue();
 
         return Instantiate(slotPrefab);
+    }
+
+    private void OnItemEquipped(int slotIndex, ItemInstance item)
+    {
+        UpdateSlot(item, true);
+        invenEquippedSlots[slotIndex].Init(item);
+    }
+
+    private void OnItemUnEquipped(int slotIndex, ItemInstance item)
+    {
+        UpdateSlot(item, false);
+        invenEquippedSlots[slotIndex].UnEquipItem();
+    }
+
+    private void UpdateSlot(ItemInstance item, bool isEquipped)
+    {
+        foreach (var obj in activeSlots)
+        {
+            InventorySlot slot = obj.GetComponent<InventorySlot>();
+            if (slot.SlotItem == item)
+            {
+                slot.SetEquipped(isEquipped);
+                break;
+            }
+        }
     }
 }
