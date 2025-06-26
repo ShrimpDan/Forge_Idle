@@ -27,7 +27,7 @@ public class TraineeManager : MonoBehaviour
     /// <summary>
     /// 무작위 특화의 제자를 소환합니다 (랜덤 버튼).
     /// </summary>
-    public void OnClickRecruitRandomTrainee() => RecruitAndSpawnRandom();
+    public void OnClickRecruitRandomTrainee() => RecruitAndSpawnTrainee();
 
     /// <summary>
     /// 제작 특화 제자를 소환합니다.
@@ -47,7 +47,7 @@ public class TraineeManager : MonoBehaviour
     /// <summary>
     /// 랜덤 제자 데이터를 생성하고 게임 내에 배치합니다.
     /// </summary>
-    public void RecruitAndSpawnRandom()
+    public void RecruitAndSpawnTrainee()
     {
         TraineeData data = factory.CreateRandomTrainee();
         if (data == null)
