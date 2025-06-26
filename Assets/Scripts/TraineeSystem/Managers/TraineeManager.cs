@@ -1,15 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
+using DG.Tweening;
 
 /// <summary>
 /// 제자를 생성하고, 게임 내에 소환하며, 관련 데이터를 관리하는 핵심 매니저 클래스입니다.
-/// 제자 생성 요청을 처리하고, 씬에 오브젝트로 배치합니다.
+/// 제자 생성 요청을 처리하고, 씬에 오브젝트로 배치하며 UI 연출도 포함합니다.
 /// </summary>
 public class TraineeManager : MonoBehaviour
 {
     [Header("제자 소환 설정")]
     [SerializeField] private GameObject traineePrefab;
+    [SerializeField] private RectTransform cardRoot;
 
     [Header("성격 데이터베이스")]
     [SerializeField] private PersonalityTierDatabase personalityDatabase;
@@ -17,6 +20,7 @@ public class TraineeManager : MonoBehaviour
     [Header("런타임 관리")]
     private List<TraineeData> runtimeTrainees = new();
     private List<GameObject> activeTrainees = new();
+    private List<TraineeController> activeControllers = new();
     private List<TraineeData> currentBatch = new();
 
     private bool isRecruiting = false;
@@ -47,7 +51,8 @@ public class TraineeManager : MonoBehaviour
         TraineeData data = factory.CreateRandomTrainee();
         if (data == null) return;
 
-        SpawnTrainee(data, 0);
+        Vector2 position = CalculateCardPositions(1)[0];
+        SpawnTrainee(data, 0, position);
         ConfirmTrainee(data);
     }
 
@@ -58,32 +63,9 @@ public class TraineeManager : MonoBehaviour
         TraineeData data = factory.CreateFixedTrainee(type);
         if (data == null) return;
 
-        SpawnTrainee(data, 0);
+        Vector2 position = CalculateCardPositions(1)[0];
+        SpawnTrainee(data, 0, position);
         ConfirmTrainee(data);
-    }
-
-    private void SpawnTrainee(TraineeData data, int index)
-    {
-        if (traineePrefab == null)
-        {
-            Debug.LogError("제자 프리팹이 없습니다.");
-            return;
-        }
-
-        GameObject obj = Instantiate(traineePrefab);
-        TraineeController controller = obj.GetComponent<TraineeController>();
-
-        if (controller == null)
-        {
-            Debug.LogError("TraineeController가 없습니다.");
-            Destroy(obj);
-            return;
-        }
-
-        controller.Setup(data, factory, index, OnSkipFromIndex, ConfirmTrainee);
-        controller.PlaySpawnEffect();
-
-        activeTrainees.Add(obj);
     }
 
     public void StartMultipleRecruit(int count, SpecializationType? fixedType = null)
@@ -101,6 +83,8 @@ public class TraineeManager : MonoBehaviour
 
     private IEnumerator RecruitMultipleCoroutine(int count)
     {
+        List<Vector2> positions = CalculateCardPositions(count);
+
         for (int i = 0; i < count; i++)
         {
             if (isSkipping) break;
@@ -111,12 +95,46 @@ public class TraineeManager : MonoBehaviour
 
             if (data == null) break;
 
-            SpawnTrainee(data, i);
-
+            SpawnTrainee(data, i, positions[i]);
             yield return new WaitUntil(() => factory.CanRecruit);
         }
 
         EndRecruiting();
+    }
+
+    private void SpawnTrainee(TraineeData data, int index, Vector2 targetPosition)
+    {
+        GameObject obj = Instantiate(traineePrefab, cardRoot);
+        RectTransform rt = obj.GetComponent<RectTransform>();
+        rt.anchoredPosition = new Vector2(0, 412);
+
+        TraineeController controller = obj.GetComponent<TraineeController>();
+        controller.Setup(data, factory, OnCardClicked);
+
+        activeTrainees.Add(obj);
+        activeControllers.Add(controller);
+
+        rt.DOAnchorPos(targetPosition, 0.5f).SetEase(Ease.OutBack).SetDelay(index * 0.05f);
+    }
+
+    private List<Vector2> CalculateCardPositions(int count)
+    {
+        List<Vector2> positions = new();
+        float spacingX = 212f;
+        float startX = -spacingX * 2;
+        float yTop = 707f;
+        float yBottom = 412f;
+
+        for (int i = 0; i < count; i++)
+        {
+            int row = i < 5 ? 0 : 1;
+            int col = i % 5;
+            float x = startX + col * spacingX;
+            float y = row == 0 ? yTop : yBottom;
+            positions.Add(new Vector2(x, y));
+        }
+
+        return positions;
     }
 
     private void ConfirmTrainee(TraineeData data)
@@ -130,10 +148,10 @@ public class TraineeManager : MonoBehaviour
         isSkipping = true;
 
         foreach (var obj in activeTrainees)
-        {
             Destroy(obj);
-        }
+
         activeTrainees.Clear();
+        activeControllers.Clear();
 
         int alreadyCount = currentBatch.Count;
         int remaining = Mathf.Max(0, 10 - alreadyCount);
@@ -165,6 +183,37 @@ public class TraineeManager : MonoBehaviour
             sameType[i].SpecializationIndex = i + 1;
     }
 
+    private void OnCardClicked(TraineeController ctrl)
+    {
+        if (!ctrl.IsFlipped)
+            ctrl.FlipImmediately();
+    }
+
+    public void OnClick_FlipAllCards()
+    {
+        foreach (var ctrl in activeControllers)
+        {
+            if (!ctrl.IsFlipped)
+                ctrl.FlipImmediately();
+        }
+    }
+
+    public void OnClick_ConfirmDraw()
+    {
+        if (!activeControllers.All(c => c.IsFlipped))
+        {
+            Debug.Log("모든 카드가 열려야 종료할 수 있습니다.");
+            return;
+        }
+
+        foreach (var obj in activeTrainees)
+            Destroy(obj);
+
+        activeTrainees.Clear();
+        activeControllers.Clear();
+        EndRecruiting();
+    }
+
     public void RemoveTrainee(GameObject obj, TraineeData data)
     {
         runtimeTrainees.Remove(data);
@@ -179,7 +228,6 @@ public class TraineeManager : MonoBehaviour
     public void DebugPrintAllTrainees()
     {
         Debug.Log($"[전체 제자 수]: {runtimeTrainees.Count}");
-
         for (int i = 0; i < runtimeTrainees.Count; i++)
         {
             var t = runtimeTrainees[i];

@@ -1,39 +1,52 @@
-﻿using System.Linq;
-using TMPro;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
-/// TraineeData를 기반으로 UI 텍스트 요소(Name, 능력치 등)를 갱신하는 역할을 담당합니다.
-/// UI 요소에 직접 접근하여 데이터를 시각적으로 표시합니다.
+/// TraineeData를 기반으로 제자 카드의 이미지 요소를 갱신합니다.
 /// </summary>
 public class TraineeCardUI : MonoBehaviour
 {
-    [SerializeField] private TMP_Text nameText;
-    [SerializeField] private TMP_Text specializationText;
-    [SerializeField] private TMP_Text personalityText;
-    [SerializeField] private TMP_Text abilitiesText;
+    [Header("아이콘 UI")]
+    [SerializeField] private Image portraitImage;
+    [SerializeField] private Image tierBadgeImage;
+    [SerializeField] private Image typeIconImage;
+
+    [Header("아이콘 매핑")]
+    [SerializeField] private Sprite[] tierIcons;
+    [SerializeField] private Sprite craftingIcon;
+    [SerializeField] private Sprite enhancingIcon;
+    [SerializeField] private Sprite sellingIcon;
+
+    [Header("카드 앞 or 뒤 이미지")]
+    [SerializeField] private GameObject frontRoot;
+    [SerializeField] private GameObject backRoot;
 
     public void UpdateUI(TraineeData data)
     {
-        nameText.text = data.Name;
-        specializationText.text = GetSpecializationKorean(data.Specialization);
-        personalityText.text = $"{data.Personality.PersonalityName} (티어 {data.Personality.Tier})";
-        abilitiesText.text = GetFormattedAbilities(data);
-    }
+        int tierIndex = data.Personality.Tier - 1;
+        if (tierIndex >= 0 && tierIndex < tierIcons.Length)
+            tierBadgeImage.sprite = tierIcons[tierIndex];
 
-    private string GetFormattedAbilities(TraineeData data)
-    {
-        return string.Join("\n", data.Multipliers.Select(m => $"- {m.AbilityName} x{m.Multiplier:F2}"));
-    }
-
-    private string GetSpecializationKorean(SpecializationType spec)
-    {
-        return spec switch
+        typeIconImage.sprite = data.Specialization switch
         {
-            SpecializationType.Crafting => "제작 특화",
-            SpecializationType.Enhancing => "강화 특화",
-            SpecializationType.Selling => "판매 특화",
-            _ => "알 수 없음"
+            SpecializationType.Crafting => craftingIcon,
+            SpecializationType.Enhancing => enhancingIcon,
+            SpecializationType.Selling => sellingIcon,
+            _ => null
         };
+
+        // TODO: 캐릭터 이미지 설정
+    }
+
+    public void SetBack()
+    {
+        frontRoot?.SetActive(false);
+        backRoot?.SetActive(true);
+    }
+
+    public void SetFront()
+    {
+        frontRoot?.SetActive(true);
+        backRoot?.SetActive(false);
     }
 }
