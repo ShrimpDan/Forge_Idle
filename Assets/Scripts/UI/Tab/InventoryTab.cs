@@ -44,6 +44,7 @@ public class InventoryTab : BaseTab
         base.OpenTab();
 
         inventory.onItemAdded += Refresh;
+        RefreshSlots();
     }
 
     public override void CloseTab()

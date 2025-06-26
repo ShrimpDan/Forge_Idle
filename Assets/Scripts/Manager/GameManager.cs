@@ -22,7 +22,7 @@ public class GameManager : MonoSingleton<GameManager>
 
         if (UIManager)
             UIManager.Init(this);
-        
+
         if (Forge)
             Forge.Init();
     }
@@ -39,6 +39,15 @@ public class GameManager : MonoSingleton<GameManager>
             item.Data = itemData;
 
             Inventory.AddItem(item);
+        }
+    }
+
+    [ContextMenu("Get Random Assistant")]
+    public void GetRandomAssi()
+    {
+        for (int i = 0; i < 20; i++)
+        {
+            AssistantManager.RecruitAndSpawnTrainee();
         }
     }
 }
