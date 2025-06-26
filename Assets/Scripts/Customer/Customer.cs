@@ -32,7 +32,10 @@ public abstract class Customer : MonoBehaviour
     public int BuyCount => data.buyCount;
     public float Frequency => data.frequency;
     public float BuyingTime => data.buyingTime;
-    
+
+    public CustomerEventHandler CustomerEvent;
+
+    public int Gold => gold;
 
     [SerializeField] protected BuyPoint buyPoint;
 
@@ -41,9 +44,12 @@ public abstract class Customer : MonoBehaviour
     [Header("Customerinfo")]
     [SerializeField] CustomerData data;
     [SerializeField] protected Transform[] moveWayPoint;
+    [SerializeField] protected int gold;
 
 
-   
+     
+
+
     
 
     private bool isMoving = false;
@@ -57,6 +63,7 @@ public abstract class Customer : MonoBehaviour
     protected virtual void Awake()
     {
         rigid2D = GetComponent<Rigidbody2D>();
+        CustomerEvent = new CustomerEventHandler();
     }
 
     protected virtual void Start()
@@ -107,6 +114,8 @@ public abstract class Customer : MonoBehaviour
     {
         state = CustomerState.WaitintTurn;
         yield return new WaitUntil(() => buyPoint.IsCustomFirst(this));
+
+        CustomerEvent?.RaiseCustomerArrived(this.Job); //이벤트 연결
         yield return new WaitForSeconds(data.buyingTime);
         
     }

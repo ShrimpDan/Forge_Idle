@@ -4,6 +4,8 @@ using UnityEngine.UI;
 
 public class MainUI : BaseUI
 {
+    private Forge forge;
+
     [Header("Tab Buttons")]
     [SerializeField] private Button[] tabButtons;
     [SerializeField] private Vector3 selectedScale;
@@ -16,7 +18,7 @@ public class MainUI : BaseUI
 
     [Header("Top Info")]
     [SerializeField] private TextMeshProUGUI levelText;
-    [SerializeField] private Image levelFill;
+    [SerializeField] private Image fameFill;
     [SerializeField] private TextMeshProUGUI fameText;
     [SerializeField] private TextMeshProUGUI forgeNameText;
     [SerializeField] private TextMeshProUGUI goldText;
@@ -24,28 +26,49 @@ public class MainUI : BaseUI
 
     public override UIType UIType => UIType.Fixed;
 
-    public override void Init(UIManager uIManager)
+    public override void Init(GameManager gameManager, UIManager uIManager)
     {
-        base.Init(uIManager);
+        base.Init(gameManager, uIManager);
+
+        forge = gameManager.Forge;
+
+        foreach (var tab in tabPanels)
+        {
+            if (tab.TryGetComponent(out BaseTab tabUI))
+            {
+                tabUI.Init(gameManager, uIManager);
+            }
+        }
 
         for (int i = 0; i < tabButtons.Length; i++)
         {
             int index = i;
             tabButtons[i].onClick.AddListener(() => SwitchTab(index));
-            
+
         }
 
         SwitchTab(2);
+        OnEnable();
     }
 
-    public override void Open()
+    void OnEnable()
     {
-        base.Open();
+        if (forge == null) return;
+
+        forge.Events.OnGoldChanged += SetGoldUI;
+        forge.Events.OnDiaChanged += SetDiaUI;
+        forge.Events.OnLevelChanged += SetLevelUI;
+        forge.Events.OnFameChanged += SetFameBarUI;
+        forge.Events.OnTotalFameChanged += SetTotalFameUI;
     }
 
-    public override void Close()
+    void OnDisable()
     {
-        base.Close();
+        forge.Events.OnGoldChanged -= SetGoldUI;
+        forge.Events.OnDiaChanged -= SetDiaUI;
+        forge.Events.OnLevelChanged -= SetLevelUI;
+        forge.Events.OnFameChanged -= SetFameBarUI;
+        forge.Events.OnTotalFameChanged -= SetTotalFameUI;
     }
 
     private void SwitchTab(int index)
@@ -54,12 +77,47 @@ public class MainUI : BaseUI
         {
             bool isSelected = i == index;
 
-            tabPanels[i].SetActive(isSelected);
+            if (tabPanels[i].TryGetComponent(out BaseTab tabUI))
+            {
+                if (isSelected)
+                    tabUI.OpenTab();
+                else
+                    tabUI.CloseTab();
+            }
+            else
+            {
+                tabPanels[i].SetActive(isSelected);
+            }
 
             tabButtons[i].transform.localScale = isSelected ? selectedScale : defaultScale;
             tabButtons[i].image.color = isSelected ? selectedColor : defaultColor;
         }
 
         uIManager.CloseAllWindowUI();
+    }
+
+    private void SetGoldUI(int gold)
+    {
+        goldText.text = gold.ToString();
+    }
+
+    private void SetDiaUI(int dia)
+    {
+        diaText.text = dia.ToString();
+    }
+
+    private void SetLevelUI(int level)
+    {
+        levelText.text = level.ToString();
+    }
+
+    private void SetFameBarUI(int curFame, int maxFame)
+    {
+        fameFill.fillAmount = (float)curFame / maxFame;
+    }
+
+    private void SetTotalFameUI(int totalFame)
+    {
+        fameText.text = $"Fame: {totalFame}";
     }
 }

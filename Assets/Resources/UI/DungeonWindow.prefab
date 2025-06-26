@@ -382,11 +382,11 @@ RectTransform:
   - {fileID: 4441427256988264354}
   m_Father: {fileID: 3003621910563571427}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 1}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 20, y: 30}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 0}
+  m_AnchoredPosition: {x: 0, y: -150}
   m_SizeDelta: {x: 130, y: 130}
-  m_Pivot: {x: 1, y: 1}
+  m_Pivot: {x: 0.5, y: 0}
 --- !u!222 &1117760068443201208
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -849,10 +849,10 @@ RectTransform:
   - {fileID: 351402388989479572}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 50}
-  m_SizeDelta: {x: -160, y: -500}
+  m_SizeDelta: {x: 780, y: 1420}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8494344756678960809
 CanvasRenderer:
@@ -993,13 +993,48 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1979611486429242573, guid: 212dbd79ab27cfc46a57c4ec5c52af06, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1979611486429242573, guid: 212dbd79ab27cfc46a57c4ec5c52af06, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1979611486429242573, guid: 212dbd79ab27cfc46a57c4ec5c52af06, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1979611486429242573, guid: 212dbd79ab27cfc46a57c4ec5c52af06, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2979501367193888669, guid: 212dbd79ab27cfc46a57c4ec5c52af06, type: 3}
       propertyPath: m_Name
       value: Dungeon_Slot
       objectReference: {fileID: 0}
+    - target: {fileID: 4755053142210573414, guid: 212dbd79ab27cfc46a57c4ec5c52af06, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4755053142210573414, guid: 212dbd79ab27cfc46a57c4ec5c52af06, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4755053142210573414, guid: 212dbd79ab27cfc46a57c4ec5c52af06, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4755053142210573414, guid: 212dbd79ab27cfc46a57c4ec5c52af06, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4755053142210573414, guid: 212dbd79ab27cfc46a57c4ec5c52af06, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects:
-    - {fileID: 5868815511947817644, guid: 212dbd79ab27cfc46a57c4ec5c52af06, type: 3}
+    m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 212dbd79ab27cfc46a57c4ec5c52af06, type: 3}
@@ -1096,9 +1131,45 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1979611486429242573, guid: 212dbd79ab27cfc46a57c4ec5c52af06, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1979611486429242573, guid: 212dbd79ab27cfc46a57c4ec5c52af06, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1979611486429242573, guid: 212dbd79ab27cfc46a57c4ec5c52af06, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1979611486429242573, guid: 212dbd79ab27cfc46a57c4ec5c52af06, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2979501367193888669, guid: 212dbd79ab27cfc46a57c4ec5c52af06, type: 3}
       propertyPath: m_Name
       value: Dungeon_Slot (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4755053142210573414, guid: 212dbd79ab27cfc46a57c4ec5c52af06, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4755053142210573414, guid: 212dbd79ab27cfc46a57c4ec5c52af06, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4755053142210573414, guid: 212dbd79ab27cfc46a57c4ec5c52af06, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4755053142210573414, guid: 212dbd79ab27cfc46a57c4ec5c52af06, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4755053142210573414, guid: 212dbd79ab27cfc46a57c4ec5c52af06, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

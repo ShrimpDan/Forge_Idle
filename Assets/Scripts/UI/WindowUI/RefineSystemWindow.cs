@@ -7,7 +7,7 @@ public class RefineSystemWindow : BaseUI
 
     [Header("UI Elements")]
     [SerializeField] private Button exitButton;
-    [SerializeField] private Button materialSlotButton; // ºó Àç·á ½½·Ô ¹öÆ°
+    [SerializeField] private Button materialSlotButton; // ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ°
 
     private void Awake()
     {
@@ -17,15 +17,15 @@ public class RefineSystemWindow : BaseUI
 
     private void OnClickMaterialSlot()
     {
-        // ÀÎº¥Åä¸® ÆË¾÷À» ¿¬´Ù (ÆÀ¿ø ÄÚµå¿Í È£È¯)
-        UIManager.Instance.OpenUI<InventoryPopup>(UIName.InventoryPopup);
-        // ½ÇÁ¦ ¾ÆÀÌÅÛ ¼±ÅÃ ¹× ÈÄÃ³¸®´Â ÆÀ¿ø ·ÎÁ÷¿¡ ¸ÂÃã (¿©±â¼­´Â ÆË¾÷¸¸ ¶ç¿ò)
+        // ï¿½Îºï¿½ï¿½ä¸® ï¿½Ë¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½ï¿½ È£È¯)
+        uIManager.OpenUI<InventoryPopup>(UIName.InventoryPopup);
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½Ã³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½â¼­ï¿½ï¿½ ï¿½Ë¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½)
     }
 
     public override void Open()
     {
         base.Open();
-        // ½½·Ô UI ÃÊ±âÈ­ µî Ãß°¡ ÀÛ¾÷ ÇÊ¿ä½Ã ¿©±â¿¡ ÀÛ¼º
+        // ï¿½ï¿½ï¿½ï¿½ UI ï¿½Ê±ï¿½È­ ï¿½ï¿½ ï¿½ß°ï¿½ ï¿½Û¾ï¿½ ï¿½Ê¿ï¿½ï¿½ ï¿½ï¿½ï¿½â¿¡ ï¿½Û¼ï¿½
     }
 
     public override void Close()

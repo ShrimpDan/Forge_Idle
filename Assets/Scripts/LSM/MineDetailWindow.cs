@@ -12,9 +12,9 @@ public class MineDetailWindow : BaseUI
 
     private List<MineralSlot> mineralSlots = new();
 
-    public override void Init(UIManager uIManager)
+    public override void Init(GameManager gameManager, UIManager uIManager)
     {
-        base.Init(uIManager);
+        base.Init(gameManager, uIManager);
 
         exitBtn.onClick.RemoveAllListeners();
         exitBtn.onClick.AddListener(() => uIManager.CloseUI(UIName.MineDetailWindow));
@@ -22,7 +22,7 @@ public class MineDetailWindow : BaseUI
 
     public void SetupMine(int mineId)
     {
-        // ¿¹½Ã: ±¤¹° 5°³ »ý¼º
+        // ï¿½ï¿½ï¿½ï¿½: ï¿½ï¿½ï¿½ï¿½ 5ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         foreach (Transform child in mineralSlotParent)
             Destroy(child.gameObject);
         mineralSlots.Clear();
@@ -31,17 +31,17 @@ public class MineDetailWindow : BaseUI
         {
             GameObject go = Instantiate(mineralSlotPrefab, mineralSlotParent);
             MineralSlot slot = go.GetComponent<MineralSlot>();
-            // ½ÇÁ¦ ±¤¹°¸í/¾ÆÀÌÄÜ/Á¶¼öÁ¤º¸·Î ´ëÃ¼
-            slot.Init($"±¤¹°{i + 1}", null, () => OpenAssistantPopup(i));
+            // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼
+            slot.Init($"ï¿½ï¿½ï¿½ï¿½{i + 1}", null, () => OpenAssistantPopup(i));
             mineralSlots.Add(slot);
         }
     }
 
     private void OpenAssistantPopup(int mineralIndex)
     {
-        // ÀÎº¥Åä¸®/Á¶¼ö ÆË¾÷ UI ¿¬°á (ÃßÈÄ ±¸Çö)
-        Debug.Log($"Á¶¼ö ¹èÄ¡ ÆË¾÷: {mineralIndex}");
-        UIManager.Instance.OpenUI<InventoryPopup>(UIName.InventoryPopup);
-        // ¿ì¼± ÀÎº¥Åä¸® ÆË¾÷ ¿°
+        // ï¿½Îºï¿½ï¿½ä¸®/ï¿½ï¿½ï¿½ï¿½ ï¿½Ë¾ï¿½ UI ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
+        Debug.Log($"ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ ï¿½Ë¾ï¿½: {mineralIndex}");
+        uIManager.OpenUI<InventoryPopup>(UIName.InventoryPopup);
+        // ï¿½ì¼± ï¿½Îºï¿½ï¿½ä¸® ï¿½Ë¾ï¿½ ï¿½ï¿½
     }
 }
