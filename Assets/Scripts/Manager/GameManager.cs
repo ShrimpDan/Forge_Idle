@@ -20,11 +20,11 @@ public class GameManager : MonoSingleton<GameManager>
 
         Forge = FindObjectOfType<Forge>();
 
-        if (Forge)
-            Forge.Init();
-
         if (UIManager)
             UIManager.Init(this);
+
+        if (Forge)
+            Forge.Init();
     }
 
     [ContextMenu("Get Random Item")]
