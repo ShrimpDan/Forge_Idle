@@ -38,7 +38,7 @@ public class InventoryPopup : BaseUI
     public void SetItemInfo(ItemInstance item)
     {
         slotItem = item;
-        icon.sprite = Resources.Load<Sprite>(item.Data.IconPath);
+        icon.sprite = IconLoader.GetIcon(item.Data.IconPath);
         objectName.text = item.Data.Name;
         value.text = item.Quantity.ToString("F0");
 

@@ -23,8 +23,12 @@ public class InventorySlot : MonoBehaviour
 
         SlotItem = item;
 
-        icon.sprite = Resources.Load<Sprite>(SlotItem.Data.IconPath);
-        countText.text = SlotItem.Quantity.ToString();
+        icon.sprite = IconLoader.GetIcon(SlotItem.Data.IconPath);
+
+        if (item.Data.ItemType == ItemType.Weapon)
+            countText.text = item.Data.Name;
+        else
+            countText.text = SlotItem.Quantity.ToString();
 
         if (uIManager == null)
             uIManager = GameManager.Instance.UIManager;

@@ -152,12 +152,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c09a3870cd3b7014aa7dcbb2624c6315, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tier1EffectPrefab: {fileID: 873272337}
-  tier2EffectPrefab: {fileID: 904840644}
-  tier3EffectPrefab: {fileID: 453856236}
-  tier4EffectPrefab: {fileID: 1564165743}
-  tier5EffectPrefab: {fileID: 1133006157}
-  summonPoint: {fileID: 1493356637291815060, guid: 0720cc3f50895dc4e924f1b0aeab3dff, type: 3}
 --- !u!4 &52522372
 Transform:
   m_ObjectHideFlags: 0
@@ -182,6 +176,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 247626522}
+  - component: {fileID: 247626524}
+  - component: {fileID: 247626523}
   m_Layer: 0
   m_Name: WindowRoot
   m_TagString: Untagged
@@ -208,6 +204,44 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &247626523
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 247626521}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.39215687}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 7482667652216324306, guid: 669378eb3a35ab949b1026b19d27e8be, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &247626524
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 247626521}
+  m_CullTransparentMesh: 1
 --- !u!1 &276858671
 GameObject:
   m_ObjectHideFlags: 0
@@ -523,7 +557,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 121a6a565e8c63848973d3327fa8ccb3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  summonParticle: {fileID: 0}
 --- !u!1 &493440495
 GameObject:
   m_ObjectHideFlags: 0
@@ -1114,7 +1147,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 121a6a565e8c63848973d3327fa8ccb3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  summonParticle: {fileID: 0}
 --- !u!1 &904840644
 GameObject:
   m_ObjectHideFlags: 0
@@ -1159,7 +1191,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 121a6a565e8c63848973d3327fa8ccb3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  summonParticle: {fileID: 0}
 --- !u!1 &950070967
 GameObject:
   m_ObjectHideFlags: 0
@@ -1378,7 +1409,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 121a6a565e8c63848973d3327fa8ccb3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  summonParticle: {fileID: 1133006161}
 --- !u!199 &1133006160
 ParticleSystemRenderer:
   serializedVersion: 6
@@ -6668,7 +6698,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 121a6a565e8c63848973d3327fa8ccb3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  summonParticle: {fileID: 0}
 --- !u!1 &1660551571
 GameObject:
   m_ObjectHideFlags: 0

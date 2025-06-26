@@ -6,21 +6,25 @@ using UnityEngine.UI;
 
 public class WeaponHandler : MonoBehaviour
 {
+    private DungeonManager dungeonManager;
     private MonsterHandler monsterHandler;
 
     [SerializeField] private EquippedWeaponSlot[] equippedSlots;
     private Queue<EquippedWeaponSlot> attackQueue = new Queue<EquippedWeaponSlot>();
 
     [Header("Weapon Prefab")]
-    [SerializeField] private RectTransform projectileRoot;
+    [SerializeField] private RectTransform BattleSlot;
     [SerializeField] private GameObject projectilePrefab;
+    [SerializeField] private RectTransform playerAnchor;
+    [SerializeField] private RectTransform monsterAnchor;
 
     [Header("Attack Setting")]
     [SerializeField] float attackDelay;
     private bool isAttack = false;
 
-    public void Init(List<ItemInstance> equippedWeapons, MonsterHandler monsterHandler)
+    public void Init(DungeonManager dungeonManager, List<ItemInstance> equippedWeapons, MonsterHandler monsterHandler)
     {
+        this.dungeonManager = dungeonManager;
         this.monsterHandler = monsterHandler;
 
         for (int i = 0; i < equippedSlots.Length; i++)
@@ -49,7 +53,7 @@ public class WeaponHandler : MonoBehaviour
             slot.Tick(deltaTime);
         }
 
-        if (attackQueue.Count > 0 && !isAttack)
+        if (attackQueue.Count > 0 && !isAttack && dungeonManager.IsRunning)
         {
             StartCoroutine(AttackCoroutine());
             isAttack = true;
@@ -58,8 +62,10 @@ public class WeaponHandler : MonoBehaviour
 
     private IEnumerator AttackCoroutine()
     {
-        while (attackQueue.Count > 0)
+        while (attackQueue.Count > 0 && dungeonManager.IsRunning)
         {
+            yield return new WaitForSeconds(attackDelay);
+
             var slot = attackQueue.Peek();
             if (slot.IsReady)
             {
@@ -68,8 +74,6 @@ public class WeaponHandler : MonoBehaviour
                 slot.StartCooldown();
                 StartCoroutine(WaitAndRequeue(slot));
             }
-
-            yield return new WaitForSeconds(attackDelay);
         }
 
         isAttack = false;
@@ -79,35 +83,44 @@ public class WeaponHandler : MonoBehaviour
     {
         // 무기 던짐
         Monster monster = monsterHandler.GetCurrentMonster();
-        if (monster == null) return;
 
-        SpawnProjectile(slot, monster);
+        if (monster != null)
+        {
+            SpawnProjectile(slot, monster);
+        }
     }
 
-    private void SpawnProjectile(EquippedWeaponSlot slot, Monster monster)
+    private void SpawnProjectile(EquippedWeaponSlot slot, Monster monster = null)
     {
-        GameObject go = Instantiate(projectilePrefab, projectileRoot);
-        Image img = go.GetComponent<Image>();
-        img.sprite = Resources.Load<Sprite>(slot.WeaponData.Data.IconPath);
+        Vector2 startPos = GetLocalPosFromAnchor(playerAnchor);
+        Vector2 endPos = GetLocalPosFromAnchor(monsterAnchor);
 
-        RectTransform projectileRT = go.GetComponent<RectTransform>();
+        GameObject go = Instantiate(projectilePrefab, BattleSlot);
 
-        Vector2 startPos = WorldToLocalUIPosition(projectileRoot.position, projectileRoot);
-        projectileRT.anchoredPosition = startPos;
+        if (go.TryGetComponent(out Image icon))
+        {
+            icon.sprite = IconLoader.GetIcon(slot.WeaponData.Data.IconPath);
+        }
 
-        Vector2 targetPos = WorldToLocalUIPosition(monster.transform.position, projectileRoot);
+        RectTransform rt = go.GetComponent<RectTransform>();
+        rt.anchoredPosition = startPos;
 
-        float jumpPower = 100f;
-        float duration = 0.5f;
-
-        projectileRT
-            .DOJumpAnchorPos(targetPos, jumpPower, 1, duration)
+        rt.DOJumpAnchorPos(endPos, 200f, 1, 1f)
             .SetEase(Ease.OutQuad)
-            .OnComplete(() => Destroy(go));
+            .OnComplete(() =>
+            {
+                DamageToMonster(slot.WeaponData.GetTotalAttack(), monster);
+                Destroy(go);
+            });
 
-        projectileRT
-            .DORotate(new Vector3(0, 0, 360f), duration, RotateMode.FastBeyond360)
-            .SetEase(Ease.Linear);
+        rt.DORotate(new Vector3(0, 0, 540f), 1f, RotateMode.FastBeyond360);
+    }
+
+    private void DamageToMonster(float damage, Monster monster)
+    {
+        if (monster == null) return;
+
+        monster.TakeDamage(damage);
     }
 
     // 쿨타임이 끝나면 무기 다시 공격 큐로
@@ -117,10 +130,11 @@ public class WeaponHandler : MonoBehaviour
         attackQueue.Enqueue(slot);
     }
 
-    private Vector2 WorldToLocalUIPosition(Vector3 worldPos, RectTransform canvasRoot)
+    private Vector2 GetLocalPosFromAnchor(RectTransform anchor)
     {
-        Vector2 screenPos = RectTransformUtility.WorldToScreenPoint(Camera.main, worldPos);
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRoot, screenPos, null, out Vector2 localPoint);
+        Vector2 screenPos = RectTransformUtility.WorldToScreenPoint(Camera.main, anchor.position);
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            BattleSlot, screenPos, Camera.main, out Vector2 localPoint);
         return localPoint;
     }
 }

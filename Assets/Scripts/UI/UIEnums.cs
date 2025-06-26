@@ -39,9 +39,12 @@ public static class UIName
     public const string DungeonWindow = "DungeonWindow";
     public const string GemsSystemWindow = "GemSystemWindow";
     public const string RefineSystemWindow = "RefineSystemWindow";
+    public const string MineDetailWindow = "MineDetailWindow";
+
+    // Popup UI
     public const string InventoryPopup = "InventoryPopup";
     public const string AssistantPopup = "AssistantPopup";
-    public const string MineDetailWindow = "MineDetailWindow";
+    public const string DungeonPopup = "DungeonPopup";
 
     public static string GetUINameByType(ButtonType type)
     {

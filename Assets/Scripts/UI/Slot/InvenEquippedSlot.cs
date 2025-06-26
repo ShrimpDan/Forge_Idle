@@ -13,7 +13,7 @@ public class InvenEquippedSlot : MonoBehaviour
     public void Init(ItemInstance item)
     {
         equippedItem = item;
-        //icon.sprite = Resources.Load<Sprite>(equippedItem.Data.IconPath);
+        icon.sprite = IconLoader.GetIcon(item.Data.IconPath);
 
         if (uIManager == null)
         {

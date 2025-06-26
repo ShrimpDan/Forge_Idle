@@ -8,14 +8,14 @@ public class EquippedWeaponSlot : MonoBehaviour
 
     public ItemInstance WeaponData { get; private set; }
     private float cooldown;
-    private float timer;
+    private float timer = 5f;
     public bool IsReady => timer <= 0f;
 
     public void Init(ItemInstance weapon)
     {
         WeaponData = weapon;
 
-        //icon.sprite = Resources.Load<Sprite>(weapon.Data.IconPath);
+        icon.sprite = IconLoader.GetIcon(weapon.Data.IconPath);
         cooldownImage.fillAmount = 0f;
         timer = 0f;
     }

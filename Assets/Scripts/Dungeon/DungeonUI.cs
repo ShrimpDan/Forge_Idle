@@ -1,18 +1,40 @@
-using System.Collections;
-using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class DungeonUI : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    private DungeonManager dungeonManager;
+    private UIManager uIManager;
+
+    [Header("Battle Info UI")]
+    [SerializeField] private Image timeFill;
+    [SerializeField] private TextMeshProUGUI timeText;
+    [SerializeField] private TextMeshProUGUI monsterText;
+    [SerializeField] private DungeonPopup dungeonPopup;
+
+    public void Init(DungeonManager dungeonManager, UIManager uIManager)
     {
-        
+        this.dungeonManager = dungeonManager;
+        this.uIManager = uIManager;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void UpdateTimerUI(float current, float max)
     {
-        
+        timeFill.fillAmount = current / max;
+        timeText.text = current.ToString("F0");
+    }
+
+    public void UpdateMonsterUI(int killedMonster, int maxMonster)
+    {
+        if (killedMonster < maxMonster)
+            monsterText.text = $"{killedMonster}/{maxMonster}";
+        else
+            monsterText.text = "Boss";
+    }
+
+    public void OpenClearPopup(bool isClear)
+    {
+        dungeonPopup.Init(dungeonManager, isClear);
     }
 }
