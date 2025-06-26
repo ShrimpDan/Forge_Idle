@@ -1,9 +1,7 @@
-﻿using JetBrains.Annotations;
+﻿
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class BoardManager : MonoBehaviour
@@ -86,15 +84,8 @@ public class BoardManager : MonoBehaviour
                 Vector2Int offset = treasure.Shape[i];
                 Vector2Int pos = anchor + offset;
                 board[pos.x, pos.y].SetTreasure(treasure.id, i, treasure.pratSprite[i]);
-
-            
             }
-
             treasureCoordinate[treasure.id] = new HashSet<Vector2Int>();
-
-
-
-
         }
     }
 
