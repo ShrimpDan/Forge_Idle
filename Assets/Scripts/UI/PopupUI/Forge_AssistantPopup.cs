@@ -22,26 +22,32 @@ public class Forge_AssistantPopup : BaseUI
     [SerializeField] private Button exitButton;
     [SerializeField] private Button iconSlotBtn;
 
-    TraineeData assiData;
+    private TraineeData assiData;
 
-    private void Awake()
+    public override void Init(GameManager gameManager, UIManager uIManager) // ★ 수정 : override
     {
+        base.Init(gameManager, uIManager);
+
+        exitButton.onClick.RemoveAllListeners();
         exitButton.onClick.AddListener(() => uIManager.CloseUI(UIName.AssistantPopup));
+
+        applyButton.onClick.RemoveAllListeners();
         applyButton.onClick.AddListener(ApplyAssistant);
+
+        deApplyButton.onClick.RemoveAllListeners();
         deApplyButton.onClick.AddListener(DeApplyAssistant);
 
         if (iconSlotBtn != null)
+        {
+            iconSlotBtn.onClick.RemoveAllListeners();
             iconSlotBtn.onClick.AddListener(OpenInventoryPopup);
-    }
-
-    public override void Init(UIManager uIManager)
-    {
-        base.Init(uIManager);
+        }
     }
 
     private void OpenInventoryPopup()
     {
-        UIManager.Instance.OpenUI<Forge_Inventory_Popup>(UIName.Forge_Inventory_Popup);
+        // 싱글턴 Instance로 하지 말고, BaseUI의 uIManager 멤버를 씁니다!
+        uIManager.OpenUI<Forge_Inventory_Popup>(UIName.Forge_Inventory_Popup);
     }
 
     public override void Open()
@@ -52,40 +58,49 @@ public class Forge_AssistantPopup : BaseUI
     public void SetAssistant(TraineeData data)
     {
         assiData = data;
-        // 캐릭터 아이콘 & 타입별 아이콘 설정
 
         assiName.text = data.Name;
         assiType.text = data.Specialization.ToString();
 
+        // 옵션 텍스트 초기화
+        foreach (Transform child in optionRoot)
+            Destroy(child.gameObject);
+
         foreach (var option in data.Multipliers)
         {
             GameObject obj = Instantiate(optionTextPrefab, optionRoot);
-
             TextMeshProUGUI optionText = obj.GetComponent<TextMeshProUGUI>();
             optionText.text = option.AbilityName;
             optionText.text += $"\nx{option.Multiplier}";
         }
+
+        SetApplyButton();
     }
 
     public override void Close()
     {
         base.Close();
         exitButton.onClick.RemoveAllListeners();
+        applyButton.onClick.RemoveAllListeners();
+        deApplyButton.onClick.RemoveAllListeners();
+        if (iconSlotBtn != null) iconSlotBtn.onClick.RemoveAllListeners();
     }
 
     private void ApplyAssistant()
     {
         assiData.IsEquipped = true;
+        SetApplyButton();
     }
 
     private void DeApplyAssistant()
     {
         assiData.IsEquipped = false;
+        SetApplyButton();
     }
 
     private void SetApplyButton()
     {
-        if (assiData.IsEquipped)
+        if (assiData != null && assiData.IsEquipped)
         {
             applyButton.gameObject.SetActive(false);
             deApplyButton.gameObject.SetActive(true);
