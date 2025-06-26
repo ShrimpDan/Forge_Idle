@@ -44,6 +44,7 @@ public abstract class Customer : MonoBehaviour
     [Header("Customerinfo")]
     [SerializeField] CustomerData data;
     [SerializeField] protected Transform[] moveWayPoint;
+    [SerializeField] protected int gold;
 
 
      
@@ -53,7 +54,6 @@ public abstract class Customer : MonoBehaviour
 
     private bool isMoving = false;
     protected CustomerState state;
-    protected int gold;
 
     private Transform targetPos;
     protected Rigidbody2D rigid2D; //buyingLine 
@@ -115,7 +115,7 @@ public abstract class Customer : MonoBehaviour
         state = CustomerState.WaitintTurn;
         yield return new WaitUntil(() => buyPoint.IsCustomFirst(this));
 
-        CustomerEvent.RaiseCustomerArrived(this.Job); //이벤트 연결
+        CustomerEvent?.RaiseCustomerArrived(this.Job); //이벤트 연결
         yield return new WaitForSeconds(data.buyingTime);
         
     }

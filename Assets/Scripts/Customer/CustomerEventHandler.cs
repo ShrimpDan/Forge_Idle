@@ -8,7 +8,7 @@ public class CustomerEventHandler
     public event Action<CustomerJob> OnCustomerArrived;
 
 
-    public void RaiseCustomerArrived(CustomerJob job) => OnCustomerArrived(job);
+    public void RaiseCustomerArrived(CustomerJob job) => OnCustomerArrived?.Invoke(job);
 
     
 
