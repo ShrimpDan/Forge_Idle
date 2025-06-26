@@ -34,14 +34,14 @@ public class TraineeFactory
     /// <summary>
     /// 무작위 특화의 제자를 생성합니다.
     /// </summary>
-    public TraineeData CreateRandomTrainee()
+    public TraineeData CreateRandomTrainee(bool bypassRecruitCheck = false)
     {
-        if (!canRecruit) return null;
+        if (!canRecruit && !bypassRecruitCheck) return null;
 
         canRecruit = false;
         var data = assigner.GenerateTrainee();
         if (data != null)
-            AssignName(data);
+            AssignInfo(data);
 
         return data;
     }
@@ -49,28 +49,30 @@ public class TraineeFactory
     /// <summary>
     /// 특정 특화의 제자를 생성합니다.
     /// </summary>
-    public TraineeData CreateFixedTrainee(SpecializationType type)
+    public TraineeData CreateFixedTrainee(SpecializationType type, bool bypassRecruitCheck = false)
     {
-        if (!canRecruit) return null;
+        if (!canRecruit && !bypassRecruitCheck) return null;
 
         canRecruit = false;
         var data = assigner.GenerateTrainee(type);
         if (data != null)
-            AssignName(data);
+            AssignInfo(data);
 
         return data;
     }
 
     /// <summary>
-    /// 특화별로 고유 이름을 부여합니다.
+    /// 특화별로 고유 이름과 인덱스를 부여합니다.
     /// </summary>
-    private void AssignName(TraineeData data)
+    private void AssignInfo(TraineeData data)
     {
         var spec = data.Specialization;
+
         if (!specializationCounts.ContainsKey(spec))
             specializationCounts[spec] = 0;
 
         specializationCounts[spec]++;
-        data.SetName($"제자_{spec} {specializationCounts[spec]}");
+        data.SpecializationIndex = specializationCounts[spec];
+        data.SetName($"제자_{spec} {data.SpecializationIndex}");
     }
 }

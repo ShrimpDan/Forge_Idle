@@ -17,6 +17,8 @@ public class TraineeData
     public bool IsEquipped { get; set; }
     public bool IsInUse { get; set; }
 
+    public int SpecializationIndex { get; set; }
+
     public TraineeData(
         string name,
         PersonalityData personality,
