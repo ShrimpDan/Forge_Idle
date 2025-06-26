@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class CraftWeaponWindow : BaseUI
 {
@@ -7,33 +8,54 @@ public class CraftWeaponWindow : BaseUI
 
     [Header("UI Elements")]
     [SerializeField] private Button exitBtn;
-    [SerializeField] private Button inputWeaponSlotBtn; // 빈 무기 슬롯
-    [SerializeField] private Image inputWeaponIcon;     // 빈 무기 슬롯 아이콘 (Image)
-    [SerializeField] private Image resultWeaponIcon;    // 강화 후 무기 슬롯 아이콘 (Image)
+
+    [SerializeField] private Transform inputWeaponSlots;   // 슬롯들의 부모 오브젝트
+    [SerializeField] private GameObject weaponSlotBtnPrefab; // 슬롯 버튼 프리팹 (Button+Image 포함)
+
+    private List<Button> slotButtons = new List<Button>();
+    private List<Image> slotIcons = new List<Image>();
+    private int slotCount = 6;
 
     private ItemData selectedWeapon;
 
     private void Awake()
     {
         exitBtn.onClick.AddListener(Close);
-        inputWeaponSlotBtn.onClick.AddListener(OnClickInputWeaponSlot);
+
+        // 기존 수동 생성 슬롯 오브젝트 제거
+        foreach (Transform child in inputWeaponSlots)
+            Destroy(child.gameObject);
+
+        slotButtons.Clear();
+        slotIcons.Clear();
+
+        // 슬롯 자동 생성
+        for (int i = 0; i < slotCount; i++)
+        {
+            GameObject go = Instantiate(weaponSlotBtnPrefab, inputWeaponSlots);
+            Button btn = go.GetComponent<Button>();
+            Image icon = go.GetComponent<Image>();
+            int idx = i;
+            btn.onClick.AddListener(() => OnClickInputWeaponSlot(idx));
+            slotButtons.Add(btn);
+            slotIcons.Add(icon);
+
+            // 초기화: 아이콘 비움 등
+            icon.sprite = null;
+        }
     }
 
-    private void OnClickInputWeaponSlot()
+    private void OnClickInputWeaponSlot(int index)
     {
-        // 인벤토리 팝업만 연다 (실제 아이템 선택은 팀원이 담당)
-        UIManager.Instance.OpenUI<InventoryPopup>(UIName.InventoryPopup);
-
+        UIManager.Instance.OpenUI<Forge_AssistantPopup>(UIName.Forge_AssistantPopup);
     }
 
-    // 예시: 인벤토리 팝업에서 무기 선택 후 호출될 함수
+    // 무기 선택 시 아이콘 적용
     public void OnWeaponSelected(ItemData weapon)
     {
         selectedWeapon = weapon;
-        inputWeaponIcon.sprite = LoadIcon(weapon.IconPath);      // 빈 무기 슬롯에 아이콘 표시
-        resultWeaponIcon.sprite = LoadIcon(weapon.IconPath);     // 강화 후 슬롯에도 동일 아이콘 표시
-
-        // 향후 resultWeaponIcon 옆에 "+1" 등 숫자 추가는 별도 Text로 후처리
+        if (slotIcons.Count > 0)
+            slotIcons[0].sprite = LoadIcon(weapon.IconPath); // 첫 번째 슬롯 예시
     }
 
     private Sprite LoadIcon(string path)
@@ -45,8 +67,8 @@ public class CraftWeaponWindow : BaseUI
     public override void Open()
     {
         base.Open();
-        inputWeaponIcon.sprite = null;
-        resultWeaponIcon.sprite = null;
+        foreach (var icon in slotIcons)
+            icon.sprite = null;
         selectedWeapon = null;
     }
 
