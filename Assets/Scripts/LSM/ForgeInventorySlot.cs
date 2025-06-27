@@ -5,39 +5,50 @@ using System;
 
 public class ForgeInventorySlot : MonoBehaviour
 {
+    private UIManager uIManager;
+
     [SerializeField] private Image icon;
     [SerializeField] private TMP_Text countText;
-    [SerializeField] private Button slotBtn;
+    private Button slotBtn;
 
     private ItemInstance item;
+    private Action<ItemInstance> onSlotClick;
 
     public void Init(ItemInstance item, Action<ItemInstance> onClick)
     {
         this.item = item;
+        this.onSlotClick = onClick;
 
-        // 아이콘
-        if (icon != null && item?.Data != null)
-        {
-            Sprite loaded = IconLoader.GetIcon(item.Data.IconPath);
-            icon.sprite = loaded;
-            icon.enabled = loaded != null;
-        }
-        else if (icon != null)
-        {
-            icon.sprite = null;
-            icon.enabled = false;
-        }
+        // 루트에 Button 강제 참조
+        slotBtn = GetComponent<Button>();
+        if (slotBtn == null)
+            slotBtn = gameObject.AddComponent<Button>();
 
-        // 카운트
-        if (countText != null)
-            countText.text = item != null ? item.Quantity.ToString() : "";
+        // 아이콘 세팅
+        icon.sprite = IconLoader.GetIcon(item.Data.IconPath);
+        icon.enabled = (icon.sprite != null);
+
+        // 카운트 세팅
+        countText.text = item.Quantity.ToString();
+
+        // UIManager 참조
+        if (uIManager == null)
+            uIManager = GameManager.Instance.UIManager;
 
         // 클릭 이벤트
-        if (slotBtn != null)
+        slotBtn.onClick.RemoveAllListeners();
+        slotBtn.onClick.AddListener(OnClickSlot);
+    }
+
+    private void OnClickSlot()
+    {
+        // 콜백이 있으면 넘기고, 아니면 기본 팝업 처리
+        if (onSlotClick != null)
+            onSlotClick(item);
+        else if (uIManager != null && item != null)
         {
-            slotBtn.onClick.RemoveAllListeners();
-            if (onClick != null)
-                slotBtn.onClick.AddListener(() => onClick(this.item));
+            var popup = uIManager.OpenUI<InventoryPopup>(UIName.InventoryPopup);
+            popup.SetItemInfo(item);
         }
     }
 }

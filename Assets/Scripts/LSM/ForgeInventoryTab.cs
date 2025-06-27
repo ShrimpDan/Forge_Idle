@@ -44,7 +44,7 @@ public class ForgeInventoryTab : MonoBehaviour
     public void SetWeaponSlotCallback(Action<ItemInstance> callback)
     {
         weaponSlotCallback = callback;
-        // 슬롯이 이미 있을 수 있으니 콜백 재연결 위해 Refresh
+        // 탭이 무기 탭일 때만 즉시 갱신 (안그러면 null콜백 적용될 수 있음)
         if (curTab == TabType.Weapon)
             RefreshSlots();
     }
@@ -93,7 +93,6 @@ public class ForgeInventoryTab : MonoBehaviour
     {
         var go = Instantiate(slotPrefab, parent);
         var slot = go.GetComponent<ForgeInventorySlot>();
-        // 반드시 IconLoader로 아이콘 세팅, count 및 클릭 이벤트까지 한 번에
         slot.Init(item, callback);
     }
 }
