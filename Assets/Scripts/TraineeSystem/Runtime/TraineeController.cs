@@ -6,12 +6,14 @@ public class TraineeController : MonoBehaviour
 {
     private TraineeData data;
     private TraineeFactory factory;
+    private TraineeManager manager;
 
     [SerializeField] private TraineeCardUI cardUI;
     [SerializeField] private TraineeCardAnimator cardAnimator;
 
     [SerializeField] private TMP_Text orderText;
     [SerializeField] private Button skipButton;
+    [SerializeField] private Button backCardButton;
 
     private bool isFlipped = false;
     private bool isFlipping = false;
@@ -20,11 +22,13 @@ public class TraineeController : MonoBehaviour
     private System.Action<int> onSkip;
     private System.Action<TraineeData> onConfirm;
 
-    public void Setup(TraineeData traineeData, TraineeFactory traineeFactory, int order,
-                      System.Action<int> onSkipAction, System.Action<TraineeData> onConfirmAction)
+    public void Setup(TraineeData traineeData, TraineeFactory traineeFactory, TraineeManager managerRef,
+                      int order, System.Action<int> onSkipAction, System.Action<TraineeData> onConfirmAction,
+                      bool enableFlipOnStart = false)
     {
         data = traineeData;
         factory = traineeFactory;
+        manager = managerRef;
         isFlipped = false;
         currentIndex = order;
         onSkip = onSkipAction;
@@ -41,6 +45,19 @@ public class TraineeController : MonoBehaviour
             skipButton.onClick.RemoveAllListeners();
             skipButton.onClick.AddListener(() => onSkip?.Invoke(currentIndex));
         }
+
+        if (backCardButton != null)
+        {
+            backCardButton.interactable = enableFlipOnStart;
+            backCardButton.onClick.RemoveAllListeners();
+            backCardButton.onClick.AddListener(OnClick_FlipCard);
+        }
+    }
+
+    public void EnableFlip()
+    {
+        if (backCardButton != null)
+            backCardButton.interactable = true;
     }
 
     public void OnClick_DeleteSelf()
@@ -58,6 +75,12 @@ public class TraineeController : MonoBehaviour
     public void OnClick_FlipCard()
     {
         if (isFlipped || isFlipping) return;
+
+        if (manager != null && manager.IsCardInteractionLocked)
+        {
+            Debug.Log("카드 배치 중이므로 클릭 불가");
+            return;
+        }
 
         isFlipping = true;
 
