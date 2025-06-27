@@ -7,7 +7,7 @@ public class DungeonManager : MonoBehaviour
 {
     public GameManager GameManager { get; private set; }
 
-    public TestDungeonData DungeonData { get; private set; }
+    public DungeonData DungeonData { get; private set; }
 
     public WeaponHandler WeaponHandler { get; private set; }
     public MonsterHandler MonsterHandler { get; private set; }
@@ -29,9 +29,9 @@ public class DungeonManager : MonoBehaviour
 
     public void Init()
     {
-        DungeonData = new TestDungeonData
+        DungeonData = new DungeonData
         {
-            Key = "TestDungeon",
+            Key = 0,
             DungeonName = "TestDungeon",
             MonsterHp = 30,
             BossHp = 100,

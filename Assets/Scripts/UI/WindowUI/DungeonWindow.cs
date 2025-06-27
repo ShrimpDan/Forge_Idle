@@ -16,7 +16,7 @@ public class DungeonWindow : BaseUI
 
         foreach (var slot in dungeonSlots)
         {
-            slot.Init(new TestDungeonData());
+            slot.Init(new DungeonData());
         }
     }
 
