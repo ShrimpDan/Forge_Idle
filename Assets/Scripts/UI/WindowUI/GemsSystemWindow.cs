@@ -12,13 +12,13 @@ public class GemsSystemWindow : BaseUI
 
     private ItemInstance selectedWeapon;
 
-    public override void Init(GameManager gameManager, UIManager uiManager)
+    public override void Init(GameManager gameManager, UIManager uIManager)
     {
-        base.Init(gameManager, uiManager);
+        base.Init(gameManager, uIManager);
 
         // �̺�Ʈ ���� �����ϰ� �׻�!
         exitBtn.onClick.RemoveAllListeners();
-        exitBtn.onClick.AddListener(Close);
+        exitBtn.onClick.AddListener(() => uIManager.CloseUI(UIName.GemsSystemWindow));
 
         weaponInputBtn.onClick.RemoveAllListeners();
         weaponInputBtn.onClick.AddListener(OpenWeaponInventoryPopup);
@@ -72,7 +72,7 @@ public class GemsSystemWindow : BaseUI
 
         // �̺�Ʈ �翬��
         exitBtn.onClick.RemoveAllListeners();
-        exitBtn.onClick.AddListener(Close);
+        exitBtn.onClick.AddListener(() => uIManager.CloseUI(UIName.GemsSystemWindow));
 
         weaponInputBtn.onClick.RemoveAllListeners();
         weaponInputBtn.onClick.AddListener(OpenWeaponInventoryPopup);

@@ -16,7 +16,7 @@ public class CraftWeaponWindow : BaseUI
     private List<Button> slotButtons = new List<Button>();
     private List<Image> slotIcons = new List<Image>();
 
-    // Á¦ÀÛ ÁøÇà Á¤º¸ ±¸Á¶Ã¼
+    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ã¼
     private class SlotCraftProgress
     {
         public bool isCrafting = false;
@@ -31,37 +31,34 @@ public class CraftWeaponWindow : BaseUI
 
     private int slotCount = 6;
     private int selectedSlotIndex = -1;
-    private UIManager uiManager;
-    private GameManager gameManager;
 
-    public override void Init(GameManager gameManager, UIManager uiManager)
+    public override void Init(GameManager gameManager, UIManager uIManager)
     {
-        base.Init(gameManager, uiManager);
-        this.uiManager = uiManager;
-        this.gameManager = gameManager;
+        base.Init(gameManager, uIManager);
 
         if (exitBtn == null)
         {
-            Debug.LogError("exitBtnÀÌ ÇÒ´çµÇÁö ¾Ê¾Ò½À´Ï´Ù!");
+            Debug.LogError("exitBtnï¿½ï¿½ ï¿½Ò´ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¾Ò½ï¿½ï¿½Ï´ï¿½!");
             return;
         }
 
         exitBtn.onClick.RemoveAllListeners();
-        exitBtn.onClick.AddListener(Close);
+        exitBtn.onClick.AddListener(() => uIManager.CloseUI(UIName.CraftWeaponWindow));
 
         if (inputWeaponSlots == null)
         {
-            Debug.LogError("inputWeaponSlots°¡ ÇÒ´çµÇÁö ¾Ê¾Ò½À´Ï´Ù!");
+            Debug.LogError("inputWeaponSlotsï¿½ï¿½ ï¿½Ò´ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¾Ò½ï¿½ï¿½Ï´ï¿½!");
             return;
         }
         if (weaponSlotBtnPrefab == null)
         {
-            Debug.LogError("weaponSlotBtnPrefabÀÌ ÇÒ´çµÇÁö ¾Ê¾Ò½À´Ï´Ù!");
+            Debug.LogError("weaponSlotBtnPrefabï¿½ï¿½ ï¿½Ò´ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¾Ò½ï¿½ï¿½Ï´ï¿½!");
             return;
         }
 
         foreach (Transform child in inputWeaponSlots)
             Destroy(child.gameObject);
+
         slotButtons.Clear();
         slotIcons.Clear();
         slotProgressList.Clear();
@@ -71,21 +68,21 @@ public class CraftWeaponWindow : BaseUI
             GameObject go = Instantiate(weaponSlotBtnPrefab, inputWeaponSlots);
             if (go == null)
             {
-                Debug.LogError($"½½·Ô ÇÁ¸®ÆÕ ÀÎ½ºÅÏ½ºÈ­ ½ÇÆÐ! (i={i})");
+                Debug.LogError($"ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Î½ï¿½ï¿½Ï½ï¿½È­ ï¿½ï¿½ï¿½ï¿½! (i={i})");
                 continue;
             }
 
             Button btn = go.GetComponent<Button>();
             if (btn == null)
             {
-                Debug.LogError($"Prefab¿¡ Button ÄÄÆ÷³ÍÆ®°¡ ¾ø½À´Ï´Ù! (i={i})");
+                Debug.LogError($"Prefabï¿½ï¿½ Button ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½! (i={i})");
                 continue;
             }
 
             Image icon = go.GetComponent<Image>();
             if (icon == null)
             {
-                Debug.LogError($"Prefab¿¡ Image ÄÄÆ÷³ÍÆ®°¡ ¾ø½À´Ï´Ù! (i={i})");
+                Debug.LogError($"Prefabï¿½ï¿½ Image ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½! (i={i})");
                 continue;
             }
 
@@ -94,12 +91,12 @@ public class CraftWeaponWindow : BaseUI
             slotButtons.Add(btn);
             slotIcons.Add(icon);
 
-            // ProgressBar, ProgressText °èÃþ È®ÀÎ
+            // ProgressBar, ProgressText ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½
             var progressBar = go.transform.Find("CraftProgressBarBG/CraftProgressBar")?.GetComponent<Image>();
-            if (progressBar == null) Debug.LogError($"CraftProgressBar¸¦ Ã£À» ¼ö ¾øÀ½! (i={i})");
+            if (progressBar == null) Debug.LogError($"CraftProgressBarï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½! (i={i})");
 
             var progressText = go.transform.Find("CraftProgressBarBG/CraftProgressText")?.GetComponent<TMP_Text>();
-            if (progressText == null) Debug.LogError($"CraftProgressText¸¦ Ã£À» ¼ö ¾øÀ½! (i={i})");
+            if (progressText == null) Debug.LogError($"CraftProgressTextï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½! (i={i})");
 
             if (progressBar) progressBar.fillAmount = 0;
             if (progressBar) progressBar.gameObject.SetActive(false);
@@ -120,51 +117,51 @@ public class CraftWeaponWindow : BaseUI
 
     private void OnClickInputWeaponSlot(int index)
     {
-        // Á¦ÀÛ ÁßÀÌ¸é Å¬¸¯ ¸·±â
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì¸ï¿½ Å¬ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         if (index < 0 || index >= slotProgressList.Count)
         {
-            Debug.LogError($"Àß¸øµÈ ½½·Ô ÀÎµ¦½º: {index}");
+            Debug.LogError($"ï¿½ß¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Îµï¿½ï¿½ï¿½: {index}");
             return;
         }
 
         if (slotProgressList[index].isCrafting)
         {
-            Debug.Log("ÇØ´ç ½½·ÔÀº Á¦ÀÛ ÁøÇà ÁßÀÔ´Ï´Ù.");
+            Debug.Log("ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ô´Ï´ï¿½.");
             return;
         }
 
         selectedSlotIndex = index;
-        var popup = uiManager.OpenUI<Forge_Recipe_Popup>(UIName.Forge_Recipe_Popup);
+        var popup = uIManager.OpenUI<Forge_Recipe_Popup>(UIName.Forge_Recipe_Popup);
         if (popup == null)
         {
-            Debug.LogError("Forge_Recipe_PopupÀ» ¿­ ¼ö ¾ø½À´Ï´Ù!");
+            Debug.LogError("Forge_Recipe_Popupï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½!");
             return;
         }
 
-        popup.Init(gameManager.TestDataManager, uiManager);
+        popup.Init(gameManager.DataManager, uIManager);
         popup.SetRecipeSelectCallback(OnRecipeSelected);
         popup.SetForgeAndInventory(gameManager.Forge, gameManager.Inventory);
     }
 
-    // Á¦ÀÛ ·¹½ÃÇÇ ¼±ÅÃ½Ã Á¦ÀÛ ½ÃÀÛ
+    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     private void OnRecipeSelected(ItemData itemData, CraftingData craftingData)
     {
         if (itemData == null || craftingData == null)
         {
-            Debug.LogWarning("OnRecipeSelected: itemData ¶Ç´Â craftingData°¡ nullÀÔ´Ï´Ù.");
+            Debug.LogWarning("OnRecipeSelected: itemData ï¿½Ç´ï¿½ craftingDataï¿½ï¿½ nullï¿½Ô´Ï´ï¿½.");
             return;
         }
         if (selectedSlotIndex < 0 || selectedSlotIndex >= slotIcons.Count)
         {
-            Debug.LogWarning("OnRecipeSelected: Àß¸øµÈ selectedSlotIndex");
+            Debug.LogWarning("OnRecipeSelected: ï¿½ß¸ï¿½ï¿½ï¿½ selectedSlotIndex");
             return;
         }
 
-        // Á¦ÀÛ Àç·á ½ÇÁ¦ Â÷°¨
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         var inventory = gameManager.Inventory;
         if (inventory == null)
         {
-            Debug.LogError("gameManager.Inventory°¡ nullÀÔ´Ï´Ù.");
+            Debug.LogError("gameManager.Inventoryï¿½ï¿½ nullï¿½Ô´Ï´ï¿½.");
             return;
         }
 
@@ -173,19 +170,19 @@ public class CraftWeaponWindow : BaseUI
 
         if (!inventory.UseCraftingMaterials(required))
         {
-            Debug.LogWarning("[Á¦ÀÛ½ÇÆÐ] Àç·á°¡ ºÎÁ·ÇÏ°Å³ª Â÷°¨ ºÒ°¡!");
+            Debug.LogWarning("[ï¿½ï¿½ï¿½Û½ï¿½ï¿½ï¿½] ï¿½ï¿½á°¡ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°Å³ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ò°ï¿½!");
             return;
         }
 
-        // ¾ÆÀÌÄÜ Àû¿ë
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         var iconSprite = Resources.Load<Sprite>(itemData.IconPath);
         if (iconSprite == null)
         {
-            Debug.LogWarning($"¾ÆÀÌÄÜ °æ·Î({itemData.IconPath})¿¡ Sprite¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù.");
+            Debug.LogWarning($"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½({itemData.IconPath})ï¿½ï¿½ Spriteï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.");
         }
         slotIcons[selectedSlotIndex].sprite = iconSprite;
 
-        // Á¦ÀÛ ÁøÇà »óÅÂ ¼¼ÆÃ
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         var prog = slotProgressList[selectedSlotIndex];
         prog.isCrafting = true;
         prog.totalTime = craftingData.craftTime;
@@ -193,7 +190,7 @@ public class CraftWeaponWindow : BaseUI
         prog.data = craftingData;
         prog.itemData = itemData;
 
-        // UI È°¼ºÈ­ ¹× ÃÊ±âÈ­
+        // UI È°ï¿½ï¿½È­ ï¿½ï¿½ ï¿½Ê±ï¿½È­
         if (prog.progressBar)
         {
             prog.progressBar.fillAmount = 1f;
@@ -209,7 +206,7 @@ public class CraftWeaponWindow : BaseUI
 
     private void Update()
     {
-        // ½½·Ôº° Á¦ÀÛ ÁøÇà
+        // ï¿½ï¿½ï¿½Ôºï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         for (int i = 0; i < slotProgressList.Count; i++)
         {
             var prog = slotProgressList[i];
@@ -218,22 +215,22 @@ public class CraftWeaponWindow : BaseUI
             prog.timeLeft -= Time.deltaTime;
             if (prog.timeLeft < 0f) prog.timeLeft = 0f;
 
-            // UI ¾÷µ¥ÀÌÆ®
+            // UI ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
             if (prog.progressBar && prog.totalTime > 0f)
                 prog.progressBar.fillAmount = prog.timeLeft / prog.totalTime;
             if (prog.timeText)
                 prog.timeText.text = $"{prog.timeLeft:0.0}s";
 
-            // Á¦ÀÛ ¿Ï·á Ã³¸®
+            // ï¿½ï¿½ï¿½ï¿½ ï¿½Ï·ï¿½ Ã³ï¿½ï¿½
             if (prog.timeLeft <= 0f && prog.isCrafting)
             {
                 prog.isCrafting = false;
-                // ¹Ù/ÅØ½ºÆ® ºñÈ°¼ºÈ­
+                // ï¿½ï¿½/ï¿½Ø½ï¿½Æ® ï¿½ï¿½È°ï¿½ï¿½È­
                 if (prog.progressBar) prog.progressBar.gameObject.SetActive(false);
                 if (prog.timeText) prog.timeText.gameObject.SetActive(false);
                 if (i < slotButtons.Count) slotButtons[i].interactable = true;
 
-                Debug.Log($"[Á¦ÀÛ¿Ï·á] {prog.itemData?.Name ?? ""} Á¦ÀÛÀÌ ³¡³µ½À´Ï´Ù!");
+                Debug.Log($"[ï¿½ï¿½ï¿½Û¿Ï·ï¿½] {prog.itemData?.Name ?? ""} ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½!");
             }
         }
     }
@@ -243,8 +240,9 @@ public class CraftWeaponWindow : BaseUI
         base.Open();
         foreach (var icon in slotIcons)
             icon.sprite = null;
+            
         selectedSlotIndex = -1;
-        // ¸ðµç ÁøÇà UI/»óÅÂ ÃÊ±âÈ­
+        // ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ UI/ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­
         foreach (var prog in slotProgressList)
         {
             prog.isCrafting = false;

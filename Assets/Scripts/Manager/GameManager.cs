@@ -34,7 +34,6 @@ public class GameManager : MonoSingleton<GameManager>
     {
         for (int i = 0; i < 20; i++)
         {
-
             var itemData = DataManager.ItemLoader.GetRandomItem();
             Inventory.AddItem(itemData);
         }

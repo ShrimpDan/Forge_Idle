@@ -11,9 +11,14 @@ public class RefineSystemWindow : BaseUI
     [SerializeField] private Image materialIconImage;   // 슬롯에 표시할 아이콘 (에디터에서 연결)
     private ItemInstance selectedMaterial;
 
-    private void Awake()
+    public override void Init(GameManager gameManager, UIManager uIManager)
     {
-        exitButton.onClick.AddListener(Close);
+        base.Init(gameManager, uIManager);
+
+        exitButton.onClick.RemoveAllListeners();
+        exitButton.onClick.AddListener(() => uIManager.CloseUI(UIName.RefineSystemWindow));
+
+        materialSlotButton.onClick.RemoveAllListeners();
         materialSlotButton.onClick.AddListener(OnClickMaterialSlot);
     }
 

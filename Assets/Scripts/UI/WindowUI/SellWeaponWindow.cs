@@ -9,20 +9,15 @@ public class SellWeaponWindow : BaseUI
     [Header("UI Elements")]
     [SerializeField] private Button exitBtn;
     [SerializeField] private Image selectedWeaponIcon;
-    [SerializeField] private Transform slotContentRoot;        // ScrollViewÀÇ Content¿¡ ¿¬°á
-    [SerializeField] private GameObject forgeItemSlotPrefab;   // ¸¸µç Forge_ItemSlot ÇÁ¸®ÆÕ ¿¬°á
+    [SerializeField] private Transform slotContentRoot;        // ScrollViewï¿½ï¿½ Contentï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    [SerializeField] private GameObject forgeItemSlotPrefab;   // ï¿½ï¿½ï¿½ï¿½ Forge_ItemSlot ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
     private ItemInstance selectedWeapon;
     private List<GameObject> spawnedSlots = new();
 
-    private GameManager gameManager;
-    private UIManager uIManager;
-
     public override void Init(GameManager gameManager, UIManager uIManager)
     {
         base.Init(gameManager, uIManager);
-        this.gameManager = gameManager;
-        this.uIManager = uIManager;
 
         exitBtn.onClick.RemoveAllListeners();
         exitBtn.onClick.AddListener(() => uIManager.CloseUI(UIName.SellWeaponWindow));
@@ -42,7 +37,7 @@ public class SellWeaponWindow : BaseUI
 
     private void RefreshSlots()
     {
-        // ±âÁ¸ ½½·Ô »èÁ¦
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         foreach (var go in spawnedSlots)
             Destroy(go);
         spawnedSlots.Clear();

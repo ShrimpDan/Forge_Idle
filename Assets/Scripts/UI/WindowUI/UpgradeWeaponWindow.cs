@@ -11,20 +11,16 @@ public class UpgradeWeaponWindow : BaseUI
     [SerializeField] private Image inputWeaponIcon;
 
     private ItemInstance selectedWeapon;
-    private GameManager gameManager;
-    private UIManager uiManager;
 
     public override void Init(GameManager gameManager, UIManager uiManager)
     {
         base.Init(gameManager, uiManager);
-        this.gameManager = gameManager;
-        this.uiManager = uiManager;
 
         // 안전하게 리스너 등록
         if (exitBtn)
         {
             exitBtn.onClick.RemoveAllListeners();
-            exitBtn.onClick.AddListener(Close);
+            exitBtn.onClick.AddListener(()=> uIManager.CloseUI(UIName.UpgradeWeaponWindow));
         }
         if (inputWeaponSlotBtn)
         {
@@ -41,9 +37,9 @@ public class UpgradeWeaponWindow : BaseUI
 
     private void OnClickInputWeaponSlot()
     {
-        if (uiManager == null) return;
+        if (uIManager == null) return;
 
-        var popup = uiManager.OpenUI<Forge_Inventory_Popup>(UIName.Forge_Inventory_Popup);
+        var popup = uIManager.OpenUI<Forge_Inventory_Popup>(UIName.Forge_Inventory_Popup);
         if (popup != null)
             popup.SetWeaponSelectCallback(OnWeaponSelected);
     }
