@@ -112,13 +112,18 @@ public class UIManager : MonoBehaviour
 
         if (ui.UIType == UIType.Popup)
         {
-            if (popupBlockRay != null) popupBlockRay.enabled = false;
+            // 아직 남아있는 팝업이 하나라도 있으면 BlockRay를 유지
+            bool anyPopup = activeUIs.Values.Any(x => x != null && x.UIType == UIType.Popup);
+            if (popupBlockRay != null) popupBlockRay.enabled = anyPopup;
         }
         else if (ui.UIType == UIType.Window)
         {
-            if (windowBlockRay != null) windowBlockRay.enabled = false;
+            // 아직 남아있는 윈도우가 있으면 BlockRay 유지
+            bool anyWindow = activeUIs.Values.Any(x => x != null && x.UIType == UIType.Window);
+            if (windowBlockRay != null) windowBlockRay.enabled = anyWindow;
         }
     }
+
 
     private GameObject LoadPrefab(string uiName)
     {

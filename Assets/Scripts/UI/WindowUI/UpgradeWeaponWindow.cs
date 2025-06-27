@@ -7,8 +7,10 @@ public class UpgradeWeaponWindow : BaseUI
 
     [Header("UI Elements")]
     [SerializeField] private Button exitBtn;
-    [SerializeField] private Button inputWeaponSlotBtn; // �� ���� ���� ��ư
-    [SerializeField] private Image inputWeaponIcon;     // �� ���� ���� ������ (Image)
+    [SerializeField] private Button inputWeaponSlotBtn; // 무기 입력 슬롯 버튼
+    [SerializeField] private Image inputWeaponIcon;     // 무기 입력 슬롯에 표시할 Image
+
+    private ItemInstance selectedWeapon; // 선택된 무기 보관용
 
     private void Awake()
     {
@@ -18,25 +20,27 @@ public class UpgradeWeaponWindow : BaseUI
 
     private void OnClickInputWeaponSlot()
     {
-        // �κ��丮 �˾�
-        uIManager.OpenUI<InventoryPopup>(UIName.InventoryPopup);
+        // 인벤토리 팝업 열고, 무기 선택 콜백 연결
+        var popup = uIManager.OpenUI<Forge_Inventory_Popup>(UIName.Forge_Inventory_Popup);
+        popup.SetWeaponSelectCallback(OnWeaponSelected);
     }
 
-    public void OnWeaponSelected(ItemData weapon)
+    // 팝업에서 무기 선택 시 콜백
+    private void OnWeaponSelected(ItemInstance weapon)
     {
-        inputWeaponIcon.sprite = LoadIcon(weapon.IconPath);
-    }
-
-    private Sprite LoadIcon(string path)
-    {
-        Sprite icon = Resources.Load<Sprite>(path);
-        return icon ? icon : null;
+        selectedWeapon = weapon;
+        if (inputWeaponIcon != null && weapon?.Data != null)
+        {
+            inputWeaponIcon.sprite = IconLoader.GetIcon(weapon.Data.IconPath);
+            inputWeaponIcon.enabled = true;
+        }
     }
 
     public override void Open()
     {
         base.Open();
         inputWeaponIcon.sprite = null;
+        inputWeaponIcon.enabled = false;
     }
 
     public override void Close()
