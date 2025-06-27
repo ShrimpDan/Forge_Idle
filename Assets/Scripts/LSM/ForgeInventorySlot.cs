@@ -1,25 +1,43 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
 
 public class ForgeInventorySlot : MonoBehaviour
 {
     [SerializeField] private Image icon;
-    [SerializeField] private TMP_Text nameText;
     [SerializeField] private TMP_Text countText;
     [SerializeField] private Button slotBtn;
 
     private ItemInstance item;
 
-    public void Init(ItemInstance item, System.Action onClick)
+    public void Init(ItemInstance item, Action<ItemInstance> onClick)
     {
         this.item = item;
 
-        icon.sprite = IconLoader.GetIcon(item.Data.IconPath);
-        nameText.text = item.Data.Name;
-        countText.text = item.Quantity.ToString();
+        // 아이콘
+        if (icon != null && item?.Data != null)
+        {
+            Sprite loaded = IconLoader.GetIcon(item.Data.IconPath);
+            icon.sprite = loaded;
+            icon.enabled = loaded != null;
+        }
+        else if (icon != null)
+        {
+            icon.sprite = null;
+            icon.enabled = false;
+        }
 
-        slotBtn.onClick.RemoveAllListeners();
-        slotBtn.onClick.AddListener(() => onClick?.Invoke());
+        // 카운트
+        if (countText != null)
+            countText.text = item != null ? item.Quantity.ToString() : "";
+
+        // 클릭 이벤트
+        if (slotBtn != null)
+        {
+            slotBtn.onClick.RemoveAllListeners();
+            if (onClick != null)
+                slotBtn.onClick.AddListener(() => onClick(this.item));
+        }
     }
 }

@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 public class Forge_Inventory_Popup : BaseUI
 {
@@ -8,20 +9,26 @@ public class Forge_Inventory_Popup : BaseUI
     [SerializeField] private Button exitBtn;
     [SerializeField] private ForgeInventoryTab inventoryTab;
 
-    private System.Action<ItemInstance> weaponSelectCallback;
+    private Action<ItemInstance> weaponSelectCallback;
 
     public override void Init(GameManager gameManager, UIManager uiManager)
     {
         base.Init(gameManager, uiManager);
 
-        exitBtn.onClick.RemoveAllListeners();
-        exitBtn.onClick.AddListener(Close);
+        if (exitBtn != null)
+        {
+            exitBtn.onClick.RemoveAllListeners();
+            exitBtn.onClick.AddListener(() => uIManager.CloseUI(UIName.Forge_Inventory_Popup));
+        }
 
-        inventoryTab.Init(gameManager, uiManager);
-        inventoryTab.SetWeaponSlotCallback(OnWeaponSlotClicked);
+        if (inventoryTab != null)
+        {
+            inventoryTab.Init(gameManager, uiManager);
+            inventoryTab.SetWeaponSlotCallback(OnWeaponSlotClicked);
+        }
     }
 
-    public void SetWeaponSelectCallback(System.Action<ItemInstance> callback)
+    public void SetWeaponSelectCallback(Action<ItemInstance> callback)
     {
         weaponSelectCallback = callback;
         if (inventoryTab != null)
@@ -31,6 +38,12 @@ public class Forge_Inventory_Popup : BaseUI
     private void OnWeaponSlotClicked(ItemInstance weapon)
     {
         weaponSelectCallback?.Invoke(weapon);
-        Close();
+        uIManager.CloseUI(UIName.Forge_Inventory_Popup);
+    }
+
+    public override void Close()
+    {
+        base.Close();
+        weaponSelectCallback = null;
     }
 }

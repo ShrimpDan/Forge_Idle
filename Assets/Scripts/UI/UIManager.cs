@@ -40,57 +40,35 @@ public class UIManager : MonoBehaviour
 
     public T OpenUI<T>(string uiName) where T : BaseUI
     {
-        // 이미 열려있으면 재활용
-        if (activeUIs.ContainsKey(uiName))
+        if (activeUIs.TryGetValue(uiName, out var cachedUi) && cachedUi != null)
         {
-            var cached = activeUIs[uiName] as T;
-            if (cached == null)
-            {
-                Debug.LogError($"[UIManager.OpenUI] activeUIs에 {uiName} 타입 불일치 or null!");
-            }
-            else
-            {
-                cached.Open();
-                return cached;
-            }
+            cachedUi.Open();
+            return cachedUi as T;
         }
 
         GameObject prefab = LoadPrefab(uiName);
         if (prefab == null)
-        {
-            Debug.LogError($"[UIManager.OpenUI] Resources에 UI 프리팹 없음: UI/{uiName}");
             return null;
-        }
 
         var baseUi = prefab.GetComponent<BaseUI>();
         if (baseUi == null)
-        {
-            Debug.LogError($"[UIManager.OpenUI] 프리팹에 BaseUI 파생 컴포넌트가 없음: {uiName}");
             return null;
-        }
 
         Transform parent = GetParentByType(baseUi.UIType);
         GameObject go = Instantiate(prefab, parent);
 
         T ui = go.GetComponent<T>();
         if (ui == null)
-        {
-            Debug.LogError($"[UIManager.OpenUI] 인스턴스에 원하는 컴포넌트 없음: {typeof(T).Name}");
             return null;
-        }
 
         ui.Open();
         ui.Init(gameManager, this);
         activeUIs[uiName] = ui;
 
-        if (ui.UIType == UIType.Popup)
-        {
-            if (popupBlockRay != null) popupBlockRay.enabled = true;
-        }
-        else if (ui.UIType == UIType.Window)
-        {
-            if (windowBlockRay != null) windowBlockRay.enabled = true;
-        }
+        if (ui.UIType == UIType.Popup && popupBlockRay != null)
+            popupBlockRay.enabled = true;
+        else if (ui.UIType == UIType.Window && windowBlockRay != null)
+            windowBlockRay.enabled = true;
 
         return ui;
     }
@@ -98,32 +76,27 @@ public class UIManager : MonoBehaviour
     public void CloseUI(string uiName)
     {
         if (!activeUIs.TryGetValue(uiName, out var ui) || ui == null)
-        {
-            Debug.LogWarning($"[UIManager.CloseUI] {uiName} is not active or already null");
             return;
-        }
 
         ui.Close();
+
         if (ui.UIType != UIType.Fixed)
         {
             Destroy(ui.gameObject);
             activeUIs.Remove(uiName);
         }
 
-        if (ui.UIType == UIType.Popup)
+        if (ui.UIType == UIType.Popup && popupBlockRay != null)
         {
-            // 아직 남아있는 팝업이 하나라도 있으면 BlockRay를 유지
             bool anyPopup = activeUIs.Values.Any(x => x != null && x.UIType == UIType.Popup);
-            if (popupBlockRay != null) popupBlockRay.enabled = anyPopup;
+            popupBlockRay.enabled = anyPopup;
         }
-        else if (ui.UIType == UIType.Window)
+        else if (ui.UIType == UIType.Window && windowBlockRay != null)
         {
-            // 아직 남아있는 윈도우가 있으면 BlockRay 유지
             bool anyWindow = activeUIs.Values.Any(x => x != null && x.UIType == UIType.Window);
-            if (windowBlockRay != null) windowBlockRay.enabled = anyWindow;
+            windowBlockRay.enabled = anyWindow;
         }
     }
-
 
     private GameObject LoadPrefab(string uiName)
     {
@@ -132,7 +105,6 @@ public class UIManager : MonoBehaviour
             prefab = Resources.Load<GameObject>($"UI/{uiName}");
             loadedPrefabs[uiName] = prefab;
         }
-
         return prefab;
     }
 
@@ -149,7 +121,6 @@ public class UIManager : MonoBehaviour
 
     public void CloseAllWindowUI()
     {
-        // Dictionary 수정 중 반복 오류 방지
         var closeList = activeUIs
             .Where(pair => pair.Value != null && pair.Value.UIType == UIType.Window)
             .Select(pair => pair.Key)
@@ -161,6 +132,7 @@ public class UIManager : MonoBehaviour
         }
     }
 }
+
 
 
 //using System.Collections.Generic;

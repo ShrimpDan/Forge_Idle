@@ -40,8 +40,25 @@ public class CraftWeaponWindow : BaseUI
         this.uiManager = uiManager;
         this.gameManager = gameManager;
 
+        if (exitBtn == null)
+        {
+            Debug.LogError("exitBtn이 할당되지 않았습니다!");
+            return;
+        }
+
         exitBtn.onClick.RemoveAllListeners();
         exitBtn.onClick.AddListener(Close);
+
+        if (inputWeaponSlots == null)
+        {
+            Debug.LogError("inputWeaponSlots가 할당되지 않았습니다!");
+            return;
+        }
+        if (weaponSlotBtnPrefab == null)
+        {
+            Debug.LogError("weaponSlotBtnPrefab이 할당되지 않았습니다!");
+            return;
+        }
 
         foreach (Transform child in inputWeaponSlots)
             Destroy(child.gameObject);
@@ -52,18 +69,37 @@ public class CraftWeaponWindow : BaseUI
         for (int i = 0; i < slotCount; i++)
         {
             GameObject go = Instantiate(weaponSlotBtnPrefab, inputWeaponSlots);
+            if (go == null)
+            {
+                Debug.LogError($"슬롯 프리팹 인스턴스화 실패! (i={i})");
+                continue;
+            }
+
             Button btn = go.GetComponent<Button>();
+            if (btn == null)
+            {
+                Debug.LogError($"Prefab에 Button 컴포넌트가 없습니다! (i={i})");
+                continue;
+            }
+
             Image icon = go.GetComponent<Image>();
+            if (icon == null)
+            {
+                Debug.LogError($"Prefab에 Image 컴포넌트가 없습니다! (i={i})");
+                continue;
+            }
+
             int idx = i;
             btn.onClick.AddListener(() => OnClickInputWeaponSlot(idx));
             slotButtons.Add(btn);
             slotIcons.Add(icon);
 
-            // 계층 구조 정확하게 확인 및 로그 추가
+            // ProgressBar, ProgressText 계층 확인
             var progressBar = go.transform.Find("CraftProgressBarBG/CraftProgressBar")?.GetComponent<Image>();
-            if (progressBar == null) Debug.LogError("CraftProgressBar를 찾을 수 없음!");
+            if (progressBar == null) Debug.LogError($"CraftProgressBar를 찾을 수 없음! (i={i})");
+
             var progressText = go.transform.Find("CraftProgressBarBG/CraftProgressText")?.GetComponent<TMP_Text>();
-            if (progressText == null) Debug.LogError("CraftProgressText를 찾을 수 없음!");
+            if (progressText == null) Debug.LogError($"CraftProgressText를 찾을 수 없음! (i={i})");
 
             if (progressBar) progressBar.fillAmount = 0;
             if (progressBar) progressBar.gameObject.SetActive(false);
@@ -85,6 +121,12 @@ public class CraftWeaponWindow : BaseUI
     private void OnClickInputWeaponSlot(int index)
     {
         // 제작 중이면 클릭 막기
+        if (index < 0 || index >= slotProgressList.Count)
+        {
+            Debug.LogError($"잘못된 슬롯 인덱스: {index}");
+            return;
+        }
+
         if (slotProgressList[index].isCrafting)
         {
             Debug.Log("해당 슬롯은 제작 진행 중입니다.");
@@ -93,8 +135,13 @@ public class CraftWeaponWindow : BaseUI
 
         selectedSlotIndex = index;
         var popup = uiManager.OpenUI<Forge_Recipe_Popup>(UIName.Forge_Recipe_Popup);
-        popup.Init(gameManager.TestDataManager, uiManager);
+        if (popup == null)
+        {
+            Debug.LogError("Forge_Recipe_Popup을 열 수 없습니다!");
+            return;
+        }
 
+        popup.Init(gameManager.TestDataManager, uiManager);
         popup.SetRecipeSelectCallback(OnRecipeSelected);
         popup.SetForgeAndInventory(gameManager.Forge, gameManager.Inventory);
     }
@@ -102,11 +149,25 @@ public class CraftWeaponWindow : BaseUI
     // 제작 레시피 선택시 제작 시작
     private void OnRecipeSelected(ItemData itemData, CraftingData craftingData)
     {
-        if (itemData == null || craftingData == null) return;
-        if (selectedSlotIndex < 0 || selectedSlotIndex >= slotIcons.Count) return;
+        if (itemData == null || craftingData == null)
+        {
+            Debug.LogWarning("OnRecipeSelected: itemData 또는 craftingData가 null입니다.");
+            return;
+        }
+        if (selectedSlotIndex < 0 || selectedSlotIndex >= slotIcons.Count)
+        {
+            Debug.LogWarning("OnRecipeSelected: 잘못된 selectedSlotIndex");
+            return;
+        }
 
-        // 추가: 제작 재료 실제 차감
+        // 제작 재료 실제 차감
         var inventory = gameManager.Inventory;
+        if (inventory == null)
+        {
+            Debug.LogError("gameManager.Inventory가 null입니다.");
+            return;
+        }
+
         var required = craftingData.RequiredResources
             .Select(r => (r.ResourceKey, r.Amount)).ToList();
 
@@ -117,7 +178,12 @@ public class CraftWeaponWindow : BaseUI
         }
 
         // 아이콘 적용
-        slotIcons[selectedSlotIndex].sprite = Resources.Load<Sprite>(itemData.IconPath);
+        var iconSprite = Resources.Load<Sprite>(itemData.IconPath);
+        if (iconSprite == null)
+        {
+            Debug.LogWarning($"아이콘 경로({itemData.IconPath})에 Sprite를 찾을 수 없습니다.");
+        }
+        slotIcons[selectedSlotIndex].sprite = iconSprite;
 
         // 제작 진행 상태 세팅
         var prog = slotProgressList[selectedSlotIndex];
@@ -165,7 +231,7 @@ public class CraftWeaponWindow : BaseUI
                 // 바/텍스트 비활성화
                 if (prog.progressBar) prog.progressBar.gameObject.SetActive(false);
                 if (prog.timeText) prog.timeText.gameObject.SetActive(false);
-                slotButtons[i].interactable = true;
+                if (i < slotButtons.Count) slotButtons[i].interactable = true;
 
                 Debug.Log($"[제작완료] {prog.itemData?.Name ?? ""} 제작이 끝났습니다!");
             }
