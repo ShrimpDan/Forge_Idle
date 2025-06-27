@@ -29,12 +29,13 @@ namespace Jang
             }
         }
 
-        public void AddItem(ItemInstance item, int amount = 1)
+        public void AddItem(ItemData item, int amount = 1)
         {
-            switch (item.Data.ItemType)
+            switch (item.ItemType)
             {
                 case ItemType.Weapon:
-                    WeaponList.Add(item);
+                    ItemInstance weapon = new ItemInstance(item.ItemKey, item);
+                    WeaponList.Add(weapon);
                     break;
 
                 case ItemType.Gem:
@@ -49,7 +50,7 @@ namespace Jang
             OnItemAdded?.Invoke();
         }
 
-        private void AddOrMergeItem(List<ItemInstance> list, ItemInstance newItem, int amount)
+        private void AddOrMergeItem(List<ItemInstance> list, ItemData newItem, int amount)
         {
             var existItem = list.Find(i => i.ItemKey == newItem.ItemKey);
 
@@ -59,7 +60,10 @@ namespace Jang
             }
             else
             {
-                list.Add(newItem);
+                ItemInstance item = new ItemInstance(newItem.ItemKey, newItem);
+                item.Quantity = amount;
+
+                list.Add(item);
             }
         }
 
@@ -82,6 +86,9 @@ namespace Jang
         {
             switch (item.Data.ItemType)
             {
+                case ItemType.Weapon:
+                    WeaponList.Remove(item);
+                    break;
                 case ItemType.Gem:
                     GemList.Remove(item);
                     break;
