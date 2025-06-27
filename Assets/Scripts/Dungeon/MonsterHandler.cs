@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,7 +5,8 @@ public class MonsterHandler : MonoBehaviour
 {
     private DungeonManager dungeonManager;
     private DungeonUI dungeonUI;
-    private TestDungeonData dungeonData;
+    
+    private DungeonData dungeonData;
 
     [SerializeField] private RectTransform spawnRoot;
     [SerializeField] private GameObject normalMonsterPrefab;
@@ -16,18 +16,17 @@ public class MonsterHandler : MonoBehaviour
     private Monster currentMonster;
 
     private int killedMonster;
-    private int maxMonster = 20;
 
     public System.Action OnDungeonCleared;
 
-    public void Init(DungeonManager dungeonManager, DungeonUI dungeonUI, TestDungeonData data)
+    public void Init(DungeonManager dungeonManager)
     {
         this.dungeonManager = dungeonManager;
-        this.dungeonUI = dungeonUI;
-        dungeonData = data;
+        dungeonUI = dungeonManager.DungeonUI;
+        dungeonData = dungeonManager.DungeonData;
 
         // 일반 몬스터 생성
-        for (int i = 0; i < maxMonster; i++)
+        for (int i = 0; i < dungeonData.MaxMonster; i++)
         {
             var go = Instantiate(normalMonsterPrefab, spawnRoot);
             var monster = go.GetComponent<Monster>();
@@ -67,9 +66,9 @@ public class MonsterHandler : MonoBehaviour
         currentMonster = null;
 
         killedMonster++;
-        dungeonUI.UpdateMonsterUI(killedMonster, maxMonster);
-    
-        // RewardHandler에 보상 추가
+        dungeonUI.UpdateMonsterUI(killedMonster, dungeonData.MaxMonster);
+
+        dungeonManager.AddReward(Random.Range(3, 10));
 
         if (monstersQueue.Count != 0)
             SpawnNextMonster();

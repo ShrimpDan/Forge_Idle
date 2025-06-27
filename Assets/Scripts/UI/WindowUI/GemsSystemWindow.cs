@@ -10,17 +10,13 @@ public class GemsSystemWindow : BaseUI
     [SerializeField] private Transform gemSlotRoot;
     [SerializeField] private GameObject gemSlotPrefab;
 
-    private UIManager uiManager;
-    private GameManager gameManager;
     private ItemInstance selectedWeapon;
 
     public override void Init(GameManager gameManager, UIManager uiManager)
     {
         base.Init(gameManager, uiManager);
-        this.uiManager = uiManager;
-        this.gameManager = gameManager;
 
-        // ÀÌº¥Æ® ¿¬°á ¾ÈÀüÇÏ°Ô Ç×»ó!
+        // ï¿½Ìºï¿½Æ® ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½×»ï¿½!
         exitBtn.onClick.RemoveAllListeners();
         exitBtn.onClick.AddListener(Close);
 
@@ -32,8 +28,8 @@ public class GemsSystemWindow : BaseUI
 
     void OpenWeaponInventoryPopup()
     {
-        // ÄÝ¹é ³Ñ°ÜÁÜ (Popup ¿­¸± ¶§¸¶´Ù »õ·Î ¿¬°á)
-        var popup = uiManager.OpenUI<Forge_Inventory_Popup>(UIName.Forge_Inventory_Popup);
+        // ï¿½Ý¹ï¿½ ï¿½Ñ°ï¿½ï¿½ï¿½ (Popup ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
+        var popup = uIManager.OpenUI<Forge_Inventory_Popup>(UIName.Forge_Inventory_Popup);
         popup.SetWeaponSelectCallback(OnWeaponSelected);
     }
 
@@ -63,18 +59,18 @@ public class GemsSystemWindow : BaseUI
 
     private void OnClickGemSlot(int idx)
     {
-        Debug.Log($"[GemsSystemWindow] Gem ½½·Ô {idx} Å¬¸¯µÊ");
-        // Gem »ðÀÔ µî ÈÄÃ³¸®
+        Debug.Log($"[GemsSystemWindow] Gem ï¿½ï¿½ï¿½ï¿½ {idx} Å¬ï¿½ï¿½ï¿½ï¿½");
+        // Gem ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½Ã³ï¿½ï¿½
     }
 
     public override void Open()
     {
         base.Open();
-        // Ç×»ó ÃÊ±âÈ­
+        // ï¿½×»ï¿½ ï¿½Ê±ï¿½È­
         selectedWeapon = null;
         ResetGemSlots();
 
-        // ÀÌº¥Æ® Àç¿¬°á
+        // ï¿½Ìºï¿½Æ® ï¿½ç¿¬ï¿½ï¿½
         exitBtn.onClick.RemoveAllListeners();
         exitBtn.onClick.AddListener(Close);
 

@@ -29,12 +29,13 @@ namespace Jang
             }
         }
 
-        public void AddItem(ItemInstance item, int amount = 1)
+        public void AddItem(ItemData item, int amount = 1)
         {
-            switch (item.Data.ItemType)
+            switch (item.ItemType)
             {
                 case ItemType.Weapon:
-                    WeaponList.Add(item);
+                    ItemInstance weapon = new ItemInstance(item.ItemKey, item);
+                    WeaponList.Add(weapon);
                     break;
 
                 case ItemType.Gem:
@@ -49,11 +50,8 @@ namespace Jang
             OnItemAdded?.Invoke();
         }
 
-        private void AddOrMergeItem(List<ItemInstance> list, ItemInstance newItem, int amount)
+        private void AddOrMergeItem(List<ItemInstance> list, ItemData newItem, int amount)
         {
-            // ItemKey¸¦ Ç×»ó Data¿¡¼­ °¡Á®¿Í¼­ ¼¼ÆÃ
-            newItem.ItemKey = newItem.Data.ItemKey;
-
             var existItem = list.Find(i => i.ItemKey == newItem.ItemKey);
 
             if (existItem != null)
@@ -62,8 +60,10 @@ namespace Jang
             }
             else
             {
-                newItem.Quantity = amount;
-                list.Add(newItem);
+                ItemInstance item = new ItemInstance(newItem.ItemKey, newItem);
+                item.Quantity = amount;
+
+                list.Add(item);
             }
         }
 
@@ -86,6 +86,9 @@ namespace Jang
         {
             switch (item.Data.ItemType)
             {
+                case ItemType.Weapon:
+                    WeaponList.Remove(item);
+                    break;
                 case ItemType.Gem:
                     GemList.Remove(item);
                     break;
@@ -115,8 +118,8 @@ namespace Jang
                 }
             }
 
-            // ¹«±â Ä­ ¾øÀ½
-            UnityEngine.Debug.LogWarning("ÀåÂø °¡´ÉÇÑ ¹«±â Ä­ÀÌ ¾ø½À´Ï´Ù.");
+            // ï¿½ï¿½ï¿½ï¿½ Ä­ ï¿½ï¿½ï¿½ï¿½
+            UnityEngine.Debug.LogWarning("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ä­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.");
         }
 
         public void UnEquipItem(ItemInstance item)
@@ -138,10 +141,10 @@ namespace Jang
             return EquippedWeaponDict.Values.ToList();
         }
 
-        // Á¦ÀÛ Àç·á ½ÇÁ¦ Â÷°¨ ÇÔ¼ö Ãß°¡
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½ ï¿½ß°ï¿½
         public bool UseCraftingMaterials(List<(string resourceKey, int amount)> requiredList)
         {
-            // 1. ÀüÃ¼ Àç·á ¼ö·® È®ÀÎ
+            // 1. ï¿½ï¿½Ã¼ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½
             foreach (var req in requiredList)
             {
                 int have = ResourceList.Where(x => x.ItemKey == req.resourceKey).Sum(x => x.Quantity);
@@ -149,11 +152,11 @@ namespace Jang
                     return false;
             }
 
-            // 2. ½ÇÁ¦·Î Â÷°¨
+            // 2. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             foreach (var req in requiredList)
             {
                 int remain = req.amount;
-                // ¿©·¯ ½ºÅÃ¿¡¼­ Â÷°¨
+                // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                 foreach (var inst in ResourceList.Where(x => x.ItemKey == req.resourceKey && x.Quantity > 0).ToList())
                 {
                     int consume = Math.Min(remain, inst.Quantity);

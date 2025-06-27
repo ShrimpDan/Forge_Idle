@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -5,7 +6,6 @@ using UnityEngine.UI;
 public class DungeonUI : MonoBehaviour
 {
     private DungeonManager dungeonManager;
-    private UIManager uIManager;
 
     [Header("Battle Info UI")]
     [SerializeField] private Image timeFill;
@@ -13,10 +13,34 @@ public class DungeonUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI monsterText;
     [SerializeField] private DungeonPopup dungeonPopup;
 
-    public void Init(DungeonManager dungeonManager, UIManager uIManager)
+    [Header("Reward Info")]
+    [SerializeField] GameObject rewardSlotPrefab;
+    [SerializeField] Transform rewardRoot;
+    private List<RewardSlot> rewardSlots;
+
+    [Header("Exit UI")]
+    [SerializeField] GameObject exitPopup;
+    [SerializeField] Button exitBtn;
+    [SerializeField] Button confirmBtn;
+    [SerializeField] Button cancleBtn;
+    [SerializeField] Image blockRay;
+
+    public void Init(DungeonManager dungeonManager)
     {
         this.dungeonManager = dungeonManager;
-        this.uIManager = uIManager;
+        rewardSlots = new List<RewardSlot>();
+
+        exitBtn.onClick.AddListener(() =>
+        {
+            exitPopup.SetActive(true);
+            blockRay.enabled = true;
+        });
+        cancleBtn.onClick.AddListener(() =>
+        {
+            exitPopup.SetActive(false);
+            blockRay.enabled = false;
+        });
+        confirmBtn.onClick.AddListener(() => dungeonManager.BackToMain());
     }
 
     public void UpdateTimerUI(float current, float max)
@@ -36,5 +60,25 @@ public class DungeonUI : MonoBehaviour
     public void OpenClearPopup(bool isClear)
     {
         dungeonPopup.Init(dungeonManager, isClear);
+    }
+
+    public void UpdateRewardInfo(ItemData item, int amount)
+    {
+        var existSlot = rewardSlots.Find(i => i.SlotItem.ItemKey == item.ItemKey);
+
+        if (existSlot == null)
+        {
+            GameObject obj = Instantiate(rewardSlotPrefab, rewardRoot);
+
+            if (obj.TryGetComponent(out RewardSlot slot))
+            {
+                slot.Init(item, amount);
+                rewardSlots.Add(slot);
+            }
+        }
+        else
+        {
+            existSlot.AddItem(amount);
+        }
     }
 }

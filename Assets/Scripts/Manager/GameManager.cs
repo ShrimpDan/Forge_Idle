@@ -3,17 +3,19 @@ using UnityEngine;
 public class GameManager : MonoSingleton<GameManager>
 {
     public Jang.InventoryManager Inventory { get; private set; }
-    public DataManger TestDataManager { get; private set; }
+    public DataManger DataManager { get; private set; }
     public TraineeManager AssistantManager { get; private set; }
     public Forge Forge { get; private set; }
     public UIManager UIManager { get; private set; }
+
+    public DungeonData CurrentDungeon { get; private set; }
 
     protected override void Awake()
     {
         base.Awake();
 
         Inventory = new Jang.InventoryManager();
-        TestDataManager = new DataManger();
+        DataManager = new DataManger();
 
         AssistantManager = FindObjectOfType<TraineeManager>();
         UIManager = FindObjectOfType<UIManager>();
@@ -32,24 +34,21 @@ public class GameManager : MonoSingleton<GameManager>
     {
         for (int i = 0; i < 20; i++)
         {
-            var itemData = TestDataManager.ItemLoader.GetRandomItem();
-            ItemInstance item = new ItemInstance();
-            item.Data = itemData;
-            Inventory.AddItem(item);
+
+            var itemData = DataManager.ItemLoader.GetRandomItem();
+            Inventory.AddItem(itemData);
         }
 
-        //Fabric 3°³ "´©Àû" Ãß°¡ (ÇÑ ¹ø¿¡ Ãß°¡)
-        var fabricData = TestDataManager.ItemLoader.GetItemByKey("resource_fabric");
+        //Fabric 3ï¿½ï¿½ "ï¿½ï¿½ï¿½ï¿½" ï¿½ß°ï¿½ (ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½)
+        var fabricData = DataManager.ItemLoader.GetItemByKey("resource_fabric");
         if (fabricData != null)
         {
-            ItemInstance fabricItem = new ItemInstance();
-            fabricItem.Data = fabricData;
-            Inventory.AddItem(fabricItem, 3);
-            Debug.Log("<color=lime>[GameManager] Fabric 3°³ Ãß°¡ Áö±Þ!</color>");
+            Inventory.AddItem(fabricData, 3);
+            Debug.Log("<color=lime>[GameManager] Fabric 3ï¿½ï¿½ ï¿½ß°ï¿½ ï¿½ï¿½ï¿½ï¿½!</color>");
         }
         else
         {
-            Debug.LogWarning("[GameManager] resource_fabric ¾ÆÀÌÅÛ µ¥ÀÌÅÍ°¡ ¾ø½À´Ï´Ù!");
+            Debug.LogWarning("[GameManager] resource_fabric ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½!");
         }
     }
 
@@ -68,11 +67,22 @@ public class GameManager : MonoSingleton<GameManager>
         if (Forge != null)
         {
             Forge.AddGold(5000);
-            Debug.Log("<color=yellow>[GameManager] Å×½ºÆ®¿ë °ñµå 5000 Áö±Þ!</color>");
+            Debug.Log("<color=yellow>[GameManager] ï¿½×½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ 5000 ï¿½ï¿½ï¿½ï¿½!</color>");
         }
         else
         {
-            Debug.LogWarning("[GameManager] Forge ÀÎ½ºÅÏ½º°¡ ¾ø½À´Ï´Ù!");
+            Debug.LogWarning("[GameManager] Forge ï¿½Î½ï¿½ï¿½Ï½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½!");
         }
+    }
+
+    public void StartDungeon(DungeonData data)
+    {
+        CurrentDungeon = data;
+        LoadSceneManager.Instance.LoadSceneAsync(SceneType.Dungeon, true);
+    }
+
+    public void ExitDungeon()
+    {
+        CurrentDungeon = null;
     }
 }

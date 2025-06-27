@@ -55,7 +55,7 @@ public class ItemDataLoader
     public List<ItemData> ItemList { get; private set; }
     public Dictionary<string, ItemData> ItemDict { get; private set; }
 
-    public ItemDataLoader(string path = "Items/item_data")
+    public ItemDataLoader(string path = "Data/item_data")
     {
         TextAsset json = Resources.Load<TextAsset>(path);
 

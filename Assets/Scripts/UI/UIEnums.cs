@@ -1,4 +1,4 @@
-public enum UIType
+﻿public enum UIType
 {
     Fixed,
     Window,
@@ -22,7 +22,8 @@ public enum ButtonType
     Dungeon,
     Gem,      // 추가
     Refine,   // 추가
-    MineDetail // 추가
+    MineDetail, // 추가
+    MineMiniGame //Add
 }
 
 public static class UIName
@@ -40,6 +41,7 @@ public static class UIName
     public const string GemsSystemWindow = "GemSystemWindow";
     public const string RefineSystemWindow = "RefineSystemWindow";
     public const string MineDetailWindow = "MineDetailWindow";
+  
 
     // Popup UI
     public const string InventoryPopup = "InventoryPopup";
@@ -62,6 +64,7 @@ public static class UIName
             ButtonType.Gem => GemsSystemWindow,
             ButtonType.Refine => RefineSystemWindow,
             ButtonType.MineDetail => MineDetailWindow,
+        
             _ => string.Empty
         };
     }
