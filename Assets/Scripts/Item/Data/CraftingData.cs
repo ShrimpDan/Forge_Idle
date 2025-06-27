@@ -23,7 +23,7 @@ public class CraftingDataLoader
     public List<CraftingData> CraftingList { get; private set; }
     public Dictionary<string, CraftingData> CraftingDict { get; private set; }
 
-    public CraftingDataLoader(string path = "Items/crafting_data")
+    public CraftingDataLoader(string path = "Data/crafting_data")
     {
         TextAsset json = Resources.Load<TextAsset>(path);
 

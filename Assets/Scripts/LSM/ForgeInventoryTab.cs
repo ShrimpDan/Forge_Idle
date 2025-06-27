@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System;
-using System.Collections.Generic;
 
 public class ForgeInventoryTab : MonoBehaviour
 {
@@ -45,6 +44,9 @@ public class ForgeInventoryTab : MonoBehaviour
     public void SetWeaponSlotCallback(Action<ItemInstance> callback)
     {
         weaponSlotCallback = callback;
+        // 탭이 무기 탭일 때만 즉시 갱신 (안그러면 null콜백 적용될 수 있음)
+        if (curTab == TabType.Weapon)
+            RefreshSlots();
     }
 
     private void SwitchTab(TabType tab)
@@ -53,16 +55,14 @@ public class ForgeInventoryTab : MonoBehaviour
         equipRoot.gameObject.SetActive(tab == TabType.Weapon);
         gemRoot.gameObject.SetActive(tab == TabType.Gem);
         resourceRoot.gameObject.SetActive(tab == TabType.Resource);
-
         RefreshSlots();
     }
 
     public void RefreshSlots()
     {
-        // 슬롯 클리어
-        foreach (Transform t in equipRoot) Destroy(t.gameObject);
-        foreach (Transform t in gemRoot) Destroy(t.gameObject);
-        foreach (Transform t in resourceRoot) Destroy(t.gameObject);
+        ClearSlots(equipRoot);
+        ClearSlots(gemRoot);
+        ClearSlots(resourceRoot);
 
         if (gameManager == null) return;
 
@@ -83,18 +83,16 @@ public class ForgeInventoryTab : MonoBehaviour
         }
     }
 
+    private void ClearSlots(Transform root)
+    {
+        foreach (Transform t in root)
+            Destroy(t.gameObject);
+    }
+
     private void CreateSlot(Transform parent, ItemInstance item, Action<ItemInstance> callback)
     {
         var go = Instantiate(slotPrefab, parent);
-        var btn = go.GetComponent<Button>();
-        var icon = go.GetComponent<Image>();
-        if (icon != null && item?.Data != null)
-            icon.sprite = IconLoader.GetIcon(item.Data.IconPath);
-
-        btn.onClick.RemoveAllListeners();
-        if (callback != null)
-        {
-            btn.onClick.AddListener(() => callback(item));
-        }
+        var slot = go.GetComponent<ForgeInventorySlot>();
+        slot.Init(item, callback);
     }
 }
