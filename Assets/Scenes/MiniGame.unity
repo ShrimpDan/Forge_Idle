@@ -260,6 +260,17 @@ MonoBehaviour:
     mipBias: 0
     varianceClampScale: 0.9
     contrastAdaptiveSharpening: 0
+--- !u!114 &1130135872 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7542292423484690462, guid: e247c9f81f35f84438a137a380a5a2c6, type: 3}
+  m_PrefabInstance: {fileID: 1738572185938104084}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f24462a753a8bc4f8c4b7fa6b5531db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1273711499
 GameObject:
   m_ObjectHideFlags: 0
@@ -340,6 +351,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: MiniGameBoard
       objectReference: {fileID: 0}
+    - target: {fileID: 5079337158227883494, guid: e247c9f81f35f84438a137a380a5a2c6, type: 3}
+      propertyPath: m_AdditionalShaderChannelsFlag
+      value: 25
+      objectReference: {fileID: 0}
     - target: {fileID: 5273211421395214681, guid: e247c9f81f35f84438a137a380a5a2c6, type: 3}
       propertyPath: m_SizeDelta.x
       value: 0
@@ -347,6 +362,14 @@ PrefabInstance:
     - target: {fileID: 5273211421395214681, guid: e247c9f81f35f84438a137a380a5a2c6, type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7542292423484690462, guid: e247c9f81f35f84438a137a380a5a2c6, type: 3}
+      propertyPath: width
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7542292423484690462, guid: e247c9f81f35f84438a137a380a5a2c6, type: 3}
+      propertyPath: height
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 7653390643981886400, guid: e247c9f81f35f84438a137a380a5a2c6, type: 3}
       propertyPath: m_Pivot.x
@@ -427,6 +450,34 @@ PrefabInstance:
     - target: {fileID: 7653390643981886400, guid: e247c9f81f35f84438a137a380a5a2c6, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7920684051062034777, guid: e247c9f81f35f84438a137a380a5a2c6, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7920684051062034777, guid: e247c9f81f35f84438a137a380a5a2c6, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7920684051062034777, guid: e247c9f81f35f84438a137a380a5a2c6, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1130135872}
+    - target: {fileID: 7920684051062034777, guid: e247c9f81f35f84438a137a380a5a2c6, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7920684051062034777, guid: e247c9f81f35f84438a137a380a5a2c6, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnClickExit
+      objectReference: {fileID: 0}
+    - target: {fileID: 7920684051062034777, guid: e247c9f81f35f84438a137a380a5a2c6, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: BoardManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 7920684051062034777, guid: e247c9f81f35f84438a137a380a5a2c6, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

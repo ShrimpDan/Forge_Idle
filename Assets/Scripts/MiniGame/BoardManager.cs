@@ -150,7 +150,7 @@ public class BoardManager : MonoBehaviour
 
     public void OnClickExit()
     {
-        SceneManager.UnloadSceneAsync("MiniGame");
+        LoadSceneManager.Instance.UnLoadScene(SceneType.MiniGame);
     }
 
 }
