@@ -6,6 +6,7 @@ public class MonsterHandler : MonoBehaviour
 {
     private DungeonManager dungeonManager;
     private DungeonUI dungeonUI;
+    
     private TestDungeonData dungeonData;
 
     [SerializeField] private RectTransform spawnRoot;
@@ -20,11 +21,11 @@ public class MonsterHandler : MonoBehaviour
 
     public System.Action OnDungeonCleared;
 
-    public void Init(DungeonManager dungeonManager, DungeonUI dungeonUI, TestDungeonData data)
+    public void Init(DungeonManager dungeonManager)
     {
         this.dungeonManager = dungeonManager;
-        this.dungeonUI = dungeonUI;
-        dungeonData = data;
+        dungeonUI = dungeonManager.DungeonUI;
+        dungeonData = dungeonManager.DungeonData;
 
         // 일반 몬스터 생성
         for (int i = 0; i < maxMonster; i++)
@@ -68,8 +69,8 @@ public class MonsterHandler : MonoBehaviour
 
         killedMonster++;
         dungeonUI.UpdateMonsterUI(killedMonster, maxMonster);
-    
-        // RewardHandler에 보상 추가
+
+        dungeonManager.AddReward(Random.Range(3, 10));
 
         if (monstersQueue.Count != 0)
             SpawnNextMonster();

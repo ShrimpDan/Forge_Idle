@@ -83,7 +83,6 @@ public class AssistantTab : BaseTab
         CreateSlots(sellingList, gemSlotRoot);
     }
 
-
     private void CreateSlots(List<TraineeData> assiList, Transform parent)
     {
         foreach (var assi in assiList)
@@ -112,7 +111,6 @@ public class AssistantTab : BaseTab
             tabButtons[i].image.color = isSelected ? selectedColor : defaultColor;
         }
     }
-
 
     private GameObject GetSlotFromPool()
     {

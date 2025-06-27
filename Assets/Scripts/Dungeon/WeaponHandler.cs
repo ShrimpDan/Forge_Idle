@@ -22,10 +22,10 @@ public class WeaponHandler : MonoBehaviour
     [SerializeField] float attackDelay;
     private bool isAttack = false;
 
-    public void Init(DungeonManager dungeonManager, List<ItemInstance> equippedWeapons, MonsterHandler monsterHandler)
+    public void Init(DungeonManager dungeonManager, List<ItemInstance> equippedWeapons)
     {
         this.dungeonManager = dungeonManager;
-        this.monsterHandler = monsterHandler;
+        monsterHandler = dungeonManager.MonsterHandler;
 
         for (int i = 0; i < equippedSlots.Length; i++)
         {
@@ -64,7 +64,7 @@ public class WeaponHandler : MonoBehaviour
     {
         while (attackQueue.Count > 0 && dungeonManager.IsRunning)
         {
-            yield return new WaitForSeconds(attackDelay);
+            yield return WaitForSecondsCache.Wait(attackDelay);
 
             var slot = attackQueue.Peek();
             if (slot.IsReady)
