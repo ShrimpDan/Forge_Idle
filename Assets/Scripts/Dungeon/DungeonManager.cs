@@ -1,7 +1,5 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class DungeonManager : MonoBehaviour
 {
@@ -14,35 +12,18 @@ public class DungeonManager : MonoBehaviour
     public RewardHandler RewardHandler { get; private set; }
     public DungeonUI DungeonUI { get; private set; }
 
-    [SerializeField] float dungeonDuration = 60f;
     private float time = 0f;
-
     public bool IsRunning { get; private set; } = true;
 
     void Start()
     {
         GameManager = GameManager.Instance;
         Init();
-
-        StartCoroutine(TimerCoroutine());
     }
 
     public void Init()
     {
-        DungeonData = new DungeonData
-        {
-            Key = 0,
-            DungeonName = "TestDungeon",
-            MonsterHp = 30,
-            BossHp = 100,
-            RewardItemKeys = new List<string>
-            {
-                "resource_string",
-                "resource_iron",
-                "resource_fabric",
-                "resource_wood"
-            }
-        };
+        DungeonData = GameManager.CurrentDungeon;
 
         DungeonUI = FindObjectOfType<DungeonUI>();
         DungeonUI.Init(this);
@@ -54,16 +35,18 @@ public class DungeonManager : MonoBehaviour
         WeaponHandler.Init(this, GameManager.Inventory.GetEquippedWeapons());
         MonsterHandler.Init(this);
         RewardHandler.Init(GameManager.Inventory, DungeonUI);
+
+        StartCoroutine(TimerCoroutine());
     }
 
     private IEnumerator TimerCoroutine()
     {
-        time = dungeonDuration;
+        time = DungeonData.Duration;
 
         while (IsRunning)
         {
             time -= 0.1f;
-            DungeonUI.UpdateTimerUI(time, dungeonDuration);
+            DungeonUI.UpdateTimerUI(time, DungeonData.Duration);
 
             if (time <= 0)
             {
@@ -93,11 +76,13 @@ public class DungeonManager : MonoBehaviour
     public void ExitDungeon()
     {
         RewardHandler.ApplyReward();
+        GameManager.ExitDungeon();
         LoadSceneManager.Instance.UnLoadScene(SceneType.Dungeon);
     }
 
     public void BackToMain()
     {
+        GameManager.ExitDungeon();
         LoadSceneManager.Instance.UnLoadScene(SceneType.Dungeon);
     }
 }
