@@ -28,7 +28,7 @@ public class DungeonDataLoader
             return;
         }
 
-        DungeonLists = JsonUtility.FromJson<Wrapper>(json.text).DataList;
+        DungeonLists = JsonUtility.FromJson<Wrapper>(json.text).Items;
 
         DungeonDict = new Dictionary<int, DungeonData>();
         foreach (var dungeon in DungeonLists)
@@ -37,9 +37,10 @@ public class DungeonDataLoader
         }
     }
 
+    [System.Serializable]
     private class Wrapper
     {
-        public List<DungeonData> DataList;
+        public List<DungeonData> Items;
     }
 
     public DungeonData GetDungeonByKey(int key)
