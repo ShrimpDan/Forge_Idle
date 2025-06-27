@@ -32,9 +32,25 @@ public class GameManager : MonoSingleton<GameManager>
     {
         for (int i = 0; i < 20; i++)
         {
-            Debug.Log("Add Item!");
-            var itemData = DataManager.ItemLoader.GetRandomItem();
-            Inventory.AddItem(itemData);
+
+            var itemData = TestDataManager.ItemLoader.GetRandomItem();
+            ItemInstance item = new ItemInstance();
+            item.Data = itemData;
+            Inventory.AddItem(item);
+        }
+
+        //Fabric 3�� "����" �߰� (�� ���� �߰�)
+        var fabricData = TestDataManager.ItemLoader.GetItemByKey("resource_fabric");
+        if (fabricData != null)
+        {
+            ItemInstance fabricItem = new ItemInstance();
+            fabricItem.Data = fabricData;
+            Inventory.AddItem(fabricItem, 3);
+            Debug.Log("<color=lime>[GameManager] Fabric 3�� �߰� ����!</color>");
+        }
+        else
+        {
+            Debug.LogWarning("[GameManager] resource_fabric ������ �����Ͱ� �����ϴ�!");
         }
     }
 
@@ -44,6 +60,20 @@ public class GameManager : MonoSingleton<GameManager>
         for (int i = 0; i < 20; i++)
         {
             AssistantManager.RecruitAndSpawnTrainee();
+        }
+    }
+
+    [ContextMenu("Add Test Gold (5000)")]
+    public void AddTestGold()
+    {
+        if (Forge != null)
+        {
+            Forge.AddGold(5000);
+            Debug.Log("<color=yellow>[GameManager] �׽�Ʈ�� ��� 5000 ����!</color>");
+        }
+        else
+        {
+            Debug.LogWarning("[GameManager] Forge �ν��Ͻ��� �����ϴ�!");
         }
     }
 }

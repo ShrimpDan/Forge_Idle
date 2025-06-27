@@ -52,6 +52,9 @@ namespace Jang
 
         private void AddOrMergeItem(List<ItemInstance> list, ItemData newItem, int amount)
         {
+            // ItemKey�� �׻� Data���� �����ͼ� ����
+            newItem.ItemKey = newItem.Data.ItemKey;
+
             var existItem = list.Find(i => i.ItemKey == newItem.ItemKey);
 
             if (existItem != null)
@@ -118,8 +121,8 @@ namespace Jang
                 }
             }
 
-            // 빈 슬롯 없음
-            UnityEngine.Debug.LogWarning("장착 가능한 슬롯이 없습니다.");
+            // ���� ĭ ����
+            UnityEngine.Debug.LogWarning("���� ������ ���� ĭ�� �����ϴ�.");
         }
 
         public void UnEquipItem(ItemInstance item)
@@ -140,5 +143,36 @@ namespace Jang
         {
             return EquippedWeaponDict.Values.ToList();
         }
+
+        // ���� ��� ���� ���� �Լ� �߰�
+        public bool UseCraftingMaterials(List<(string resourceKey, int amount)> requiredList)
+        {
+            // 1. ��ü ��� ���� Ȯ��
+            foreach (var req in requiredList)
+            {
+                int have = ResourceList.Where(x => x.ItemKey == req.resourceKey).Sum(x => x.Quantity);
+                if (have < req.amount)
+                    return false;
+            }
+
+            // 2. ������ ����
+            foreach (var req in requiredList)
+            {
+                int remain = req.amount;
+                // ���� ���ÿ��� ����
+                foreach (var inst in ResourceList.Where(x => x.ItemKey == req.resourceKey && x.Quantity > 0).ToList())
+                {
+                    int consume = Math.Min(remain, inst.Quantity);
+                    inst.Quantity -= consume;
+                    remain -= consume;
+                    if (inst.Quantity <= 0)
+                        RemoveItem(inst);
+                    if (remain <= 0) break;
+                }
+            }
+            OnItemAdded?.Invoke();
+            return true;
+        }
     }
 }
+
