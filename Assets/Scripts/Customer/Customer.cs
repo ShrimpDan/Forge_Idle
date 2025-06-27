@@ -116,7 +116,7 @@ public abstract class Customer : MonoBehaviour
         yield return new WaitUntil(() => buyPoint.IsCustomFirst(this));
 
         CustomerEvent?.RaiseCustomerArrived(this.Job); //이벤트 연결
-        yield return new WaitForSeconds(data.buyingTime);
+        yield return WaitForSecondsCache.Wait(data.buyingTime);
         
     }
 
