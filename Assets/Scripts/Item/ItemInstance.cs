@@ -9,8 +9,10 @@ public class ItemInstance
     public int EnhanceLevel;
     public bool IsEquipped;
 
-    public ItemInstance()
+    public ItemInstance(string key, ItemData data)
     {
+        ItemKey = key;
+        Data = data;
         Quantity = 1;
         EnhanceLevel = 0;
         IsEquipped = false;

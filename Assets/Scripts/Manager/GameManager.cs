@@ -3,7 +3,7 @@ using UnityEngine;
 public class GameManager : MonoSingleton<GameManager>
 {
     public Jang.InventoryManager Inventory { get; private set; }
-    public DataManger TestDataManager { get; private set; }
+    public DataManger DataManager { get; private set; }
     public TraineeManager AssistantManager { get; private set; }
     public Forge Forge { get; private set; }
     public UIManager UIManager { get; private set; }
@@ -13,7 +13,7 @@ public class GameManager : MonoSingleton<GameManager>
         base.Awake();
 
         Inventory = new Jang.InventoryManager();
-        TestDataManager = new DataManger();
+        DataManager = new DataManger();
 
         AssistantManager = FindObjectOfType<TraineeManager>();
         UIManager = FindObjectOfType<UIManager>();
@@ -33,12 +33,8 @@ public class GameManager : MonoSingleton<GameManager>
         for (int i = 0; i < 20; i++)
         {
             Debug.Log("Add Item!");
-            var itemData = TestDataManager.ItemLoader.GetRandomItem();
-
-            ItemInstance item = new ItemInstance();
-            item.Data = itemData;
-
-            Inventory.AddItem(item);
+            var itemData = DataManager.ItemLoader.GetRandomItem();
+            Inventory.AddItem(itemData);
         }
     }
 
