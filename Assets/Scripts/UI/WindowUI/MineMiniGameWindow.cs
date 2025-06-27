@@ -1,14 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.SceneManagement;
+﻿using UnityEngine;
 
 public class MineMiniGameWindow : MonoBehaviour
 {
     public void OnClickMiniGame()
     {
-        SceneManager.LoadScene("MiniGame", LoadSceneMode.Additive);
+        LoadSceneManager.Instance.LoadSceneAsync(SceneType.MiniGame, true);
     }
-
- 
 }
