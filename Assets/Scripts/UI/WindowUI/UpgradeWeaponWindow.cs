@@ -7,40 +7,81 @@ public class UpgradeWeaponWindow : BaseUI
 
     [Header("UI Elements")]
     [SerializeField] private Button exitBtn;
-    [SerializeField] private Button inputWeaponSlotBtn; // �� ���� ���� ��ư
-    [SerializeField] private Image inputWeaponIcon;     // �� ���� ���� ������ (Image)
+    [SerializeField] private Button inputWeaponSlotBtn;
+    [SerializeField] private Image inputWeaponIcon;
 
-    private void Awake()
+    private ItemInstance selectedWeapon;
+    private GameManager gameManager;
+    private UIManager uiManager;
+
+    public override void Init(GameManager gameManager, UIManager uiManager)
     {
-        exitBtn.onClick.AddListener(Close);
-        inputWeaponSlotBtn.onClick.AddListener(OnClickInputWeaponSlot);
+        base.Init(gameManager, uiManager);
+        this.gameManager = gameManager;
+        this.uiManager = uiManager;
+
+        // 안전하게 리스너 등록
+        if (exitBtn)
+        {
+            exitBtn.onClick.RemoveAllListeners();
+            exitBtn.onClick.AddListener(Close);
+        }
+        if (inputWeaponSlotBtn)
+        {
+            inputWeaponSlotBtn.onClick.RemoveAllListeners();
+            inputWeaponSlotBtn.onClick.AddListener(OnClickInputWeaponSlot);
+        }
+        if (inputWeaponIcon)
+        {
+            inputWeaponIcon.sprite = null;
+            inputWeaponIcon.enabled = false;
+        }
+        selectedWeapon = null;
     }
 
     private void OnClickInputWeaponSlot()
     {
-        // �κ��丮 �˾�
-        uIManager.OpenUI<InventoryPopup>(UIName.InventoryPopup);
+        if (uiManager == null) return;
+
+        var popup = uiManager.OpenUI<Forge_Inventory_Popup>(UIName.Forge_Inventory_Popup);
+        if (popup != null)
+            popup.SetWeaponSelectCallback(OnWeaponSelected);
     }
 
-    public void OnWeaponSelected(ItemData weapon)
+    private void OnWeaponSelected(ItemInstance weapon)
     {
-        inputWeaponIcon.sprite = LoadIcon(weapon.IconPath);
-    }
-
-    private Sprite LoadIcon(string path)
-    {
-        Sprite icon = Resources.Load<Sprite>(path);
-        return icon ? icon : null;
+        selectedWeapon = weapon;
+        if (inputWeaponIcon)
+        {
+            if (weapon != null && weapon.Data != null)
+            {
+                inputWeaponIcon.sprite = IconLoader.GetIcon(weapon.Data.IconPath);
+                inputWeaponIcon.enabled = true;
+            }
+            else
+            {
+                inputWeaponIcon.sprite = null;
+                inputWeaponIcon.enabled = false;
+            }
+        }
     }
 
     public override void Open()
     {
         base.Open();
-        inputWeaponIcon.sprite = null;
+        selectedWeapon = null;
+        if (inputWeaponIcon)
+        {
+            inputWeaponIcon.sprite = null;
+            inputWeaponIcon.enabled = false;
+        }
+        if (inputWeaponSlotBtn)
+            inputWeaponSlotBtn.interactable = true;
     }
 
     public override void Close()
     {
         base.Close();
+        // 필요시 추가 정리
     }
 }

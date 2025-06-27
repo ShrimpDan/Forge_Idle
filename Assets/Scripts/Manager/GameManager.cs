@@ -8,6 +8,8 @@ public class GameManager : MonoSingleton<GameManager>
     public Forge Forge { get; private set; }
     public UIManager UIManager { get; private set; }
 
+    public DungeonData CurrentDungeon { get; private set; }
+
     protected override void Awake()
     {
         base.Awake();
@@ -32,9 +34,21 @@ public class GameManager : MonoSingleton<GameManager>
     {
         for (int i = 0; i < 20; i++)
         {
-            Debug.Log("Add Item!");
+
             var itemData = DataManager.ItemLoader.GetRandomItem();
             Inventory.AddItem(itemData);
+        }
+
+        //Fabric 3�� "����" �߰� (�� ���� �߰�)
+        var fabricData = DataManager.ItemLoader.GetItemByKey("resource_fabric");
+        if (fabricData != null)
+        {
+            Inventory.AddItem(fabricData, 3);
+            Debug.Log("<color=lime>[GameManager] Fabric 3�� �߰� ����!</color>");
+        }
+        else
+        {
+            Debug.LogWarning("[GameManager] resource_fabric ������ �����Ͱ� �����ϴ�!");
         }
     }
 
@@ -45,5 +59,30 @@ public class GameManager : MonoSingleton<GameManager>
         {
             AssistantManager.RecruitAndSpawnTrainee();
         }
+    }
+
+    [ContextMenu("Add Test Gold (5000)")]
+    public void AddTestGold()
+    {
+        if (Forge != null)
+        {
+            Forge.AddGold(5000);
+            Debug.Log("<color=yellow>[GameManager] �׽�Ʈ�� ��� 5000 ����!</color>");
+        }
+        else
+        {
+            Debug.LogWarning("[GameManager] Forge �ν��Ͻ��� �����ϴ�!");
+        }
+    }
+
+    public void StartDungeon(DungeonData data)
+    {
+        CurrentDungeon = data;
+        LoadSceneManager.Instance.LoadSceneAsync(SceneType.Dungeon, true);
+    }
+
+    public void ExitDungeon()
+    {
+        CurrentDungeon = null;
     }
 }

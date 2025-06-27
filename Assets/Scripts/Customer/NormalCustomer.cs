@@ -6,7 +6,7 @@ public class NormalCustomer : Customer
 {
 
     
-    protected virtual void Start()
+    protected override void Start()
     {
         base.Start();
         

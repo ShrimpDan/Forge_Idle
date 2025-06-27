@@ -1,6 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class NuisanceCustomer : Customer
@@ -16,13 +14,15 @@ public class NuisanceCustomer : Customer
 
     private bool clicked = false;
 
-    protected void Start()
+    protected override void Start()
     {
+        
         if (buyPoint == null)
         {
             buyPoint = GetRandomBuyPoint();
         }
         StartCoroutine(NuisanceFlow());
+      
     }
     public override void Interact()
     {
@@ -83,11 +83,6 @@ public class NuisanceCustomer : Customer
             time += Time.deltaTime;
             yield return null;
         }
-
-
-
-
-
     }
 
     private IEnumerator ExitFlow()       

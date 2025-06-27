@@ -1,10 +1,5 @@
-﻿using DG.Tweening;
-using System.Collections;
-using System.Collections.Generic;
-using System.Data;
-using Unity.VisualScripting;
+﻿using System.Collections;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 
 
@@ -52,7 +47,6 @@ public abstract class Customer : MonoBehaviour
 
     
 
-    private bool isMoving = false;
     protected CustomerState state;
 
     private Transform targetPos;
@@ -68,9 +62,6 @@ public abstract class Customer : MonoBehaviour
 
     protected virtual void Start()
     {
-
-        
-
         StartCoroutine(CustomerFlow());
     }
 

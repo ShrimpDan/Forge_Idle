@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class BoardManager : MonoBehaviour
@@ -150,7 +149,7 @@ public class BoardManager : MonoBehaviour
 
     public void OnClickExit()
     {
-        SceneManager.UnloadSceneAsync("MiniGame");
+        LoadSceneManager.Instance.UnLoadScene(SceneType.MiniGame);
     }
 
 }
