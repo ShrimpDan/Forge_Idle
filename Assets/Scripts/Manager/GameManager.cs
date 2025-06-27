@@ -8,6 +8,8 @@ public class GameManager : MonoSingleton<GameManager>
     public Forge Forge { get; private set; }
     public UIManager UIManager { get; private set; }
 
+    public DungeonData CurrentDungeon { get; private set; }
+
     protected override void Awake()
     {
         base.Awake();
@@ -71,5 +73,16 @@ public class GameManager : MonoSingleton<GameManager>
         {
             Debug.LogWarning("[GameManager] Forge �ν��Ͻ��� �����ϴ�!");
         }
+    }
+
+    public void StartDungeon(DungeonData data)
+    {
+        CurrentDungeon = data;
+        LoadSceneManager.Instance.LoadSceneAsync(SceneType.Dungeon, true);
+    }
+
+    public void ExitDungeon()
+    {
+        CurrentDungeon = null;
     }
 }
