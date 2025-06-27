@@ -1,27 +1,27 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class DungeonManager : MonoBehaviour
 {
-    private GameManager gameManager;
+    public GameManager GameManager { get; private set; }
 
-    private TestDungeonData dungeonData;
+    public TestDungeonData DungeonData { get; private set; }
 
-    private WeaponHandler weaponHandler;
-    private MonsterHandler monsterHandler;
-    private RewardHandler rewardHandler;
-    private DungeonUI dungeonUI;
+    public WeaponHandler WeaponHandler { get; private set; }
+    public MonsterHandler MonsterHandler { get; private set; }
+    public RewardHandler RewardHandler{ get; private set; }
+    public DungeonUI DungeonUI { get; private set; }
 
     [SerializeField] float dungeonDuration = 60f;
     private float time = 0f;
-    private WaitForSeconds waitTime = new WaitForSeconds(1f);
 
     public bool IsRunning { get; private set; } = true;
 
     void Start()
     {
-        gameManager = GameManager.Instance;
+        GameManager = GameManager.Instance;
         Init();
 
         StartCoroutine(TimerCoroutine());
@@ -29,24 +29,31 @@ public class DungeonManager : MonoBehaviour
 
     public void Init()
     {
-        dungeonData = new TestDungeonData
+        DungeonData = new TestDungeonData
         {
             Key = "TestDungeon",
             DungeonName = "TestDungeon",
             MonsterHp = 30,
-            BossHp = 100
+            BossHp = 100,
+            RewardItemKeys = new List<string>
+            {
+                "resource_string",
+                "resource_iron",
+                "resource_fabric",
+                "resource_wood"
+            }
         };
 
-        dungeonUI = FindObjectOfType<DungeonUI>();
-        dungeonUI.Init(this, gameManager.UIManager);
+        DungeonUI = FindObjectOfType<DungeonUI>();
+        DungeonUI.Init(this);
 
-        weaponHandler = GetComponent<WeaponHandler>();
-        monsterHandler = GetComponent<MonsterHandler>();
-        rewardHandler = GetComponent<RewardHandler>();
+        WeaponHandler = GetComponent<WeaponHandler>();
+        MonsterHandler = GetComponent<MonsterHandler>();
+        RewardHandler = GetComponent<RewardHandler>();
 
-        weaponHandler.Init(this, gameManager.Inventory.GetEquippedWeapons(), monsterHandler);
-        monsterHandler.Init(this, dungeonUI, dungeonData);
-        rewardHandler.Init();
+        WeaponHandler.Init(this, GameManager.Inventory.GetEquippedWeapons());
+        MonsterHandler.Init(this);
+        RewardHandler.Init(GameManager.Inventory, DungeonUI);
     }
 
     private IEnumerator TimerCoroutine()
@@ -55,8 +62,8 @@ public class DungeonManager : MonoBehaviour
 
         while (IsRunning)
         {
-            time -= 1;
-            dungeonUI.UpdateTimerUI(time, dungeonDuration);
+            time -= 0.1f;
+            DungeonUI.UpdateTimerUI(time, dungeonDuration);
 
             if (time <= 0)
             {
@@ -66,18 +73,26 @@ public class DungeonManager : MonoBehaviour
                 DungeonClear(false);
             }
 
-            yield return waitTime;
+            yield return WaitForSecondsCache.Wait(0.1f);
         }
+    }
+
+    public void AddReward(int amount)
+    {
+        string ranRewardKey = DungeonData.RewardItemKeys[Random.Range(0, DungeonData.RewardItemKeys.Count)];
+        ItemData rewardItem = GameManager.DataManager.ItemLoader.GetItemByKey(ranRewardKey);
+        RewardHandler.AddReward(rewardItem, amount);
     }
 
     public void DungeonClear(bool isClear)
     {
         IsRunning = false;
-        dungeonUI.OpenClearPopup(isClear);
+        DungeonUI.OpenClearPopup(isClear);
     }
 
     public void ExitDungeon()
     {
+        RewardHandler.ApplyReward();
         SceneManager.UnloadSceneAsync("DungeonScene");
     }
 }

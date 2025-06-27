@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -12,6 +11,7 @@ public class TestDungeonData
     public string DungeonName;
     public float MonsterHp;
     public float BossHp;
+    public List<string> RewardItemKeys;
 }
 
 public class DungeonSlot : MonoBehaviour
