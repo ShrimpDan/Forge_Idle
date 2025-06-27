@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class BoardManager : MonoBehaviour
 {
@@ -10,7 +12,7 @@ public class BoardManager : MonoBehaviour
     public event Action<int, int> OnDigCountChange;//횟수 변경 UI반영
 
     [SerializeField] private int maxDigCount;
-
+    [SerializeField] private Button ExitButton;
 
     [Header("BoradSize")]
     [SerializeField] private int width;
@@ -146,6 +148,10 @@ public class BoardManager : MonoBehaviour
         return pos.x >= 0 && pos.x < width && pos.y >= 0 && pos.y < height;
     }
 
+    public void OnClickExit()
+    {
+        SceneManager.UnloadSceneAsync("MiniGame");
+    }
 
 }
 
