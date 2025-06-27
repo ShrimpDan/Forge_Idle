@@ -18,11 +18,29 @@ public class DungeonUI : MonoBehaviour
     [SerializeField] Transform rewardRoot;
     private List<RewardSlot> rewardSlots;
 
+    [Header("Exit UI")]
+    [SerializeField] GameObject exitPopup;
+    [SerializeField] Button exitBtn;
+    [SerializeField] Button confirmBtn;
+    [SerializeField] Button cancleBtn;
+    [SerializeField] Image blockRay;
 
     public void Init(DungeonManager dungeonManager)
     {
         this.dungeonManager = dungeonManager;
         rewardSlots = new List<RewardSlot>();
+
+        exitBtn.onClick.AddListener(() =>
+        {
+            exitPopup.SetActive(true);
+            blockRay.enabled = true;
+        });
+        cancleBtn.onClick.AddListener(() =>
+        {
+            exitPopup.SetActive(false);
+            blockRay.enabled = false;
+        });
+        confirmBtn.onClick.AddListener(() => dungeonManager.BackToMain());
     }
 
     public void UpdateTimerUI(float current, float max)

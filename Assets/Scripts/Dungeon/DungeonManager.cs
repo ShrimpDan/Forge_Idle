@@ -11,7 +11,7 @@ public class DungeonManager : MonoBehaviour
 
     public WeaponHandler WeaponHandler { get; private set; }
     public MonsterHandler MonsterHandler { get; private set; }
-    public RewardHandler RewardHandler{ get; private set; }
+    public RewardHandler RewardHandler { get; private set; }
     public DungeonUI DungeonUI { get; private set; }
 
     [SerializeField] float dungeonDuration = 60f;
@@ -93,6 +93,11 @@ public class DungeonManager : MonoBehaviour
     public void ExitDungeon()
     {
         RewardHandler.ApplyReward();
-        SceneManager.UnloadSceneAsync("DungeonScene");
+        LoadSceneManager.Instance.UnLoadScene(SceneType.Dungeon);
+    }
+
+    public void BackToMain()
+    {
+        LoadSceneManager.Instance.UnLoadScene(SceneType.Dungeon);
     }
 }
