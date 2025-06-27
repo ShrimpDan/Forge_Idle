@@ -63,7 +63,7 @@ public class CustomerManager : MonoSingleton<CustomerManager>
         while (true)
         {
             SpwanNormalCustomer();
-            yield return new WaitForSeconds(spawnDelay);
+            yield return WaitForSecondsCache.Wait(spawnDelay);
         }
     
     }
@@ -72,7 +72,7 @@ public class CustomerManager : MonoSingleton<CustomerManager>
     {
         while (true)
         {
-            yield return new WaitForSeconds(nuisanceSpawnTime);
+            yield return WaitForSecondsCache.Wait(nuisanceSpawnTime);
             if (UnityEngine.Random.value < nuisnaceSpawnChance)
             {
                 Debug.Log("진상 소환");
