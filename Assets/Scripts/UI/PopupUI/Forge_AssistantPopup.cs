@@ -48,7 +48,7 @@ public class Forge_AssistantPopup : BaseUI
     private void OpenRecipePopup()
     {
         var popup = uIManager.OpenUI<Forge_Recipe_Popup>(UIName.Forge_Recipe_Popup);
-        popup.Init(gameManager.TestDataManager, uIManager); // Init 내부에서 Open() 실행
+        popup.Init(gameManager.DataManager, uIManager); // Init 내부에서 Open() 실행
     }
 
     public override void Open() => base.Open();

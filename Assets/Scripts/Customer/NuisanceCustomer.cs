@@ -16,8 +16,10 @@ public class NuisanceCustomer : Customer
 
     private bool clicked = false;
 
-    protected void Start()
+    protected override void Start()
     {
+        base.Start();
+        
         if (buyPoint == null)
         {
             buyPoint = GetRandomBuyPoint();

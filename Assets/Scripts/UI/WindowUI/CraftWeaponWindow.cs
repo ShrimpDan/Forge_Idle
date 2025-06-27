@@ -16,7 +16,7 @@ public class CraftWeaponWindow : BaseUI
     private List<Button> slotButtons = new List<Button>();
     private List<Image> slotIcons = new List<Image>();
 
-    // Á¦ÀÛ ÁøÇà Á¤º¸ ±¸Á¶Ã¼
+    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ã¼
     private class SlotCraftProgress
     {
         public bool isCrafting = false;
@@ -31,14 +31,10 @@ public class CraftWeaponWindow : BaseUI
 
     private int slotCount = 6;
     private int selectedSlotIndex = -1;
-    private UIManager uiManager;
-    private GameManager gameManager;
 
     public override void Init(GameManager gameManager, UIManager uiManager)
     {
         base.Init(gameManager, uiManager);
-        this.uiManager = uiManager;
-        this.gameManager = gameManager;
 
         exitBtn.onClick.RemoveAllListeners();
         exitBtn.onClick.AddListener(Close);
@@ -59,11 +55,11 @@ public class CraftWeaponWindow : BaseUI
             slotButtons.Add(btn);
             slotIcons.Add(icon);
 
-            // °èÃþ ±¸Á¶ Á¤È®ÇÏ°Ô È®ÀÎ ¹× ·Î±× Ãß°¡
+            // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È®ï¿½Ï°ï¿½ È®ï¿½ï¿½ ï¿½ï¿½ ï¿½Î±ï¿½ ï¿½ß°ï¿½
             var progressBar = go.transform.Find("CraftProgressBarBG/CraftProgressBar")?.GetComponent<Image>();
-            if (progressBar == null) Debug.LogError("CraftProgressBar¸¦ Ã£À» ¼ö ¾øÀ½!");
+            if (progressBar == null) Debug.LogError("CraftProgressBarï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½!");
             var progressText = go.transform.Find("CraftProgressBarBG/CraftProgressText")?.GetComponent<TMP_Text>();
-            if (progressText == null) Debug.LogError("CraftProgressText¸¦ Ã£À» ¼ö ¾øÀ½!");
+            if (progressText == null) Debug.LogError("CraftProgressTextï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½!");
 
             if (progressBar) progressBar.fillAmount = 0;
             if (progressBar) progressBar.gameObject.SetActive(false);
@@ -84,42 +80,42 @@ public class CraftWeaponWindow : BaseUI
 
     private void OnClickInputWeaponSlot(int index)
     {
-        // Á¦ÀÛ ÁßÀÌ¸é Å¬¸¯ ¸·±â
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì¸ï¿½ Å¬ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         if (slotProgressList[index].isCrafting)
         {
-            Debug.Log("ÇØ´ç ½½·ÔÀº Á¦ÀÛ ÁøÇà ÁßÀÔ´Ï´Ù.");
+            Debug.Log("ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ô´Ï´ï¿½.");
             return;
         }
 
         selectedSlotIndex = index;
-        var popup = uiManager.OpenUI<Forge_Recipe_Popup>(UIName.Forge_Recipe_Popup);
-        popup.Init(gameManager.TestDataManager, uiManager);
+        var popup = uIManager.OpenUI<Forge_Recipe_Popup>(UIName.Forge_Recipe_Popup);
+        popup.Init(gameManager.DataManager, uIManager);
 
         popup.SetRecipeSelectCallback(OnRecipeSelected);
         popup.SetForgeAndInventory(gameManager.Forge, gameManager.Inventory);
     }
 
-    // Á¦ÀÛ ·¹½ÃÇÇ ¼±ÅÃ½Ã Á¦ÀÛ ½ÃÀÛ
+    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     private void OnRecipeSelected(ItemData itemData, CraftingData craftingData)
     {
         if (itemData == null || craftingData == null) return;
         if (selectedSlotIndex < 0 || selectedSlotIndex >= slotIcons.Count) return;
 
-        // Ãß°¡: Á¦ÀÛ Àç·á ½ÇÁ¦ Â÷°¨
+        // ï¿½ß°ï¿½: ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         var inventory = gameManager.Inventory;
         var required = craftingData.RequiredResources
             .Select(r => (r.ResourceKey, r.Amount)).ToList();
 
         if (!inventory.UseCraftingMaterials(required))
         {
-            Debug.LogWarning("[Á¦ÀÛ½ÇÆÐ] Àç·á°¡ ºÎÁ·ÇÏ°Å³ª Â÷°¨ ºÒ°¡!");
+            Debug.LogWarning("[ï¿½ï¿½ï¿½Û½ï¿½ï¿½ï¿½] ï¿½ï¿½á°¡ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°Å³ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ò°ï¿½!");
             return;
         }
 
-        // ¾ÆÀÌÄÜ Àû¿ë
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         slotIcons[selectedSlotIndex].sprite = Resources.Load<Sprite>(itemData.IconPath);
 
-        // Á¦ÀÛ ÁøÇà »óÅÂ ¼¼ÆÃ
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         var prog = slotProgressList[selectedSlotIndex];
         prog.isCrafting = true;
         prog.totalTime = craftingData.craftTime;
@@ -127,7 +123,7 @@ public class CraftWeaponWindow : BaseUI
         prog.data = craftingData;
         prog.itemData = itemData;
 
-        // UI È°¼ºÈ­ ¹× ÃÊ±âÈ­
+        // UI È°ï¿½ï¿½È­ ï¿½ï¿½ ï¿½Ê±ï¿½È­
         if (prog.progressBar)
         {
             prog.progressBar.fillAmount = 1f;
@@ -143,7 +139,7 @@ public class CraftWeaponWindow : BaseUI
 
     private void Update()
     {
-        // ½½·Ôº° Á¦ÀÛ ÁøÇà
+        // ï¿½ï¿½ï¿½Ôºï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         for (int i = 0; i < slotProgressList.Count; i++)
         {
             var prog = slotProgressList[i];
@@ -152,22 +148,22 @@ public class CraftWeaponWindow : BaseUI
             prog.timeLeft -= Time.deltaTime;
             if (prog.timeLeft < 0f) prog.timeLeft = 0f;
 
-            // UI ¾÷µ¥ÀÌÆ®
+            // UI ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
             if (prog.progressBar && prog.totalTime > 0f)
                 prog.progressBar.fillAmount = prog.timeLeft / prog.totalTime;
             if (prog.timeText)
                 prog.timeText.text = $"{prog.timeLeft:0.0}s";
 
-            // Á¦ÀÛ ¿Ï·á Ã³¸®
+            // ï¿½ï¿½ï¿½ï¿½ ï¿½Ï·ï¿½ Ã³ï¿½ï¿½
             if (prog.timeLeft <= 0f && prog.isCrafting)
             {
                 prog.isCrafting = false;
-                // ¹Ù/ÅØ½ºÆ® ºñÈ°¼ºÈ­
+                // ï¿½ï¿½/ï¿½Ø½ï¿½Æ® ï¿½ï¿½È°ï¿½ï¿½È­
                 if (prog.progressBar) prog.progressBar.gameObject.SetActive(false);
                 if (prog.timeText) prog.timeText.gameObject.SetActive(false);
                 slotButtons[i].interactable = true;
 
-                Debug.Log($"[Á¦ÀÛ¿Ï·á] {prog.itemData?.Name ?? ""} Á¦ÀÛÀÌ ³¡³µ½À´Ï´Ù!");
+                Debug.Log($"[ï¿½ï¿½ï¿½Û¿Ï·ï¿½] {prog.itemData?.Name ?? ""} ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½!");
             }
         }
     }
@@ -178,7 +174,7 @@ public class CraftWeaponWindow : BaseUI
         foreach (var icon in slotIcons)
             icon.sprite = null;
         selectedSlotIndex = -1;
-        // ¸ðµç ÁøÇà UI/»óÅÂ ÃÊ±âÈ­
+        // ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ UI/ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­
         foreach (var prog in slotProgressList)
         {
             prog.isCrafting = false;

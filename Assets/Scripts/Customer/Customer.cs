@@ -52,7 +52,6 @@ public abstract class Customer : MonoBehaviour
 
     
 
-    private bool isMoving = false;
     protected CustomerState state;
 
     private Transform targetPos;

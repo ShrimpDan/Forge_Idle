@@ -33,19 +33,15 @@ public class GameManager : MonoSingleton<GameManager>
         for (int i = 0; i < 20; i++)
         {
 
-            var itemData = TestDataManager.ItemLoader.GetRandomItem();
-            ItemInstance item = new ItemInstance();
-            item.Data = itemData;
-            Inventory.AddItem(item);
+            var itemData = DataManager.ItemLoader.GetRandomItem();
+            Inventory.AddItem(itemData);
         }
 
         //Fabric 3�� "����" �߰� (�� ���� �߰�)
-        var fabricData = TestDataManager.ItemLoader.GetItemByKey("resource_fabric");
+        var fabricData = DataManager.ItemLoader.GetItemByKey("resource_fabric");
         if (fabricData != null)
         {
-            ItemInstance fabricItem = new ItemInstance();
-            fabricItem.Data = fabricData;
-            Inventory.AddItem(fabricItem, 3);
+            Inventory.AddItem(fabricData, 3);
             Debug.Log("<color=lime>[GameManager] Fabric 3�� �߰� ����!</color>");
         }
         else

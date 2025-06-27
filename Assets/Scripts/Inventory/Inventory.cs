@@ -52,9 +52,6 @@ namespace Jang
 
         private void AddOrMergeItem(List<ItemInstance> list, ItemData newItem, int amount)
         {
-            // ItemKey�� �׻� Data���� �����ͼ� ����
-            newItem.ItemKey = newItem.Data.ItemKey;
-
             var existItem = list.Find(i => i.ItemKey == newItem.ItemKey);
 
             if (existItem != null)
