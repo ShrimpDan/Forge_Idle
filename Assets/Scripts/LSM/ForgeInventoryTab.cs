@@ -19,16 +19,27 @@ public class ForgeInventoryTab : MonoBehaviour
     [SerializeField] private GameObject slotPrefab;
 
     private Action<ItemInstance> weaponSlotCallback;
-
     private GameManager gameManager;
     private UIManager uiManager;
+
+    private enum TabType { Weapon, Gem, Resource }
+    private TabType curTab = TabType.Weapon;
 
     public void Init(GameManager gameManager, UIManager uiManager)
     {
         this.gameManager = gameManager;
         this.uiManager = uiManager;
 
-        RefreshSlots();
+        equipButton.onClick.RemoveAllListeners();
+        equipButton.onClick.AddListener(() => SwitchTab(TabType.Weapon));
+
+        gemButton.onClick.RemoveAllListeners();
+        gemButton.onClick.AddListener(() => SwitchTab(TabType.Gem));
+
+        resourceButton.onClick.RemoveAllListeners();
+        resourceButton.onClick.AddListener(() => SwitchTab(TabType.Resource));
+
+        SwitchTab(TabType.Weapon);
     }
 
     public void SetWeaponSlotCallback(Action<ItemInstance> callback)
@@ -36,21 +47,54 @@ public class ForgeInventoryTab : MonoBehaviour
         weaponSlotCallback = callback;
     }
 
-    // 슬롯 생성/초기화 예시 
+    private void SwitchTab(TabType tab)
+    {
+        curTab = tab;
+        equipRoot.gameObject.SetActive(tab == TabType.Weapon);
+        gemRoot.gameObject.SetActive(tab == TabType.Gem);
+        resourceRoot.gameObject.SetActive(tab == TabType.Resource);
+
+        RefreshSlots();
+    }
+
     public void RefreshSlots()
     {
-        foreach (Transform child in equipRoot)
-            Destroy(child.gameObject);
+        // 슬롯 클리어
+        foreach (Transform t in equipRoot) Destroy(t.gameObject);
+        foreach (Transform t in gemRoot) Destroy(t.gameObject);
+        foreach (Transform t in resourceRoot) Destroy(t.gameObject);
 
-        var weaponList = gameManager.Inventory.WeaponList;
-        foreach (var item in weaponList)
+        if (gameManager == null) return;
+
+        if (curTab == TabType.Weapon)
         {
-            var go = GameObject.Instantiate(slotPrefab, equipRoot);
-            var btn = go.GetComponent<Button>();
-            var icon = go.GetComponent<Image>();
+            foreach (var item in gameManager.Inventory.WeaponList)
+                CreateSlot(equipRoot, item, weaponSlotCallback);
+        }
+        else if (curTab == TabType.Gem)
+        {
+            foreach (var item in gameManager.Inventory.GemList)
+                CreateSlot(gemRoot, item, null);
+        }
+        else if (curTab == TabType.Resource)
+        {
+            foreach (var item in gameManager.Inventory.ResourceList)
+                CreateSlot(resourceRoot, item, null);
+        }
+    }
+
+    private void CreateSlot(Transform parent, ItemInstance item, Action<ItemInstance> callback)
+    {
+        var go = Instantiate(slotPrefab, parent);
+        var btn = go.GetComponent<Button>();
+        var icon = go.GetComponent<Image>();
+        if (icon != null && item?.Data != null)
             icon.sprite = IconLoader.GetIcon(item.Data.IconPath);
 
-            btn.onClick.AddListener(() => weaponSlotCallback?.Invoke(item));
+        btn.onClick.RemoveAllListeners();
+        if (callback != null)
+        {
+            btn.onClick.AddListener(() => callback(item));
         }
     }
 }
