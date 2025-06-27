@@ -7,25 +7,29 @@ public class UpgradeWeaponWindow : BaseUI
 
     [Header("UI Elements")]
     [SerializeField] private Button exitBtn;
-    [SerializeField] private Button inputWeaponSlotBtn; // 무기 입력 슬롯 버튼
-    [SerializeField] private Image inputWeaponIcon;     // 무기 입력 슬롯에 표시할 Image
+    [SerializeField] private Button inputWeaponSlotBtn;
+    [SerializeField] private Image inputWeaponIcon;
 
-    private ItemInstance selectedWeapon; // 선택된 무기 보관용
+    private ItemInstance selectedWeapon;
 
-    private void Awake()
+    public override void Init(GameManager gameManager, UIManager uIManager)
     {
+        base.Init(gameManager, uIManager);
+
+        exitBtn.onClick.RemoveAllListeners();
         exitBtn.onClick.AddListener(Close);
+
+        inputWeaponSlotBtn.onClick.RemoveAllListeners();
         inputWeaponSlotBtn.onClick.AddListener(OnClickInputWeaponSlot);
     }
 
     private void OnClickInputWeaponSlot()
     {
-        // 인벤토리 팝업 열고, 무기 선택 콜백 연결
+        // 반드시 Forge_Inventory_Popup을 연다!
         var popup = uIManager.OpenUI<Forge_Inventory_Popup>(UIName.Forge_Inventory_Popup);
         popup.SetWeaponSelectCallback(OnWeaponSelected);
     }
 
-    // 팝업에서 무기 선택 시 콜백
     private void OnWeaponSelected(ItemInstance weapon)
     {
         selectedWeapon = weapon;
