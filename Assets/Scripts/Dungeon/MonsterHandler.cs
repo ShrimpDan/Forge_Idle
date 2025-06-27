@@ -7,7 +7,7 @@ public class MonsterHandler : MonoBehaviour
     private DungeonManager dungeonManager;
     private DungeonUI dungeonUI;
     
-    private TestDungeonData dungeonData;
+    private DungeonData dungeonData;
 
     [SerializeField] private RectTransform spawnRoot;
     [SerializeField] private GameObject normalMonsterPrefab;
