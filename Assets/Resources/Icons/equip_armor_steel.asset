@@ -6,11 +6,11 @@ Sprite:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Sword11
+  m_Name: equip_armor_steel
   m_Rect:
     serializedVersion: 2
-    x: 0
-    y: 0
+    x: 32
+    y: 32
     width: 16
     height: 16
   m_Offset: {x: 0, y: 0}
@@ -22,7 +22,7 @@ Sprite:
   m_AtlasName: 
   m_PackingTag: 
   m_RenderDataKey:
-    6eb16e372762d6b4cb708c44ebfab931: -460413151
+    6eb16e372762d6b4cb708c44ebfab931: 23267520
   m_AtlasTags: []
   m_SpriteAtlas: {fileID: 0}
   m_RD:
@@ -107,14 +107,14 @@ Sprite:
     m_Bindpose: []
     textureRect:
       serializedVersion: 2
-      x: 0
-      y: 0
+      x: 32
+      y: 32
       width: 16
       height: 16
     textureRectOffset: {x: 0, y: 0}
     atlasRectOffset: {x: -1, y: -1}
     settingsRaw: 64
-    uvTransform: {x: 16, y: 8, z: 16, w: 8}
+    uvTransform: {x: 16, y: 40, z: 16, w: 40}
     downscaleMultiplier: 1
   m_AtlasRD:
     serializedVersion: 3
@@ -198,20 +198,21 @@ Sprite:
     m_Bindpose: []
     textureRect:
       serializedVersion: 2
-      x: 0
-      y: 0
+      x: 32
+      y: 32
       width: 16
       height: 16
     textureRectOffset: {x: 0, y: 0}
     atlasRectOffset: {x: -1, y: -1}
     settingsRaw: 64
-    uvTransform: {x: 16, y: 8, z: 16, w: 8}
+    uvTransform: {x: 16, y: 40, z: 16, w: 40}
     downscaleMultiplier: 1
   m_PhysicsShape:
   - - {x: -0.5, y: -0.5}
     - {x: 0.25, y: -0.5}
-    - {x: 0.5, y: -0.1875}
+    - {x: 0.5, y: -0.0625}
     - {x: 0.5, y: 0.5}
-    - {x: -0.5, y: 0.5}
+    - {x: -0.25, y: 0.5}
+    - {x: -0.5, y: 0.4375}
   m_Bones: []
-  m_SpriteID: 2e405ecb2fc53294ea18adf0fa687cf4
+  m_SpriteID: 30076a6445986ed419f9cf7ce4aaeb83
