@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class BoardManager : MonoBehaviour
 {
+    public event Action<TreasureData> OnTreasureComplete; //보물 완성되면 이걸로 어떤 보물이 완성된건지 전달
     public int DigCount => digCount;
     public int MaxDigCount => maxDigCount;
     public event Action<int, int> OnDigCountChange;//횟수 변경 UI반영
@@ -132,7 +133,9 @@ public class BoardManager : MonoBehaviour
     }
     void OnTreasureCompleted(TreasureData data)
     {
+        Debug.Log($"보물{data.id}");
         Debug.Log("발굴 완료 ");
+        OnTreasureComplete?.Invoke(data);
     }
 
     private Block GetBlock(Vector2Int pos)
