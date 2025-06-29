@@ -36,7 +36,7 @@ public class CustomerManager : MonoSingleton<CustomerManager>
     private Dictionary<CustomerJob, int> customerCount = new Dictionary<CustomerJob, int>(); //현재 수
 
     private Dictionary<CustomerJob, int> jobPurchaseCounts = new Dictionary<CustomerJob, int>();
-    [SerializeField] private int callingCount = 5;//단골 호출 카운트
+    [SerializeField] private int callingCount = 10;//단골 호출 카운트
 
 
 
@@ -166,6 +166,7 @@ public class CustomerManager : MonoSingleton<CustomerManager>
         if (jobPurchaseCounts[job] >= callingCount)
         {
             jobPurchaseCounts[job] = 0;//초기화 
+            //callingCount 증가 언제하지??
             SpawnRegularCusomter(job);
         }
     }

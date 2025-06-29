@@ -131,11 +131,11 @@ public class BoardManager : MonoBehaviour
     {
         Debug.Log("발굴 실패");
     }
-    void OnTreasureCompleted(TreasureData data)
+    void OnTreasureCompleted(TreasureData data) //완성된 보물 전달 메서드
     {
         Debug.Log($"보물{data.id}");
         Debug.Log("발굴 완료 ");
-        OnTreasureComplete?.Invoke(data);
+        OnTreasureComplete?.Invoke(data); //데이터 전달
     }
 
     private Block GetBlock(Vector2Int pos)
