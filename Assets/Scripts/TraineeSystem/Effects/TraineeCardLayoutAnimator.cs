@@ -12,8 +12,6 @@ public class TraineeCardLayoutAnimator : MonoBehaviour
     /// <summary>
     /// 카드 개수에 따라 배치될 위치들을 계산합니다. 2줄 5칸 고정 배치입니다.
     /// </summary>
-    /// <param name="count">카드 수</param>
-    /// <returns>배치될 위치 리스트</returns>
     public List<Vector2> CalculateCardPositions(int count)
     {
         List<Vector2> positions = new();
@@ -32,10 +30,6 @@ public class TraineeCardLayoutAnimator : MonoBehaviour
     /// <summary>
     /// 카드들을 일정 시간 간격으로 순차적으로 이동시킵니다.
     /// </summary>
-    /// <param name="cards">카드 오브젝트 리스트</param>
-    /// <param name="targetPositions">이동할 위치 리스트</param>
-    /// <param name="delay">시작 전 대기 시간</param>
-    /// <param name="interval">카드 간 시간 간격</param>
     public IEnumerator SpreadCardsOverTime(List<GameObject> cards, List<Vector2> targetPositions, float delay = 1f, float interval = 0.1f)
     {
         yield return new WaitForSeconds(delay);

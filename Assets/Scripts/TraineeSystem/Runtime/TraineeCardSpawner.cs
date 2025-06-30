@@ -1,6 +1,4 @@
 ﻿using UnityEngine;
-using System;
-using System.Collections.Generic;
 
 /// <summary>
 /// 제자 카드를 프리팹 기반으로 생성하고 초기화하는 책임을 갖는 클래스입니다.
@@ -12,7 +10,7 @@ public class TraineeCardSpawner
     private readonly Transform singleDrawParent;
     private readonly Transform multiDrawParent;
     private readonly TraineeFactory factory;
-    private readonly TraineeManager manager;
+    private readonly TraineeDrawController drawController;
 
     public TraineeCardSpawner(
         GameObject largeCardPrefab,
@@ -20,14 +18,14 @@ public class TraineeCardSpawner
         Transform singleDrawParent,
         Transform multiDrawParent,
         TraineeFactory factory,
-        TraineeManager manager)
+        TraineeDrawController drawController)
     {
         this.largeCardPrefab = largeCardPrefab;
         this.miniCardPrefab = miniCardPrefab;
         this.singleDrawParent = singleDrawParent;
         this.multiDrawParent = multiDrawParent;
         this.factory = factory;
-        this.manager = manager;
+        this.drawController = drawController;
     }
 
     /// <summary>
@@ -37,7 +35,7 @@ public class TraineeCardSpawner
     {
         if (largeCardPrefab == null || singleDrawParent == null) return null;
 
-        var obj = UnityEngine.Object.Instantiate(largeCardPrefab, singleDrawParent);
+        var obj = Object.Instantiate(largeCardPrefab, singleDrawParent);
         obj.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
         obj.transform.localScale = Vector3.one;
 
@@ -52,7 +50,7 @@ public class TraineeCardSpawner
     {
         if (miniCardPrefab == null || multiDrawParent == null) return null;
 
-        var obj = UnityEngine.Object.Instantiate(miniCardPrefab, multiDrawParent);
+        var obj = Object.Instantiate(miniCardPrefab, multiDrawParent);
         obj.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
         obj.transform.localScale = Vector3.one;
 
@@ -68,11 +66,21 @@ public class TraineeCardSpawner
         var controller = obj.GetComponent<TraineeController>();
         if (controller == null)
         {
-            UnityEngine.Object.Destroy(obj);
+            Object.Destroy(obj);
             return;
         }
 
-        controller.Setup(data, factory, manager, index, null, manager.ConfirmTrainee, enableFlipImmediately, true);
+        controller.Setup(
+            data,
+            factory,
+            drawController,
+            index,
+            null,
+            d => drawController.OnTraineeConfirmed?.Invoke(d),
+            enableFlipImmediately,
+            true
+        );
+
         controller.PlaySpawnEffect();
     }
 }
