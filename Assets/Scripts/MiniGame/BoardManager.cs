@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -179,6 +180,11 @@ public class BoardManager : MonoBehaviour
     private void UpdateTreasureCountUI()
     {
         TreasureCountText.text = $"{foundTreasureId.Count}/ {treasures.Length}";
+    }
+
+    private void ResultUI()
+    { 
+        
     }
 }
 
