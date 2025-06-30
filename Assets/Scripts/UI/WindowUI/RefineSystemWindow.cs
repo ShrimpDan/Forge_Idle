@@ -105,7 +105,7 @@ public class RefineSystemWindow : BaseUI
         // 실제 비용 차감/결과 처리 구현 예정
 
         // 정련 로직 자리 (추후 구현)
-        Debug.Log("[RefineSystem] 정련 완료! (실제 변환 로직은 추후 구현)");
+        Debug.Log("[RefineSystem] 정련 완료!");
 
         // UI 초기화
         ResetUI();
