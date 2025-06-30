@@ -22,7 +22,7 @@ public class MineDetailWindow : BaseUI
 
     public void SetupMine(int mineId)
     {
-        // ����: ���� 5�� ����
+        // 광물 5개 생성
         foreach (Transform child in mineralSlotParent)
             Destroy(child.gameObject);
         mineralSlots.Clear();
@@ -31,17 +31,16 @@ public class MineDetailWindow : BaseUI
         {
             GameObject go = Instantiate(mineralSlotPrefab, mineralSlotParent);
             MineralSlot slot = go.GetComponent<MineralSlot>();
-            // ���� ������/������/���������� ��ü
-            slot.Init($"����{i + 1}", null, () => OpenAssistantPopup(i));
+            // 각 슬롯에 광물명/아이콘/콜백 설정
+            slot.Init($"광물{i + 1}", null, () => OpenAssistantPopup(i));
             mineralSlots.Add(slot);
         }
     }
 
     private void OpenAssistantPopup(int mineralIndex)
     {
-        // �κ��丮/���� �˾� UI ���� (���� ����)
-        Debug.Log($"���� ��ġ �˾�: {mineralIndex}");
-        uIManager.OpenUI<InventoryPopup>(UIName.InventoryPopup);
-        // �켱 �κ��丮 �˾� ��
+        // 인벤토리/어시스턴트 팝업
+        Debug.Log($"광물 슬롯 팝업: {mineralIndex}");
+        uIManager.OpenUI<Forge_Inventory_Popup>(UIName.Forge_Inventory_Popup);
     }
 }
