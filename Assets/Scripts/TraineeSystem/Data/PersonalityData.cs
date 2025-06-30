@@ -6,7 +6,7 @@
 /// 이를 통해 제자 육성 시 성격에 따라 능력치가 다르게 적용됩니다.
 /// </summary>
 [CreateAssetMenu(fileName = "NewPersonality", menuName = "Trainee/Personality")]
-public class PersonalityData : ScriptableObject
+public class PersonalityDataSO : ScriptableObject
 {
     [Header("성격 기본 정보")]
 
