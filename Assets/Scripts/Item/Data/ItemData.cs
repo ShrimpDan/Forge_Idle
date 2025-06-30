@@ -6,34 +6,21 @@ public class WeaponStats
 {
     public float Attack;
     public float AttackInterval;
-    public int EnhanceMax;
 }
 
 [System.Serializable]
 public class UpgradeInfo
 {
-    public int CurrentEnhanceLevel;
     public int MaxEnhanceLevel;
-
-    public float AttackBonusPerLevel;
+    public float AttackMultiplier;
     public float IntervalReductionPerLevel;
-
-    public float GetEnhancedAttack(float baseAttack)
-    {
-        return baseAttack + AttackBonusPerLevel * CurrentEnhanceLevel;
-    }
-
-    public float GetEnhancedInterval(float baseInterval)
-    {
-        return Mathf.Max(0.1f, baseInterval - IntervalReductionPerLevel * CurrentEnhanceLevel);
-    }
 }
 
 [System.Serializable]
 public class GemStats
 {
-    public float EnhanceMultiplier;
-    public string EffectDescription;
+    public float GemMultiplier;
+    public string GemEffectDescription;
 }
 
 [System.Serializable]
@@ -65,19 +52,57 @@ public class ItemDataLoader
             return;
         }
 
-        ItemList = JsonUtility.FromJson<Wrapper>(json.text).Items;
+        List<ItemDataFlat> flatList = JsonUtility.FromJson<Wrapper<ItemDataFlat>>(json.text).Items;
+        ItemList = new List<ItemData>();
         ItemDict = new Dictionary<string, ItemData>();
 
-        foreach (var item in ItemList)
+        foreach (var flat in flatList)
         {
-            ItemDict[item.ItemKey] = item;
+            ItemData data = new ItemData
+            {
+                ItemKey = flat.Key,
+                ItemType = flat.ItemType,
+                Name = flat.Name,
+                Description = flat.Description,
+                IconPath = flat.IconPath
+            };
+
+            // Weapon
+            if (flat.Attack > 0 || flat.AttackInterval > 0)
+            {
+                data.WeaponStats = new WeaponStats
+                {
+                    Attack = flat.Attack,
+                    AttackInterval = flat.AttackInterval
+                };
+
+                data.UpgradeInfo = new UpgradeInfo
+                {
+                    MaxEnhanceLevel = flat.EnhanceMax,
+                    AttackMultiplier = flat.AttackMultiplier,
+                    IntervalReductionPerLevel = flat.IntervalReduction
+                };
+            }
+
+            // Gem
+            if (flat.GemMultiplier > 0)
+            {
+                data.GemStats = new GemStats
+                {
+                    GemMultiplier = flat.GemMultiplier,
+                    GemEffectDescription = flat.GemEffectDescription
+                };
+            }
+
+            ItemList.Add(data);
+            ItemDict[data.ItemKey] = data;
         }
     }
 
     [System.Serializable]
-    private class Wrapper
+    private class Wrapper<T>
     {
-        public List<ItemData> Items;
+        public List<T> Items;
     }
 
     public ItemData GetItemByKey(string key)
@@ -91,5 +116,29 @@ public class ItemDataLoader
         return ItemList[Random.Range(0, ItemList.Count)];
     }
 }
+
+[System.Serializable]
+public class ItemDataFlat
+{
+    public string Key;
+    public ItemType ItemType;
+    public string Name;
+    public string Description;
+    public string IconPath;
+
+    // Weapon
+    public float Attack;
+    public float AttackInterval;
+
+    // Upgrade
+    public int EnhanceMax;
+    public float AttackMultiplier;
+    public float IntervalReduction;
+
+    // Gem
+    public float GemMultiplier;
+    public string GemEffectDescription;
+}
+
 
 

@@ -5,13 +5,6 @@
     Popup
 }
 
-public enum ItemType
-{
-    Weapon = 0,
-    Resource = 1,
-    Gem = 2,
-}
-
 public enum ButtonType
 {
     Sell,

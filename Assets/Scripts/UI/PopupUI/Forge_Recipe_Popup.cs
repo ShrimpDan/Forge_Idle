@@ -16,7 +16,7 @@ public class Forge_Recipe_Popup : BaseUI
     private Forge forge;
     private Jang.InventoryManager inventory;
 
-    // ÆË¾÷ ÃÊ±âÈ­
+    // ï¿½Ë¾ï¿½ ï¿½Ê±ï¿½È­
     public void Init(DataManger dataManager, UIManager uiManager)
     {
         this.dataManager = dataManager;
@@ -26,13 +26,13 @@ public class Forge_Recipe_Popup : BaseUI
         exitBtn.onClick.AddListener(() => uIManager.CloseUI(UIName.Forge_Recipe_Popup));
     }
 
-    // ·¹½ÃÇÇ ¼±ÅÃ ÄÝ¹é ¼¼ÆÃ
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ý¹ï¿½ ï¿½ï¿½ï¿½ï¿½
     public void SetRecipeSelectCallback(Action<ItemData, CraftingData> callback)
     {
         onRecipeSelect = callback;
     }
 
-    // Forge ¹× Inventory ¼¼ÆÃ
+    // Forge ï¿½ï¿½ Inventory ï¿½ï¿½ï¿½ï¿½
     public void SetForgeAndInventory(Forge forge, Jang.InventoryManager inventory)
     {
         this.forge = forge;
@@ -40,7 +40,7 @@ public class Forge_Recipe_Popup : BaseUI
         PopulateRecipeList();
     }
 
-    // ·¹½ÃÇÇ ¸ñ·Ï ¼¼ÆÃ
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     private void PopulateRecipeList()
     {
         foreach (Transform child in contentRoot)
@@ -51,7 +51,7 @@ public class Forge_Recipe_Popup : BaseUI
 
         if (craftingList == null || itemLoader == null)
         {
-            Debug.LogError("[Forge_Recipe_Popup] µ¥ÀÌÅÍ ¾øÀ½");
+            Debug.LogError("[Forge_Recipe_Popup] ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½");
             return;
         }
 
