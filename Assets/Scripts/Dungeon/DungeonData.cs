@@ -4,7 +4,7 @@ using UnityEngine;
 [System.Serializable]
 public class DungeonData
 {
-    public int Key;
+    public string Key;
     public string DungeonName;
     public float MonsterHp;
     public float BossHp;
@@ -16,7 +16,7 @@ public class DungeonData
 public class DungeonDataLoader
 {
     public List<DungeonData> DungeonLists { get; private set; }
-    public Dictionary<int, DungeonData> DungeonDict { get; private set; }
+    public Dictionary<string, DungeonData> DungeonDict { get; private set; }
 
     public DungeonDataLoader(string path = "Data/dungeon_data")
     {
@@ -30,7 +30,7 @@ public class DungeonDataLoader
 
         DungeonLists = JsonUtility.FromJson<Wrapper>(json.text).Items;
 
-        DungeonDict = new Dictionary<int, DungeonData>();
+        DungeonDict = new Dictionary<string, DungeonData>();
         foreach (var dungeon in DungeonLists)
         {
             DungeonDict[dungeon.Key] = dungeon;
@@ -43,7 +43,7 @@ public class DungeonDataLoader
         public List<DungeonData> Items;
     }
 
-    public DungeonData GetDungeonByKey(int key)
+    public DungeonData GetDungeonByKey(string key)
     {
         DungeonDict.TryGetValue(key, out DungeonData data);
         return data;
