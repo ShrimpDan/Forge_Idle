@@ -69,6 +69,7 @@ public class TraineeController : MonoBehaviour
     {
         onConfirm?.Invoke(data);
         Destroy(gameObject);
+        manager?.OnCardConfirmed();
         factory?.SetCanRecruit(true);
     }
 
@@ -78,7 +79,6 @@ public class TraineeController : MonoBehaviour
 
         if (manager != null && manager.IsCardInteractionLocked)
         {
-            Debug.Log("카드 배치 중이므로 클릭 불가");
             return;
         }
 
@@ -90,6 +90,7 @@ public class TraineeController : MonoBehaviour
         {
             isFlipped = true;
             isFlipping = false;
+            manager?.OnCardFlipped();
         });
     }
 

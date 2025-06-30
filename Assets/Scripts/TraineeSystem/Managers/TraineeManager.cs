@@ -3,19 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
-/// <summary>
-/// 제자를 생성하고, 게임 내에 소환하며, 관련 데이터를 관리하는 핵심 매니저 클래스입니다.
-/// 제자 생성 요청을 처리하고, 씬에 오브젝트로 배치합니다.
-/// </summary>
 public class TraineeManager : MonoBehaviour
 {
-    [Header("카드 프리팹")]
-    [SerializeField] private GameObject largeTraineeCardPrefab; // 단일 뽑기용 카드
-    [SerializeField] private GameObject miniTraineeCardPrefab;  // 10연 뽑기용 카드
+    [Header("카드 프리파베")]
+    [SerializeField] private GameObject largeTraineeCardPrefab;
+    [SerializeField] private GameObject miniTraineeCardPrefab;
 
-    [Header("카드 출력 위치")]
-    [SerializeField] private Transform singleDrawParent; // 단일 뽑기 카드 위치
-    [SerializeField] private Transform multiDrawParent;  // 10연 뽑기 카드 위치
+    [Header(" 카드 출력 위치")]
+    [SerializeField] private Transform singleDrawParent;
+    [SerializeField] private Transform multiDrawParent;
 
     [Header("성격 데이터베이스")]
     [SerializeField] private PersonalityTierDatabase personalityDatabase;
@@ -25,17 +21,21 @@ public class TraineeManager : MonoBehaviour
     private List<GameObject> activeTrainees = new();
     private List<TraineeData> currentBatch = new();
 
-    private List<GameObject> spawnedCards = new(); // 10연 뽑기 카드 리스트
-    private List<Vector2> targetPositions = new(); // 목표 위치 리스트
+    private List<GameObject> spawnedCards = new();
+    private List<Vector2> targetPositions = new();
 
     private bool isRecruiting = false;
-    private bool isSkipping = false;
     private SpecializationType? currentDrawType = null;
 
     private bool isCardInteractionLocked = false;
     public bool IsCardInteractionLocked => isCardInteractionLocked;
 
     private TraineeFactory factory;
+
+    private const int MAX_CARD_COUNT = 10;
+    private int flippedCardCount = 0;
+    private int confirmedCardCount = 0;
+    private bool isMultipleRecruiting = false;
 
     private void Awake()
     {
@@ -47,10 +47,56 @@ public class TraineeManager : MonoBehaviour
     public void OnClickRecruitEnhancingTrainee() => RecruitAndSpawnFixed(SpecializationType.Enhancing);
     public void OnClickRecruitSellingTrainee() => RecruitAndSpawnFixed(SpecializationType.Selling);
 
-    public void OnClickRecruit10Random() => StartMultipleRecruit(10);
-    public void OnClickRecruit10Crafting() => StartMultipleRecruit(10, SpecializationType.Crafting);
-    public void OnClickRecruit10Enhancing() => StartMultipleRecruit(10, SpecializationType.Enhancing);
-    public void OnClickRecruit10Selling() => StartMultipleRecruit(10, SpecializationType.Selling);
+    public void OnClickRecruit10Random()
+    {
+        if (isMultipleRecruiting || (flippedCardCount > 0 && flippedCardCount < MAX_CARD_COUNT))
+        {
+            return;
+        }
+        StartMultipleRecruit(10);
+    }
+
+    public void OnClickRecruit10Crafting()
+    {
+        if (isMultipleRecruiting || (flippedCardCount > 0 && flippedCardCount < MAX_CARD_COUNT))
+        {
+            return;
+        }
+        StartMultipleRecruit(10, SpecializationType.Crafting);
+    }
+
+    public void OnClickRecruit10Enhancing()
+    {
+        if (isMultipleRecruiting || (flippedCardCount > 0 && flippedCardCount < MAX_CARD_COUNT))
+        {
+            return;
+        }
+        StartMultipleRecruit(10, SpecializationType.Enhancing);
+    }
+
+    public void OnClickRecruit10Selling()
+    {
+        if (isMultipleRecruiting || (flippedCardCount > 0 && flippedCardCount < MAX_CARD_COUNT))
+        {
+            return;
+        }
+        StartMultipleRecruit(10, SpecializationType.Selling);
+    }
+
+    public void OnCardFlipped()
+    {
+        flippedCardCount++;
+        Debug.Log($"[카드 뒤집기] {flippedCardCount}/{MAX_CARD_COUNT}");
+    }
+
+    public void OnCardConfirmed()
+    {
+        confirmedCardCount++;
+        if (confirmedCardCount >= MAX_CARD_COUNT)
+        {
+            isMultipleRecruiting = false;
+        }
+    }
 
     public void RecruitAndSpawnTrainee()
     {
@@ -78,7 +124,6 @@ public class TraineeManager : MonoBehaviour
     {
         if (largeTraineeCardPrefab == null || singleDrawParent == null)
         {
-            Debug.LogError("단일 뽑기 프리팹 또는 부모가 없습니다.");
             return;
         }
 
@@ -94,7 +139,6 @@ public class TraineeManager : MonoBehaviour
     {
         if (miniTraineeCardPrefab == null || multiDrawParent == null)
         {
-            Debug.LogError("10연 뽑기 프리팹 또는 부모가 없습니다.");
             return;
         }
 
@@ -112,7 +156,7 @@ public class TraineeManager : MonoBehaviour
         TraineeController controller = obj.GetComponent<TraineeController>();
         if (controller == null)
         {
-            Debug.LogError("TraineeController가 없습니다.");
+            Debug.LogError("TraineeController 없음");
             Destroy(obj);
             return;
         }
@@ -167,11 +211,14 @@ public class TraineeManager : MonoBehaviour
 
     public void StartMultipleRecruit(int count, SpecializationType? fixedType = null)
     {
-        if (isRecruiting) return;
+        if (isRecruiting || isMultipleRecruiting) return;
+
+        flippedCardCount = 0;
+        confirmedCardCount = 0;
+        isMultipleRecruiting = true;
 
         isRecruiting = true;
         currentBatch.Clear();
-        isSkipping = false;
         currentDrawType = fixedType;
 
         factory.SetCanRecruit(true);
@@ -214,8 +261,6 @@ public class TraineeManager : MonoBehaviour
 
     private void OnSkipFromIndex(int currentIndex)
     {
-        isSkipping = true;
-
         foreach (var obj in activeTrainees)
         {
             Destroy(obj);
