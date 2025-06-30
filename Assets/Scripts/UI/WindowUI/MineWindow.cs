@@ -7,8 +7,8 @@ public class MineWindow : BaseUI
     public override UIType UIType => UIType.Window;
 
     [SerializeField] private Button exitBtn;
-    [SerializeField] private Transform mineSlotParent; // ���� ���� �θ�
-    [SerializeField] private GameObject mineSlotPrefab; // MineListSlot ������
+    [SerializeField] private Transform mineSlotParent; 
+    [SerializeField] private GameObject mineSlotPrefab; 
 
     private List<MineListSlot> mineSlots = new();
 
@@ -32,8 +32,8 @@ public class MineWindow : BaseUI
         {
             GameObject go = Instantiate(mineSlotPrefab, mineSlotParent);
             MineListSlot slot = go.GetComponent<MineListSlot>();
-            string mineName = $"���� {i}";
-            Sprite[] drops = new Sprite[2]; // ���� ��� ������ ��������Ʈ�� ä���
+            string mineName = $"광산 {i}";
+            Sprite[] drops = new Sprite[2];
             slot.Init(mineName, drops, () => OpenMineDetail(i));
             mineSlots.Add(slot);
         }

@@ -63,14 +63,14 @@ public class TraineeCardAnimator : MonoBehaviour
 
     private void FlipWithShake(System.Action onFlipped)
     {
-        backRect.DOShakeRotation(1f, new Vector3(0, 0, 20f), 20, 90)
-                .OnComplete(() => FlipCard(onFlipped));
+        backRect.DOShakeRotation(0.77f, new Vector3(0, 0, 20f), 20, 90)
+            .OnComplete(() => FlipCard(onFlipped));
     }
 
     private void FlipWithShakeAndPop(System.Action onFlipped)
     {
         Sequence seq = DOTween.Sequence();
-        seq.Append(backRect.DOShakeRotation(1f, new Vector3(0, 0, 20f), 20, 90));
+        seq.Append(backRect.DOShakeRotation(0.77f, new Vector3(0, 0, 20f), 20, 90));
         seq.Append(backRect.DOScale(0.8f, 0.2f));
         seq.Append(backRect.DOScale(1.6f, 0.12f));
         seq.Append(backRect.DOScale(1f, 0.1f));
@@ -78,17 +78,17 @@ public class TraineeCardAnimator : MonoBehaviour
     }
 
     /// <summary>
-    /// 기존 카드 뒤집기 연출
+    /// 카드 뒤집기 연출
     /// </summary>
     public void FlipCard(System.Action onFlipped = null)
     {
         frontSide.transform.localEulerAngles = new Vector3(0, 270, 0);
 
-        backSide.transform.DORotate(new Vector3(0, 90, 0), 0.2f).SetEase(Ease.InQuad)
+        backSide.transform.DORotate(new Vector3(0, 90, 0), 0.13f).SetEase(Ease.InQuad)
             .OnComplete(() =>
             {
                 frontSide.SetActive(true);
-                frontSide.transform.DORotate(new Vector3(0, 360, 0), 0.2f).SetEase(Ease.OutQuad)
+                frontSide.transform.DORotate(new Vector3(0, 360, 0), 0.13f).SetEase(Ease.OutQuad)
                     .OnComplete(() =>
                     {
                         backSide.SetActive(false);

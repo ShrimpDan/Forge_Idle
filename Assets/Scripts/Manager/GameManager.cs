@@ -56,7 +56,7 @@ public class GameManager : MonoSingleton<GameManager>
     {
         for (int i = 0; i < 20; i++)
         {
-            AssistantManager.RecruitAndSpawnTrainee();
+            AssistantManager.RecruitSingle();
         }
     }
 
