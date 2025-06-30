@@ -598,14 +598,14 @@ RectTransform:
   m_GameObject: {fileID: 7655993260580768029}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 3003621910563571427}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 310}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &4404560924540216011
@@ -629,7 +629,7 @@ MonoBehaviour:
   m_StartCorner: 0
   m_StartAxis: 0
   m_CellSize: {x: 100, y: 100}
-  m_Spacing: {x: 0, y: 0}
+  m_Spacing: {x: 0, y: 110}
   m_Constraint: 0
   m_ConstraintCount: 2
 --- !u!1 &7734402098312126371
@@ -931,11 +931,11 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 7903500743282052878}
   - {fileID: 7410657879544344779}
   - {fileID: 6749031550481988188}
   - {fileID: 581409138382907466}
   - {fileID: 4817712863182433338}
+  - {fileID: 7903500743282052878}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -997,4 +997,4 @@ MonoBehaviour:
   weaponInputBtn: {fileID: 8355738652468205031}
   weaponIconImg: {fileID: 3442223932272241237}
   gemSlotRoot: {fileID: 7903500743282052878}
-  gemSlotPrefab: {fileID: 6758458731645142889, guid: 2b78100f665de7e4c9a83d51b8221dd3, type: 3}
+  gemSlotPrefab: {fileID: 4110440136734721791, guid: 791cf3b3644c8e44983215a15155aab2, type: 3}
