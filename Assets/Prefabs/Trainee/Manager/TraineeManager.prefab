@@ -10,6 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 737492948431473684}
   - component: {fileID: 3775548531614091731}
+  - component: {fileID: 3192939963274458557}
+  - component: {fileID: 2224854406797413958}
+  - component: {fileID: 5143866629263005692}
   m_Layer: 0
   m_Name: TraineeManager
   m_TagString: Untagged
@@ -50,3 +53,44 @@ MonoBehaviour:
   singleDrawParent: {fileID: 0}
   multiDrawParent: {fileID: 0}
   personalityDatabase: {fileID: 11400000, guid: 140e111ef5ba2964c958d8700e09d47a, type: 2}
+  layoutAnimator: {fileID: 2224854406797413958}
+  drawController: {fileID: 5143866629263005692}
+--- !u!114 &3192939963274458557
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 917878836471244746}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03f8c07d8148ba445b8c80f8b7903b06, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2224854406797413958
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 917878836471244746}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03f8c07d8148ba445b8c80f8b7903b06, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &5143866629263005692
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 917878836471244746}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 118eed05e3e8c6c44a3f9c1f5a57e841, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  layoutAnimator: {fileID: 3192939963274458557}
+  multiDrawParent: {fileID: 7946453594232361915, guid: bd82f173a8e6e3349bc7ef1f2ca45764, type: 3}
+  confirmAllButtonPrefab: {fileID: 6151877574095819842, guid: 451bef7b3c3ac9c41ab113d35d31b7b1, type: 3}

@@ -27,6 +27,9 @@ public class GameManager : MonoSingleton<GameManager>
 
         if (Forge)
             Forge.Init();
+
+        if (AssistantManager)
+            AssistantManager.Init(this);
     }
 
     [ContextMenu("Get Random Item")]
@@ -56,7 +59,7 @@ public class GameManager : MonoSingleton<GameManager>
     {
         for (int i = 0; i < 20; i++)
         {
-            AssistantManager.RecruitAndSpawnTrainee();
+            AssistantManager.RecruitSingle();
         }
     }
 

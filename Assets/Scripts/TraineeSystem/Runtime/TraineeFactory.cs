@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using UnityEngine;
 
 /// <summary>
 /// 제자 생성과 이름 자동 부여를 담당하는 팩토리 클래스입니다.
@@ -7,15 +6,13 @@ using UnityEngine;
 /// </summary>
 public class TraineeFactory
 {
-    [Header("특화별 이름 카운트")]
     private readonly Dictionary<SpecializationType, int> specializationCounts = new();
-
     private readonly PersonalityAssigner assigner;
     private bool canRecruit = true;
 
-    public TraineeFactory(PersonalityTierDatabase database)
+    public TraineeFactory(DataManger dataManger)
     {
-        assigner = new PersonalityAssigner(database);
+        assigner = new PersonalityAssigner(dataManger);
     }
 
     /// <summary>
@@ -59,6 +56,32 @@ public class TraineeFactory
             AssignInfo(data);
 
         return data;
+    }
+
+    /// <summary>
+    /// 여러 명의 제자를 일괄 생성합니다.
+    /// </summary>
+    public List<TraineeData> CreateMultiple(int count, SpecializationType? fixedType = null)
+    {
+        var results = new List<TraineeData>();
+        for (int i = 0; i < count; i++)
+        {
+            var data = fixedType == null
+                ? CreateRandomTrainee(true)
+                : CreateFixedTrainee(fixedType.Value, true);
+
+            if (data != null)
+                results.Add(data);
+        }
+        return results;
+    }
+
+    /// <summary>
+    /// 제자 생성 잠금을 해제합니다. (10연 뽑기용)
+    /// </summary>
+    public void ResetRecruitLock()
+    {
+        canRecruit = true;
     }
 
     /// <summary>

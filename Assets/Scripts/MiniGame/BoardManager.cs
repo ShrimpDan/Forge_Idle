@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,6 +20,8 @@ public class BoardManager : MonoBehaviour
     [Header("UI")]
     [SerializeField] private TextMeshProUGUI DigCountText;
     [SerializeField] private TextMeshProUGUI TreasureCountText;
+    [SerializeField] private GameObject resultUI;
+
 
 
 
@@ -33,6 +37,10 @@ public class BoardManager : MonoBehaviour
     [Header("BlockPrefabs")]
     [SerializeField] private Block blockPrefab;
     [SerializeField] private Transform boardRoot; //GridLayoutGroup 붙여야함
+
+
+  
+    
 
 
     private Block[,] board;
@@ -52,6 +60,10 @@ public class BoardManager : MonoBehaviour
         digCount = maxDigCount;
         OnDigCountChange += UpdateCountUI;
         OnDigCountChange?.Invoke(digCount, maxDigCount);
+
+
+        resultUI.GetComponent<MiniGameResultUI>().InitSlotCount(treasures.Length);
+       
     }
 
     private void SettingBorad()
@@ -121,7 +133,7 @@ public class BoardManager : MonoBehaviour
         {
             var set = treasureCoordinate[block.TreasureId];
             set.Add(block.Pos);
-
+            
             TreasureData data = treasures.First(t => t.id == block.TreasureId);
             if (set.Count == data.Shape.Length)
             {
@@ -140,6 +152,7 @@ public class BoardManager : MonoBehaviour
 
     private void FairDig()
     {
+        ShowResult();
         Debug.Log("발굴 실패");
     }
     void OnTreasureCompleted(TreasureData data) //완성된 보물 전달 메서드
@@ -149,7 +162,16 @@ public class BoardManager : MonoBehaviour
         if (foundTreasureId.Add(data.id))
         {
             UpdateTreasureCountUI(); //해당 보물이 발굴되면 UI업데이트  
+
+            resultUI.GetComponent<MiniGameResultUI>().AddIcon(data.rewardImage);
         }
+
+        if (foundTreasureId.Count == treasures.Length)
+        {
+            //다찾으면
+            ShowResult();
+        }
+
         OnTreasureComplete?.Invoke(data); //데이터 전달
     }
 
@@ -180,6 +202,14 @@ public class BoardManager : MonoBehaviour
     {
         TreasureCountText.text = $"{foundTreasureId.Count}/ {treasures.Length}";
     }
+
+    private void ShowResult()
+    {
+        resultUI.SetActive(true);
+    }
+   
+
+   
 }
 
 

@@ -9,5 +9,6 @@ public class TreasureData : ScriptableObject
     public int id;
     public Vector2Int[] Shape;
     public Sprite[] pratSprite;
+    public Sprite rewardImage;
     
 }
