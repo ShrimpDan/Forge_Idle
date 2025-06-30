@@ -4,7 +4,7 @@ using System;
 
 public class Forge_ItemSlot : MonoBehaviour
 {
-    [SerializeField] private Image icon;   // 자식 오브젝트의 Icon(Image)과 연결
+    [SerializeField] private Image icon;
     private Button btn;
     private ItemInstance item;
     private Action<ItemInstance> onClick;
@@ -17,10 +17,18 @@ public class Forge_ItemSlot : MonoBehaviour
         btn = GetComponent<Button>();
         if (btn == null) btn = gameObject.AddComponent<Button>();
 
-        if (icon != null && item?.Data != null)
+        if (icon != null)
         {
-            icon.sprite = IconLoader.GetIcon(item.Data.IconPath);
-            icon.enabled = icon.sprite != null;
+            if (item != null && item.Data != null)
+            {
+                icon.sprite = IconLoader.GetIcon(item.Data.IconPath);
+                icon.enabled = icon.sprite != null;
+            }
+            else
+            {
+                icon.sprite = null;
+                icon.enabled = false;
+            }
         }
 
         btn.onClick.RemoveAllListeners();

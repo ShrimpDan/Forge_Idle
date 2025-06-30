@@ -30,15 +30,15 @@ public class RecipeSlot : MonoBehaviour
 
         if (myItemData == null)
         {
-            Debug.LogError("[RecipeSlot] ItemData°¡ ¾ø½À´Ï´Ù: " + data.ItemKey);
+            Debug.LogError("[RecipeSlot] ItemDataï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½: " + data.ItemKey);
             return;
         }
 
         itemIcon.sprite = Resources.Load<Sprite>(myItemData.IconPath);
         itemName.text = myItemData.Name;
-        craftTimeText.text = $"Á¦ÀÛ½Ã°£: {data.craftTime}ÃÊ";
-        craftCostText.text = $"ºñ¿ë: {data.craftCost}";
-        sellCostText.text = $"ÆÇ¸Å°¡: {data.sellCost}";
+        craftTimeText.text = $"ï¿½ï¿½ï¿½Û½Ã°ï¿½: {data.craftTime}ï¿½ï¿½";
+        craftCostText.text = $"ï¿½ï¿½ï¿½: {data.craftCost}";
+        sellCostText.text = $"ï¿½Ç¸Å°ï¿½: {data.sellCost}";
 
         foreach (Transform child in requiredListRoot)
             Destroy(child.gameObject);
@@ -56,7 +56,7 @@ public class RecipeSlot : MonoBehaviour
         }
     }
 
-    // ¼ÂÆÃ: ÀÎº¥Åä¸®, Forge, ÄÝ¹é
+    // ï¿½ï¿½ï¿½ï¿½: ï¿½Îºï¿½ï¿½ä¸®, Forge, ï¿½Ý¹ï¿½
     public void SetSelectContext(ItemDataLoader itemLoader, Forge forge, Jang.InventoryManager inventory, Action onSelect)
     {
         myForge = forge;
@@ -71,12 +71,12 @@ public class RecipeSlot : MonoBehaviour
     {
         if (myForge == null || myInventory == null || myCraftingData == null)
         {
-            Debug.LogError("[RecipeSlot] Á¦ÀÛ ½Ã½ºÅÛ ¿¬°á ¾ÈµÊ!");
+            Debug.LogError("[RecipeSlot] ï¿½ï¿½ï¿½ï¿½ ï¿½Ã½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Èµï¿½!");
             return;
         }
         if (myForge.Gold < myCraftingData.craftCost)
         {
-            Debug.Log($"[Á¦ÀÛºÒ°¡] °ñµå ºÎÁ·: {myForge.Gold}/{myCraftingData.craftCost}");
+            Debug.Log($"[ï¿½ï¿½ï¿½ÛºÒ°ï¿½] ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½: {myForge.Gold}/{myCraftingData.craftCost}");
             return;
         }
 
@@ -84,10 +84,10 @@ public class RecipeSlot : MonoBehaviour
         foreach (var req in myCraftingData.RequiredResources)
         {
             int ownedAmount = myInventory.ResourceList.Where(x => x.ItemKey == req.ResourceKey).Sum(x => x.Quantity);
-            Debug.Log($"[Àç·áÃ¼Å©] {req.ResourceKey} ÇÊ¿ä:{req.Amount}, º¸À¯:{ownedAmount}");
+            Debug.Log($"[ï¿½ï¿½ï¿½Ã¼Å©] {req.ResourceKey} ï¿½Ê¿ï¿½:{req.Amount}, ï¿½ï¿½ï¿½ï¿½:{ownedAmount}");
             if (ownedAmount < req.Amount)
             {
-                Debug.Log($"[Á¦ÀÛºÒ°¡] Àç·á ºÎÁ·: {req.ResourceKey} ÇÊ¿ä: {req.Amount}, º¸À¯: {ownedAmount}");
+                Debug.Log($"[ï¿½ï¿½ï¿½ÛºÒ°ï¿½] ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½: {req.ResourceKey} ï¿½Ê¿ï¿½: {req.Amount}, ï¿½ï¿½ï¿½ï¿½: {ownedAmount}");
                 hasAll = false;
             }
         }
@@ -96,7 +96,7 @@ public class RecipeSlot : MonoBehaviour
             return;
         }
 
-        // Á¦ÀÛ °¡´É½Ã ÄÝ¹é ½ÇÇà
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½É½ï¿½ ï¿½Ý¹ï¿½ ï¿½ï¿½ï¿½ï¿½
         onSelectCallback?.Invoke();
     }
 }

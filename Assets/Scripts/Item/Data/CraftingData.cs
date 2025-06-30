@@ -33,19 +33,47 @@ public class CraftingDataLoader
             return;
         }
 
-        CraftingList = JsonUtility.FromJson<Wrapper>(json.text).Craftings;
+        List<CraftingDataFlat> flatList = JsonUtility.FromJson<Wrapper<CraftingDataFlat>>(json.text).Items;
+
+        CraftingList = new List<CraftingData>();
         CraftingDict = new Dictionary<string, CraftingData>();
 
-        foreach (var data in CraftingList)
+        foreach (var flat in flatList)
         {
+            CraftingData data = new CraftingData
+            {
+                ItemKey = flat.Key,
+                craftTime = flat.craftTime,
+                craftCost = flat.craftCost,
+                sellCost = flat.sellCost,
+                RequiredResources = new List<RequiredResources>()
+            };
+
+            for (int i = 0; i < flat.resourceKeys.Count; i++)
+            {
+                RequiredResources resources = new RequiredResources
+                {
+                    ResourceKey = flat.resourceKeys[i],
+                    Amount = flat.resourceAmount[i]
+                };
+
+                data.RequiredResources.Add(resources);
+            }
+
+            CraftingList.Add(data);
             CraftingDict[data.ItemKey] = data;
         }
+
+        foreach (var data in CraftingList)
+            {
+                CraftingDict[data.ItemKey] = data;
+            }
     }
 
     [System.Serializable]
-    private class Wrapper
+    private class Wrapper<T>
     {
-        public List<CraftingData> Craftings;
+        public List<T> Items;
     }
 
     public CraftingData GetDataByKey(string key)
@@ -53,4 +81,15 @@ public class CraftingDataLoader
         CraftingDict.TryGetValue(key, out CraftingData data);
         return data;
     }
+}
+
+[System.Serializable]
+public class CraftingDataFlat
+{
+    public string Key;
+    public float craftTime;
+    public float craftCost;
+    public float sellCost;
+    public List<string> resourceKeys;
+    public List<int> resourceAmount;
 }

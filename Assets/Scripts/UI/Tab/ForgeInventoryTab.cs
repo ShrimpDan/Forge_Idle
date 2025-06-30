@@ -18,6 +18,8 @@ public class ForgeInventoryTab : MonoBehaviour
     [SerializeField] private GameObject slotPrefab;
 
     private Action<ItemInstance> weaponSlotCallback;
+    private Action<ItemInstance> gemSlotCallback;
+    private Action<ItemInstance> resourceSlotCallback;
     private GameManager gameManager;
     private UIManager uiManager;
 
@@ -31,22 +33,19 @@ public class ForgeInventoryTab : MonoBehaviour
 
         equipButton.onClick.RemoveAllListeners();
         equipButton.onClick.AddListener(() => SwitchTab(TabType.Weapon));
-
         gemButton.onClick.RemoveAllListeners();
         gemButton.onClick.AddListener(() => SwitchTab(TabType.Gem));
-
         resourceButton.onClick.RemoveAllListeners();
         resourceButton.onClick.AddListener(() => SwitchTab(TabType.Resource));
-
         SwitchTab(TabType.Weapon);
     }
 
-    public void SetWeaponSlotCallback(Action<ItemInstance> callback)
+    public void SetSlotCallbacks(Action<ItemInstance> weapon, Action<ItemInstance> gem, Action<ItemInstance> resource)
     {
-        weaponSlotCallback = callback;
-        // 탭이 무기 탭일 때만 즉시 갱신 (안그러면 null콜백 적용될 수 있음)
-        if (curTab == TabType.Weapon)
-            RefreshSlots();
+        weaponSlotCallback = weapon;
+        gemSlotCallback = gem;
+        resourceSlotCallback = resource;
+        RefreshSlots();
     }
 
     private void SwitchTab(TabType tab)
@@ -74,12 +73,12 @@ public class ForgeInventoryTab : MonoBehaviour
         else if (curTab == TabType.Gem)
         {
             foreach (var item in gameManager.Inventory.GemList)
-                CreateSlot(gemRoot, item, null);
+                CreateSlot(gemRoot, item, gemSlotCallback);
         }
         else if (curTab == TabType.Resource)
         {
             foreach (var item in gameManager.Inventory.ResourceList)
-                CreateSlot(resourceRoot, item, null);
+                CreateSlot(resourceRoot, item, resourceSlotCallback);
         }
     }
 

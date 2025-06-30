@@ -1,39 +1,37 @@
-﻿using System.Linq;
-using TMPro;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.UI;
 
-/// <summary>
-/// TraineeData를 기반으로 UI 텍스트 요소(Name, 능력치 등)를 갱신하는 역할을 담당합니다.
-/// UI 요소에 직접 접근하여 데이터를 시각적으로 표시합니다.
-/// </summary>
 public class TraineeCardUI : MonoBehaviour
 {
-    [SerializeField] private TMP_Text nameText;
-    [SerializeField] private TMP_Text specializationText;
-    [SerializeField] private TMP_Text personalityText;
-    [SerializeField] private TMP_Text abilitiesText;
+    [Header("아이콘 오브젝트")]
+    [SerializeField] private Image characterIcon;
+    [SerializeField] private Image tierIcon;
+    [SerializeField] private Image specializationIcon;
+
+    [Header("아이콘 스프라이트")]
+    [SerializeField] private Sprite[] tierSprites; // 성격 티어 1~5 ( 인덱스 0 ~ 4)
+    [SerializeField] private Sprite craftingIcon;
+    [SerializeField] private Sprite enhancingIcon;
+    [SerializeField] private Sprite sellingIcon;
 
     public void UpdateUI(TraineeData data)
     {
-        nameText.text = data.Name;
-        specializationText.text = GetSpecializationKorean(data.Specialization);
-        personalityText.text = $"{data.Personality.PersonalityName} (티어 {data.Personality.Tier})";
-        abilitiesText.text = GetFormattedAbilities(data);
-    }
+        characterIcon.sprite = GetRandomCharacterSprite(); // 랜덤 캐릭터 이미지 지정 (추후 구현)
 
-    private string GetFormattedAbilities(TraineeData data)
-    {
-        return string.Join("\n", data.Multipliers.Select(m => $"- {m.AbilityName} x{m.Multiplier:F2}"));
-    }
+        int tierIndex = Mathf.Clamp(data.Personality.Tier - 1, 0, tierSprites.Length - 1);
+        tierIcon.sprite = tierSprites[tierIndex];
 
-    private string GetSpecializationKorean(SpecializationType spec)
-    {
-        return spec switch
+        specializationIcon.sprite = data.Specialization switch
         {
-            SpecializationType.Crafting => "제작 특화",
-            SpecializationType.Enhancing => "강화 특화",
-            SpecializationType.Selling => "판매 특화",
-            _ => "알 수 없음"
+            SpecializationType.Crafting => craftingIcon,
+            SpecializationType.Enhancing => enhancingIcon,
+            SpecializationType.Selling => sellingIcon,
+            _ => null
         };
+    }
+
+    private Sprite GetRandomCharacterSprite()
+    {
+        return null;
     }
 }
