@@ -9,13 +9,15 @@ public class GemsSystemWindow : BaseUI
 
     [SerializeField] private Button exitBtn;
     [SerializeField] private Button weaponInputBtn;
+    [SerializeField] private Button executeBtn; // 
     [SerializeField] private Image weaponIconImg;
     [SerializeField] private RectTransform gemSlotRoot;
     [SerializeField] private GameObject gemSlotPrefab;
 
     private ItemInstance selectedWeapon;
-    private ItemInstance[] selectedGems = new ItemInstance[3]; // 3개의 보석 슬롯 (실제 장착 상태)
+    private ItemInstance[] selectedGems = new ItemInstance[3]; 
     private List<Forge_ItemSlot> gemSlots = new List<Forge_ItemSlot>();
+    private bool isExecuted = false; 
 
     private GameManager gameManager;
     private UIManager uIManager;
@@ -27,9 +29,16 @@ public class GemsSystemWindow : BaseUI
         this.uIManager = uIManager;
 
         exitBtn.onClick.RemoveAllListeners();
-        exitBtn.onClick.AddListener(() => uIManager.CloseUI(UIName.GemsSystemWindow));
+        exitBtn.onClick.AddListener(OnExit);
+
         weaponInputBtn.onClick.RemoveAllListeners();
         weaponInputBtn.onClick.AddListener(OpenWeaponInventoryPopup);
+
+        if (executeBtn != null)
+        {
+            executeBtn.onClick.RemoveAllListeners();
+            executeBtn.onClick.AddListener(OnExecute);
+        }
 
         ResetAll();
     }
@@ -84,9 +93,9 @@ public class GemsSystemWindow : BaseUI
     {
         if (slotIdx < 0 || slotIdx >= 3) return;
 
-        // 기존 슬롯에 있던 보석 복구
+        // 기존 슬롯에 있던 보석 복구 (실행 전이라면)
         var oldGem = selectedGems[slotIdx];
-        if (oldGem != null)
+        if (!isExecuted && oldGem != null)
         {
             oldGem.Quantity += 1;
             if (!gameManager.Inventory.GemList.Contains(oldGem))
@@ -95,7 +104,6 @@ public class GemsSystemWindow : BaseUI
             }
         }
 
-  
         if (gem != null)
         {
             // 실제 보석 인벤토리 수량 1 감소 (0되면 알아서 삭제)
@@ -104,10 +112,46 @@ public class GemsSystemWindow : BaseUI
 
         selectedGems[slotIdx] = gem;
 
-
         var slot = gemSlots[slotIdx];
         slot.Init(gem, (item) => { OpenGemInventoryPopup(slotIdx); });
+    }
 
+    // [실행버튼 클릭] 실제 강화 로직 적용 자리
+    private void OnExecute()
+    {
+        if (selectedWeapon == null)
+        {
+            Debug.LogWarning("[GemsSystem] 무기를 먼저 선택하세요!");
+            return;
+        }
+
+        // 여기에 강화 수치 적용 로직 삽입
+
+        Debug.Log("[GemsSystem] Execute 완료! (강화 적용 로직 자리)");
+
+        isExecuted = true; // 실행 완료 flag (Exit 때 복구 방지)
+    }
+
+    // [나가기 버튼] 보석 반환 처리
+    private void OnExit()
+    {
+        if (!isExecuted)
+        {
+            for (int i = 0; i < selectedGems.Length; i++)
+            {
+                var gem = selectedGems[i];
+                if (gem != null)
+                {
+                    gem.Quantity += 1;
+                    if (!gameManager.Inventory.GemList.Contains(gem))
+                        gameManager.Inventory.GemList.Add(gem);
+                    selectedGems[i] = null;
+                }
+            }
+            Debug.Log("[GemsSystem] 창 종료: 사용된 보석을 인벤토리에 복구함");
+        }
+        uIManager.CloseUI(UIName.GemsSystemWindow);
+        ResetAll(); 
     }
 
     private void ResetAll()
@@ -121,6 +165,7 @@ public class GemsSystemWindow : BaseUI
             weaponIconImg.sprite = null;
             weaponIconImg.enabled = false;
         }
+        isExecuted = false; // 리셋
         ResetGemSlots();
     }
 
@@ -130,9 +175,16 @@ public class GemsSystemWindow : BaseUI
         ResetAll();
 
         exitBtn.onClick.RemoveAllListeners();
-        exitBtn.onClick.AddListener(() => uIManager.CloseUI(UIName.GemsSystemWindow));
+        exitBtn.onClick.AddListener(OnExit);
+
         weaponInputBtn.onClick.RemoveAllListeners();
         weaponInputBtn.onClick.AddListener(OpenWeaponInventoryPopup);
+
+        if (executeBtn != null)
+        {
+            executeBtn.onClick.RemoveAllListeners();
+            executeBtn.onClick.AddListener(OnExecute);
+        }
     }
 
     public override void Close()
