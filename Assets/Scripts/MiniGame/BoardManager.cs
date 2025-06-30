@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,6 +14,13 @@ public class BoardManager : MonoBehaviour
 
     [SerializeField] private int maxDigCount;
     [SerializeField] private Button ExitButton;
+
+    [Header("UI")]
+    [SerializeField] private TextMeshProUGUI DigCountText;
+    [SerializeField] private TextMeshProUGUI TreasureCountText;
+
+
+
 
     [Header("BoradSize")]
     [SerializeField] private int width;
@@ -30,7 +38,7 @@ public class BoardManager : MonoBehaviour
     private Block[,] board;
     private int digCount;
     private Dictionary<int, HashSet<Vector2Int>> treasureCoordinate = new Dictionary<int, HashSet<Vector2Int>>();//중복 방지 HashSet
-
+    private HashSet<int> foundTreasureId = new HashSet<int>();
 
 
     private void Start()
@@ -38,8 +46,11 @@ public class BoardManager : MonoBehaviour
        
         SettingBorad();
         SettingTreasuresRandom();
+        foundTreasureId.Clear();//초기화
+        UpdateTreasureCountUI();
 
         digCount = maxDigCount;
+        OnDigCountChange += UpdateCountUI;
         OnDigCountChange?.Invoke(digCount, maxDigCount);
     }
 
@@ -135,6 +146,10 @@ public class BoardManager : MonoBehaviour
     {
         Debug.Log($"보물{data.id}");
         Debug.Log("발굴 완료 ");
+        if (foundTreasureId.Add(data.id))
+        {
+            UpdateTreasureCountUI(); //해당 보물이 발굴되면 UI업데이트  
+        }
         OnTreasureComplete?.Invoke(data); //데이터 전달
     }
 
@@ -155,6 +170,16 @@ public class BoardManager : MonoBehaviour
         LoadSceneManager.Instance.UnLoadScene(SceneType.MiniGame);
     }
 
+
+    private void UpdateCountUI(int current, int max)
+    {
+        DigCountText.text = $"{current} / {max}";
+    }
+
+    private void UpdateTreasureCountUI()
+    {
+        TreasureCountText.text = $"{foundTreasureId.Count}/ {treasures.Length}";
+    }
 }
 
 
