@@ -84,11 +84,11 @@ public class TraineeCardAnimator : MonoBehaviour
     {
         frontSide.transform.localEulerAngles = new Vector3(0, 270, 0);
 
-        backSide.transform.DORotate(new Vector3(0, 90, 0), 0.3f).SetEase(Ease.InQuad)
+        backSide.transform.DORotate(new Vector3(0, 90, 0), 0.2f).SetEase(Ease.InQuad)
             .OnComplete(() =>
             {
                 frontSide.SetActive(true);
-                frontSide.transform.DORotate(new Vector3(0, 360, 0), 0.3f).SetEase(Ease.OutQuad)
+                frontSide.transform.DORotate(new Vector3(0, 360, 0), 0.2f).SetEase(Ease.OutQuad)
                     .OnComplete(() =>
                     {
                         backSide.SetActive(false);

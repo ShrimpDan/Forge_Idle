@@ -270,7 +270,6 @@ public class TraineeManager : MonoBehaviour
             controller.ForceFlipWithCallback(() => finished = true);
 
             yield return new WaitUntil(() => finished);
-            yield return new WaitForSeconds(0.001f);
         }
 
         isCardInteractionLocked = false;
