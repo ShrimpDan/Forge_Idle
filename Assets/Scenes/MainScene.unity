@@ -6632,7 +6632,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 733d7b94f54bf2844a8d5fc22f781150, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  traineePrefab: {fileID: 294891640851535095, guid: 3494368866988ed4ea449449c0feb687, type: 3}
+  largeTraineeCardPrefab: {fileID: 0}
+  miniTraineeCardPrefab: {fileID: 0}
+  confirmAllButtonPrefab: {fileID: 0}
+  singleDrawParent: {fileID: 0}
+  multiDrawParent: {fileID: 0}
   personalityDatabase: {fileID: 11400000, guid: 140e111ef5ba2964c958d8700e09d47a, type: 2}
 --- !u!4 &1875025419
 Transform:
@@ -7224,6 +7228,10 @@ PrefabInstance:
     - target: {fileID: 8169545166523676342, guid: e4822139471d4184b868e6d5c228da5b, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8305141885026246226, guid: e4822139471d4184b868e6d5c228da5b, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8351160325098905437, guid: e4822139471d4184b868e6d5c228da5b, type: 3}
       propertyPath: m_AnchorMax.y
