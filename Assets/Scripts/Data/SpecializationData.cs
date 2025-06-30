@@ -35,7 +35,7 @@ public class SpecializationDataLoader
     public List<SpecializationData> DataList { get; private set; }
     public Dictionary<string, SpecializationData> DataDict { get; private set; }
 
-    public SpecializationDataLoader(string path = "data/specializtion_data")
+    public SpecializationDataLoader(string path = "data/specialization_data")
     {
         string jsonData;
         jsonData = Resources.Load<TextAsset>(path).text;
@@ -58,4 +58,16 @@ public class SpecializationDataLoader
         DataDict.TryGetValue(key, out SpecializationData data);
         return data;
     }
+
+    public SpecializationData GetByTierAndType(int tier, SpecializationType type)
+{
+    foreach (var data in DataList)
+    {
+        if (data.tier == tier && data.specializationType == type)
+        {
+            return data;
+        }
+    }
+    return null;
+}
 }

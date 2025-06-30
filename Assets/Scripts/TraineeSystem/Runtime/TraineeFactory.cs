@@ -10,9 +10,9 @@ public class TraineeFactory
     private readonly PersonalityAssigner assigner;
     private bool canRecruit = true;
 
-    public TraineeFactory(PersonalityTierDatabase database)
+    public TraineeFactory(DataManger dataManger)
     {
-        assigner = new PersonalityAssigner(database);
+        assigner = new PersonalityAssigner(dataManger);
     }
 
     /// <summary>

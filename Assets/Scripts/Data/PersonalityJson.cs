@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PersonalityJson
+[System.Serializable]
+public class PersonalityData
 {
     /// <summary>
     /// 키값
@@ -36,15 +37,15 @@ public class PersonalityJson
 
 public class PersonalityDataLoader
 {
-    public List<PersonalityJson> DataList { get; private set; }
-    public Dictionary<string, PersonalityJson> DataDict { get; private set; }
+    public List<PersonalityData> DataList { get; private set; }
+    public Dictionary<string, PersonalityData> DataDict { get; private set; }
 
     public PersonalityDataLoader(string path = "Data/personality_data")
     {
-        string jsonData;
-        jsonData = Resources.Load<TextAsset>(path).text;
+        string jsonData = Resources.Load<TextAsset>(path).text;
         DataList = JsonUtility.FromJson<Wrapper>(jsonData).Items;
-        DataDict = new Dictionary<string, PersonalityJson>();
+
+        DataDict = new Dictionary<string, PersonalityData>();
         foreach (var item in DataList)
         {
             DataDict.Add(item.Key, item);
@@ -54,12 +55,12 @@ public class PersonalityDataLoader
     [System.Serializable]
     private class Wrapper
     {
-        public List<PersonalityJson> Items;
+        public List<PersonalityData> Items;
     }
 
-    public PersonalityJson GetByKey(string key)
+    public PersonalityData GetByKey(string key)
     {
-        DataDict.TryGetValue(key, out PersonalityJson data);
+        DataDict.TryGetValue(key, out PersonalityData data);
         return data;
     }
 }

@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class TraineeManager : MonoBehaviour
 {
+    private GameManager gameManager;
+
     [Header("카드 프리팹")]
     [SerializeField] private GameObject largeTraineeCardPrefab;
     [SerializeField] private GameObject miniTraineeCardPrefab;
@@ -13,9 +15,6 @@ public class TraineeManager : MonoBehaviour
     [Header("카드 출력 위치")]
     [SerializeField] private Transform singleDrawParent;
     [SerializeField] private Transform multiDrawParent;
-
-    [Header("성격 데이터베이스")]
-    [SerializeField] private PersonalityTierDatabase personalityDatabase;
 
     [Header("애니메이터")]
     [SerializeField] private TraineeCardLayoutAnimator layoutAnimator;
@@ -30,9 +29,11 @@ public class TraineeManager : MonoBehaviour
     private List<TraineeData> currentBatch = new();
     private bool canRecruit = true;
 
-    private void Awake()
+    public void Init(GameManager gameManager)
     {
-        factory = new TraineeFactory(personalityDatabase);
+        this.gameManager = gameManager;
+
+        factory = new TraineeFactory(gameManager.DataManager);
         spawner = new TraineeCardSpawner(
             largeTraineeCardPrefab,
             miniTraineeCardPrefab,

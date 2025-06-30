@@ -27,6 +27,9 @@ public class GameManager : MonoSingleton<GameManager>
 
         if (Forge)
             Forge.Init();
+
+        if (AssistantManager)
+            AssistantManager.Init(this);
     }
 
     [ContextMenu("Get Random Item")]
