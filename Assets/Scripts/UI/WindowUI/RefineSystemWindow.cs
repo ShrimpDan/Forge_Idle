@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class RefineSystemWindow : BaseUI
 {
@@ -7,46 +8,131 @@ public class RefineSystemWindow : BaseUI
 
     [Header("UI Elements")]
     [SerializeField] private Button exitButton;
-    [SerializeField] private Button materialSlotButton; // 재료 슬롯용 버튼
-    [SerializeField] private Image materialIconImage;   // 슬롯에 표시할 아이콘 (에디터에서 연결)
+    [SerializeField] private Button inputSlotButton;      
+    [SerializeField] private Image inputSlotIcon;         
+    [SerializeField] private Image outputSlotIcon;        
+    [SerializeField] private TMP_Text refineCostText;     
+    [SerializeField] private Button executeButton;     
+
     private ItemInstance selectedMaterial;
+    private ItemInstance resultItem;                      
+    private GameManager gameManager;
+    private UIManager uIManager;
+    private int refineCost = 1000;                        // 임시 비용
 
     public override void Init(GameManager gameManager, UIManager uIManager)
     {
         base.Init(gameManager, uIManager);
+        this.gameManager = gameManager;
+        this.uIManager = uIManager;
 
+        // 버튼 리스너
         exitButton.onClick.RemoveAllListeners();
         exitButton.onClick.AddListener(() => uIManager.CloseUI(UIName.RefineSystemWindow));
 
-        materialSlotButton.onClick.RemoveAllListeners();
-        materialSlotButton.onClick.AddListener(OnClickMaterialSlot);
+        inputSlotButton.onClick.RemoveAllListeners();
+        inputSlotButton.onClick.AddListener(OnClickInputSlot);
+
+        if (executeButton != null)
+        {
+            executeButton.onClick.RemoveAllListeners();
+            executeButton.onClick.AddListener(OnClickExecuteRefine);
+        }
+
+        ResetUI();
     }
 
-    private void OnClickMaterialSlot()
+    private void OnClickInputSlot()
     {
-        // 포지 인벤토리 팝업 열기 + 콜백 연결
+        // 인벤토리에서 "리소스" 탭만 노출
         var popup = uIManager.OpenUI<Forge_Inventory_Popup>(UIName.Forge_Inventory_Popup);
-        popup.SetWeaponSelectCallback(OnMaterialSelected);
+        popup.SetResourceSelectCallback(OnMaterialSelected);
     }
 
-    // 인벤토리 팝업에서 아이템을 선택했을 때 호출됨
     private void OnMaterialSelected(ItemInstance item)
     {
         selectedMaterial = item;
 
-        // 슬롯에 아이콘 표시
-        if (materialIconImage != null && item?.Data != null)
+        // 아이콘 세팅
+        if (inputSlotIcon != null && item?.Data != null)
         {
-            materialIconImage.sprite = IconLoader.GetIcon(item.Data.IconPath);
-            materialIconImage.enabled = true;
+            inputSlotIcon.sprite = IconLoader.GetIcon(item.Data.IconPath);
+            inputSlotIcon.enabled = true;
         }
-        // 추가 로직 필요시 여기서
+        else if (inputSlotIcon != null)
+        {
+            inputSlotIcon.sprite = null;
+            inputSlotIcon.enabled = false;
+        }
+
+        // 결과 (실제 변환은 나중 구현)
+        resultItem = null; // 실제 정련 결과 아이템 예측용 더미
+        UpdateOutputSlot();
+        UpdateCost();
+    }
+
+    private void UpdateOutputSlot()
+    {
+        // 결과 아이템 프리뷰
+        if (outputSlotIcon != null)
+        {
+            if (resultItem != null && resultItem.Data != null)
+            {
+                outputSlotIcon.sprite = IconLoader.GetIcon(resultItem.Data.IconPath);
+                outputSlotIcon.enabled = true;
+            }
+            else
+            {
+                outputSlotIcon.sprite = null;
+                outputSlotIcon.enabled = false;
+            }
+        }
+    }
+
+    private void UpdateCost()
+    {
+        if (refineCostText)
+            refineCostText.text = $"정련 비용: {refineCost} 골드";
+    }
+
+    private void OnClickExecuteRefine()
+    {
+        if (selectedMaterial == null)
+        {
+            Debug.LogWarning("[RefineSystem] 재료를 먼저 선택하세요!");
+            return;
+        }
+        // 실제 비용 차감/결과 처리 구현 예정
+
+        // 정련 로직 자리 (추후 구현)
+        Debug.Log("[RefineSystem] 정련 완료! (실제 변환 로직은 추후 구현)");
+
+        // UI 초기화
+        ResetUI();
+    }
+
+    private void ResetUI()
+    {
+        selectedMaterial = null;
+        resultItem = null;
+
+        if (inputSlotIcon != null)
+        {
+            inputSlotIcon.sprite = null;
+            inputSlotIcon.enabled = false;
+        }
+        if (outputSlotIcon != null)
+        {
+            outputSlotIcon.sprite = null;
+            outputSlotIcon.enabled = false;
+        }
+        UpdateCost();
     }
 
     public override void Open()
     {
         base.Open();
-        // 필요 시 UI 초기화
+        ResetUI();
     }
 
     public override void Close()
