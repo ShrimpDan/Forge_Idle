@@ -17,6 +17,7 @@ public class TraineeController : MonoBehaviour
 
     private bool isFlipped = false;
     private bool isFlipping = false;
+    private bool isPartOfMultipleDraw = false;
     private int currentIndex = 0;
 
     private System.Action<int> onSkip;
@@ -24,7 +25,7 @@ public class TraineeController : MonoBehaviour
 
     public void Setup(TraineeData traineeData, TraineeFactory traineeFactory, TraineeManager managerRef,
                       int order, System.Action<int> onSkipAction, System.Action<TraineeData> onConfirmAction,
-                      bool enableFlipOnStart = false)
+                      bool enableFlipOnStart = false, bool isMultiDrawCard = false)
     {
         data = traineeData;
         factory = traineeFactory;
@@ -33,6 +34,7 @@ public class TraineeController : MonoBehaviour
         currentIndex = order;
         onSkip = onSkipAction;
         onConfirm = onConfirmAction;
+        isPartOfMultipleDraw = isMultiDrawCard;
 
         cardUI?.UpdateUI(data);
 
@@ -69,6 +71,7 @@ public class TraineeController : MonoBehaviour
     {
         onConfirm?.Invoke(data);
         Destroy(gameObject);
+
         manager?.OnCardConfirmed();
         factory?.SetCanRecruit(true);
     }
@@ -83,14 +86,12 @@ public class TraineeController : MonoBehaviour
         }
 
         isFlipping = true;
-
         cardUI?.UpdateUI(data);
 
         cardAnimator?.FlipCard(() =>
         {
             isFlipped = true;
             isFlipping = false;
-            manager?.OnCardFlipped();
         });
     }
 
