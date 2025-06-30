@@ -78,7 +78,7 @@ public class UpgradeWeaponWindow : BaseUI
     {
         if (weapon == null || weapon.Data == null)
             return 0;
-        int level = weapon.EnhanceLevel;
+        int level = weapon.CurrentEnhanceLevel;
         return Mathf.Max(1000, (level + 1) * 1000);
     }
 
@@ -105,7 +105,7 @@ public class UpgradeWeaponWindow : BaseUI
         gameManager.Forge.AddGold(-upgradeCost);
 
         // 실제 무기 업그레이드 처리
-        Debug.Log($"[UpgradeSystem] {selectedWeapon.Data.Name} 강화 성공! (레벨:{selectedWeapon.EnhanceLevel + 1} 비용:{upgradeCost})");
+        Debug.Log($"[UpgradeSystem] {selectedWeapon.Data.Name} 강화 성공! (레벨:{selectedWeapon.CurrentEnhanceLevel + 1} 비용:{upgradeCost})");
 
         // 여기서 실제로 업그레이드 수치 증가시키는 부분
 
