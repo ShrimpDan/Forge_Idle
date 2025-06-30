@@ -19,6 +19,7 @@ public class TraineeController : MonoBehaviour
     private bool isFlipping = false;
     private bool isPartOfMultipleDraw = false;
     private int currentIndex = 0;
+    public bool IsFlipped => isFlipped;
 
     private System.Action<int> onSkip;
     private System.Action<TraineeData> onConfirm;
@@ -45,7 +46,15 @@ public class TraineeController : MonoBehaviour
         {
             skipButton.gameObject.SetActive(true);
             skipButton.onClick.RemoveAllListeners();
-            skipButton.onClick.AddListener(() => onSkip?.Invoke(currentIndex));
+
+            if (isMultiDrawCard)
+            {
+                skipButton.onClick.AddListener(() => manager?.OnClick_ConfirmAllCards());
+            }
+            else
+            {
+                skipButton.onClick.AddListener(() => onSkip?.Invoke(currentIndex));
+            }
         }
 
         if (backCardButton != null)
@@ -71,7 +80,6 @@ public class TraineeController : MonoBehaviour
     {
         onConfirm?.Invoke(data);
         Destroy(gameObject);
-
         manager?.OnCardConfirmed();
         factory?.SetCanRecruit(true);
     }
@@ -104,5 +112,18 @@ public class TraineeController : MonoBehaviour
     {
         data.LevelUp();
         cardUI?.UpdateUI(data);
+    }
+
+    public void ForceFlip()
+    {
+        if (isFlipped || isFlipping) return;
+
+        isFlipping = true;
+        cardUI?.UpdateUI(data);
+        cardAnimator?.FlipCard(() =>
+        {
+            isFlipped = true;
+            isFlipping = false;
+        });
     }
 }
