@@ -205,7 +205,10 @@ public class TraineeManager : MonoBehaviour
 
             var btn = confirmAllButtonInstance.GetComponent<UnityEngine.UI.Button>();
             if (btn != null)
-                btn.onClick.AddListener(OnClick_ConfirmAllCards);
+            {
+                btn.onClick.RemoveAllListeners();
+                btn.onClick.AddListener(() => this.OnClick_ConfirmAllCards());
+            }
         }
     }
 
@@ -213,22 +216,70 @@ public class TraineeManager : MonoBehaviour
 
     public void OnClick_ConfirmAllCards()
     {
+        if (isCardInteractionLocked) return;
+
         bool allFlipped = true;
 
         foreach (var card in spawnedCards)
         {
+            if (card == null) continue;
+
             var controller = card.GetComponent<TraineeController>();
             if (controller != null && !controller.IsFlipped)
             {
-                controller.ForceFlip();
                 allFlipped = false;
+                break;
             }
         }
 
-        if (allFlipped)
+        if (!allFlipped)
+        {
+            StartCoroutine(FlipAllUnflippedCardsSequentially());
+        }
+        else
         {
             foreach (var card in new List<GameObject>(spawnedCards))
-                card.GetComponent<TraineeController>()?.OnClick_FrontCard();
+            {
+                if (card == null) continue;
+
+                var controller = card.GetComponent<TraineeController>();
+                controller?.OnClick_FrontCard();
+            }
+        }
+    }
+
+    private IEnumerator FlipAllUnflippedCardsSequentially()
+    {
+        isCardInteractionLocked = true;
+
+        if (confirmAllButtonInstance != null)
+        {
+            var btn = confirmAllButtonInstance.GetComponent<UnityEngine.UI.Button>();
+            if (btn != null)
+                btn.interactable = false;
+        }
+
+        foreach (var card in spawnedCards)
+        {
+            if (card == null) continue;
+
+            var controller = card.GetComponent<TraineeController>();
+            if (controller == null || controller.IsFlipped) continue;
+
+            bool finished = false;
+            controller.ForceFlipWithCallback(() => finished = true);
+
+            yield return new WaitUntil(() => finished);
+            yield return new WaitForSeconds(0.001f);
+        }
+
+        isCardInteractionLocked = false;
+
+        if (confirmAllButtonInstance != null)
+        {
+            var btn = confirmAllButtonInstance.GetComponent<UnityEngine.UI.Button>();
+            if (btn != null)
+                btn.interactable = true;
         }
     }
 

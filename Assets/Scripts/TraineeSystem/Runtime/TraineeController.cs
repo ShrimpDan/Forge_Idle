@@ -38,6 +38,7 @@ public class TraineeController : MonoBehaviour
         isPartOfMultipleDraw = isMultiDrawCard;
 
         cardUI?.UpdateUI(data);
+        cardAnimator?.Setup(data);
 
         if (orderText != null)
             orderText.text = $"{currentIndex + 1}번째 카드";
@@ -65,6 +66,25 @@ public class TraineeController : MonoBehaviour
         }
     }
 
+    public void ForceFlipWithCallback(System.Action onComplete)
+    {
+        if (isFlipped || isFlipping)
+        {
+            onComplete?.Invoke();
+            return;
+        }
+
+        isFlipping = true;
+        cardUI?.UpdateUI(data);
+
+        cardAnimator?.PlayTieredFlip(() =>
+        {
+            isFlipped = true;
+            isFlipping = false;
+            onComplete?.Invoke();
+        });
+    }
+
     public void EnableFlip()
     {
         if (backCardButton != null)
@@ -78,6 +98,8 @@ public class TraineeController : MonoBehaviour
 
     public void OnClick_FrontCard()
     {
+        if (manager != null && manager.IsCardInteractionLocked) return;
+
         onConfirm?.Invoke(data);
         Destroy(gameObject);
         manager?.OnCardConfirmed();
@@ -87,16 +109,26 @@ public class TraineeController : MonoBehaviour
     public void OnClick_FlipCard()
     {
         if (isFlipped || isFlipping) return;
-
-        if (manager != null && manager.IsCardInteractionLocked)
-        {
-            return;
-        }
+        if (manager != null && manager.IsCardInteractionLocked) return;
 
         isFlipping = true;
         cardUI?.UpdateUI(data);
 
-        cardAnimator?.FlipCard(() =>
+        cardAnimator?.PlayTieredFlip(() =>
+        {
+            isFlipped = true;
+            isFlipping = false;
+        });
+    }
+
+    public void ForceFlip()
+    {
+        if (isFlipped || isFlipping) return;
+
+        isFlipping = true;
+        cardUI?.UpdateUI(data);
+
+        cardAnimator?.PlayTieredFlip(() =>
         {
             isFlipped = true;
             isFlipping = false;
@@ -112,18 +144,5 @@ public class TraineeController : MonoBehaviour
     {
         data.LevelUp();
         cardUI?.UpdateUI(data);
-    }
-
-    public void ForceFlip()
-    {
-        if (isFlipped || isFlipping) return;
-
-        isFlipping = true;
-        cardUI?.UpdateUI(data);
-        cardAnimator?.FlipCard(() =>
-        {
-            isFlipped = true;
-            isFlipping = false;
-        });
     }
 }
