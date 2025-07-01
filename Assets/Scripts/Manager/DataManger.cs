@@ -5,6 +5,7 @@ public class DataManger
     public DungeonDataLoader DungeonDataLoader { get; private set; }
     public PersonalityDataLoader PersonalityLoader{ get; private set; }
     public SpecializationDataLoader SpecializationLoader{ get; private set; }
+    public MineLoader MineLoader { get; private set; }
 
     public DataManger()
     {
@@ -18,5 +19,8 @@ public class DataManger
         // 제자 관련 데이터
         PersonalityLoader = new PersonalityDataLoader();
         SpecializationLoader = new SpecializationDataLoader();
+
+        // 광산 관련 데이터
+        MineLoader = new MineLoader();
     }
 }

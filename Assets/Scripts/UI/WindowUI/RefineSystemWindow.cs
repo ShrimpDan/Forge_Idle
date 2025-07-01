@@ -18,9 +18,9 @@ public class RefineSystemWindow : BaseUI
     private ItemInstance resultItem;
     private GameManager gameManager;
     private UIManager uIManager;
-    private DataManger dataManager; // ★ 추가: 데이터 매니저 직접 참조
+    private DataManger dataManager;
 
-    private int refineCost = 1000; // 임시 비용
+    private int refineCost = 1000; 
 
     public override void Init(GameManager gameManager, UIManager uIManager)
     {
@@ -29,7 +29,7 @@ public class RefineSystemWindow : BaseUI
         this.uIManager = uIManager;
         this.dataManager = gameManager?.DataManager;
 
-        // 버튼 리스너
+      
         exitButton.onClick.RemoveAllListeners();
         exitButton.onClick.AddListener(() => uIManager.CloseUI(UIName.RefineSystemWindow));
 

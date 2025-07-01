@@ -94,7 +94,7 @@ public class AssistantTab : BaseTab
             slotObj.SetActive(true);
 
             var slot = slotObj.GetComponent<AssistantSlot>();
-            slot.Init(assi);
+            slot.Init(assi, null);
 
             activeSlots.Add(slotObj);
         }

@@ -25,6 +25,7 @@ public class TraineeManager : MonoBehaviour
     private TraineeFactory factory;
     private TraineeCardSpawner spawner;
     private TraineeInventory inventory = new();
+    public TraineeInventory TraineeInventory => inventory;
 
     private List<TraineeData> currentBatch = new();
     private bool canRecruit = true;
