@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using TMPro;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UI;
@@ -145,11 +146,13 @@ public class AssistantTab : BaseTab
                 sellingAssi.SetAssistant(assi);
                 break;
         }
+
+        ShowAssistantStat(assi, isActive);
     }
 
-    private void ShowAssistantStat(TraineeData assi)
+    private void ShowAssistantStat(TraineeData assi, bool isAcitve)
     {
-        if (assi == null)
+        if (!isAcitve)
         {
             ClearStat(assi.Specialization);
             return;
@@ -172,7 +175,15 @@ public class AssistantTab : BaseTab
                 break;
         }
 
-        GameObject obj = Instantiate(bonusStatPrefab, parent);
+        foreach (var stat in assi.Multipliers)
+        {
+            GameObject obj = Instantiate(bonusStatPrefab, parent);
+            if (obj.TryGetComponent(out TextMeshProUGUI tmp))
+            {
+                tmp.text = stat.AbilityName;
+                tmp.text += $"\nx{stat.Multiplier}";
+            }
+        }
     }
 
     private void ClearStat(SpecializationType type)
@@ -183,14 +194,17 @@ public class AssistantTab : BaseTab
         {
             case SpecializationType.Crafting:
                 parent = craftStatRoot;
+                craftAssi.UnEquipAssistant();
                 break;
 
             case SpecializationType.Enhancing:
                 parent = enhanceStatRoot;
+                enhanceAssi.UnEquipAssistant();
                 break;
 
             case SpecializationType.Selling:
                 parent = sellingStatRoot;
+                sellingAssi.UnEquipAssistant();
                 break;
         }
 

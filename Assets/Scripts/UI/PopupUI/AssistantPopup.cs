@@ -55,6 +55,8 @@ public class AssistantPopup : BaseUI
             optionText.text = option.AbilityName;
             optionText.text += $"\nx{option.Multiplier}";
         }
+
+        SetApplyButton();
     }
 
     public override void Close()
