@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class Forge : MonoBehaviour
 {
@@ -8,7 +9,7 @@ public class Forge : MonoBehaviour
     public float CraftTimeMultiplier { get; private set; }
     public float SellPriceMultiplier { get; private set; }
     public float RareItemChance { get; private set; }
-    public float CustomerSpawnDelay  { get; private set; }
+    public float CustomerSpawnDelay { get; private set; }
 
     // 보너스 스탯
     public float BonusCraftTimeMultiplier { get; private set; }
@@ -20,7 +21,7 @@ public class Forge : MonoBehaviour
     public float FinalCraftTimeMulitiplier => CraftTimeMultiplier + BonusCraftTimeMultiplier;
     public float FinalSellPriceMultiplier => SellPriceMultiplier + BonusSellPriceMultiplier;
     public float FinalRareItemChance => RareItemChance + BonusRareItemChance;
-    public float FinalCustomerSpawnDelay  => CustomerSpawnDelay - BonusCustomerSpawnDelay;
+    public float FinalCustomerSpawnDelay => CustomerSpawnDelay - BonusCustomerSpawnDelay;
 
     // 레벨 & 명성치
     public int Level { get; private set; }
@@ -32,22 +33,25 @@ public class Forge : MonoBehaviour
     public int Gold { get; private set; }
     public int Dia { get; private set; }
 
+    // 장착된 제자
+    public Dictionary<SpecializationType, TraineeData> EquippedAssistant;
     // 이벤트 핸들러
     public ForgeEventHandler Events { get; private set; } = new ForgeEventHandler();
 
     public void Init()
     {
-        SetData();
+        InitData();
+        InitAssistant();
     }
 
-    private void SetData()
+    private void InitData()
     {
         forgeData = ForgeDataSaveLoader.Load();
 
         CraftTimeMultiplier = forgeData.CraftTimeMultiplier;
         SellPriceMultiplier = forgeData.SellPriceMultiplier;
         RareItemChance = forgeData.RareItemChance;
-        CustomerSpawnDelay  = forgeData.CustomerSpawnDelay ;
+        CustomerSpawnDelay = forgeData.CustomerSpawnDelay;
 
         Level = forgeData.Level;
         CurrentFame = forgeData.CurrentFame;
@@ -58,6 +62,15 @@ public class Forge : MonoBehaviour
         Dia = forgeData.Dia;
 
         RaiseAllEvents();
+    }
+
+    private void InitAssistant()
+    {
+        EquippedAssistant = new Dictionary<SpecializationType, TraineeData>();
+
+        EquippedAssistant[SpecializationType.Crafting] = null;
+        EquippedAssistant[SpecializationType.Enhancing] = null;
+        EquippedAssistant[SpecializationType.Selling] = null;
     }
 
     private void RaiseAllEvents()
@@ -76,7 +89,7 @@ public class Forge : MonoBehaviour
             CraftTimeMultiplier = CraftTimeMultiplier,
             SellPriceMultiplier = SellPriceMultiplier,
             RareItemChance = RareItemChance,
-            CustomerSpawnDelay  = CustomerSpawnDelay ,
+            CustomerSpawnDelay = CustomerSpawnDelay,
             Level = Level,
             MaxFame = MaxFame,
             CurrentFame = CurrentFame,
@@ -140,5 +153,17 @@ public class Forge : MonoBehaviour
         }
 
         return false;
+    }
+
+    public void ActiveAssistant(TraineeData assi)
+    {
+        EquippedAssistant[assi.Specialization] = assi;
+        Events.RaiseAssistantChanged(assi, true);
+    }
+
+    public void DeActiveAssistant(TraineeData assi)
+    {
+        EquippedAssistant[assi.Specialization] = null;
+        Events.RaiseAssistantChanged(assi, false);
     }
 }
