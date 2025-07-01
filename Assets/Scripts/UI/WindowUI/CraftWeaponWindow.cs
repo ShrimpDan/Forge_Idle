@@ -25,7 +25,7 @@ public class CraftWeaponWindow : BaseUI
         public TMP_Text timeText;
         public CraftingData data;
         public ItemData itemData;
-        public bool rewardGiven = false; // **보상 중복 지급 방지**
+        public bool rewardGiven = false;
     }
     private List<SlotCraftProgress> slotProgressList = new List<SlotCraftProgress>();
 
@@ -135,7 +135,7 @@ public class CraftWeaponWindow : BaseUI
             Debug.LogError("Forge_Recipe_Popup을 열 수 없습니다!");
             return;
         }
-
+        // **데이터매니저를 직접 전달**
         popup.Init(gameManager.DataManager, uIManager);
         popup.SetRecipeSelectCallback(OnRecipeSelected);
         popup.SetForgeAndInventory(gameManager.Forge, gameManager.Inventory);
@@ -170,8 +170,7 @@ public class CraftWeaponWindow : BaseUI
             return;
         }
 
-        Sprite iconSprite = null;
-        iconSprite = IconLoader.GetIcon(itemData.IconPath);
+        Sprite iconSprite = IconLoader.GetIcon(itemData.IconPath);
         if (iconSprite == null)
             iconSprite = Resources.Load<Sprite>(itemData.IconPath);
 
@@ -189,7 +188,7 @@ public class CraftWeaponWindow : BaseUI
         prog.timeLeft = craftingData.craftTime;
         prog.data = craftingData;
         prog.itemData = itemData;
-        prog.rewardGiven = false; // 보상 지급 flag
+        prog.rewardGiven = false;
 
         if (prog.progressBar)
         {
@@ -219,16 +218,15 @@ public class CraftWeaponWindow : BaseUI
             if (prog.timeText)
                 prog.timeText.text = $"{prog.timeLeft:0.0}s";
 
-            // **제작 완료 + 인벤토리 지급**
+            // 제작 완료 + 인벤토리 지급
             if (prog.timeLeft <= 0f && prog.isCrafting && !prog.rewardGiven)
             {
                 prog.isCrafting = false;
                 prog.rewardGiven = true;
 
-                // ⭐ 제작 아이템 인벤토리 추가 ⭐
+                // 데이터 매니저에서 ItemData로 인벤토리에 추가
                 if (prog.itemData != null)
                 {
-                    // 1개씩 추가, 필요시 수량/옵션 확장 가능
                     gameManager.Inventory.AddItem(prog.itemData, 1);
                     Debug.Log($"[제작완료] {prog.itemData.Name} 인벤토리에 추가됨!");
                 }

@@ -10,19 +10,21 @@ public class UpgradeWeaponWindow : BaseUI
     [SerializeField] private Button exitBtn;
     [SerializeField] private Button inputWeaponSlotBtn;
     [SerializeField] private Image inputWeaponIcon;
-    [SerializeField] private TMP_Text upgradeCostText;     
-    [SerializeField] private Button executeBtn;            
+    [SerializeField] private TMP_Text upgradeCostText;
+    [SerializeField] private Button executeBtn;
 
     private ItemInstance selectedWeapon;
-    private int upgradeCost = 0; 
+    private int upgradeCost = 0;
     private GameManager gameManager;
     private UIManager uIManager;
+    private DataManger dataManager;
 
     public override void Init(GameManager gameManager, UIManager uiManager)
     {
         base.Init(gameManager, uiManager);
         this.gameManager = gameManager;
         this.uIManager = uiManager;
+        this.dataManager = gameManager?.DataManager;
 
         // 버튼 리스너 등록
         if (exitBtn)
@@ -54,11 +56,16 @@ public class UpgradeWeaponWindow : BaseUI
     private void OnWeaponSelected(ItemInstance weapon)
     {
         selectedWeapon = weapon;
+
+        // 혹시 Data가 비어있으면 DataLoader에서
+        if (selectedWeapon != null && selectedWeapon.Data == null && dataManager != null)
+            selectedWeapon.Data = dataManager.ItemLoader.GetItemByKey(selectedWeapon.ItemKey);
+
         if (inputWeaponIcon)
         {
-            if (weapon != null && weapon.Data != null)
+            if (selectedWeapon != null && selectedWeapon.Data != null)
             {
-                inputWeaponIcon.sprite = IconLoader.GetIcon(weapon.Data.IconPath);
+                inputWeaponIcon.sprite = IconLoader.GetIcon(selectedWeapon.Data.IconPath);
                 inputWeaponIcon.enabled = true;
             }
             else
@@ -67,8 +74,9 @@ public class UpgradeWeaponWindow : BaseUI
                 inputWeaponIcon.enabled = false;
             }
         }
+
         // 무기를 선택하면 비용을 계산해서 표시
-        upgradeCost = CalcUpgradeCost(weapon);
+        upgradeCost = CalcUpgradeCost(selectedWeapon);
         if (upgradeCostText)
             upgradeCostText.text = $"강화 비용: {upgradeCost} 골드";
     }
@@ -78,7 +86,9 @@ public class UpgradeWeaponWindow : BaseUI
     {
         if (weapon == null || weapon.Data == null)
             return 0;
+
         int level = weapon.CurrentEnhanceLevel;
+        // 추후 강화 비용 로직 추가
         return Mathf.Max(1000, (level + 1) * 1000);
     }
 
@@ -104,10 +114,13 @@ public class UpgradeWeaponWindow : BaseUI
         // 비용 차감
         gameManager.Forge.AddGold(-upgradeCost);
 
-        // 실제 무기 업그레이드 처리
-        Debug.Log($"[UpgradeSystem] {selectedWeapon.Data.Name} 강화 성공! (레벨:{selectedWeapon.CurrentEnhanceLevel + 1} 비용:{upgradeCost})");
+        // 실제 무기 업그레이드 처리 
+        if (selectedWeapon.Data != null && selectedWeapon.CurrentEnhanceLevel < selectedWeapon.Data.UpgradeInfo?.MaxEnhanceLevel)
+        {
+            selectedWeapon.CurrentEnhanceLevel++;
+        }
 
-        // 여기서 실제로 업그레이드 수치 증가시키는 부분
+        Debug.Log($"[UpgradeSystem] {selectedWeapon.Data.Name} 강화 성공! (레벨:{selectedWeapon.CurrentEnhanceLevel} 비용:{upgradeCost})");
 
         // 성공 후 UI 리셋 또는 재계산
         OnWeaponSelected(selectedWeapon);

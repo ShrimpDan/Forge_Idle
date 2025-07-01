@@ -9,24 +9,26 @@ public class GemsSystemWindow : BaseUI
 
     [SerializeField] private Button exitBtn;
     [SerializeField] private Button weaponInputBtn;
-    [SerializeField] private Button executeBtn; // 
+    [SerializeField] private Button executeBtn;
     [SerializeField] private Image weaponIconImg;
     [SerializeField] private RectTransform gemSlotRoot;
     [SerializeField] private GameObject gemSlotPrefab;
 
     private ItemInstance selectedWeapon;
-    private ItemInstance[] selectedGems = new ItemInstance[3]; 
+    private ItemInstance[] selectedGems = new ItemInstance[3];
     private List<Forge_ItemSlot> gemSlots = new List<Forge_ItemSlot>();
-    private bool isExecuted = false; 
+    private bool isExecuted = false;
 
     private GameManager gameManager;
     private UIManager uIManager;
+    private DataManger dataManager;  // ★ 추가: 데이터 매니저 직접 참조
 
     public override void Init(GameManager gameManager, UIManager uIManager)
     {
         base.Init(gameManager, uIManager);
         this.gameManager = gameManager;
         this.uIManager = uIManager;
+        this.dataManager = gameManager?.DataManager;
 
         exitBtn.onClick.RemoveAllListeners();
         exitBtn.onClick.AddListener(OnExit);
@@ -52,10 +54,20 @@ public class GemsSystemWindow : BaseUI
     private void OnWeaponSelected(ItemInstance weapon)
     {
         selectedWeapon = weapon;
-        if (weaponIconImg != null)
+        if (weapon != null && weapon.Data == null && dataManager != null)
         {
-            weaponIconImg.sprite = IconLoader.GetIcon(weapon.Data.IconPath);
+            // 혹시라도 Data가 비어있다면 DataLoader에서 보충
+            weapon.Data = dataManager.ItemLoader.GetItemByKey(weapon.ItemKey);
+        }
+        if (weaponIconImg != null && selectedWeapon?.Data != null)
+        {
+            weaponIconImg.sprite = IconLoader.GetIcon(selectedWeapon.Data.IconPath);
             weaponIconImg.enabled = true;
+        }
+        else if (weaponIconImg != null)
+        {
+            weaponIconImg.sprite = null;
+            weaponIconImg.enabled = false;
         }
         ResetGemSlots();
     }
@@ -93,7 +105,7 @@ public class GemsSystemWindow : BaseUI
     {
         if (slotIdx < 0 || slotIdx >= 3) return;
 
-        // 기존 슬롯에 있던 보석 복구 (실행 전이라면)
+        // 기존 슬롯에 있던 보석 복구
         var oldGem = selectedGems[slotIdx];
         if (!isExecuted && oldGem != null)
         {
@@ -106,7 +118,10 @@ public class GemsSystemWindow : BaseUI
 
         if (gem != null)
         {
-            // 실제 보석 인벤토리 수량 1 감소 (0되면 알아서 삭제)
+            // 혹시 Data가 비어있다면 DataLoader에서 보충
+            if (gem.Data == null && dataManager != null)
+                gem.Data = dataManager.ItemLoader.GetItemByKey(gem.ItemKey);
+
             gameManager.Inventory.UseItem(gem);
         }
 
@@ -116,7 +131,7 @@ public class GemsSystemWindow : BaseUI
         slot.Init(gem, (item) => { OpenGemInventoryPopup(slotIdx); });
     }
 
-    // [실행버튼 클릭] 실제 강화 로직 적용 자리
+    // 실제 강화 로직 적용 자리
     private void OnExecute()
     {
         if (selectedWeapon == null)
@@ -125,14 +140,14 @@ public class GemsSystemWindow : BaseUI
             return;
         }
 
-        // 여기에 강화 수치 적용 로직 삽입
+        // selectedWeapon.Data / selectedGems[i]?.Data를 활용해서 강화 효과 계산
 
         Debug.Log("[GemsSystem] Execute 완료! (강화 적용 로직 자리)");
 
         isExecuted = true; // 실행 완료 flag (Exit 때 복구 방지)
     }
 
-    // [나가기 버튼] 보석 반환 처리
+    // 보석 반환 처리
     private void OnExit()
     {
         if (!isExecuted)
@@ -151,7 +166,7 @@ public class GemsSystemWindow : BaseUI
             Debug.Log("[GemsSystem] 창 종료: 사용된 보석을 인벤토리에 복구함");
         }
         uIManager.CloseUI(UIName.GemsSystemWindow);
-        ResetAll(); 
+        ResetAll();
     }
 
     private void ResetAll()
@@ -165,7 +180,7 @@ public class GemsSystemWindow : BaseUI
             weaponIconImg.sprite = null;
             weaponIconImg.enabled = false;
         }
-        isExecuted = false; // 리셋
+        isExecuted = false;
         ResetGemSlots();
     }
 

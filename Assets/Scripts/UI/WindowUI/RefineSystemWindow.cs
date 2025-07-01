@@ -8,23 +8,26 @@ public class RefineSystemWindow : BaseUI
 
     [Header("UI Elements")]
     [SerializeField] private Button exitButton;
-    [SerializeField] private Button inputSlotButton;      
-    [SerializeField] private Image inputSlotIcon;         
-    [SerializeField] private Image outputSlotIcon;        
-    [SerializeField] private TMP_Text refineCostText;     
-    [SerializeField] private Button executeButton;     
+    [SerializeField] private Button inputSlotButton;
+    [SerializeField] private Image inputSlotIcon;
+    [SerializeField] private Image outputSlotIcon;
+    [SerializeField] private TMP_Text refineCostText;
+    [SerializeField] private Button executeButton;
 
     private ItemInstance selectedMaterial;
-    private ItemInstance resultItem;                      
+    private ItemInstance resultItem;
     private GameManager gameManager;
     private UIManager uIManager;
-    private int refineCost = 1000;                        // 임시 비용
+    private DataManger dataManager; // ★ 추가: 데이터 매니저 직접 참조
+
+    private int refineCost = 1000; // 임시 비용
 
     public override void Init(GameManager gameManager, UIManager uIManager)
     {
         base.Init(gameManager, uIManager);
         this.gameManager = gameManager;
         this.uIManager = uIManager;
+        this.dataManager = gameManager?.DataManager;
 
         // 버튼 리스너
         exitButton.onClick.RemoveAllListeners();
@@ -44,7 +47,6 @@ public class RefineSystemWindow : BaseUI
 
     private void OnClickInputSlot()
     {
-        // 인벤토리에서 "리소스" 탭만 노출
         var popup = uIManager.OpenUI<Forge_Inventory_Popup>(UIName.Forge_Inventory_Popup);
         popup.SetResourceSelectCallback(OnMaterialSelected);
     }
@@ -52,11 +54,16 @@ public class RefineSystemWindow : BaseUI
     private void OnMaterialSelected(ItemInstance item)
     {
         selectedMaterial = item;
+        if (selectedMaterial != null && selectedMaterial.Data == null && dataManager != null)
+        {
+            // 혹시라도 Data가 비어있으면 DataLoader에서 보충
+            selectedMaterial.Data = dataManager.ItemLoader.GetItemByKey(selectedMaterial.ItemKey);
+        }
 
         // 아이콘 세팅
-        if (inputSlotIcon != null && item?.Data != null)
+        if (inputSlotIcon != null && selectedMaterial?.Data != null)
         {
-            inputSlotIcon.sprite = IconLoader.GetIcon(item.Data.IconPath);
+            inputSlotIcon.sprite = IconLoader.GetIcon(selectedMaterial.Data.IconPath);
             inputSlotIcon.enabled = true;
         }
         else if (inputSlotIcon != null)
@@ -65,15 +72,15 @@ public class RefineSystemWindow : BaseUI
             inputSlotIcon.enabled = false;
         }
 
-        // 결과 (실제 변환은 나중 구현)
-        resultItem = null; // 실제 정련 결과 아이템 예측용 더미
+        // --- 정련 결과 아이템 미리보기 ---
+        resultItem = null;
+
         UpdateOutputSlot();
         UpdateCost();
     }
 
     private void UpdateOutputSlot()
     {
-        // 결과 아이템 프리뷰
         if (outputSlotIcon != null)
         {
             if (resultItem != null && resultItem.Data != null)
@@ -102,12 +109,13 @@ public class RefineSystemWindow : BaseUI
             Debug.LogWarning("[RefineSystem] 재료를 먼저 선택하세요!");
             return;
         }
-        // 실제 비용 차감/결과 처리 구현 예정
 
-        // 정련 로직 자리 (추후 구현)
-        Debug.Log("[RefineSystem] 정련 완료!");
+        // --- 실제 비용 차감/정련 처리 자리 ---
+        // 예시: gameManager.Forge.AddGold(-refineCost);
+        // 실제로는 selectedMaterial을 소모하고 resultItem을 인벤토리에 추가
 
-        // UI 초기화
+        Debug.Log("[RefineSystem] 정련 완료! (정련 결과 지급 로직 자리)");
+
         ResetUI();
     }
 
