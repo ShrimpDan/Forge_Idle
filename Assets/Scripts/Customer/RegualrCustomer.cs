@@ -5,13 +5,16 @@ using UnityEngine;
 
 public class RegualrCustomer : Customer
 {
+
     public Action<CustomerJob> OnPriceBoosted;//단골손님 가격올리기
 
     [SerializeField] private GameObject InteractObject; //말풍선
+    [SerializeField] private float WaitTime = 4.0f;
+    [SerializeField] private RegualrCustomerData CollectData;
+
 
     private bool isInteracting = false;
 
-    [SerializeField] private float WaitTime = 4.0f;
 
     public override void Interact()
     {
@@ -50,19 +53,28 @@ public class RegualrCustomer : Customer
 
         if (click)
         {
-            PriceBoost();
+            RegualrEvent();
             InteractObject.SetActive(false);
+            buyPoint.CustomerOut();
         }
         buyPoint.CustomerOut(); //이어서 나가기
         isInteracting = false;
 
     }
 
-    private void PriceBoost()
+    private void RegualrEvent()
     {
-        Debug.Log($"단골 손님 왔다감 {Job}의 가격이 1시간동안 증가합니다");
-        OnPriceBoosted?.Invoke(Job); //단골손님 가격 오르기 이벤트 발생
         
+        OnPriceBoosted?.Invoke(Job); //단골손님 가격 오르기 이벤트 발생
+        if (CollectData != null)
+        {
+            CollectionBook.Instance.Discover(CollectData);
+        }
+        else
+        {
+
+            Debug.Log("컬렉션 북이 연결 안됨");
+        }
     }
 
     
