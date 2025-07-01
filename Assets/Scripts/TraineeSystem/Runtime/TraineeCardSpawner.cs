@@ -74,13 +74,10 @@ public class TraineeCardSpawner
             data,
             factory,
             drawController,
-            index,
-            null,
             d => drawController.OnTraineeConfirmed?.Invoke(d),
             enableFlipImmediately,
+            true,
             true
-        );
-
-        controller.PlaySpawnEffect();
+                );
     }
 }
