@@ -77,10 +77,8 @@ public class TraineeManager : MonoBehaviour
 
         spawner.SpawnLargeCard(data);
         ConfirmTrainee(data);
-        canRecruit = true;
     }
 
-    // 데이터 저장
     public void ConfirmTrainee(TraineeData data)
     {
         currentBatch.Add(data);
@@ -91,6 +89,8 @@ public class TraineeManager : MonoBehaviour
     {
         inventory.Remove(data);
         Destroy(obj);
+
+        canRecruit = true;
     }
 
     // 디버그 / 데이터 접근
