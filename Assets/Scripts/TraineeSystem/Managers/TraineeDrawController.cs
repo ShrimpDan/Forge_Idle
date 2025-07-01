@@ -11,6 +11,7 @@ public class TraineeDrawController : MonoBehaviour
     [SerializeField] private TraineeCardLayoutAnimator layoutAnimator;
     [SerializeField] private Transform multiDrawParent;
     [SerializeField] private GameObject confirmAllButtonPrefab;
+    [SerializeField] private GameObject backgroundPanel;
 
     private TraineeFactory factory;
     private TraineeCardSpawner spawner;
@@ -43,7 +44,18 @@ public class TraineeDrawController : MonoBehaviour
     {
         factory.ResetRecruitLock();
         cardsToConfirm = count;
-        StartCoroutine(RecruitMultipleCoroutine(count, fixedType));
+
+        StartCoroutine(StartRecruitFlowWithBackground(count, fixedType));
+    }
+
+    private IEnumerator StartRecruitFlowWithBackground(int count, SpecializationType? fixedType)
+    {
+        if (backgroundPanel != null)
+            backgroundPanel.SetActive(true);
+
+        yield return null;
+
+        yield return StartCoroutine(RecruitMultipleCoroutine(count, fixedType));
     }
 
     /// <summary>
@@ -167,6 +179,9 @@ public class TraineeDrawController : MonoBehaviour
         {
             if (confirmAllButtonInstance != null)
                 Destroy(confirmAllButtonInstance);
+
+            if (backgroundPanel != null)
+                backgroundPanel.SetActive(false);
 
             OnRecruitingFinished?.Invoke();
         }

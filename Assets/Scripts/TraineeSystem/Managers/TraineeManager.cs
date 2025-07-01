@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class TraineeManager : MonoBehaviour
@@ -21,6 +22,9 @@ public class TraineeManager : MonoBehaviour
 
     [Header("Draw 컨트롤러")]
     [SerializeField] private TraineeDrawController drawController;
+
+    [Header("UI 배경")]
+    [SerializeField] private GameObject backgroundPanel;
 
     private TraineeFactory factory;
     private TraineeCardSpawner spawner;
@@ -46,7 +50,12 @@ public class TraineeManager : MonoBehaviour
 
         drawController.Init(factory, spawner);
         drawController.OnTraineeConfirmed += ConfirmTrainee;
-        drawController.OnRecruitingFinished += () => canRecruit = true;
+        drawController.OnRecruitingFinished += () => {
+            canRecruit = true;
+
+            if (backgroundPanel != null)
+                backgroundPanel.SetActive(false);
+        };
     }
 
     // 단일 뽑기 처리 (외부에서 호출)
@@ -73,15 +82,23 @@ public class TraineeManager : MonoBehaviour
         if (!canRecruit) return;
         canRecruit = false;
 
-        var data = recruitFunc.Invoke();
-        if (data == null) return;
-
-        spawner.SpawnLargeCard(data);
-        ConfirmTrainee(data);
-        canRecruit = true;
+        StartCoroutine(SingleRecruitFlow(recruitFunc));
     }
 
-    // 데이터 저장
+    private IEnumerator SingleRecruitFlow(System.Func<TraineeData> recruitFunc)
+    {
+        if (backgroundPanel != null)
+            backgroundPanel.SetActive(true);
+
+        yield return null;
+
+        var data = recruitFunc.Invoke();
+        if (data == null) yield break;
+
+        var obj = spawner.SpawnLargeCard(data);
+        ConfirmTrainee(data);
+    }
+
     public void ConfirmTrainee(TraineeData data)
     {
         currentBatch.Add(data);
@@ -92,6 +109,10 @@ public class TraineeManager : MonoBehaviour
     {
         inventory.Remove(data);
         Destroy(obj);
+        canRecruit = true;
+
+        if (backgroundPanel != null)
+            backgroundPanel.SetActive(false);
     }
 
     // 디버그 / 데이터 접근

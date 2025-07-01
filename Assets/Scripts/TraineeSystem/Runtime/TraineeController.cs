@@ -1,4 +1,4 @@
-﻿using TMPro;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,25 +18,21 @@ public class TraineeController : MonoBehaviour
 
     private bool isFlipped = false;
     private bool isFlipping = false;
-    private int currentIndex = 0;
     public bool IsFlipped => isFlipped;
 
-    private System.Action<int> onSkip;
     private System.Action<TraineeData> onConfirm;
 
     /// <summary>
     /// 카드 설정 및 UI 초기화
     /// </summary>
     public void Setup(TraineeData traineeData, TraineeFactory traineeFactory, TraineeDrawController drawCtrl,
-                      int order, System.Action<int> onSkipAction, System.Action<TraineeData> onConfirmAction,
-                      bool enableFlipOnStart = false, bool isMultiDrawCard = false)
+                      System.Action<TraineeData> onConfirmAction,
+                      bool enableFlipOnStart = false, bool isMultiDrawCard = false, bool playSpawnEffect = true)
     {
         data = traineeData;
         factory = traineeFactory;
         drawController = drawCtrl;
         isFlipped = false;
-        currentIndex = order;
-        onSkip = onSkipAction;
         onConfirm = onConfirmAction;
 
         cardUI?.UpdateUI(data);
@@ -48,6 +44,18 @@ public class TraineeController : MonoBehaviour
             backCardButton.onClick.RemoveAllListeners();
             backCardButton.onClick.AddListener(OnClick_FlipCard);
         }
+
+        if (playSpawnEffect)
+            StartCoroutine(DelayedSpawnEffect());
+    }
+
+    /// <summary>
+    /// 카드 등장 연출을 1프레임 뒤에 실행
+    /// </summary>
+    private IEnumerator DelayedSpawnEffect()
+    {
+        yield return null;
+        PlaySpawnEffect();
     }
 
     /// <summary>
@@ -82,14 +90,6 @@ public class TraineeController : MonoBehaviour
     }
 
     /// <summary>
-    /// 게임 오브젝트 제거 (직접 삭제)
-    /// </summary>
-    public void OnClick_DeleteSelf()
-    {
-        Destroy(gameObject);
-    }
-
-    /// <summary>
     /// 카드 앞면 클릭 시 실행. 제자 확인 처리 + 카드 제거
     /// </summary>
     public void OnClick_FrontCard()
@@ -109,23 +109,6 @@ public class TraineeController : MonoBehaviour
     {
         if (isFlipped || isFlipping) return;
         if (drawController != null && drawController.IsCardInteractionLocked) return;
-
-        isFlipping = true;
-        cardUI?.UpdateUI(data);
-
-        cardAnimator?.PlayTieredFlip(() =>
-        {
-            isFlipped = true;
-            isFlipping = false;
-        });
-    }
-
-    /// <summary>
-    /// 외부에서 강제로 카드 뒤집기 실행 (콜백 없음)
-    /// </summary>
-    public void ForceFlip()
-    {
-        if (isFlipped || isFlipping) return;
 
         isFlipping = true;
         cardUI?.UpdateUI(data);
