@@ -120,7 +120,7 @@ public class InventoryTab : BaseTab
     private void OnItemEquipped(int slotIndex, ItemInstance item)
     {
         UpdateSlot(item, true);
-        invenEquippedSlots[slotIndex].Init(item);
+        invenEquippedSlots[slotIndex].Init(uIManager, item);
     }
 
     private void OnItemUnEquipped(int slotIndex, ItemInstance item)

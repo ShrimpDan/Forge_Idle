@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -21,15 +22,15 @@ public class AssistantTab : BaseTab
     [SerializeField] Transform upgradeSlotRoot;
 
     [Header("Selected Assistant")]
-    [SerializeField] Image craftAssi;
-    [SerializeField] Image sellAssi;
-    [SerializeField] Image upgradeAssi;
+    [SerializeField] AssiEquippedSlot craftAssi;
+    [SerializeField] AssiEquippedSlot enhanceAssi;
+    [SerializeField] AssiEquippedSlot sellingAssi;
 
     [Header("To Create Bonus Stat")]
     [SerializeField] GameObject bonusStatPrefab;
     [SerializeField] Transform craftStatRoot;
-    [SerializeField] Transform sellStatRoot;
-    [SerializeField] Transform upgradeStatRoot;
+    [SerializeField] Transform enhanceStatRoot;
+    [SerializeField] Transform sellingStatRoot;
 
     private Queue<GameObject> pooledSlots = new Queue<GameObject>();
     private List<GameObject> activeSlots = new List<GameObject>();
@@ -47,17 +48,25 @@ public class AssistantTab : BaseTab
         SwitchTab(0);
 
         assistantManager = gameManager.AssistantManager;
+
+        // 장착된 Assistant 슬롯 초기화
+        craftAssi.Init(uIManager);
+        enhanceAssi.Init(uIManager);
+        sellingAssi.Init(uIManager);
     }
 
     public override void OpenTab()
     {
         base.OpenTab();
+        gameManager.Forge.Events.OnAssistantChanged += SetAssistant;
+
         RefreshSlots();
     }
 
     public override void CloseTab()
     {
         base.CloseTab();
+        gameManager.Forge.Events.OnAssistantChanged -= SetAssistant;
     }
 
     private void RefreshSlots()
@@ -118,5 +127,76 @@ public class AssistantTab : BaseTab
             return pooledSlots.Dequeue();
 
         return Instantiate(assiSlotPrefab);
+    }
+
+    private void SetAssistant(TraineeData assi, bool isActive)
+    {
+        switch (assi.Specialization)
+        {
+            case SpecializationType.Crafting:
+                craftAssi.SetAssistant(assi);
+                break;
+
+            case SpecializationType.Enhancing:
+                enhanceAssi.SetAssistant(assi);
+                break;
+
+            case SpecializationType.Selling:
+                sellingAssi.SetAssistant(assi);
+                break;
+        }
+    }
+
+    private void ShowAssistantStat(TraineeData assi)
+    {
+        if (assi == null)
+        {
+            ClearStat(assi.Specialization);
+            return;
+        }
+
+        Transform parent = null;
+
+        switch (assi.Specialization)
+        {
+            case SpecializationType.Crafting:
+                parent = craftStatRoot;
+                break;
+
+            case SpecializationType.Enhancing:
+                parent = enhanceStatRoot;
+                break;
+
+            case SpecializationType.Selling:
+                parent = sellingStatRoot;
+                break;
+        }
+
+        GameObject obj = Instantiate(bonusStatPrefab, parent);
+    }
+
+    private void ClearStat(SpecializationType type)
+    {
+        Transform parent = null;
+
+        switch (type)
+        {
+            case SpecializationType.Crafting:
+                parent = craftStatRoot;
+                break;
+
+            case SpecializationType.Enhancing:
+                parent = enhanceStatRoot;
+                break;
+
+            case SpecializationType.Selling:
+                parent = sellingStatRoot;
+                break;
+        }
+
+        foreach (Transform child in parent)
+        {
+            Destroy(child.gameObject);
+        }
     }
 }

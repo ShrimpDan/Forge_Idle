@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 public class AssistantPopup : BaseUI
 {
+    private Forge forge;
     public override UIType UIType => UIType.Popup;
 
     [Header("Assistant Info UI")]
@@ -26,7 +27,8 @@ public class AssistantPopup : BaseUI
     public override void Init(GameManager gameManager, UIManager uIManager)
     {
         base.Init(gameManager, uIManager);
-        
+        forge = gameManager.Forge;
+
         exitButton.onClick.AddListener(() => uIManager.CloseUI(UIName.AssistantPopup));
         applyButton.onClick.AddListener(ApplyAssistant);
         deApplyButton.onClick.AddListener(DeApplyAssistant);
@@ -64,12 +66,14 @@ public class AssistantPopup : BaseUI
     private void ApplyAssistant()
     {
         assiData.IsEquipped = true;
+        forge.ActiveAssistant(assiData);
         SetApplyButton();
     }
 
     private void DeApplyAssistant()
     {
         assiData.IsEquipped = false;
+        forge.DeActiveAssistant(assiData);
         SetApplyButton();
     }
 
