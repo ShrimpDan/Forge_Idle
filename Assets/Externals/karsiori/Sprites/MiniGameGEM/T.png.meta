@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 89275680728154ffab2a4621a4a5ed65
+guid: a8d5659753f45e345bed10f19f62a530
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -81,7 +81,33 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
     buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -110,76 +136,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: GoldTreasure_0
+      name: T_0
       rect:
         serializedVersion: 2
-        x: 80
-        y: 696
-        width: 242
-        height: 240
-      alignment: 9
-      pivot: {x: 0.99733275, y: 0.49177906}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 31b6ac60d8ad1419b93dc74d4d59d9f9
-      internalID: 1929894977
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: GoldTreasure_1
-      rect:
-        serializedVersion: 2
-        x: 701
-        y: 694
-        width: 242
-        height: 240
-      alignment: 9
-      pivot: {x: 0.0026671356, y: 0.48355815}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: d08a30169dd3f44409254f4d8c82943d
-      internalID: -264542232
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: GoldTreasure_2
-      rect:
-        serializedVersion: 2
-        x: 394
-        y: 968
-        width: 242
-        height: 240
-      alignment: 9
-      pivot: {x: 0.491847, y: 0.0067438763}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 2e6b4bc056de74e6aa2b161d76d59dad
-      internalID: 554806402
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: GoldTreasure_3
-      rect:
-        serializedVersion: 2
-        x: 392
-        y: 694
-        width: 242
-        height: 240
+        x: 98
+        y: 1089
+        width: 272
+        height: 298
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -187,71 +150,92 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 17a174e89fb9344afbc668033c8cbf85
-      internalID: -1343638132
+      spriteID: 6e3f871aa62f20f4aac72685fa4b5a16
+      internalID: 1936457065
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: GoldTreasure_4
+      name: T_1
       rect:
         serializedVersion: 2
-        x: 391
-        y: 1296
-        width: 242
-        height: 240
-      alignment: 9
-      pivot: {x: 0.5, y: 0.0067438763}
+        x: 374
+        y: 1088
+        width: 272
+        height: 298
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: bd0448063bbfb488784c60c5be529e62
-      internalID: 517991444
+      spriteID: 67be1569e35933e4b95e72ab2ad52192
+      internalID: 914687165
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: GoldTreasure_5
+      name: T_2
       rect:
         serializedVersion: 2
-        x: 390
-        y: 447
-        width: 242
-        height: 240
-      alignment: 9
-      pivot: {x: 0.50815296, y: 0.9768145}
+        x: 652
+        y: 1088
+        width: 272
+        height: 298
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: bee6456bbb5524e0091d2d376097604b
-      internalID: 1033405762
+      spriteID: d32d1e33a02681046bcdd8e3e18d30af
+      internalID: -378441261
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: GoldTreasure_6
+      name: T_3
       rect:
         serializedVersion: 2
-        x: 390
-        y: 0
-        width: 242
-        height: 240
-      alignment: 9
-      pivot: {x: 0.50815296, y: 0.98503536}
+        x: 374
+        y: 665
+        width: 272
+        height: 298
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 6ab15f78b45544fcc8fdf23d74c42cf3
-      internalID: 1124461774
+      spriteID: 059ca82e087b2d04e84d073b4b383e0f
+      internalID: -1771602190
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: T_4
+      rect:
+        serializedVersion: 2
+        x: 373
+        y: 132
+        width: 272
+        height: 298
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 789bb252ecc07074a910a5664d718311
+      internalID: -811771813
       vertices: []
       indices: 
       edges: []
@@ -267,13 +251,11 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      GoldTreasure_0: 1929894977
-      GoldTreasure_1: -264542232
-      GoldTreasure_2: 554806402
-      GoldTreasure_3: -1343638132
-      GoldTreasure_4: 517991444
-      GoldTreasure_5: 1033405762
-      GoldTreasure_6: 1124461774
+      T_0: 1936457065
+      T_1: 914687165
+      T_2: -378441261
+      T_3: -1771602190
+      T_4: -811771813
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
