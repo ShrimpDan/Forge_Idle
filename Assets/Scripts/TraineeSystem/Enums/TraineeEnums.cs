@@ -15,6 +15,6 @@ public static class TraineeStatNames
     public const string IncreaseEnhanceChance = "강화 확률 증가";
     public const string DecreaseBreakChance = "파괴 확률 감소";
     public const string DecreaseEnhanceCost = "강화 비용 감소";
-    public const string IncreaseSellProfit = "판매 수익 증가";
+    public const string IncreaseSellPrice = "판매 수익 증가";
     public const string IncreaseCustomerCount = "손님 수 증가";
 }

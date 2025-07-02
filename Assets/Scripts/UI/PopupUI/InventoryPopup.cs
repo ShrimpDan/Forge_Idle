@@ -48,8 +48,8 @@ public class InventoryPopup : BaseUI
         {
             case ItemType.Weapon:
                 desc += $"\n\n<color=#00c3ff><b>▶ Stats</b></color>\n";
-                desc += $"공격력: <b>{item.Data.WeaponStats.Attack}</b>\n";
-                desc += $"공격 간격: <b>{item.Data.WeaponStats.AttackInterval}초</b>\n";
+                desc += $"공격력: <b>{item.GetTotalAttack()}</b>\n";
+                desc += $"공격 간격: <b>{item.GetTotalInterval()}초</b>\n";
                 break;
 
             case ItemType.Gem:

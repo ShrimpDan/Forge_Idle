@@ -61,7 +61,10 @@ public class ItemInstance
         if (Data.ItemType != ItemType.Weapon)
             return 0;
 
-        float multiplier = (CurrentEnhanceLevel + 1) * Data.UpgradeInfo.AttackMultiplier;
+        if (CurrentEnhanceLevel == 0)
+            return Data.WeaponStats.Attack;
+
+        float multiplier = CurrentEnhanceLevel * Data.UpgradeInfo.AttackMultiplier;
         return Data.WeaponStats.Attack * multiplier;
     }
 
@@ -70,7 +73,10 @@ public class ItemInstance
         if (Data.ItemType != ItemType.Weapon)
             return 0;
 
-        float reduction = (CurrentEnhanceLevel + 1) * Data.UpgradeInfo.IntervalReductionPerLevel;
+        if (CurrentEnhanceLevel == 0)
+            return Data.WeaponStats.AttackInterval;
+
+        float reduction = CurrentEnhanceLevel * Data.UpgradeInfo.IntervalReductionPerLevel;
         return Mathf.Max(0.1f, Data.WeaponStats.AttackInterval - reduction);
     }
 }
