@@ -37,16 +37,15 @@ public class GameManager : MonoSingleton<GameManager>
             Inventory.AddItem(itemData);
         }
 
-
         var fabricData = DataManager.ItemLoader.GetItemByKey("resource_fabric");
         if (fabricData != null)
         {
             Inventory.AddItem(fabricData, 3);
-            Debug.Log("<color=lime>[GameManager] Fabric 3�� �߰� ����!</color>");
+            Debug.Log("<color=lime>[GameManager] 패브릭 3개 추가 완료!</color>");
         }
         else
         {
-            Debug.LogWarning("[GameManager] resource_fabric ������ �����Ͱ� �����ϴ�!");
+            Debug.LogWarning("[GameManager] resource_fabric 아이템을 찾을 수 없습니다!");
         }
     }
 
@@ -65,12 +64,27 @@ public class GameManager : MonoSingleton<GameManager>
         if (Forge != null)
         {
             Forge.AddGold(5000);
-            Debug.Log("<color=yellow>[GameManager] �׽�Ʈ�� ��� 5000 ����!</color>");
+            Debug.Log("<color=yellow>[GameManager] 테스트 골드 5000 지급 완료!</color>");
         }
         else
         {
-            Debug.LogWarning("[GameManager] Forge �ν��Ͻ��� �����ϴ�!");
+            Debug.LogWarning("[GameManager] Forge 인스턴스를 찾을 수 없습니다!");
         }
+    }
+
+    [ContextMenu("Add All Resource Items (20 Each)")]
+    public void AddAllResourcesTest()
+    {
+        int addedTypes = 0;
+        foreach (var item in DataManager.ItemLoader.ItemList)
+        {
+            if (item.ItemKey != null && item.ItemKey.StartsWith("resource_"))
+            {
+                Inventory.AddItem(item, 20);
+                addedTypes++;
+            }
+        }
+        Debug.Log($"<color=cyan>[GameManager] 리소스 아이템 {addedTypes}종 20개씩 지급 완료!</color>");
     }
 
     public void StartDungeon(DungeonData data)
