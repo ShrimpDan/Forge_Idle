@@ -81,6 +81,20 @@ public class TraineeController : MonoBehaviour
     }
 
     /// <summary>
+    /// 외부에서 연출 없이 즉시 앞면으로 강제 Flip
+    /// </summary>
+    public void ForceInstantFlip()
+    {
+        if (isFlipped) return;
+
+        isFlipped = true;
+        isFlipping = false;
+
+        cardUI?.UpdateUI(data);
+        cardAnimator?.FlipCard(); // Tier 연출 없이 즉시 앞면으로 전환
+    }
+
+    /// <summary>
     /// 뒤집기 버튼을 사용 가능하게 설정
     /// </summary>
     public void EnableFlip()
