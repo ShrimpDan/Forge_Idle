@@ -208,24 +208,31 @@ public class Forge : MonoBehaviour
             switch (stat.AbilityName)
             {
                 case TraineeStatNames.IncreaseCraftSpeed:
+                    bonusCraftSpeedMultiplier += stat.Multiplier;
                     break;
 
                 case TraineeStatNames.IncreaseAdvancedCraftChance:
+                    bonusRareItemChance += stat.Multiplier;
                     break;
 
                 case TraineeStatNames.IncreaseEnhanceChance:
+                    bonusEnhanceSuccessRate += stat.Multiplier;
                     break;
 
                 case TraineeStatNames.DecreaseBreakChance:
+                    bonusBreakChanceReduction += stat.Multiplier;
                     break;
 
                 case TraineeStatNames.DecreaseEnhanceCost:
+                    bonusEnhanceCostMultiplier += stat.Multiplier;
                     break;
 
                 case TraineeStatNames.IncreaseSellPrice:
+                    bonusSellPriceMultiplier += stat.Multiplier;
                     break;
 
                 case TraineeStatNames.IncreaseCustomerCount:
+                    bonusCustomerSpawnRate += stat.Multiplier;
                     break;
             }
         }
