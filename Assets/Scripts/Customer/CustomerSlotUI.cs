@@ -27,7 +27,7 @@ public class CustomerSlotUI : MonoBehaviour
 
         if (discovered)
         {
-            image.sprite = data.Icon;
+            //image.sprite = IconLoader.GetIcon(data.iconPath);
             image.color = Color.white;
         }
         else

@@ -23,21 +23,62 @@ public enum CustomerJob
 }
 
 
-[CreateAssetMenu(fileName = "CustomerData",menuName ="Data/CustomerData", order =0)]
-
-public class CustomerData : ScriptableObject
+[System.Serializable]
+public class CustomerData
 {
-    [SerializeField] private CustomerJob job;
-    [SerializeField] private CustomerType type;
-    public int buyCount;
-    public float frequency;
-    public float buyingTime;
+    /// <summary>
+    /// 키 값
+    /// </summary>
+    public string Key;
+
+    /// <summary>
+    /// 손님의 직업
+    /// </summary>
+    public CustomerJob job;
+
+    /// <summary>
+    /// 손님의 타입
+    /// </summary>
+    public CustomerType type;
+
+    /// <summary>
+    /// 이동 속도
+    /// </summary>
     public float moveSpeed;
 
+}
 
-    public CustomerType Type => type;
-    public CustomerJob Job => job;
- 
+public class CustomerDataLoader
+{
+    public List<CustomerData> ItemsList { get; private set; }
+    public Dictionary<string, CustomerData> ItemsDict { get; private set; }
+
+    public CustomerDataLoader(string path = "Data/customer_data")
+    {
+        string jsonData;
+        jsonData = Resources.Load<TextAsset>(path).text;
+        ItemsList = JsonUtility.FromJson<Wrapper>(jsonData).Items;
+        ItemsDict = new Dictionary<string, CustomerData>();
+        foreach (var item in ItemsList)
+        {
+            ItemsDict.Add(item.Key, item);
+        }
+    }
+
+    [System.Serializable]
+    private class Wrapper
+    {
+        public List<CustomerData> Items;
+    }
+
+    public CustomerData GetByKey(string key)
+    {
+        if (ItemsDict.ContainsKey(key))
+        {
+            return ItemsDict[key];
+        }
+        return null;
+    }
 }
 
 

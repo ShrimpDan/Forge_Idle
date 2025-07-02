@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class CollectionBookManager : MonoSingleton<CollectionBookManager>
 {
+    private DataManager dataManager;
     [SerializeField] private CollectionBookData bookData;
 
     public event Action<RegualrCustomerData> OnCustomerDiscovered;
@@ -16,19 +17,22 @@ public class CollectionBookManager : MonoSingleton<CollectionBookManager>
 
     private void InitDic()
     {
+        dataManager = GameManager.Instance.DataManager;
+        
         discovered.Clear();
         foreach (var rc in bookData.regularCustomers)
         {
             if (rc == null) continue;
 
-            if (!regularDic.TryGetValue(rc.Job, out var list))
+            CustomerData data = dataManager.CustomerDataLoader.GetByKey(rc.customerKey);
+            if (!regularDic.TryGetValue(data.job, out var list))
             {
                 list = new List<RegualrCustomerData>();
-                regularDic[rc.Job] = list;
+                regularDic[data.job] = list;
             }
 
             list.Add(rc);
-            rc.isDiscovered = false; // 항상 초기화
+            //rc.isDiscovered = false; // 항상 초기화
         }
 
 
@@ -44,7 +48,7 @@ public class CollectionBookManager : MonoSingleton<CollectionBookManager>
     {
         if (data == null || discovered.Contains(data))
         {
-            data.isDiscovered = true;
+            //data.isDiscovered = true;
             discovered.Add(data);
 
             OnCustomerDiscovered?.Invoke(data);
@@ -91,7 +95,7 @@ public class CollectionBookManager : MonoSingleton<CollectionBookManager>
 
     public bool IsDiscovered(RegualrCustomerData data)
     {
-        return data != null && data.isDiscovered;
+        return data != null; //&& data.isDiscovered;
 
     }
 
@@ -104,7 +108,7 @@ public class CollectionBookManager : MonoSingleton<CollectionBookManager>
 
         foreach (var data in list)
         {
-            if (data.rarity == rarity && data.isDiscovered)
+            if (data.rarity == rarity) //&& data.isDiscovered)
             {
                 return true;
             }

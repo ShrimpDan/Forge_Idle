@@ -6,7 +6,8 @@ public class DataManager
     public PersonalityDataLoader PersonalityLoader{ get; private set; }
     public SpecializationDataLoader SpecializationLoader{ get; private set; }
     public MineLoader MineLoader { get; private set; }
-
+    public CustomerDataLoader CustomerDataLoader { get; private set; }
+    public RegularDataLoader RegularDataLoader { get; private set; }
     public DataManager()
     {
         // 아이템 관련 데이터
@@ -22,5 +23,9 @@ public class DataManager
 
         // 광산 관련 데이터
         MineLoader = new MineLoader();
+
+        // 손님 관련 데이터
+        CustomerDataLoader = new CustomerDataLoader();
+        RegularDataLoader = new RegularDataLoader();
     }
 }
