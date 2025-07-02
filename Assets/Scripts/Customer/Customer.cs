@@ -66,6 +66,10 @@ public abstract class Customer : MonoBehaviour
         
     }
 
+    public void Init(CustomerData customerData)
+    {
+        this.data = customerData;
+    }
 
 
     private IEnumerator CustomerFlow()

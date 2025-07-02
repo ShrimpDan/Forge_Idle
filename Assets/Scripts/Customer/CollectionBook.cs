@@ -24,7 +24,7 @@ public class CollectionBookManager : MonoSingleton<CollectionBookManager>
         {
             if (rc == null) continue;
 
-            CustomerData data = dataManager.CustomerDataLoader.GetByKey(rc.customerKey);
+            CustomerData data = dataManager.CustomerDataLoader.GetByKey(rc.customerKey);//이거 수정해야함
             if (!regularDic.TryGetValue(data.job, out var list))
             {
                 list = new List<RegualrCustomerData>();
