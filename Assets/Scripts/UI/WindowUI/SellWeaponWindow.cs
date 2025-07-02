@@ -9,8 +9,8 @@ public class SellWeaponWindow : BaseUI
     [Header("UI Elements")]
     [SerializeField] private Button exitBtn;
     [SerializeField] private Image selectedWeaponIcon;
-    [SerializeField] private Transform slotContentRoot;        // ScrollView�� Content�� ����
-    [SerializeField] private GameObject forgeItemSlotPrefab;   // ���� Forge_ItemSlot ������ ����
+    [SerializeField] private Transform slotContentRoot;        // ScrollView의 Content에 해당
+    [SerializeField] private GameObject forgeItemSlotPrefab;   // 실제 Forge_ItemSlot 프리팹 참조
 
     private ItemInstance selectedWeapon;
     private List<GameObject> spawnedSlots = new();
@@ -37,7 +37,7 @@ public class SellWeaponWindow : BaseUI
 
     private void RefreshSlots()
     {
-        // ���� ���� ����
+        // 기존 슬롯 삭제
         foreach (var go in spawnedSlots)
             Destroy(go);
         spawnedSlots.Clear();
