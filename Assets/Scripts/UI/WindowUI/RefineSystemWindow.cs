@@ -59,7 +59,6 @@ public class RefineSystemWindow : BaseUI
         UpdatePreview();
     }
 
-    // 입력 리소스에 따라 gem/ingot 자동 분기
     private void UpdatePreview()
     {
         if (inputSlotIcon != null)
@@ -116,15 +115,20 @@ public class RefineSystemWindow : BaseUI
             .Sum(x => x.Quantity);
         if (owned < requiredAmount) return;
 
+        // 골드 차감
         gameManager.Forge.AddGold(-refineCost);
 
+        // 재료 차감
         var reqList = new System.Collections.Generic.List<(string resourceKey, int amount)>()
         {
             (selectedMaterial.ItemKey, requiredAmount)
         };
         gameManager.Inventory.UseCraftingMaterials(reqList);
 
-        gameManager.Inventory.AddItem(resultItem.Data, resultAmount);
+        // 결과 아이템 생성 및 추가 (핵심)
+        var outData = dataManager.ItemLoader.GetItemByKey(resultItem.ItemKey);
+        if (outData == null) return;
+        gameManager.Inventory.AddItem(outData, resultAmount);
 
         ResetUI();
     }

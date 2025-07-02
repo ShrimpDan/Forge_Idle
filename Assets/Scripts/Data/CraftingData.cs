@@ -51,12 +51,12 @@ public class CraftingDataLoader
                 RequiredResources = new List<RequiredResources>()
             };
 
-            for (int i = 0; i < flat.resourceKeys.Count; i++)
+            for (int i = 0; i < flat.resourceKey.Count; i++)
             {
                 RequiredResources resources = new RequiredResources
                 {
-                    ResourceKey = flat.resourceKeys[i],
-                    Amount = flat.resourceAmount[i]
+                    ResourceKey = flat.resourceKey[i],
+                    Amount = flat.amount[i]
                 };
 
                 data.RequiredResources.Add(resources);
@@ -65,11 +65,6 @@ public class CraftingDataLoader
             CraftingList.Add(data);
             CraftingDict[data.ItemKey] = data;
         }
-
-        foreach (var data in CraftingList)
-            {
-                CraftingDict[data.ItemKey] = data;
-            }
     }
 
     [System.Serializable]
@@ -85,6 +80,7 @@ public class CraftingDataLoader
     }
 }
 
+
 [System.Serializable]
 public class CraftingDataFlat
 {
@@ -93,6 +89,6 @@ public class CraftingDataFlat
     public int craftCost;
     public int sellCost;
     public CustomerJob jobType;
-    public List<string> resourceKeys;
-    public List<int> resourceAmount;
+    public List<string> resourceKey;  
+    public List<int> amount;
 }
