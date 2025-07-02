@@ -8,6 +8,7 @@ public class ItemInstance
 
     public int CurrentEnhanceLevel;
     public bool IsEquipped;
+    public bool CanEnhance => CurrentEnhanceLevel < Data.UpgradeInfo.MaxEnhanceLevel;
 
     public ItemInstance(string key, ItemData data)
     {
@@ -44,16 +45,10 @@ public class ItemInstance
         Quantity -= 1;
     }
 
-    public bool EnhanceItem()
+    public void EnhanceItem()
     {
-        if (CurrentEnhanceLevel >= Data.UpgradeInfo.MaxEnhanceLevel)
-        {
-            Debug.Log("최대강화치");
-            return false;
-        }
-
-        CurrentEnhanceLevel++;
-        return true;
+        if(CanEnhance)
+            CurrentEnhanceLevel++;
     }
 
     public float GetTotalAttack()
