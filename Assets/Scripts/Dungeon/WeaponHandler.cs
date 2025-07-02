@@ -81,7 +81,6 @@ public class WeaponHandler : MonoBehaviour
 
     private void Attack(EquippedWeaponSlot slot)
     {
-        // 무기 던짐
         Monster monster = monsterHandler.GetCurrentMonster();
 
         if (monster != null)
@@ -90,6 +89,7 @@ public class WeaponHandler : MonoBehaviour
         }
     }
 
+    // 투사체 소환 및 효과 적용
     private void SpawnProjectile(EquippedWeaponSlot slot, Monster monster = null)
     {
         Vector2 startPos = GetLocalPosFromAnchor(playerAnchor);

@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
@@ -126,7 +126,16 @@ public class UIManager : MonoBehaviour
     {
         if (!loadedPrefabs.TryGetValue(uiName, out var prefab) || prefab == null)
         {
-            prefab = Resources.Load<GameObject>($"UI/{uiName}");
+            if (uiName.Contains("Window"))
+            {
+                prefab = Resources.Load<GameObject>($"UI/Window/{uiName}");
+            }
+
+            if (uiName.Contains("Popup"))
+            {
+                prefab = Resources.Load<GameObject>($"UI/Popup/{uiName}");
+            }
+
             loadedPrefabs[uiName] = prefab;
         }
         return prefab;

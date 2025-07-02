@@ -56,7 +56,7 @@ public class AssistantPopup : BaseUI
             optionText.text += $"\nx{option.Multiplier}";
         }
 
-        SetApplyButton();
+        SetApplyButton(data.IsEquipped);
     }
 
     public override void Close()
@@ -67,21 +67,19 @@ public class AssistantPopup : BaseUI
 
     private void ApplyAssistant()
     {
-        assiData.IsEquipped = true;
         forge.ActiveAssistant(assiData);
-        SetApplyButton();
+        SetApplyButton(true);
     }
 
     private void DeApplyAssistant()
     {
-        assiData.IsEquipped = false;
         forge.DeActiveAssistant(assiData);
-        SetApplyButton();
+        SetApplyButton(false);
     }
 
-    private void SetApplyButton()
+    private void SetApplyButton(bool isEquip)
     {
-        if (assiData.IsEquipped)
+        if (isEquip)
         {
             applyButton.gameObject.SetActive(false);
             deApplyButton.gameObject.SetActive(true);

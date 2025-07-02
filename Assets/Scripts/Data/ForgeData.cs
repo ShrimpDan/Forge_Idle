@@ -4,10 +4,13 @@ using UnityEngine;
 [System.Serializable]
 public class ForgeData
 {
-    public float CraftTimeMultiplier;
-    public float SellPriceMultiplier;
+    public float CraftSpeedMultiplier;
     public float RareItemChance;
-    public float CustomerSpawnDelay ;
+    public float EnhanceSuccessRate;
+    public float BreakChanceReduction;
+    public float EnhanceCostMultiplier;
+    public float SellPriceMultiplier;
+    public float CustomerSpawnRate;
 
     public int Level;
     public int CurrentFame;
@@ -57,14 +60,19 @@ public static class ForgeDataSaveLoader
     {
         return new ForgeData
         {
-            CraftTimeMultiplier = 1f,
-            SellPriceMultiplier = 1f,
+            CraftSpeedMultiplier = 1f,
             RareItemChance = 0.1f,
-            CustomerSpawnDelay  = 5f,
+            EnhanceSuccessRate = 0.0f,
+            BreakChanceReduction = 0.0f,
+            EnhanceCostMultiplier = 1.0f,
+            SellPriceMultiplier = 1.0f,
+            CustomerSpawnRate = 1.0f,
+
             Level = 1,
-            MaxFame = 100,
             CurrentFame = 0,
+            MaxFame = 100,
             TotalFame = 0,
+
             Gold = 0,
             Dia = 0
         };

@@ -15,15 +15,13 @@ public class UpgradeWeaponWindow : BaseUI
 
     private ItemInstance selectedWeapon;
     private int upgradeCost = 0;
-    private GameManager gameManager;
-    private UIManager uIManager;
     private DataManger dataManager;
 
-    public override void Init(GameManager gameManager, UIManager uiManager)
+    public override void Init(GameManager gameManager, UIManager uIManager)
     {
-        base.Init(gameManager, uiManager);
+        base.Init(gameManager, uIManager);
         this.gameManager = gameManager;
-        this.uIManager = uiManager;
+        this.uIManager = uIManager;
         this.dataManager = gameManager?.DataManager;
 
         // 버튼 리스너 등록
@@ -105,25 +103,21 @@ public class UpgradeWeaponWindow : BaseUI
             return;
         }
 
-        if (gameManager.Forge.Gold < upgradeCost)
+        if (selectedWeapon != null && selectedWeapon.CanEnhance)
         {
-            Debug.LogWarning("[UpgradeSystem] 골드가 부족합니다!");
-            return;
+            if (gameManager.Forge.UseGold(upgradeCost))
+            {
+                selectedWeapon.EnhanceItem();
+                Debug.Log($"[UpgradeSystem] {selectedWeapon.Data.Name} 강화 성공! (레벨:{selectedWeapon.CurrentEnhanceLevel} 비용:{upgradeCost})");
+            }
+            else
+                Debug.Log("[UpgradeSystem] 골드가 부족합니다");
         }
-
-        // 비용 차감
-        gameManager.Forge.AddGold(-upgradeCost);
-
-        // 실제 무기 업그레이드 처리 
-        if (selectedWeapon.Data != null && selectedWeapon.CurrentEnhanceLevel < selectedWeapon.Data.UpgradeInfo?.MaxEnhanceLevel)
-        {
-            selectedWeapon.CurrentEnhanceLevel++;
-        }
-
-        Debug.Log($"[UpgradeSystem] {selectedWeapon.Data.Name} 강화 성공! (레벨:{selectedWeapon.CurrentEnhanceLevel} 비용:{upgradeCost})");
+        else
+            Debug.Log("[UpgradeSystem] 최대 강화입니다.");
 
         // 성공 후 UI 리셋 또는 재계산
-        OnWeaponSelected(selectedWeapon);
+            OnWeaponSelected(selectedWeapon);
     }
 
     private void ResetUI()
