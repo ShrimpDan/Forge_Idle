@@ -185,13 +185,14 @@ public class Forge : MonoBehaviour
         TraineeData preAssi = EquippedAssistant[assi.Specialization];
         if (preAssi != null)
         {
-            preAssi.IsEquipped = false;
-            Events.RaiseAssistantChanged(preAssi, false);
+            DeActiveAssistant(preAssi);
         }
 
         EquippedAssistant[assi.Specialization] = assi;
         Events.RaiseAssistantChanged(assi, true);
         assi.IsEquipped = true;
+
+        ApplyAssistantStat(assi);
     }
 
     public void DeActiveAssistant(TraineeData assi)
@@ -199,9 +200,11 @@ public class Forge : MonoBehaviour
         assi.IsEquipped = false;
         EquippedAssistant[assi.Specialization] = null;
         Events.RaiseAssistantChanged(assi, false);
+
+        DeApplyAssistantStat(assi);
     }
 
-    public void ApplyAssistantStat(TraineeData assi)
+    private void ApplyAssistantStat(TraineeData assi)
     {
         foreach (var stat in assi.Multipliers)
         {
@@ -233,6 +236,43 @@ public class Forge : MonoBehaviour
 
                 case TraineeStatNames.IncreaseCustomerCount:
                     bonusCustomerSpawnRate += stat.Multiplier;
+                    break;
+            }
+        }
+    }
+
+    private void DeApplyAssistantStat(TraineeData assi)
+    {
+        foreach (var stat in assi.Multipliers)
+        {
+            switch (stat.AbilityName)
+            {
+                case TraineeStatNames.IncreaseCraftSpeed:
+                    bonusCraftSpeedMultiplier -= stat.Multiplier;
+                    break;
+
+                case TraineeStatNames.IncreaseAdvancedCraftChance:
+                    bonusRareItemChance -= stat.Multiplier;
+                    break;
+
+                case TraineeStatNames.IncreaseEnhanceChance:
+                    bonusEnhanceSuccessRate -= stat.Multiplier;
+                    break;
+
+                case TraineeStatNames.DecreaseBreakChance:
+                    bonusBreakChanceReduction -= stat.Multiplier;
+                    break;
+
+                case TraineeStatNames.DecreaseEnhanceCost:
+                    bonusEnhanceCostMultiplier -= stat.Multiplier;
+                    break;
+
+                case TraineeStatNames.IncreaseSellPrice:
+                    bonusSellPriceMultiplier -= stat.Multiplier;
+                    break;
+
+                case TraineeStatNames.IncreaseCustomerCount:
+                    bonusCustomerSpawnRate -= stat.Multiplier;
                     break;
             }
         }
