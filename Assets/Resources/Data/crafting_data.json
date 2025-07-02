@@ -1,13 +1,27 @@
 {
   "Items": [
     {
-      "Key": "weapon_bronze_sword",
+      "Key": "crude_axe",
+      "craftTime": 5,
+      "craftCost": 10,
+      "sellCost": 25,
+      "resourceKey": [
+        "ingot_copper",
+        "ingot_tin"
+      ],
+      "amount": [
+        2,
+        1
+      ]
+    },
+    {
+      "Key": "normal_axe",
       "craftTime": 10,
-      "craftCost": 20,
+      "craftCost": 25,
       "sellCost": 60,
       "resourceKey": [
-        "resource_wood",
-        "resource_iron"
+        "ingot_bronze",
+        "ingot_iron"
       ],
       "amount": [
         3,
@@ -15,43 +29,557 @@
       ]
     },
     {
-      "Key": "weapon_steel_armor",
-      "craftTime": 20,
-      "craftCost": 40,
-      "sellCost": 100,
+      "Key": "fine_axe",
+      "craftTime": 18,
+      "craftCost": 50,
+      "sellCost": 120,
       "resourceKey": [
-        "resource_fabric",
-        "resource_iron"
+        "ingot_iron",
+        "ingot_silver",
+        "resource_wood"
       ],
       "amount": [
-        2,
-        4
+        5,
+        3,
+        2
       ]
     },
     {
-      "Key": "weapon_iron_spear",
-      "craftTime": 12,
+      "Key": "great_axe",
+      "craftTime": 28,
+      "craftCost": 90,
+      "sellCost": 200,
+      "resourceKey": [
+        "ingot_silver",
+        "ingot_gold",
+        "resource_wood",
+        "gem_ruby"
+      ],
+      "amount": [
+        7,
+        5,
+        2,
+        1
+      ]
+    },
+    {
+      "Key": "perfect_axe",
+      "craftTime": 40,
+      "craftCost": 220,
+      "sellCost": 520,
+      "resourceKey": [
+        "ingot_gold",
+        "ingot_mithril",
+        "resource_wood",
+        "gem_ruby",
+        "gem_gold"
+      ],
+      "amount": [
+        10,
+        7,
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "Key": "crude_pickaxe",
+      "craftTime": 5,
+      "craftCost": 10,
+      "sellCost": 25,
+      "resourceKey": [
+        "ingot_copper",
+        "ingot_tin"
+      ],
+      "amount": [
+        2,
+        1
+      ]
+    },
+    {
+      "Key": "normal_pickaxe",
+      "craftTime": 10,
       "craftCost": 25,
-      "sellCost": 75,
+      "sellCost": 60,
       "resourceKey": [
-        "resource_wood",
-        "resource_iron"
+        "ingot_bronze",
+        "ingot_iron"
       ],
       "amount": [
-        2,
-        3
+        3,
+        2
       ]
     },
     {
-      "Key": "weapon_wooden_bow",
-      "craftTime": 8,
-      "craftCost": 15,
-      "sellCost": 45,
+      "Key": "fine_pickaxe",
+      "craftTime": 18,
+      "craftCost": 50,
+      "sellCost": 120,
       "resourceKey": [
-        "resource_wood",
+        "ingot_iron",
+        "ingot_silver",
         "resource_string"
       ],
       "amount": [
+        5,
+        3,
+        2
+      ]
+    },
+    {
+      "Key": "great_pickaxe",
+      "craftTime": 28,
+      "craftCost": 90,
+      "sellCost": 200,
+      "resourceKey": [
+        "ingot_silver",
+        "ingot_gold",
+        "resource_string",
+        "gem_emerald"
+      ],
+      "amount": [
+        7,
+        5,
+        2,
+        1
+      ]
+    },
+    {
+      "Key": "perfect_pickaxe",
+      "craftTime": 40,
+      "craftCost": 220,
+      "sellCost": 520,
+      "resourceKey": [
+        "ingot_gold",
+        "ingot_mithril",
+        "resource_string",
+        "gem_emerald",
+        "gem_gold"
+      ],
+      "amount": [
+        10,
+        7,
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "Key": "crude_sword",
+      "craftTime": 5,
+      "craftCost": 10,
+      "sellCost": 25,
+      "resourceKey": [
+        "ingot_copper",
+        "ingot_tin"
+      ],
+      "amount": [
+        2,
+        1
+      ]
+    },
+    {
+      "Key": "normal_sword",
+      "craftTime": 10,
+      "craftCost": 25,
+      "sellCost": 60,
+      "resourceKey": [
+        "ingot_bronze",
+        "ingot_iron"
+      ],
+      "amount": [
+        3,
+        2
+      ]
+    },
+    {
+      "Key": "fine_sword",
+      "craftTime": 18,
+      "craftCost": 50,
+      "sellCost": 120,
+      "resourceKey": [
+        "ingot_iron",
+        "ingot_silver",
+        "resource_iron"
+      ],
+      "amount": [
+        5,
+        3,
+        2
+      ]
+    },
+    {
+      "Key": "great_sword",
+      "craftTime": 28,
+      "craftCost": 90,
+      "sellCost": 200,
+      "resourceKey": [
+        "ingot_silver",
+        "ingot_gold",
+        "resource_iron",
+        "gem_gold"
+      ],
+      "amount": [
+        7,
+        5,
+        2,
+        1
+      ]
+    },
+    {
+      "Key": "perfect_sword",
+      "craftTime": 40,
+      "craftCost": 220,
+      "sellCost": 520,
+      "resourceKey": [
+        "ingot_gold",
+        "ingot_mithril",
+        "resource_iron",
+        "gem_gold",
+        "gem_ruby"
+      ],
+      "amount": [
+        10,
+        7,
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "Key": "crude_shield",
+      "craftTime": 5,
+      "craftCost": 10,
+      "sellCost": 25,
+      "resourceKey": [
+        "ingot_copper",
+        "ingot_tin"
+      ],
+      "amount": [
+        2,
+        1
+      ]
+    },
+    {
+      "Key": "normal_shield",
+      "craftTime": 10,
+      "craftCost": 25,
+      "sellCost": 60,
+      "resourceKey": [
+        "ingot_bronze",
+        "ingot_iron"
+      ],
+      "amount": [
+        3,
+        2
+      ]
+    },
+    {
+      "Key": "fine_shield",
+      "craftTime": 18,
+      "craftCost": 50,
+      "sellCost": 120,
+      "resourceKey": [
+        "ingot_iron",
+        "ingot_silver",
+        "resource_fabric"
+      ],
+      "amount": [
+        5,
+        3,
+        2
+      ]
+    },
+    {
+      "Key": "great_shield",
+      "craftTime": 28,
+      "craftCost": 90,
+      "sellCost": 200,
+      "resourceKey": [
+        "ingot_silver",
+        "ingot_gold",
+        "resource_fabric",
+        "gem_amethyst"
+      ],
+      "amount": [
+        7,
+        5,
+        2,
+        1
+      ]
+    },
+    {
+      "Key": "perfect_shield",
+      "craftTime": 40,
+      "craftCost": 220,
+      "sellCost": 520,
+      "resourceKey": [
+        "ingot_gold",
+        "ingot_mithril",
+        "resource_fabric",
+        "gem_amethyst",
+        "gem_sapphire"
+      ],
+      "amount": [
+        10,
+        7,
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "Key": "crude_bow",
+      "craftTime": 5,
+      "craftCost": 10,
+      "sellCost": 25,
+      "resourceKey": [
+        "ingot_copper",
+        "ingot_tin",
+        "resource_string"
+      ],
+      "amount": [
+        2,
+        1,
+        1
+      ]
+    },
+    {
+      "Key": "normal_bow",
+      "craftTime": 10,
+      "craftCost": 25,
+      "sellCost": 60,
+      "resourceKey": [
+        "ingot_bronze",
+        "ingot_iron",
+        "resource_string"
+      ],
+      "amount": [
+        3,
+        2,
+        2
+      ]
+    },
+    {
+      "Key": "fine_bow",
+      "craftTime": 18,
+      "craftCost": 50,
+      "sellCost": 120,
+      "resourceKey": [
+        "ingot_iron",
+        "ingot_silver",
+        "resource_string",
+        "resource_wood"
+      ],
+      "amount": [
+        5,
+        3,
+        2,
+        2
+      ]
+    },
+    {
+      "Key": "great_bow",
+      "craftTime": 28,
+      "craftCost": 90,
+      "sellCost": 200,
+      "resourceKey": [
+        "ingot_silver",
+        "ingot_gold",
+        "resource_string",
+        "resource_wood",
+        "gem_sapphire"
+      ],
+      "amount": [
+        7,
+        5,
+        2,
+        2,
+        1
+      ]
+    },
+    {
+      "Key": "perfect_bow",
+      "craftTime": 40,
+      "craftCost": 220,
+      "sellCost": 520,
+      "resourceKey": [
+        "ingot_gold",
+        "ingot_mithril",
+        "resource_string",
+        "resource_wood",
+        "gem_sapphire",
+        "gem_emerald"
+      ],
+      "amount": [
+        10,
+        7,
+        3,
+        2,
+        1,
+        1
+      ]
+    },
+    {
+      "Key": "crude_dagger",
+      "craftTime": 5,
+      "craftCost": 10,
+      "sellCost": 25,
+      "resourceKey": [
+        "ingot_copper",
+        "ingot_tin"
+      ],
+      "amount": [
+        2,
+        1
+      ]
+    },
+    {
+      "Key": "normal_dagger",
+      "craftTime": 10,
+      "craftCost": 25,
+      "sellCost": 60,
+      "resourceKey": [
+        "ingot_bronze",
+        "ingot_iron"
+      ],
+      "amount": [
+        3,
+        2
+      ]
+    },
+    {
+      "Key": "fine_dagger",
+      "craftTime": 18,
+      "craftCost": 50,
+      "sellCost": 120,
+      "resourceKey": [
+        "ingot_iron",
+        "ingot_silver",
+        "resource_fabric"
+      ],
+      "amount": [
+        5,
+        3,
+        2
+      ]
+    },
+    {
+      "Key": "great_dagger",
+      "craftTime": 28,
+      "craftCost": 90,
+      "sellCost": 200,
+      "resourceKey": [
+        "ingot_silver",
+        "ingot_gold",
+        "resource_fabric",
+        "gem_sapphire"
+      ],
+      "amount": [
+        7,
+        5,
+        2,
+        1
+      ]
+    },
+    {
+      "Key": "perfect_dagger",
+      "craftTime": 40,
+      "craftCost": 220,
+      "sellCost": 520,
+      "resourceKey": [
+        "ingot_gold",
+        "ingot_mithril",
+        "resource_fabric",
+        "gem_sapphire",
+        "gem_emerald"
+      ],
+      "amount": [
+        10,
+        7,
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "Key": "crude_hoe",
+      "craftTime": 5,
+      "craftCost": 10,
+      "sellCost": 25,
+      "resourceKey": [
+        "ingot_copper",
+        "ingot_tin"
+      ],
+      "amount": [
+        2,
+        1
+      ]
+    },
+    {
+      "Key": "normal_hoe",
+      "craftTime": 10,
+      "craftCost": 25,
+      "sellCost": 60,
+      "resourceKey": [
+        "ingot_bronze",
+        "ingot_iron"
+      ],
+      "amount": [
+        3,
+        2
+      ]
+    },
+    {
+      "Key": "fine_hoe",
+      "craftTime": 18,
+      "craftCost": 50,
+      "sellCost": 120,
+      "resourceKey": [
+        "ingot_iron",
+        "ingot_silver",
+        "resource_fabric"
+      ],
+      "amount": [
+        5,
+        3,
+        2
+      ]
+    },
+    {
+      "Key": "great_hoe",
+      "craftTime": 28,
+      "craftCost": 90,
+      "sellCost": 200,
+      "resourceKey": [
+        "ingot_silver",
+        "ingot_gold",
+        "resource_fabric",
+        "gem_emerald"
+      ],
+      "amount": [
+        7,
+        5,
+        2,
+        1
+      ]
+    },
+    {
+      "Key": "perfect_hoe",
+      "craftTime": 40,
+      "craftCost": 220,
+      "sellCost": 520,
+      "resourceKey": [
+        "ingot_gold",
+        "ingot_mithril",
+        "resource_fabric",
+        "gem_emerald",
+        "gem_amethyst"
+      ],
+      "amount": [
+        10,
+        7,
+        3,
         2,
         1
       ]
