@@ -98,12 +98,12 @@ public class MainUI : BaseUI
 
     private void SetGoldUI(int gold)
     {
-        goldText.text = gold.ToString();
+        goldText.text = UIManager.FormatNumber(gold);
     }
 
     private void SetDiaUI(int dia)
     {
-        diaText.text = dia.ToString();
+        diaText.text = UIManager.FormatNumber(dia);
     }
 
     private void SetLevelUI(int level)
@@ -118,6 +118,6 @@ public class MainUI : BaseUI
 
     private void SetTotalFameUI(int totalFame)
     {
-        fameText.text = $"Fame: {totalFame}";
+        fameText.text = $"Fame: {UIManager.FormatNumber(totalFame)}";
     }
 }

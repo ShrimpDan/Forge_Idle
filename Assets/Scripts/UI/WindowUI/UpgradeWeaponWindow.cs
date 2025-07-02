@@ -15,7 +15,7 @@ public class UpgradeWeaponWindow : BaseUI
 
     private ItemInstance selectedWeapon;
     private int upgradeCost = 0;
-    private DataManger dataManager;
+    private DataManager dataManager;
 
     public override void Init(GameManager gameManager, UIManager uIManager)
     {

@@ -13,7 +13,7 @@ public class MineWindow : BaseUI
     private List<MineListSlot> mineSlots = new();
     private GameManager gameManager;
     private UIManager uIManager;
-    private DataManger dataManager;
+    private DataManager dataManager;
     private List<MineData> mineDataList = new();
 
     public override void Init(GameManager gameManager, UIManager uIManager)

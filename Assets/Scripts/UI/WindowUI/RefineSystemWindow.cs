@@ -18,7 +18,7 @@ public class RefineSystemWindow : BaseUI
     private ItemInstance resultItem;
     private GameManager gameManager;
     private UIManager uIManager;
-    private DataManger dataManager;
+    private DataManager dataManager;
 
     private int refineCost = 1000; 
 
