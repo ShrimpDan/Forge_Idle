@@ -119,6 +119,12 @@ public class TraineeDrawController : MonoBehaviour
             return;
         }
 
+        if (!isFlippingCards && AnyCardUnflipped())
+        {
+            StartCoroutine(FlipAllUnflippedCardsSequentially());
+            return;
+        }
+
         if (isFlippingCards)
         {
             foreach (var card in spawnedCards)
@@ -129,9 +135,9 @@ public class TraineeDrawController : MonoBehaviour
                     controller.ForceInstantFlip();
                 }
             }
-
             return;
         }
+
         ConfirmAllFlippedCards();
     }
 
@@ -179,5 +185,16 @@ public class TraineeDrawController : MonoBehaviour
 
             OnRecruitingFinished?.Invoke();
         }
+    }
+
+    private bool AnyCardUnflipped()
+    {
+        foreach (var card in spawnedCards)
+        {
+            var controller = card?.GetComponent<TraineeController>();
+            if (controller != null && !controller.IsFlipped)
+                return true;
+        }
+        return false;
     }
 }

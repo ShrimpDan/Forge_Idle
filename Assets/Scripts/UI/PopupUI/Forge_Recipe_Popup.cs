@@ -11,13 +11,13 @@ public class Forge_Recipe_Popup : BaseUI
     [SerializeField] private Transform contentRoot;
     [SerializeField] private GameObject recipeSlotPrefab;
 
-    private DataManger dataManager;
+    private DataManager dataManager;
     private Action<ItemData, CraftingData> onRecipeSelect;
     private Forge forge;
     private Jang.InventoryManager inventory;
 
     // �˾� �ʱ�ȭ
-    public void Init(DataManger dataManager, UIManager uiManager)
+    public void Init(DataManager dataManager, UIManager uiManager)
     {
         this.dataManager = dataManager;
         this.uIManager = uiManager;
