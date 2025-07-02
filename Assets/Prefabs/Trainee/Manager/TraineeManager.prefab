@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &917878836471244746
+--- !u!1 &6753165797277035087
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,11 +8,11 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 737492948431473684}
-  - component: {fileID: 3775548531614091731}
-  - component: {fileID: 3192939963274458557}
-  - component: {fileID: 2224854406797413958}
-  - component: {fileID: 5143866629263005692}
+  - component: {fileID: 8608603654124577364}
+  - component: {fileID: 6744297500529542838}
+  - component: {fileID: 4763300029605385526}
+  - component: {fileID: 6218112396890241998}
+  - component: {fileID: 4122176374683881127}
   m_Layer: 0
   m_Name: TraineeManager
   m_TagString: Untagged
@@ -20,28 +20,28 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &737492948431473684
+--- !u!4 &8608603654124577364
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 917878836471244746}
+  m_GameObject: {fileID: 6753165797277035087}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3775548531614091731
+--- !u!114 &6744297500529542838
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 917878836471244746}
+  m_GameObject: {fileID: 6753165797277035087}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 733d7b94f54bf2844a8d5fc22f781150, type: 3}
@@ -52,45 +52,47 @@ MonoBehaviour:
   confirmAllButtonPrefab: {fileID: 6151877574095819842, guid: 451bef7b3c3ac9c41ab113d35d31b7b1, type: 3}
   singleDrawParent: {fileID: 0}
   multiDrawParent: {fileID: 0}
-  personalityDatabase: {fileID: 11400000, guid: 140e111ef5ba2964c958d8700e09d47a, type: 2}
-  layoutAnimator: {fileID: 2224854406797413958}
-  drawController: {fileID: 5143866629263005692}
---- !u!114 &3192939963274458557
+  layoutAnimator: {fileID: 6218112396890241998}
+  drawController: {fileID: 4122176374683881127}
+  backgroundPanel: {fileID: 0}
+--- !u!114 &4763300029605385526
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 917878836471244746}
+  m_GameObject: {fileID: 6753165797277035087}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 03f8c07d8148ba445b8c80f8b7903b06, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &2224854406797413958
+--- !u!114 &6218112396890241998
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 917878836471244746}
+  m_GameObject: {fileID: 6753165797277035087}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 03f8c07d8148ba445b8c80f8b7903b06, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &5143866629263005692
+--- !u!114 &4122176374683881127
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 917878836471244746}
+  m_GameObject: {fileID: 6753165797277035087}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 118eed05e3e8c6c44a3f9c1f5a57e841, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  layoutAnimator: {fileID: 3192939963274458557}
-  multiDrawParent: {fileID: 7946453594232361915, guid: bd82f173a8e6e3349bc7ef1f2ca45764, type: 3}
+  layoutAnimator: {fileID: 4763300029605385526}
+  multiDrawParent: {fileID: 0}
   confirmAllButtonPrefab: {fileID: 6151877574095819842, guid: 451bef7b3c3ac9c41ab113d35d31b7b1, type: 3}
+  backgroundPanel: {fileID: 0}
+  confirmButtonText: {fileID: 0}
