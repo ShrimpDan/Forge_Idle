@@ -5,9 +5,10 @@
       "craftTime": 5,
       "craftCost": 10,
       "sellCost": 25,
+      "jobType": 0,
       "resourceKey": [
         "ingot_copper",
-        "ingot_tin"
+        "resource_wood"
       ],
       "amount": [
         2,
@@ -19,9 +20,10 @@
       "craftTime": 10,
       "craftCost": 25,
       "sellCost": 60,
+      "jobType": 0,
       "resourceKey": [
         "ingot_bronze",
-        "ingot_iron"
+        "resource_wood"
       ],
       "amount": [
         3,
@@ -30,55 +32,56 @@
     },
     {
       "Key": "weapon_axe_fine",
-      "craftTime": 18,
-      "craftCost": 50,
+      "craftTime": 16,
+      "craftCost": 55,
       "sellCost": 120,
+      "jobType": 0,
       "resourceKey": [
         "ingot_iron",
-        "ingot_silver",
-        "resource_wood"
+        "resource_wood",
+        "resource_silver"
       ],
       "amount": [
-        5,
-        3,
-        2
+        4,
+        2,
+        1
       ]
     },
     {
       "Key": "weapon_axe_excellent",
-      "craftTime": 28,
-      "craftCost": 90,
-      "sellCost": 200,
+      "craftTime": 25,
+      "craftCost": 120,
+      "sellCost": 240,
+      "jobType": 0,
       "resourceKey": [
         "ingot_silver",
         "ingot_gold",
         "resource_wood",
-        "gem_ruby"
+        "resource_mithril"
       ],
       "amount": [
-        7,
-        5,
+        6,
+        3,
         2,
         1
       ]
     },
     {
       "Key": "weapon_axe_perfect",
-      "craftTime": 40,
-      "craftCost": 220,
+      "craftTime": 35,
+      "craftCost": 260,
       "sellCost": 520,
+      "jobType": 0,
       "resourceKey": [
         "ingot_gold",
         "ingot_mithril",
         "resource_wood",
-        "gem_ruby",
-        "gem_gold"
+        "gem_emerald"
       ],
       "amount": [
-        10,
-        7,
+        8,
+        5,
         3,
-        2,
         1
       ]
     },
@@ -87,9 +90,10 @@
       "craftTime": 5,
       "craftCost": 10,
       "sellCost": 25,
+      "jobType": 1,
       "resourceKey": [
         "ingot_copper",
-        "ingot_tin"
+        "resource_wood"
       ],
       "amount": [
         2,
@@ -101,9 +105,10 @@
       "craftTime": 10,
       "craftCost": 25,
       "sellCost": 60,
+      "jobType": 1,
       "resourceKey": [
         "ingot_bronze",
-        "ingot_iron"
+        "resource_wood"
       ],
       "amount": [
         3,
@@ -112,55 +117,56 @@
     },
     {
       "Key": "weapon_hoe_fine",
-      "craftTime": 18,
-      "craftCost": 50,
+      "craftTime": 16,
+      "craftCost": 55,
       "sellCost": 120,
+      "jobType": 1,
       "resourceKey": [
         "ingot_iron",
-        "ingot_silver",
-        "resource_string"
+        "resource_wood",
+        "resource_emerald"
       ],
       "amount": [
-        5,
-        3,
-        2
+        4,
+        2,
+        1
       ]
     },
     {
       "Key": "weapon_hoe_excellent",
-      "craftTime": 28,
-      "craftCost": 90,
-      "sellCost": 200,
+      "craftTime": 25,
+      "craftCost": 120,
+      "sellCost": 240,
+      "jobType": 1,
       "resourceKey": [
         "ingot_silver",
         "ingot_gold",
-        "resource_string",
-        "gem_emerald"
+        "resource_wood",
+        "resource_mithril"
       ],
       "amount": [
-        7,
-        5,
+        6,
+        3,
         2,
         1
       ]
     },
     {
       "Key": "weapon_hoe_perfect",
-      "craftTime": 40,
-      "craftCost": 220,
+      "craftTime": 35,
+      "craftCost": 260,
       "sellCost": 520,
+      "jobType": 1,
       "resourceKey": [
         "ingot_gold",
         "ingot_mithril",
-        "resource_string",
-        "gem_emerald",
-        "gem_gold"
+        "resource_wood",
+        "gem_emerald"
       ],
       "amount": [
-        10,
-        7,
+        8,
+        5,
         3,
-        2,
         1
       ]
     },
@@ -169,9 +175,10 @@
       "craftTime": 5,
       "craftCost": 10,
       "sellCost": 25,
+      "jobType": 2,
       "resourceKey": [
         "ingot_copper",
-        "ingot_tin"
+        "resource_iron"
       ],
       "amount": [
         2,
@@ -183,9 +190,10 @@
       "craftTime": 10,
       "craftCost": 25,
       "sellCost": 60,
+      "jobType": 2,
       "resourceKey": [
         "ingot_bronze",
-        "ingot_iron"
+        "resource_iron"
       ],
       "amount": [
         3,
@@ -194,55 +202,56 @@
     },
     {
       "Key": "weapon_pickaxe_fine",
-      "craftTime": 18,
-      "craftCost": 50,
+      "craftTime": 16,
+      "craftCost": 55,
       "sellCost": 120,
+      "jobType": 2,
       "resourceKey": [
         "ingot_iron",
-        "ingot_silver",
-        "resource_iron"
+        "resource_iron",
+        "resource_silver"
       ],
       "amount": [
-        5,
-        3,
-        2
+        4,
+        2,
+        1
       ]
     },
     {
       "Key": "weapon_pickaxe_excellent",
-      "craftTime": 28,
-      "craftCost": 90,
-      "sellCost": 200,
+      "craftTime": 25,
+      "craftCost": 120,
+      "sellCost": 240,
+      "jobType": 2,
       "resourceKey": [
         "ingot_silver",
         "ingot_gold",
         "resource_iron",
-        "gem_gold"
+        "resource_mithril"
       ],
       "amount": [
-        7,
-        5,
+        6,
+        3,
         2,
         1
       ]
     },
     {
       "Key": "weapon_pickaxe_perfect",
-      "craftTime": 40,
-      "craftCost": 220,
+      "craftTime": 35,
+      "craftCost": 260,
       "sellCost": 520,
+      "jobType": 2,
       "resourceKey": [
         "ingot_gold",
         "ingot_mithril",
         "resource_iron",
-        "gem_gold",
         "gem_ruby"
       ],
       "amount": [
-        10,
-        7,
+        8,
+        5,
         3,
-        2,
         1
       ]
     },
@@ -251,9 +260,10 @@
       "craftTime": 5,
       "craftCost": 10,
       "sellCost": 25,
+      "jobType": 3,
       "resourceKey": [
         "ingot_copper",
-        "ingot_tin"
+        "resource_iron"
       ],
       "amount": [
         2,
@@ -265,9 +275,10 @@
       "craftTime": 10,
       "craftCost": 25,
       "sellCost": 60,
+      "jobType": 3,
       "resourceKey": [
         "ingot_bronze",
-        "ingot_iron"
+        "resource_iron"
       ],
       "amount": [
         3,
@@ -276,55 +287,58 @@
     },
     {
       "Key": "weapon_sword_fine",
-      "craftTime": 18,
-      "craftCost": 50,
+      "craftTime": 16,
+      "craftCost": 55,
       "sellCost": 120,
+      "jobType": 3,
       "resourceKey": [
         "ingot_iron",
-        "ingot_silver",
-        "resource_fabric"
+        "resource_iron",
+        "resource_gold"
       ],
       "amount": [
-        5,
-        3,
-        2
+        4,
+        2,
+        1
       ]
     },
     {
       "Key": "weapon_sword_excellent",
-      "craftTime": 28,
-      "craftCost": 90,
-      "sellCost": 200,
+      "craftTime": 25,
+      "craftCost": 120,
+      "sellCost": 240,
+      "jobType": 3,
       "resourceKey": [
         "ingot_silver",
         "ingot_gold",
-        "resource_fabric",
-        "gem_amethyst"
+        "resource_iron",
+        "resource_mithril"
       ],
       "amount": [
-        7,
-        5,
+        6,
+        3,
         2,
         1
       ]
     },
     {
       "Key": "weapon_sword_perfect",
-      "craftTime": 40,
-      "craftCost": 220,
+      "craftTime": 35,
+      "craftCost": 260,
       "sellCost": 520,
+      "jobType": 3,
       "resourceKey": [
         "ingot_gold",
         "ingot_mithril",
-        "resource_fabric",
+        "resource_iron",
         "gem_amethyst",
         "gem_sapphire"
       ],
       "amount": [
-        10,
-        7,
+        8,
+        5,
         3,
-        2,
+        1,
         1
       ]
     },
@@ -333,14 +347,13 @@
       "craftTime": 5,
       "craftCost": 10,
       "sellCost": 25,
+      "jobType": 4,
       "resourceKey": [
         "ingot_copper",
-        "ingot_tin",
-        "resource_string"
+        "resource_wood"
       ],
       "amount": [
         2,
-        1,
         1
       ]
     },
@@ -349,73 +362,68 @@
       "craftTime": 10,
       "craftCost": 25,
       "sellCost": 60,
+      "jobType": 4,
       "resourceKey": [
         "ingot_bronze",
-        "ingot_iron",
-        "resource_string"
+        "resource_wood"
       ],
       "amount": [
         3,
-        2,
         2
       ]
     },
     {
       "Key": "weapon_bow_fine",
-      "craftTime": 18,
-      "craftCost": 50,
+      "craftTime": 16,
+      "craftCost": 55,
       "sellCost": 120,
+      "jobType": 4,
       "resourceKey": [
         "ingot_iron",
-        "ingot_silver",
-        "resource_string",
-        "resource_wood"
+        "resource_wood",
+        "resource_string"
       ],
       "amount": [
-        5,
+        4,
+        2,
+        1
+      ]
+    },
+    {
+      "Key": "weapon_bow_excellent",
+      "craftTime": 25,
+      "craftCost": 120,
+      "sellCost": 240,
+      "jobType": 4,
+      "resourceKey": [
+        "ingot_silver",
+        "ingot_gold",
+        "resource_wood",
+        "resource_string"
+      ],
+      "amount": [
+        6,
         3,
         2,
         2
       ]
     },
     {
-      "Key": "weapon_bow_excellent",
-      "craftTime": 28,
-      "craftCost": 90,
-      "sellCost": 200,
-      "resourceKey": [
-        "ingot_silver",
-        "ingot_gold",
-        "resource_string",
-        "resource_wood",
-        "gem_sapphire"
-      ],
-      "amount": [
-        7,
-        5,
-        2,
-        2,
-        1
-      ]
-    },
-    {
       "Key": "weapon_bow_perfect",
-      "craftTime": 40,
-      "craftCost": 220,
+      "craftTime": 35,
+      "craftCost": 260,
       "sellCost": 520,
+      "jobType": 4,
       "resourceKey": [
-        "ingot_silver",
         "ingot_gold",
-        "resource_string",
+        "ingot_mithril",
         "resource_wood",
         "gem_sapphire"
       ],
       "amount": [
-        10,
-        7,
+        8,
+        5,
         3,
-        2,
-        1,
         1
       ]
     },
@@ -424,9 +432,10 @@
       "craftTime": 5,
       "craftCost": 10,
       "sellCost": 25,
+      "jobType": 5,
       "resourceKey": [
         "ingot_copper",
-        "ingot_tin"
+        "resource_iron"
       ],
       "amount": [
         2,
@@ -438,9 +447,10 @@
       "craftTime": 10,
       "craftCost": 25,
       "sellCost": 60,
+      "jobType": 5,
       "resourceKey": [
         "ingot_bronze",
-        "ingot_iron"
+        "resource_iron"
       ],
       "amount": [
         3,
@@ -449,55 +459,58 @@
     },
     {
       "Key": "weapon_shield_fine",
-      "craftTime": 18,
-      "craftCost": 50,
+      "craftTime": 16,
+      "craftCost": 55,
       "sellCost": 120,
+      "jobType": 5,
       "resourceKey": [
         "ingot_iron",
-        "ingot_silver",
-        "resource_fabric"
+        "resource_iron",
+        "resource_silver"
       ],
       "amount": [
-        5,
-        3,
-        2
+        4,
+        2,
+        1
       ]
     },
     {
       "Key": "weapon_shield_excellent",
-      "craftTime": 28,
-      "craftCost": 90,
-      "sellCost": 200,
+      "craftTime": 25,
+      "craftCost": 120,
+      "sellCost": 240,
+      "jobType": 5,
       "resourceKey": [
         "ingot_silver",
         "ingot_gold",
-        "resource_fabric",
-        "gem_sapphire"
+        "resource_iron",
+        "resource_mithril"
       ],
       "amount": [
-        7,
-        5,
+        6,
+        3,
         2,
         1
       ]
     },
     {
       "Key": "weapon_shield_perfect",
-      "craftTime": 40,
-      "craftCost": 220,
+      "craftTime": 35,
+      "craftCost": 260,
       "sellCost": 520,
+      "jobType": 5,
       "resourceKey": [
         "ingot_gold",
         "ingot_mithril",
-        "resource_fabric",
+        "resource_iron",
         "gem_sapphire",
         "gem_emerald"
       ],
       "amount": [
-        10,
-        7,
+        8,
+        5,
         3,
-        2,
+        1,
         1
       ]
     },
@@ -506,9 +519,10 @@
       "craftTime": 5,
       "craftCost": 10,
       "sellCost": 25,
+      "jobType": 6,
       "resourceKey": [
         "ingot_copper",
-        "ingot_tin"
+        "resource_iron"
       ],
       "amount": [
         2,
@@ -520,9 +534,10 @@
       "craftTime": 10,
       "craftCost": 25,
       "sellCost": 60,
+      "jobType": 6,
       "resourceKey": [
         "ingot_bronze",
-        "ingot_iron"
+        "resource_iron"
       ],
       "amount": [
         3,
@@ -531,55 +546,58 @@
     },
     {
       "Key": "weapon_dagger_fine",
-      "craftTime": 18,
-      "craftCost": 50,
+      "craftTime": 16,
+      "craftCost": 55,
       "sellCost": 120,
+      "jobType": 6,
       "resourceKey": [
         "ingot_iron",
-        "ingot_silver",
-        "resource_fabric"
+        "resource_iron",
+        "resource_gold"
       ],
       "amount": [
-        5,
-        3,
-        2
+        4,
+        2,
+        1
       ]
     },
     {
       "Key": "weapon_dagger_excellent",
-      "craftTime": 28,
-      "craftCost": 90,
-      "sellCost": 200,
+      "craftTime": 25,
+      "craftCost": 120,
+      "sellCost": 240,
+      "jobType": 6,
       "resourceKey": [
         "ingot_silver",
         "ingot_gold",
-        "resource_fabric",
+        "resource_iron",
         "gem_emerald"
       ],
       "amount": [
-        7,
-        5,
+        6,
+        3,
         2,
         1
       ]
     },
     {
       "Key": "weapon_dagger_perfect",
-      "craftTime": 40,
-      "craftCost": 220,
+      "craftTime": 35,
+      "craftCost": 260,
       "sellCost": 520,
+      "jobType": 6,
       "resourceKey": [
         "ingot_gold",
         "ingot_mithril",
-        "resource_fabric",
+        "resource_iron",
         "gem_emerald",
         "gem_amethyst"
       ],
       "amount": [
-        10,
-        7,
+        8,
+        5,
         3,
-        2,
+        1,
         1
       ]
     }
