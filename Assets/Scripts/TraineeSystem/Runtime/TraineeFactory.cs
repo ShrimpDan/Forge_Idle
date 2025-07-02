@@ -10,7 +10,7 @@ public class TraineeFactory
     private readonly PersonalityAssigner assigner;
     private bool canRecruit = true;
 
-    public TraineeFactory(DataManger dataManger)
+    public TraineeFactory(DataManager dataManger)
     {
         assigner = new PersonalityAssigner(dataManger);
     }

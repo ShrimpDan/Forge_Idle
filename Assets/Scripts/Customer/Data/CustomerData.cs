@@ -21,6 +21,7 @@ public enum CustomerJob
 
 }
 
+
 [CreateAssetMenu(fileName = "CustomerData",menuName ="Data/CustomerData", order =0)]
 
 public class CustomerData : ScriptableObject
@@ -37,3 +38,6 @@ public class CustomerData : ScriptableObject
     public CustomerJob Job => job;
  
 }
+
+
+

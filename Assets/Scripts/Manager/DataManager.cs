@@ -1,4 +1,4 @@
-public class DataManger
+public class DataManager
 {
     public ItemDataLoader ItemLoader { get; private set; }
     public CraftingDataLoader CraftingLoader{ get; private set; }
@@ -7,7 +7,7 @@ public class DataManger
     public SpecializationDataLoader SpecializationLoader{ get; private set; }
     public MineLoader MineLoader { get; private set; }
 
-    public DataManger()
+    public DataManager()
     {
         // 아이템 관련 데이터
         ItemLoader = new ItemDataLoader();
