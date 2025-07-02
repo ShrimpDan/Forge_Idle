@@ -13,6 +13,8 @@ public class RegualrCustomer : Customer
     [SerializeField] private RegualrCustomerData CollectData;
 
 
+
+    private bool isDiscovered = false;
     private bool isInteracting = false;
 
 
