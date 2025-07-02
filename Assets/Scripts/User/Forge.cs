@@ -1,26 +1,37 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class Forge : MonoBehaviour
 {
     private ForgeData forgeData;
 
     // 스탯
-    public float CraftTimeMultiplier { get; private set; }
-    public float SellPriceMultiplier { get; private set; }
-    public float RareItemChance { get; private set; }
-    public float CustomerSpawnDelay  { get; private set; }
+    private float craftSpeedMultiplier;
+    private float rareItemChance;
+    private float enhanceSuccessRate;
+    private float breakChanceReduction;
+    private float enhanceCostMultiplier;
+    private float sellPriceMultiplier;
+    private float customerSpawnRate;
 
     // 보너스 스탯
-    public float BonusCraftTimeMultiplier { get; private set; }
-    public float BonusSellPriceMultiplier { get; private set; }
-    public float BonusRareItemChance { get; private set; }
-    public float BonusCustomerSpawnDelay { get; private set; }
+    private float bonusCraftSpeedMultiplier;
+    private float bonusRareItemChance;
+    private float bonusEnhanceSuccessRate;
+    private float bonusBreakChanceReduction;
+    private float bonusEnhanceCostMultiplier;
+    private float bonusSellPriceMultiplier;
+    private float bonusCustomerSpawnRate;
 
     // 최종 스탯
-    public float FinalCraftTimeMulitiplier => CraftTimeMultiplier + BonusCraftTimeMultiplier;
-    public float FinalSellPriceMultiplier => SellPriceMultiplier + BonusSellPriceMultiplier;
-    public float FinalRareItemChance => RareItemChance + BonusRareItemChance;
-    public float FinalCustomerSpawnDelay  => CustomerSpawnDelay - BonusCustomerSpawnDelay;
+    public float FinalCraftSpeedMultiplier => craftSpeedMultiplier + bonusCraftSpeedMultiplier;
+    public float FinalRareItemChance => rareItemChance + bonusRareItemChance;
+    public float FinalEnhanceSuccessRate => enhanceSuccessRate + bonusEnhanceSuccessRate;
+    public float FinalBreakChanceReduction => breakChanceReduction + bonusBreakChanceReduction;
+    public float FinalEnhanceCostMultiplier => enhanceCostMultiplier + bonusEnhanceCostMultiplier;
+    public float FinalSellPriceMultiplier => sellPriceMultiplier + bonusSellPriceMultiplier;
+    public float FinalCustomerSpawnRate => customerSpawnRate + bonusCustomerSpawnRate;
+
 
     // 레벨 & 명성치
     public int Level { get; private set; }
@@ -32,22 +43,33 @@ public class Forge : MonoBehaviour
     public int Gold { get; private set; }
     public int Dia { get; private set; }
 
+    // 장착된 제자
+    public Dictionary<SpecializationType, TraineeData> EquippedAssistant;
     // 이벤트 핸들러
     public ForgeEventHandler Events { get; private set; } = new ForgeEventHandler();
 
     public void Init()
     {
-        SetData();
+        InitData();
+        InitAssistant();
     }
 
-    private void SetData()
+    private void InitData()
     {
         forgeData = ForgeDataSaveLoader.Load();
 
-        CraftTimeMultiplier = forgeData.CraftTimeMultiplier;
-        SellPriceMultiplier = forgeData.SellPriceMultiplier;
-        RareItemChance = forgeData.RareItemChance;
-        CustomerSpawnDelay  = forgeData.CustomerSpawnDelay ;
+        // 제작 관련 스탯
+        craftSpeedMultiplier = forgeData.CraftSpeedMultiplier;
+        rareItemChance = forgeData.RareItemChance;
+
+        // 강화 관련 스탯
+        enhanceSuccessRate = forgeData.EnhanceSuccessRate;
+        breakChanceReduction = forgeData.BreakChanceReduction;
+        enhanceCostMultiplier = forgeData.EnhanceCostMultiplier;
+
+        // 판매 관련 스탯
+        sellPriceMultiplier = forgeData.SellPriceMultiplier;
+        customerSpawnRate = forgeData.CustomerSpawnRate;
 
         Level = forgeData.Level;
         CurrentFame = forgeData.CurrentFame;
@@ -58,6 +80,15 @@ public class Forge : MonoBehaviour
         Dia = forgeData.Dia;
 
         RaiseAllEvents();
+    }
+
+    private void InitAssistant()
+    {
+        EquippedAssistant = new Dictionary<SpecializationType, TraineeData>();
+
+        EquippedAssistant[SpecializationType.Crafting] = null;
+        EquippedAssistant[SpecializationType.Enhancing] = null;
+        EquippedAssistant[SpecializationType.Selling] = null;
     }
 
     private void RaiseAllEvents()
@@ -73,10 +104,16 @@ public class Forge : MonoBehaviour
     {
         ForgeData data = new ForgeData
         {
-            CraftTimeMultiplier = CraftTimeMultiplier,
-            SellPriceMultiplier = SellPriceMultiplier,
-            RareItemChance = RareItemChance,
-            CustomerSpawnDelay  = CustomerSpawnDelay ,
+            CraftSpeedMultiplier = craftSpeedMultiplier,
+            RareItemChance = rareItemChance,
+
+            EnhanceSuccessRate = enhanceSuccessRate,
+            BreakChanceReduction = breakChanceReduction,
+            EnhanceCostMultiplier = enhanceCostMultiplier,
+
+            SellPriceMultiplier = sellPriceMultiplier,
+            CustomerSpawnRate = customerSpawnRate,
+
             Level = Level,
             MaxFame = MaxFame,
             CurrentFame = CurrentFame,
@@ -140,5 +177,64 @@ public class Forge : MonoBehaviour
         }
 
         return false;
+    }
+
+    public void ActiveAssistant(TraineeData assi)
+    {
+        // 이전에 등록된 제자가 있다면 해제
+        TraineeData preAssi = EquippedAssistant[assi.Specialization];
+        if (preAssi != null)
+        {
+            preAssi.IsEquipped = false;
+            Events.RaiseAssistantChanged(preAssi, false);
+        }
+
+        EquippedAssistant[assi.Specialization] = assi;
+        Events.RaiseAssistantChanged(assi, true);
+        assi.IsEquipped = true;
+    }
+
+    public void DeActiveAssistant(TraineeData assi)
+    {
+        assi.IsEquipped = false;
+        EquippedAssistant[assi.Specialization] = null;
+        Events.RaiseAssistantChanged(assi, false);
+    }
+
+    public void ApplyAssistantStat(TraineeData assi)
+    {
+        foreach (var stat in assi.Multipliers)
+        {
+            switch (stat.AbilityName)
+            {
+                case TraineeStatNames.IncreaseCraftSpeed:
+                    bonusCraftSpeedMultiplier += stat.Multiplier;
+                    break;
+
+                case TraineeStatNames.IncreaseAdvancedCraftChance:
+                    bonusRareItemChance += stat.Multiplier;
+                    break;
+
+                case TraineeStatNames.IncreaseEnhanceChance:
+                    bonusEnhanceSuccessRate += stat.Multiplier;
+                    break;
+
+                case TraineeStatNames.DecreaseBreakChance:
+                    bonusBreakChanceReduction += stat.Multiplier;
+                    break;
+
+                case TraineeStatNames.DecreaseEnhanceCost:
+                    bonusEnhanceCostMultiplier += stat.Multiplier;
+                    break;
+
+                case TraineeStatNames.IncreaseSellPrice:
+                    bonusSellPriceMultiplier += stat.Multiplier;
+                    break;
+
+                case TraineeStatNames.IncreaseCustomerCount:
+                    bonusCustomerSpawnRate += stat.Multiplier;
+                    break;
+            }
+        }
     }
 }

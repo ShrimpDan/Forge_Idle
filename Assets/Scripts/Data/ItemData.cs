@@ -78,9 +78,9 @@ public class ItemDataLoader
 
                 data.UpgradeInfo = new UpgradeInfo
                 {
-                    MaxEnhanceLevel = flat.EnhanceMax,
+                    MaxEnhanceLevel = flat.MaxEnhanceLevel,
                     AttackMultiplier = flat.AttackMultiplier,
-                    IntervalReductionPerLevel = flat.IntervalReduction
+                    IntervalReductionPerLevel = flat.IntervalReductionPerLevel
                 };
             }
 
@@ -131,9 +131,9 @@ public class ItemDataFlat
     public float AttackInterval;
 
     // Upgrade
-    public int EnhanceMax;
+    public int MaxEnhanceLevel;
     public float AttackMultiplier;
-    public float IntervalReduction;
+    public float IntervalReductionPerLevel;
 
     // Gem
     public float GemMultiplier;

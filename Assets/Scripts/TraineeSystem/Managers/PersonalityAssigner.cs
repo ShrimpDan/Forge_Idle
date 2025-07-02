@@ -6,11 +6,11 @@ using System.Collections.Generic;
 /// </summary>
 public class PersonalityAssigner
 {
-    private PersonalityTierDatabase database;
+    private DataManger dataManger;
 
-    public PersonalityAssigner(PersonalityTierDatabase db)
+    public PersonalityAssigner(DataManger dataManger)
     {
-        database = db;
+        this.dataManger = dataManger;
     }
 
     private static int traineeCount = 1;
@@ -40,12 +40,14 @@ public class PersonalityAssigner
     private PersonalityData GetRandomPersonality()
     {
         int tier = GetRandomTier();
-        PersonalityTier selectedTier = database.tiers.Find(t => t.TierLevel == tier);
 
-        if (selectedTier != null && selectedTier.Personalities.Count > 0)
+        List<PersonalityData> personalityDatas = dataManger.PersonalityLoader.DataList.FindAll(t => t.tier == tier);
+
+        if (personalityDatas != null)
         {
-            return selectedTier.Personalities[Random.Range(0, selectedTier.Personalities.Count)];
+            return personalityDatas[Random.Range(0, personalityDatas.Count)];
         }
+        
         return null;
     }
 
@@ -56,10 +58,10 @@ public class PersonalityAssigner
     {
         float rand = Random.value;
 
-        if (rand < 0.05f) return 1; 
-        else if (rand < 0.15f) return 2;  
-        else if (rand < 0.35f) return 3; 
-        else if (rand < 0.65f) return 4; 
+        if (rand < 0.05f) return 1;
+        else if (rand < 0.15f) return 2;
+        else if (rand < 0.35f) return 3;
+        else if (rand < 0.65f) return 4;
         else return 5;
     }
 
@@ -74,26 +76,29 @@ public class PersonalityAssigner
     private List<TraineeData.AbilityMultiplier> GenerateMultipliers(PersonalityData personality, SpecializationType spec)
     {
         var list = new List<TraineeData.AbilityMultiplier>();
+
+        SpecializationData data = dataManger.SpecializationLoader.GetByTierAndType(personality.tier, spec);
         float m;
 
         switch (spec)
         {
             case SpecializationType.Crafting:
-                m = personality.CraftingMultiplier;
-                list.Add(new("제작 속도 증가", 1.3f * m));
-                list.Add(new("고급 제작 확률 증가", 1.5f * m));
+                m = personality.craftingMultiplier;
                 break;
             case SpecializationType.Enhancing:
-                m = personality.EnhancingMultiplier;
-                list.Add(new("강화 확률 증가", 1.2f * m));
-                list.Add(new("파괴 확률 감소", 0.8f * m));
-                list.Add(new("강화 비용 감소", 0.9f * m));
+                m = personality.enhancingMultiplier;
                 break;
             case SpecializationType.Selling:
-                m = personality.SellingMultiplier;
-                list.Add(new("판매 수익 증가", 1.4f * m));
-                list.Add(new("손님 수 증가", 1.3f * m));
+                m = personality.sellingMultiplier;
                 break;
+            default:
+                m = 1f;
+                break;
+        }
+
+        for (int i = 0; i < data.statNames.Count; i++)
+        {
+            list.Add(new(data.statNames[i], data.statValues[i] * m));
         }
 
         return list;

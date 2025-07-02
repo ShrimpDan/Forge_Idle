@@ -8,6 +8,7 @@ public class ItemInstance
 
     public int CurrentEnhanceLevel;
     public bool IsEquipped;
+    public bool CanEnhance => CurrentEnhanceLevel < Data.UpgradeInfo.MaxEnhanceLevel;
 
     public ItemInstance(string key, ItemData data)
     {
@@ -44,16 +45,10 @@ public class ItemInstance
         Quantity -= 1;
     }
 
-    public bool EnhanceItem()
+    public void EnhanceItem()
     {
-        if (CurrentEnhanceLevel >= Data.UpgradeInfo.MaxEnhanceLevel)
-        {
-            Debug.Log("최대강화치");
-            return false;
-        }
-
-        CurrentEnhanceLevel++;
-        return true;
+        if(CanEnhance)
+            CurrentEnhanceLevel++;
     }
 
     public float GetTotalAttack()
@@ -61,7 +56,10 @@ public class ItemInstance
         if (Data.ItemType != ItemType.Weapon)
             return 0;
 
-        float multiplier = (CurrentEnhanceLevel + 1) * Data.UpgradeInfo.AttackMultiplier;
+        if (CurrentEnhanceLevel == 0)
+            return Data.WeaponStats.Attack;
+
+        float multiplier = CurrentEnhanceLevel * Data.UpgradeInfo.AttackMultiplier;
         return Data.WeaponStats.Attack * multiplier;
     }
 
@@ -70,7 +68,10 @@ public class ItemInstance
         if (Data.ItemType != ItemType.Weapon)
             return 0;
 
-        float reduction = (CurrentEnhanceLevel + 1) * Data.UpgradeInfo.IntervalReductionPerLevel;
+        if (CurrentEnhanceLevel == 0)
+            return Data.WeaponStats.AttackInterval;
+
+        float reduction = CurrentEnhanceLevel * Data.UpgradeInfo.IntervalReductionPerLevel;
         return Mathf.Max(0.1f, Data.WeaponStats.AttackInterval - reduction);
     }
 }

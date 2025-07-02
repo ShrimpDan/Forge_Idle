@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 public class AssistantPopup : BaseUI
 {
+    private Forge forge;
     public override UIType UIType => UIType.Popup;
 
     [Header("Assistant Info UI")]
@@ -26,7 +27,8 @@ public class AssistantPopup : BaseUI
     public override void Init(GameManager gameManager, UIManager uIManager)
     {
         base.Init(gameManager, uIManager);
-        
+        forge = gameManager.Forge;
+
         exitButton.onClick.AddListener(() => uIManager.CloseUI(UIName.AssistantPopup));
         applyButton.onClick.AddListener(ApplyAssistant);
         deApplyButton.onClick.AddListener(DeApplyAssistant);
@@ -53,6 +55,8 @@ public class AssistantPopup : BaseUI
             optionText.text = option.AbilityName;
             optionText.text += $"\nx{option.Multiplier}";
         }
+
+        SetApplyButton(data.IsEquipped);
     }
 
     public override void Close()
@@ -63,19 +67,19 @@ public class AssistantPopup : BaseUI
 
     private void ApplyAssistant()
     {
-        assiData.IsEquipped = true;
-        SetApplyButton();
+        forge.ActiveAssistant(assiData);
+        SetApplyButton(true);
     }
 
     private void DeApplyAssistant()
     {
-        assiData.IsEquipped = false;
-        SetApplyButton();
+        forge.DeActiveAssistant(assiData);
+        SetApplyButton(false);
     }
 
-    private void SetApplyButton()
+    private void SetApplyButton(bool isEquip)
     {
-        if (assiData.IsEquipped)
+        if (isEquip)
         {
             applyButton.gameObject.SetActive(false);
             deApplyButton.gameObject.SetActive(true);

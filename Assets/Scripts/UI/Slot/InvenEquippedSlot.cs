@@ -5,20 +5,16 @@ public class InvenEquippedSlot : MonoBehaviour
 {
     private UIManager uIManager;
 
-    public ItemInstance equippedItem { get; private set; }
+    public ItemInstance EquippedItem { get; private set; }
 
     [SerializeField] private Image icon;
     [SerializeField] private Button slotBtn;
 
-    public void Init(ItemInstance item)
+    public void Init(UIManager uIManager, ItemInstance item)
     {
-        equippedItem = item;
+        this.uIManager = uIManager;
+        EquippedItem = item;
         icon.sprite = IconLoader.GetIcon(item.Data.IconPath);
-
-        if (uIManager == null)
-        {
-            uIManager = GameManager.Instance.UIManager;
-        }
 
         slotBtn = GetComponent<Button>();
 
@@ -28,15 +24,15 @@ public class InvenEquippedSlot : MonoBehaviour
     
     private void OnClickSlot()
     {
-        if (equippedItem == null) return;
+        if (EquippedItem == null) return;
 
         var ui = uIManager.OpenUI<InventoryPopup>(UIName.InventoryPopup);
-        ui.SetItemInfo(equippedItem);
+        ui.SetItemInfo(EquippedItem);
     }
 
     public void UnEquipItem()
     {
-        equippedItem = null;
+        EquippedItem = null;
         icon.sprite = null;
     }
 }

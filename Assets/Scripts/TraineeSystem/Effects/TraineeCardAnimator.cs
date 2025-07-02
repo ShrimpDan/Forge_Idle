@@ -47,7 +47,7 @@ public class TraineeCardAnimator : MonoBehaviour
             return;
         }
 
-        switch ((TraineeTier)data.Personality.Tier)
+        switch ((TraineeTier)data.Personality.tier)
         {
             case TraineeTier.Tier1:
                 FlipWithShakeAndPop(onFlipped);

@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.UIElements.Experimental;
 
 public class InventoryContext
 {
@@ -40,6 +41,7 @@ public class InventoryPopup : BaseUI
         slotItem = item;
         icon.sprite = IconLoader.GetIcon(item.Data.IconPath);
         objectName.text = item.Data.Name;
+        valueType.text = "개수:";
         value.text = item.Quantity.ToString("F0");
 
         string desc = item.Data.Description;
@@ -47,9 +49,11 @@ public class InventoryPopup : BaseUI
         switch (item.Data.ItemType)
         {
             case ItemType.Weapon:
+                valueType.text = "강화 레벨:";
+                value.text = $"{item.CurrentEnhanceLevel}";
                 desc += $"\n\n<color=#00c3ff><b>▶ Stats</b></color>\n";
-                desc += $"공격력: <b>{item.Data.WeaponStats.Attack}</b>\n";
-                desc += $"공격 간격: <b>{item.Data.WeaponStats.AttackInterval}초</b>\n";
+                desc += $"공격력: <b>{item.GetTotalAttack()}</b>\n";
+                desc += $"공격 간격: <b>{item.GetTotalInterval()}초</b>\n";
                 break;
 
             case ItemType.Gem:

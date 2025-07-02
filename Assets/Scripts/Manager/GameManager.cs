@@ -5,6 +5,7 @@ public class GameManager : MonoSingleton<GameManager>
     public Jang.InventoryManager Inventory { get; private set; }
     public DataManger DataManager { get; private set; }
     public TraineeManager AssistantManager { get; private set; }
+    public TraineeInventory TraineeInventory => AssistantManager != null ? AssistantManager.TraineeInventory : null;
     public Forge Forge { get; private set; }
     public UIManager UIManager { get; private set; }
 
@@ -13,20 +14,18 @@ public class GameManager : MonoSingleton<GameManager>
     protected override void Awake()
     {
         base.Awake();
-
         Inventory = new Jang.InventoryManager();
         DataManager = new DataManger();
-
         AssistantManager = FindObjectOfType<TraineeManager>();
         UIManager = FindObjectOfType<UIManager>();
-
         Forge = FindObjectOfType<Forge>();
 
         if (UIManager)
             UIManager.Init(this);
-
         if (Forge)
             Forge.Init();
+        if (AssistantManager)
+            AssistantManager.Init(this);
     }
 
     [ContextMenu("Get Random Item")]
@@ -38,7 +37,7 @@ public class GameManager : MonoSingleton<GameManager>
             Inventory.AddItem(itemData);
         }
 
-        //Fabric 3�� "����" �߰� (�� ���� �߰�)
+
         var fabricData = DataManager.ItemLoader.GetItemByKey("resource_fabric");
         if (fabricData != null)
         {

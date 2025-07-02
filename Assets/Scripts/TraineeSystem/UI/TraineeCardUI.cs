@@ -18,7 +18,7 @@ public class TraineeCardUI : MonoBehaviour
     {
         characterIcon.sprite = GetRandomCharacterSprite(); // 랜덤 캐릭터 이미지 지정 (추후 구현)
 
-        int tierIndex = Mathf.Clamp(data.Personality.Tier - 1, 0, tierSprites.Length - 1);
+        int tierIndex = Mathf.Clamp(data.Personality.tier - 1, 0, tierSprites.Length - 1);
         tierIcon.sprite = tierSprites[tierIndex];
 
         specializationIcon.sprite = data.Specialization switch
