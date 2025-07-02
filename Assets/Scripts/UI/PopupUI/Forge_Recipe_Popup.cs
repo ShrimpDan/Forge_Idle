@@ -16,7 +16,7 @@ public class Forge_Recipe_Popup : BaseUI
     private Forge forge;
     private Jang.InventoryManager inventory;
 
-    // �˾� �ʱ�ȭ
+    // 팝업 오픈 시마다 반드시 호출
     public void Init(DataManager dataManager, UIManager uiManager)
     {
         this.dataManager = dataManager;
@@ -26,13 +26,13 @@ public class Forge_Recipe_Popup : BaseUI
         exitBtn.onClick.AddListener(() => uIManager.CloseUI(UIName.Forge_Recipe_Popup));
     }
 
-    // ������ ���� �ݹ� ����
+    // 제작 선택 콜백
     public void SetRecipeSelectCallback(Action<ItemData, CraftingData> callback)
     {
         onRecipeSelect = callback;
     }
 
-    // Forge �� Inventory ����
+    // 현재 포지/인벤토리 전달 
     public void SetForgeAndInventory(Forge forge, Jang.InventoryManager inventory)
     {
         this.forge = forge;
@@ -40,7 +40,7 @@ public class Forge_Recipe_Popup : BaseUI
         PopulateRecipeList();
     }
 
-    // ������ ��� ����
+    // 레시피 리스트 생성 
     private void PopulateRecipeList()
     {
         foreach (Transform child in contentRoot)
@@ -51,7 +51,7 @@ public class Forge_Recipe_Popup : BaseUI
 
         if (craftingList == null || itemLoader == null)
         {
-            Debug.LogError("[Forge_Recipe_Popup] ������ ����");
+            Debug.LogError("[Forge_Recipe_Popup] 레시피 데이터 또는 아이템 데이터가 없습니다.");
             return;
         }
 
@@ -61,8 +61,7 @@ public class Forge_Recipe_Popup : BaseUI
             var slot = go.GetComponent<RecipeSlot>();
             if (slot != null)
             {
-                slot.Setup(data, itemLoader);
-                slot.SetSelectContext(itemLoader, forge, inventory, () =>
+                slot.Setup(data, itemLoader, forge, inventory, () =>
                 {
                     if (onRecipeSelect != null)
                     {
