@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CollectionUI : BaseUI
 {
@@ -7,6 +8,7 @@ public class CollectionUI : BaseUI
     [SerializeField] private GameObject panel;
     [SerializeField] private Transform slotParent;
     [SerializeField] private GameObject slotPrefabs;
+    [SerializeField] private Button exitBtn;
 
 
     private readonly Dictionary<RegualrCustomerData, CustomerSlotUI> slotDic = new();
@@ -16,7 +18,9 @@ public class CollectionUI : BaseUI
     public override void Init(GameManager gameManager, UIManager uIManager)
     {
         base.Init(gameManager, uIManager);
-      
+
+        exitBtn.onClick.RemoveAllListeners();
+        exitBtn.onClick.AddListener(() => uIManager.CloseUI(UIName.CollectionWindow));
 
         SettingSlots();
         CollectionBookManager.Instance.OnCustomerDiscovered += UpdateSlot;
