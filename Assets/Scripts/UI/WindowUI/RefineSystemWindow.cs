@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Linq;
 
 public class RefineSystemWindow : BaseUI
 {
@@ -20,7 +21,9 @@ public class RefineSystemWindow : BaseUI
     private UIManager uIManager;
     private DataManager dataManager;
 
-    private int refineCost = 1000; 
+    private int refineCost = 1000;
+    private const int requiredAmount = 5;
+    private const int resultAmount = 1;
 
     public override void Init(GameManager gameManager, UIManager uIManager)
     {
@@ -29,18 +32,14 @@ public class RefineSystemWindow : BaseUI
         this.uIManager = uIManager;
         this.dataManager = gameManager?.DataManager;
 
-      
         exitButton.onClick.RemoveAllListeners();
         exitButton.onClick.AddListener(() => uIManager.CloseUI(UIName.RefineSystemWindow));
 
         inputSlotButton.onClick.RemoveAllListeners();
         inputSlotButton.onClick.AddListener(OnClickInputSlot);
 
-        if (executeButton != null)
-        {
-            executeButton.onClick.RemoveAllListeners();
-            executeButton.onClick.AddListener(OnClickExecuteRefine);
-        }
+        executeButton.onClick.RemoveAllListeners();
+        executeButton.onClick.AddListener(OnClickExecuteRefine);
 
         ResetUI();
     }
@@ -55,66 +54,78 @@ public class RefineSystemWindow : BaseUI
     {
         selectedMaterial = item;
         if (selectedMaterial != null && selectedMaterial.Data == null && dataManager != null)
-        {
-            // 혹시라도 Data가 비어있으면 DataLoader에서 보충
             selectedMaterial.Data = dataManager.ItemLoader.GetItemByKey(selectedMaterial.ItemKey);
-        }
 
-        // 아이콘 세팅
-        if (inputSlotIcon != null && selectedMaterial?.Data != null)
+        UpdatePreview();
+    }
+
+    // 입력 리소스에 따라 gem/ingot 자동 분기
+    private void UpdatePreview()
+    {
+        if (inputSlotIcon != null)
         {
-            inputSlotIcon.sprite = IconLoader.GetIcon(selectedMaterial.Data.IconPath);
-            inputSlotIcon.enabled = true;
+            inputSlotIcon.sprite = selectedMaterial?.Data != null ? IconLoader.GetIcon(selectedMaterial.Data.IconPath) : null;
+            inputSlotIcon.enabled = selectedMaterial?.Data != null;
         }
-        else if (inputSlotIcon != null)
+
+        resultItem = GetRefineResult(selectedMaterial);
+
+        if (outputSlotIcon != null)
         {
-            inputSlotIcon.sprite = null;
-            inputSlotIcon.enabled = false;
+            outputSlotIcon.sprite = resultItem?.Data != null ? IconLoader.GetIcon(resultItem.Data.IconPath) : null;
+            outputSlotIcon.enabled = resultItem?.Data != null;
         }
 
-        // --- 정련 결과 아이템 미리보기 ---
-        resultItem = null;
-
-        UpdateOutputSlot();
         UpdateCost();
     }
 
-    private void UpdateOutputSlot()
+    // 금속은 인곳, 보석은 젬으로 결과 반환
+    private ItemInstance GetRefineResult(ItemInstance input)
     {
-        if (outputSlotIcon != null)
-        {
-            if (resultItem != null && resultItem.Data != null)
-            {
-                outputSlotIcon.sprite = IconLoader.GetIcon(resultItem.Data.IconPath);
-                outputSlotIcon.enabled = true;
-            }
-            else
-            {
-                outputSlotIcon.sprite = null;
-                outputSlotIcon.enabled = false;
-            }
-        }
+        if (input?.Data == null) return null;
+        if (!input.ItemKey.StartsWith("resource_")) return null;
+
+        string coreName = input.ItemKey.Substring("resource_".Length);
+        string[] gemTypes = { "ruby", "emerald", "amethyst", "sapphire", "gold" };
+        string[] metalTypes = { "copper", "bronze", "iron", "silver", "gold", "mithril" };
+
+        string outKey = null;
+        if (gemTypes.Contains(coreName))
+            outKey = "gem_" + coreName;
+        else if (metalTypes.Contains(coreName))
+            outKey = "ingot_" + coreName;
+
+        if (outKey == null) return null;
+        var outData = dataManager.ItemLoader.GetItemByKey(outKey);
+        if (outData == null) return null;
+        return new ItemInstance(outData.ItemKey, outData);
     }
 
     private void UpdateCost()
     {
-        if (refineCostText)
-            refineCostText.text = $"정련 비용: {refineCost} 골드";
+        if (refineCostText != null)
+            refineCostText.text = $"정련 비용: {refineCost:N0} 골드";
     }
 
     private void OnClickExecuteRefine()
     {
-        if (selectedMaterial == null)
+        if (selectedMaterial == null || resultItem == null) return;
+        if (gameManager.Forge.Gold < refineCost) return;
+
+        int owned = gameManager.Inventory.ResourceList
+            .Where(x => x.ItemKey == selectedMaterial.ItemKey)
+            .Sum(x => x.Quantity);
+        if (owned < requiredAmount) return;
+
+        gameManager.Forge.AddGold(-refineCost);
+
+        var reqList = new System.Collections.Generic.List<(string resourceKey, int amount)>()
         {
-            Debug.LogWarning("[RefineSystem] 재료를 먼저 선택하세요!");
-            return;
-        }
+            (selectedMaterial.ItemKey, requiredAmount)
+        };
+        gameManager.Inventory.UseCraftingMaterials(reqList);
 
-        // --- 실제 비용 차감/정련 처리 자리 ---
-        // 예시: gameManager.Forge.AddGold(-refineCost);
-        // 실제로는 selectedMaterial을 소모하고 resultItem을 인벤토리에 추가
-
-        Debug.Log("[RefineSystem] 정련 완료! (정련 결과 지급 로직 자리)");
+        gameManager.Inventory.AddItem(resultItem.Data, resultAmount);
 
         ResetUI();
     }
@@ -123,7 +134,6 @@ public class RefineSystemWindow : BaseUI
     {
         selectedMaterial = null;
         resultItem = null;
-
         if (inputSlotIcon != null)
         {
             inputSlotIcon.sprite = null;
