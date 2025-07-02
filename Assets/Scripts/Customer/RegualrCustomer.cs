@@ -68,7 +68,7 @@ public class RegualrCustomer : Customer
         OnPriceBoosted?.Invoke(Job); //단골손님 가격 오르기 이벤트 발생
         if (CollectData != null)
         {
-            CollectionBook.Instance.Discover(CollectData);
+            CollectionBookManager.Instance.Discover(CollectData);
         }
         else
         {

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class CollectionBook : MonoSingleton<CollectionBook>
+public class CollectionBookManager : MonoSingleton<CollectionBookManager>
 {
     [SerializeField] private CollectionBookData bookData;
 

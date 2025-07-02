@@ -21,7 +21,7 @@ public class GemsSystemWindow : BaseUI
 
     private GameManager gameManager;
     private UIManager uIManager;
-    private DataManger dataManager;  // ★ 추가: 데이터 매니저 직접 참조
+    private DataManager dataManager;  // ★ 추가: 데이터 매니저 직접 참조
 
     public override void Init(GameManager gameManager, UIManager uIManager)
     {

@@ -6,9 +6,9 @@ using System.Collections.Generic;
 /// </summary>
 public class PersonalityAssigner
 {
-    private DataManger dataManger;
+    private DataManager dataManger;
 
-    public PersonalityAssigner(DataManger dataManger)
+    public PersonalityAssigner(DataManager dataManger)
     {
         this.dataManger = dataManger;
     }

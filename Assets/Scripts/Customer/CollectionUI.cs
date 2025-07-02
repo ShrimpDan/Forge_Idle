@@ -19,7 +19,7 @@ public class CollectionUI : BaseUI
       
 
         SettingSlots();
-        CollectionBook.Instance.OnCustomerDiscovered += UpdateSlot;
+        CollectionBookManager.Instance.OnCustomerDiscovered += UpdateSlot;
     }
 
 
@@ -36,7 +36,7 @@ public class CollectionUI : BaseUI
 
     private void SettingSlots()
     {
-        foreach (var data in CollectionBook.Instance.GetAllRegularCutsomer())
+        foreach (var data in CollectionBookManager.Instance.GetAllRegularCutsomer())
         {
             GameObject go = Instantiate(slotPrefabs, slotParent);
             var slot = go.GetComponent<CustomerSlotUI>();
@@ -50,7 +50,7 @@ public class CollectionUI : BaseUI
     {
         foreach (var slot in slotDic)
         {
-            bool isDiscovered = CollectionBook.Instance.IsDiscovered(slot.Key);
+            bool isDiscovered = CollectionBookManager.Instance.IsDiscovered(slot.Key);
             slot.Value.UpdateState(isDiscovered);
         }
     }
