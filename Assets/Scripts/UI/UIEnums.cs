@@ -36,6 +36,7 @@ public static class UIName
     public const string GemsSystemWindow = "GemSystemWindow";
     public const string RefineSystemWindow = "RefineSystemWindow";
     public const string MineDetailWindow = "MineDetailWindow";
+    public const string CollectionWindow = "CollectionWindow";
    
   
 
@@ -61,7 +62,7 @@ public static class UIName
             ButtonType.Gem => GemsSystemWindow,
             ButtonType.Refine => RefineSystemWindow,
             ButtonType.MineDetail => MineDetailWindow,
-        
+            ButtonType.Collection => CollectionWindow,
             _ => string.Empty
         };
     }
