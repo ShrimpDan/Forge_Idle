@@ -36,24 +36,8 @@ public class CraftWeaponWindow : BaseUI
     {
         base.Init(gameManager, uIManager);
 
-        if (exitBtn == null)
-        {
-            Debug.LogError("exitBtn이 할당되지 않았습니다!");
-            return;
-        }
         exitBtn.onClick.RemoveAllListeners();
         exitBtn.onClick.AddListener(() => uIManager.CloseUI(UIName.CraftWeaponWindow));
-
-        if (inputWeaponSlots == null)
-        {
-            Debug.LogError("inputWeaponSlots이 할당되지 않았습니다!");
-            return;
-        }
-        if (weaponSlotBtnPrefab == null)
-        {
-            Debug.LogError("weaponSlotBtnPrefab이 할당되지 않았습니다!");
-            return;
-        }
 
         foreach (Transform child in inputWeaponSlots)
             Destroy(child.gameObject);
@@ -67,25 +51,7 @@ public class CraftWeaponWindow : BaseUI
             GameObject go = Instantiate(weaponSlotBtnPrefab, inputWeaponSlots);
 
             Button btn = go.GetComponent<Button>();
-            if (btn == null)
-            {
-                Debug.LogError($"Prefab에 Button 컴포넌트가 없습니다! (i={i})");
-                continue;
-            }
-
-            Image icon = null;
-            var iconTr = go.transform.Find("Icon");
-            if (iconTr != null)
-                icon = iconTr.GetComponent<Image>();
-            if (icon == null)
-                icon = go.GetComponent<Image>();
-
-            if (icon == null)
-            {
-                Debug.LogError($"Prefab에 Image 컴포넌트가 없습니다! (i={i})");
-                continue;
-            }
-
+            Image icon = go.transform.Find("Icon")?.GetComponent<Image>() ?? go.GetComponent<Image>();
             int idx = i;
             btn.onClick.RemoveAllListeners();
             btn.onClick.AddListener(() => OnClickInputWeaponSlot(idx));
@@ -118,24 +84,12 @@ public class CraftWeaponWindow : BaseUI
     private void OnClickInputWeaponSlot(int index)
     {
         if (index < 0 || index >= slotProgressList.Count)
-        {
-            Debug.LogError($"잘못된 슬롯 인덱스: {index}");
             return;
-        }
         if (slotProgressList[index].isCrafting)
-        {
-            Debug.Log("해당 슬롯은 이미 제작 중입니다.");
             return;
-        }
 
         selectedSlotIndex = index;
         var popup = uIManager.OpenUI<Forge_Recipe_Popup>(UIName.Forge_Recipe_Popup);
-        if (popup == null)
-        {
-            Debug.LogError("Forge_Recipe_Popup을 열 수 없습니다!");
-            return;
-        }
-        // **데이터매니저를 직접 전달**
         popup.Init(gameManager.DataManager, uIManager);
         popup.SetRecipeSelectCallback(OnRecipeSelected);
         popup.SetForgeAndInventory(gameManager.Forge, gameManager.Inventory);
@@ -144,43 +98,41 @@ public class CraftWeaponWindow : BaseUI
     private void OnRecipeSelected(ItemData itemData, CraftingData craftingData)
     {
         if (itemData == null || craftingData == null)
-        {
-            Debug.LogWarning("OnRecipeSelected: itemData 혹은 craftingData가 null입니다.");
             return;
-        }
         if (selectedSlotIndex < 0 || selectedSlotIndex >= slotIcons.Count)
-        {
-            Debug.LogWarning("OnRecipeSelected: 잘못된 selectedSlotIndex");
             return;
-        }
 
         var inventory = gameManager.Inventory;
-        if (inventory == null)
-        {
-            Debug.LogError("gameManager.Inventory가 null입니다.");
-            return;
-        }
+        var forge = gameManager.Forge;
 
+        if (inventory == null || forge == null)
+            return;
+
+        // --- 재료, 골드 체크 ---
         var required = craftingData.RequiredResources
-            .Select(r => (r.ResourceKey, r.Amount)).ToList();
+            .Select(r => (MapItemKey(r.ResourceKey), r.Amount)).ToList();
 
-        if (!inventory.UseCraftingMaterials(required))
-        {
-            Debug.LogWarning("[제작실패] 재료가 부족하거나 사용 실패!");
+        int goldNeed = (int)craftingData.craftCost;
+        if (forge.Gold < goldNeed)
             return;
-        }
+
+        bool hasAll = required.All(req =>
+            inventory.ResourceList.Where(x => x.ItemKey == req.Item1).Sum(x => x.Quantity) >= req.Item2);
+
+        if (!hasAll)
+            return;
+
+        // -- 차감 처리 --
+        if (!inventory.UseCraftingMaterials(required))
+            return;
+        forge.AddGold(-goldNeed);
 
         Sprite iconSprite = IconLoader.GetIcon(itemData.IconPath);
         if (iconSprite == null)
             iconSprite = Resources.Load<Sprite>(itemData.IconPath);
 
-        if (iconSprite == null)
-            Debug.LogWarning($"[슬롯아이콘] Sprite 경로({itemData.IconPath})가 잘못되었거나 리소스가 없음");
-
         slotIcons[selectedSlotIndex].sprite = iconSprite;
         slotIcons[selectedSlotIndex].enabled = (iconSprite != null);
-
-        Debug.Log($"[슬롯아이콘] index:{selectedSlotIndex}, iconPath:{itemData.IconPath}, spriteNull:{iconSprite == null}");
 
         var prog = slotProgressList[selectedSlotIndex];
         prog.isCrafting = true;
@@ -201,6 +153,25 @@ public class CraftWeaponWindow : BaseUI
             prog.timeText.text = $"{prog.timeLeft:0.0}s";
         }
         slotButtons[selectedSlotIndex].interactable = false;
+    }
+
+    private string MapItemKey(string key)
+    {
+        if (string.IsNullOrEmpty(key)) return key;
+        if (key.StartsWith("weapon_") || key.StartsWith("resource_") || key.StartsWith("gem_") || key.StartsWith("ingot_"))
+            return key;
+        string[] types = { "axe", "pickaxe", "sword", "dagger", "bow", "shield", "hoe" };
+        var parts = key.Split('_');
+        if (parts.Length == 2)
+        {
+            string p0 = parts[0];
+            string p1 = parts[1];
+            string type = types.Contains(p0) ? p0 : (types.Contains(p1) ? p1 : null);
+            string quality = types.Contains(p0) ? p1 : (types.Contains(p1) ? p0 : null);
+            if (!string.IsNullOrEmpty(type) && !string.IsNullOrEmpty(quality))
+                return $"weapon_{type}_{quality}";
+        }
+        return key;
     }
 
     private void Update()
@@ -224,12 +195,8 @@ public class CraftWeaponWindow : BaseUI
                 prog.isCrafting = false;
                 prog.rewardGiven = true;
 
-                // 데이터 매니저에서 ItemData로 인벤토리에 추가
                 if (prog.itemData != null)
-                {
                     gameManager.Inventory.AddItem(prog.itemData, 1);
-                    Debug.Log($"[제작완료] {prog.itemData.Name} 인벤토리에 추가됨!");
-                }
 
                 if (prog.progressBar) prog.progressBar.gameObject.SetActive(false);
                 if (prog.timeText) prog.timeText.gameObject.SetActive(false);

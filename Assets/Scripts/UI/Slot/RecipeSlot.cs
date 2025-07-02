@@ -22,62 +22,75 @@ public class RecipeSlot : MonoBehaviour
     private Jang.InventoryManager myInventory;
     private Action onSelectCallback;
 
-    public void Setup(CraftingData data, ItemDataLoader itemLoader)
+    public void Setup(
+        CraftingData data,
+        ItemDataLoader itemLoader,
+        Forge forge,
+        Jang.InventoryManager inventory,
+        Action onSelect)
     {
         myCraftingData = data;
         myItemLoader = itemLoader;
+        myForge = forge;
+        myInventory = inventory;
+        onSelectCallback = onSelect;
 
+        // 아이템 정보 세팅
         string mappedItemKey = MapItemKey(data.ItemKey);
         myItemData = itemLoader.GetItemByKey(mappedItemKey);
-
-        if (myItemData == null)
-        {
-            Debug.LogError($"[RecipeSlot] ItemData를 찾을 수 없습니다: {data.ItemKey} (변환된 키: {mappedItemKey})");
-            return;
-        }
-
-        itemIcon.sprite = Resources.Load<Sprite>(myItemData.IconPath);
-        itemName.text = myItemData.Name;
+        itemIcon.sprite = myItemData != null ? Resources.Load<Sprite>(myItemData.IconPath) : null;
+        itemIcon.enabled = myItemData != null && itemIcon.sprite != null;
+        itemName.text = myItemData != null ? myItemData.Name : "";
         craftTimeText.text = $"제작시간: {data.craftTime}초";
-        craftCostText.text = $"비용: {data.craftCost}";
-        sellCostText.text = $"판매가: {data.sellCost}";
+        craftCostText.text = $"비용: {data.craftCost:N0}";
+        sellCostText.text = $"판매가: {data.sellCost:N0}";
 
-        foreach (Transform child in requiredListRoot)
-            Destroy(child.gameObject);
+        // 기존 재료 슬롯 제거
+        for (int i = requiredListRoot.childCount - 1; i >= 0; i--)
+            Destroy(requiredListRoot.GetChild(i).gameObject);
+
+        bool canCraft = true;
 
         foreach (var req in data.RequiredResources)
         {
+            Debug.Log($"리소스 슬롯 생성: {req.ResourceKey} x {req.Amount}");
             var go = Instantiate(resourceSlotPrefab, requiredListRoot);
-            var resourceIcon = go.transform.Find("ResourceIcon")?.GetComponent<Image>();
-            var amountText = go.transform.Find("AmountText")?.GetComponent<TMP_Text>();
-
-            string mappedResourceKey = MapItemKey(req.ResourceKey);
-            var resItem = itemLoader.GetItemByKey(mappedResourceKey);
-
-            if (resourceIcon != null && resItem != null)
-                resourceIcon.sprite = Resources.Load<Sprite>(resItem.IconPath);
-            if (amountText != null)
-                amountText.text = $"x{req.Amount}";
+            var slot = go.GetComponent<ResourceSlot>();
+            if (slot == null)
+            {
+                Debug.LogError("ResourceSlot 프리팹에 ResourceSlot 컴포넌트가 없음!");
+                continue;
+            }
+            string reqKey = MapItemKey(req.ResourceKey);
+            var resItem = itemLoader.GetItemByKey(reqKey);
+            Sprite iconSprite = null;
+            if (resItem != null)
+                iconSprite = Resources.Load<Sprite>(resItem.IconPath);
+            int owned = myInventory?.ResourceList
+                .Where(x => x.ItemKey == reqKey)
+                .Sum(x => x.Quantity) ?? 0;
+            slot.Set(iconSprite, owned, req.Amount);
+            if (owned < req.Amount)
+                canCraft = false;
         }
+
+        // 골드 체크
+        bool enoughGold = myForge != null && myForge.Gold >= myCraftingData.craftCost;
+        selectButton.interactable = canCraft && enoughGold;
+
+        selectButton.onClick.RemoveAllListeners();
+        selectButton.onClick.AddListener(OnSelectTryCraft);
     }
 
-    // 핵심 변환 함수: "crude_axe", "axe_crude" 등 → "weapon_axe_crude"
     private string MapItemKey(string key)
     {
-        if (string.IsNullOrEmpty(key))
-            return key;
-
-        // 이미 정식 key면 바로 리턴
+        if (string.IsNullOrEmpty(key)) return key;
         if (key.StartsWith("weapon_") || key.StartsWith("resource_") || key.StartsWith("gem_") || key.StartsWith("ingot_"))
             return key;
-
-        // 무기 타입 리스트 (데이터 json에 맞춰)
         string[] types = { "axe", "pickaxe", "sword", "dagger", "bow", "shield", "hoe" };
-
         var parts = key.Split('_');
         if (parts.Length == 2)
         {
-            // crude_axe or axe_crude 스타일
             string p0 = parts[0];
             string p1 = parts[1];
             string type = types.Contains(p0) ? p0 : (types.Contains(p1) ? p1 : null);
@@ -85,49 +98,23 @@ public class RecipeSlot : MonoBehaviour
             if (!string.IsNullOrEmpty(type) && !string.IsNullOrEmpty(quality))
                 return $"weapon_{type}_{quality}";
         }
-        return key; // 기타는 변환 없음
-    }
-
-    public void SetSelectContext(ItemDataLoader itemLoader, Forge forge, Jang.InventoryManager inventory, Action onSelect)
-    {
-        myForge = forge;
-        myInventory = inventory;
-        onSelectCallback = onSelect;
-
-        selectButton.onClick.RemoveAllListeners();
-        selectButton.onClick.AddListener(OnSelectTryCraft);
+        return key;
     }
 
     private void OnSelectTryCraft()
     {
         if (myForge == null || myInventory == null || myCraftingData == null)
-        {
-            Debug.LogError("[RecipeSlot] 제작 시스템이 세팅되지 않았습니다!");
             return;
-        }
         if (myForge.Gold < myCraftingData.craftCost)
-        {
-            Debug.Log($"[레시피] 골드 부족: {myForge.Gold}/{myCraftingData.craftCost}");
             return;
-        }
-
-        bool hasAll = true;
         foreach (var req in myCraftingData.RequiredResources)
         {
             string mappedResourceKey = MapItemKey(req.ResourceKey);
             int ownedAmount = myInventory.ResourceList
                 .Where(x => x.ItemKey == mappedResourceKey)
                 .Sum(x => x.Quantity);
-            Debug.Log($"[자원체크] {mappedResourceKey} 필요:{req.Amount}, 보유:{ownedAmount}");
             if (ownedAmount < req.Amount)
-            {
-                Debug.Log($"[레시피] 재료 부족: {mappedResourceKey} 필요: {req.Amount}, 보유: {ownedAmount}");
-                hasAll = false;
-            }
-        }
-        if (!hasAll)
-        {
-            return;
+                return;
         }
         onSelectCallback?.Invoke();
     }

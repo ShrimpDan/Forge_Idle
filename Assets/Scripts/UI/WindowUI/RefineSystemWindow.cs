@@ -79,14 +79,13 @@ public class RefineSystemWindow : BaseUI
         UpdateCost();
     }
 
-    // 금속은 인곳, 보석은 젬으로 결과 반환
     private ItemInstance GetRefineResult(ItemInstance input)
     {
         if (input?.Data == null) return null;
         if (!input.ItemKey.StartsWith("resource_")) return null;
 
         string coreName = input.ItemKey.Substring("resource_".Length);
-        string[] gemTypes = { "ruby", "emerald", "amethyst", "sapphire", "gold" };
+        string[] gemTypes = { "ruby", "emerald", "amethyst", "sapphire" };
         string[] metalTypes = { "copper", "bronze", "iron", "silver", "gold", "mithril" };
 
         string outKey = null;
