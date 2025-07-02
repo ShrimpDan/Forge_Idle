@@ -6,9 +6,10 @@ public class CraftingData
 {
     public string ItemKey;
     public float craftTime;
-    public float craftCost;
+    public int craftCost;
+    public CustomerJob jobType;
     public List<RequiredResources> RequiredResources;
-    public float sellCost;
+    public int sellCost;
 }
 
 [System.Serializable]
@@ -46,6 +47,7 @@ public class CraftingDataLoader
                 craftTime = flat.craftTime,
                 craftCost = flat.craftCost,
                 sellCost = flat.sellCost,
+                jobType = flat.jobType,
                 RequiredResources = new List<RequiredResources>()
             };
 
@@ -88,8 +90,9 @@ public class CraftingDataFlat
 {
     public string Key;
     public float craftTime;
-    public float craftCost;
-    public float sellCost;
+    public int craftCost;
+    public int sellCost;
+    public CustomerJob jobType;
     public List<string> resourceKeys;
     public List<int> resourceAmount;
 }

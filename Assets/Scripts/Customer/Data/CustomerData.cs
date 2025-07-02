@@ -17,6 +17,7 @@ public enum CustomerJob
     Miner,
     Warrior,
     Archer,
+    Tanker,
     Assassin
 
 }
