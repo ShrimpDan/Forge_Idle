@@ -13,12 +13,18 @@ public class CustomerSlotUI : MonoBehaviour
     public void Initialize(RegualrCustomerData data)
     {
         this.data = data;
-
+        UpdateState(false);
     }
 
 
     public void UpdateState(bool discovered)
     {
+        if (image == null)
+        {
+            image = GetComponent<Image>();
+
+        }
+
         if (discovered)
         {
             image.sprite = data.Icon;

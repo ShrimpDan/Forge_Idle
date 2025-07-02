@@ -16,7 +16,9 @@ public enum ButtonType
     Gem,      // 추가
     Refine,   // 추가
     MineDetail, // 추가
-    MineMiniGame //Add
+    MineMiniGame, //Add
+    Collection
+
 }
 
 public static class UIName
@@ -34,6 +36,7 @@ public static class UIName
     public const string GemsSystemWindow = "GemSystemWindow";
     public const string RefineSystemWindow = "RefineSystemWindow";
     public const string MineDetailWindow = "MineDetailWindow";
+   
   
 
     // Popup UI
@@ -43,6 +46,7 @@ public static class UIName
     public const string Forge_AssistantPopup = "Forge_AssistantPopup";
     public const string Forge_Recipe_Popup = "Forge_Recipe_Popup";
     public const string DungeonPopup = "DungeonPopup";
+    public const string CollectionPopup = "CollectionPopup";
 
     public static string GetUINameByType(ButtonType type)
     {

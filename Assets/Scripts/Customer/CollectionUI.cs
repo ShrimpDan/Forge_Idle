@@ -1,9 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq.Expressions;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class CollectionUI : MonoBehaviour
+public class CollectionUI : BaseUI
 {
     [Header("UI References")]
     [SerializeField] private GameObject panel;
@@ -13,19 +11,25 @@ public class CollectionUI : MonoBehaviour
 
     private readonly Dictionary<RegualrCustomerData, CustomerSlotUI> slotDic = new();
 
+    public override UIType UIType => UIType.Popup;
 
-    private void Awake()
+    public override void Init(GameManager gameManager, UIManager uIManager)
     {
-        panel.SetActive(false);
+        base.Init(gameManager, uIManager);
+      
+
+        SettingSlots();
+        CollectionBook.Instance.OnCustomerDiscovered += UpdateSlot;
     }
 
 
-    public void Open()
+    public override void Open()
     {
         panel.SetActive(true);
+        UpdateAllSlots(); //최신화
     }
 
-    public void Close()
+    public override void Close()
     {
         panel.SetActive(false);
     }
@@ -42,7 +46,7 @@ public class CollectionUI : MonoBehaviour
     }
 
 
-    private void ResetAll()
+    private void UpdateAllSlots()
     {
         foreach (var slot in slotDic)
         {
@@ -57,6 +61,16 @@ public class CollectionUI : MonoBehaviour
         {
             slot.UpdateState(true);
         }
+    }
+
+
+    private void UpdateSlot(RegualrCustomerData data)
+    {
+        if (slotDic.TryGetValue(data, out var slot))
+        {
+            slot.UpdateState(true);
+        }
+        
     }
 
 }
