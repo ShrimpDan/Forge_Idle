@@ -1,4 +1,4 @@
-public class DataManager
+﻿public class DataManager
 {
     public ItemDataLoader ItemLoader { get; private set; }
     public CraftingDataLoader CraftingLoader{ get; private set; }

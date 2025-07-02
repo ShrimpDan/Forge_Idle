@@ -7,6 +7,7 @@ using UnityEngine;
 public class TreasureData : ScriptableObject
 {
     public int id;
+    public string Name;
     public Vector2Int[] Shape;
     public Sprite[] pratSprite;
     public Sprite rewardImage;

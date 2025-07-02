@@ -140,13 +140,10 @@ public class BoardManager : MonoBehaviour
                 OnTreasureCompleted(data);
             }
         }
-
         if (digCount == 0)
         {
             FairDig();    
         }
-
-
     }
 
 
@@ -162,7 +159,7 @@ public class BoardManager : MonoBehaviour
         if (foundTreasureId.Add(data.id))
         {
             UpdateTreasureCountUI(); //해당 보물이 발굴되면 UI업데이트  
-
+            RewardGem(data);
             resultUI.GetComponent<MiniGameResultUI>().AddIcon(data.rewardImage);
         }
 
@@ -173,6 +170,12 @@ public class BoardManager : MonoBehaviour
         }
 
         OnTreasureComplete?.Invoke(data); //데이터 전달
+    }
+
+    private void RewardGem(TreasureData data)
+    {
+        Debug.Log("들어감");
+        GameManager.Instance.Inventory.AddItem(GameManager.Instance.DataManager.ItemLoader.GetItemByKey(data.Name));
     }
 
     private Block GetBlock(Vector2Int pos)
