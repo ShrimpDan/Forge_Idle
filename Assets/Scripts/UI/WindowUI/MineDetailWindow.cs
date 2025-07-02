@@ -18,7 +18,7 @@ public class MineDetailWindow : BaseUI
 
     private List<MineralSlot> mineralSlots = new();
     private MineData mineData;
-    private DataManger dataManager;
+    private DataManager dataManager;
     private GameManager gameManager;
     private UIManager uIManager;
 
@@ -38,7 +38,7 @@ public class MineDetailWindow : BaseUI
         exitBtn.onClick.AddListener(() => uIManager.CloseUI(UIName.MineDetailWindow));
     }
 
-    public void SetupMine(MineData mineData, DataManger dataManager, GameManager gameManager, UIManager uIManager)
+    public void SetupMine(MineData mineData, DataManager dataManager, GameManager gameManager, UIManager uIManager)
     {
         this.mineData = mineData;
         this.dataManager = dataManager;
