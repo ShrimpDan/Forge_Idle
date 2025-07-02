@@ -2,31 +2,21 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class RequiredResources
-{
-    public string ResourceKey;
-    public int Amount;
-}
-
-[System.Serializable]
 public class CraftingData
 {
     public string ItemKey;
     public float craftTime;
-    public float craftCost;
-    public float sellCost;
+    public int craftCost;
+    public CustomerJob jobType;
     public List<RequiredResources> RequiredResources;
+    public int sellCost;
 }
 
 [System.Serializable]
-public class CraftingDataFlat
+public class RequiredResources
 {
-    public string Key;
-    public float craftTime;
-    public float craftCost;
-    public float sellCost;
-    public List<string> resourceKey;
-    public List<int> amount;
+    public string ResourceKey;
+    public int Amount;
 }
 
 public class CraftingDataLoader
@@ -37,49 +27,49 @@ public class CraftingDataLoader
     public CraftingDataLoader(string path = "Data/crafting_data")
     {
         TextAsset json = Resources.Load<TextAsset>(path);
+
         if (json == null)
         {
-            Debug.LogWarning("Crafting data not found.");
+            Debug.LogWarning("Crafting 데이터가 존재하지 않습니다.");
             return;
         }
 
-        var flatWrapper = JsonUtility.FromJson<Wrapper<CraftingDataFlat>>(json.text);
-        if (flatWrapper == null || flatWrapper.Items == null)
-        {
-            Debug.LogWarning("Crafting data parsing failed.");
-            return;
-        }
+        List<CraftingDataFlat> flatList = JsonUtility.FromJson<Wrapper<CraftingDataFlat>>(json.text).Items;
 
         CraftingList = new List<CraftingData>();
         CraftingDict = new Dictionary<string, CraftingData>();
 
-        foreach (var flat in flatWrapper.Items)
+        foreach (var flat in flatList)
         {
-            var data = new CraftingData
+            CraftingData data = new CraftingData
             {
                 ItemKey = flat.Key,
                 craftTime = flat.craftTime,
                 craftCost = flat.craftCost,
                 sellCost = flat.sellCost,
+                jobType = flat.jobType,
                 RequiredResources = new List<RequiredResources>()
             };
 
-            if (flat.resourceKey != null && flat.amount != null)
+            for (int i = 0; i < flat.resourceKeys.Count; i++)
             {
-                int count = Mathf.Min(flat.resourceKey.Count, flat.amount.Count);
-                for (int i = 0; i < count; i++)
+                RequiredResources resources = new RequiredResources
                 {
-                    data.RequiredResources.Add(new RequiredResources
-                    {
-                        ResourceKey = flat.resourceKey[i],
-                        Amount = flat.amount[i]
-                    });
-                }
+                    ResourceKey = flat.resourceKeys[i],
+                    Amount = flat.resourceAmount[i]
+                };
+
+                data.RequiredResources.Add(resources);
             }
 
             CraftingList.Add(data);
             CraftingDict[data.ItemKey] = data;
         }
+
+        foreach (var data in CraftingList)
+            {
+                CraftingDict[data.ItemKey] = data;
+            }
     }
 
     [System.Serializable]
@@ -90,7 +80,19 @@ public class CraftingDataLoader
 
     public CraftingData GetDataByKey(string key)
     {
-        CraftingDict.TryGetValue(key, out var data);
+        CraftingDict.TryGetValue(key, out CraftingData data);
         return data;
     }
+}
+
+[System.Serializable]
+public class CraftingDataFlat
+{
+    public string Key;
+    public float craftTime;
+    public int craftCost;
+    public int sellCost;
+    public CustomerJob jobType;
+    public List<string> resourceKeys;
+    public List<int> resourceAmount;
 }

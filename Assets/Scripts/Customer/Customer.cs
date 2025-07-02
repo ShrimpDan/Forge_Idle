@@ -21,12 +21,8 @@ public abstract class Customer : MonoBehaviour
 {
     public static readonly int maxCount = 5; //5명 이상은 존재 안할꺼다
 
-    public CustomerType Type => data.Type;
-    public CustomerJob Job => data.Job;
-
-    public int BuyCount => data.buyCount;
-    public float Frequency => data.frequency;
-    public float BuyingTime => data.buyingTime;
+    public CustomerType Type => data.type;
+    public CustomerJob Job => data.job;
 
     public CustomerEventHandler CustomerEvent;
 
@@ -107,7 +103,7 @@ public abstract class Customer : MonoBehaviour
         yield return new WaitUntil(() => buyPoint.IsCustomFirst(this));
 
         CustomerEvent?.RaiseCustomerArrived(this.Job); //이벤트 연결
-        yield return WaitForSecondsCache.Wait(data.buyingTime);
+        yield return WaitForSecondsCache.Wait(3f);
         
     }
 
