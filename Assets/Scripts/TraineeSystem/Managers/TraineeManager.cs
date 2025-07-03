@@ -30,6 +30,7 @@ public class TraineeManager : MonoBehaviour
     private TraineeCardSpawner spawner;
     private TraineeInventory inventory = new();
     public TraineeInventory TraineeInventory => inventory;
+    public TraineeCardSpawner Spawner => spawner;
 
     private List<TraineeData> currentBatch = new();
     private bool canRecruit = true;
@@ -99,12 +100,14 @@ public class TraineeManager : MonoBehaviour
         ConfirmTrainee(data);
     }
 
+    // 외부에서 제자 등록
     public void ConfirmTrainee(TraineeData data)
     {
         currentBatch.Add(data);
         inventory.Add(data);
     }
 
+    // 외부에서 제자 제거
     public void RemoveTrainee(GameObject obj, TraineeData data)
     {
         inventory.Remove(data);
