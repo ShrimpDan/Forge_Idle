@@ -31,15 +31,23 @@ public class TraineeCardSpawner
     /// <summary>
     /// 단일 큰 카드 프리팹을 생성합니다.
     /// </summary>
-    public GameObject SpawnLargeCard(TraineeData data)
+    public GameObject SpawnLargeCard(
+    TraineeData data,
+    Transform parentOverride = null,
+    System.Action<TraineeData> onConfirmAction = null,
+    bool enableFlipImmediately = true,
+    bool playSpawnEffect = true)
     {
-        if (largeCardPrefab == null || singleDrawParent == null) return null;
+        if (largeCardPrefab == null) return null;
 
-        var obj = Object.Instantiate(largeCardPrefab, singleDrawParent);
+        var parent = parentOverride != null ? parentOverride : singleDrawParent;
+        if (parent == null) return null;
+
+        var obj = Object.Instantiate(largeCardPrefab, parent);
         obj.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
         obj.transform.localScale = Vector3.one;
 
-        SetupCard(obj, data, 0, true);
+        SetupCard(obj, data, 0, enableFlipImmediately, onConfirmAction, playSpawnEffect);
         return obj;
     }
 
@@ -54,14 +62,20 @@ public class TraineeCardSpawner
         obj.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
         obj.transform.localScale = Vector3.one;
 
-        SetupCard(obj, data, index, false);
+        SetupCard(obj, data, index, false, d => drawController.OnTraineeConfirmed?.Invoke(d), true);
         return obj;
     }
 
     /// <summary>
     /// 카드 오브젝트를 설정하고 이펙트를 실행합니다.
     /// </summary>
-    private void SetupCard(GameObject obj, TraineeData data, int index, bool enableFlipImmediately)
+    private void SetupCard(
+        GameObject obj,
+        TraineeData data,
+        int index,
+        bool enableFlipImmediately,
+        System.Action<TraineeData> onConfirmAction = null,
+        bool playSpawnEffect = true)
     {
         var controller = obj.GetComponent<TraineeController>();
         if (controller == null)
@@ -74,10 +88,10 @@ public class TraineeCardSpawner
             data,
             factory,
             drawController,
-            d => drawController.OnTraineeConfirmed?.Invoke(d),
+            onConfirmAction,
             enableFlipImmediately,
-            true,
-            true
-                );
+            isMultiDrawCard: index > 0,
+            playSpawnEffect: playSpawnEffect
+        );
     }
 }

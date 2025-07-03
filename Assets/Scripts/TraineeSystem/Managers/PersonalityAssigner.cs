@@ -73,7 +73,33 @@ public class PersonalityAssigner
         return (SpecializationType)Random.Range(0, 3);
     }
 
-    private List<TraineeData.AbilityMultiplier> GenerateMultipliers(PersonalityData personality, SpecializationType spec)
+    /// <summary>
+    /// 특정 특화 및 티어의 성격을 가진 제자를 생성합니다.
+    /// 티어는 1(최상위) ~ 5(최하위)이며, 존재하는 데이터 중 랜덤 선택.
+    /// </summary>
+    public TraineeData GenerateTrainee(SpecializationType fixedType, int targetTier)
+    {
+        List<PersonalityData> personalityDatas = dataManger.PersonalityLoader.DataList.FindAll(t => t.tier == targetTier);
+
+        if (personalityDatas == null || personalityDatas.Count == 0)
+            return null;
+
+        var personality = personalityDatas[Random.Range(0, personalityDatas.Count)];
+        var multipliers = GenerateMultipliers(personality, fixedType);
+        string name = $"제자{traineeCount++}_{fixedType}";
+
+        return new TraineeData(
+            name,
+            personality,
+            fixedType,
+            multipliers,
+            level: 1,
+            isEquipped: false,
+            isInuse: false
+        );
+    }
+
+    public List<TraineeData.AbilityMultiplier> GenerateMultipliers(PersonalityData personality, SpecializationType spec)
     {
         var list = new List<TraineeData.AbilityMultiplier>();
 
