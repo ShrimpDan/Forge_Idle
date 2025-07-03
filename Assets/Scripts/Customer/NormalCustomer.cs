@@ -16,7 +16,7 @@ public class NormalCustomer : Customer
     public override void Interact()
     {
         // 상점 시스템이 필요함
-        GameManager.Instance.Forge.AddGold(gold);
+        //GameManager.Instance.Forge.AddGold(gold);
         CustomerManager.Instance.NotifyNormalCustomerPurchased(Job);
     }
 
