@@ -4,11 +4,11 @@ using UnityEngine;
 public class RewardHandler : MonoBehaviour
 {
     private DungeonUI dungeonUI;
-    private Jang.InventoryManager inventory;
+    private InventoryManager inventory;
 
     public Dictionary<ItemData, int> RewardItems { get; private set; }
 
-    public void Init(Jang.InventoryManager inventory, DungeonUI dungeonUI)
+    public void Init(InventoryManager inventory, DungeonUI dungeonUI)
     {
         this.inventory = inventory;
         this.dungeonUI = dungeonUI;

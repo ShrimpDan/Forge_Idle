@@ -14,7 +14,7 @@ public class Forge_Recipe_Popup : BaseUI
     private DataManager dataManager;
     private Action<ItemData, CraftingData> onRecipeSelect;
     private Forge forge;
-    private Jang.InventoryManager inventory;
+    private InventoryManager inventory;
 
     // 팝업 오픈 시마다 반드시 호출
     public void Init(DataManager dataManager, UIManager uiManager)
@@ -33,7 +33,7 @@ public class Forge_Recipe_Popup : BaseUI
     }
 
     // 현재 포지/인벤토리 전달 
-    public void SetForgeAndInventory(Forge forge, Jang.InventoryManager inventory)
+    public void SetForgeAndInventory(Forge forge, InventoryManager inventory)
     {
         this.forge = forge;
         this.inventory = inventory;

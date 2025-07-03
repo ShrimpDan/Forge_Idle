@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class InventoryTab : BaseTab
 {
-    private Jang.InventoryManager inventory;
+    private InventoryManager inventory;
 
     [Header("Tab Buttons")]
     [SerializeField] private Button[] tabButtons;
