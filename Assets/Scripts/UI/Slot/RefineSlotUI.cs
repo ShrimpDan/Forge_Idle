@@ -18,6 +18,7 @@ public class RefineSlotUI : MonoBehaviour
     public void SetAmount(int amount)
     {
         Amount = Mathf.Clamp(amount, 1, 999);
-        if (amountText != null) amountText.text = Amount.ToString();
+        if (amountText != null)
+            amountText.text = Amount.ToString();
     }
 }

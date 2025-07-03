@@ -11,7 +11,7 @@ public class RefineSystemWindow : BaseUI
     [Header("UI Elements")]
     [SerializeField] private Button exitButton;
     [SerializeField] private Transform slotRoot;
-    [SerializeField] private GameObject refineSlotPrefab; // RefineSlotUI
+    [SerializeField] private GameObject refineSlotPrefab; // RefineSlotUI 프리팹
 
     private const int slotCount = 5;
     private List<RefineSlotUI> refineSlots = new();
@@ -54,7 +54,7 @@ public class RefineSystemWindow : BaseUI
             var slot = go.GetComponent<RefineSlotUI>();
             int idx = i;
 
-            // 버튼 이벤트 모두 직접 연결
+            // 버튼 이벤트 명확하게 등록 (매번 클리어 후 재등록)
             slot.inputButton.onClick.RemoveAllListeners();
             slot.inputButton.onClick.AddListener(() => OnClickInputSlot(idx));
 
@@ -98,18 +98,23 @@ public class RefineSystemWindow : BaseUI
         var slot = refineSlots[index];
         var input = selectedMaterials[index];
 
+        // Input 아이콘
         slot.inputIcon.sprite = input?.Data != null ? IconLoader.GetIcon(input.Data.IconPath) : null;
         slot.inputIcon.enabled = input?.Data != null;
 
+        // Output 아이콘
         var output = GetRefineResult(input);
         resultItems[index] = output;
         slot.outputIcon.sprite = output?.Data != null ? IconLoader.GetIcon(output.Data.IconPath) : null;
         slot.outputIcon.enabled = output?.Data != null;
 
+        // 비용
         int totalCost = baseRefineCost * slot.Amount;
-        if (slot.costText != null) slot.costText.text = $"비용: {totalCost:N0}";
+        if (slot.costText != null)
+            slot.costText.text = $"비용: {totalCost:N0}";
 
-        if (slot.amountText != null) slot.amountText.text = slot.Amount.ToString();
+        // 수량 표시
+        slot.amountText.text = slot.Amount.ToString();
     }
 
     private ItemInstance GetRefineResult(ItemInstance input)

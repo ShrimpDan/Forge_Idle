@@ -10,6 +10,7 @@ public class GameManager : MonoSingleton<GameManager>
     public UIManager UIManager { get; private set; }
 
     public DungeonData CurrentDungeon { get; private set; }
+    public CraftingManager CraftingManager { get; private set; }
 
     protected override void Awake()
     {
@@ -26,12 +27,14 @@ public class GameManager : MonoSingleton<GameManager>
             Forge.Init(this);
         if (AssistantManager)
             AssistantManager.Init(this);
+
+        // CraftingManager 동적 생성 및 초기화
+        var cmObj = new GameObject("CraftingManager");
+        CraftingManager = cmObj.AddComponent<CraftingManager>();
+        CraftingManager.Init(Inventory, Forge);
+        DontDestroyOnLoad(cmObj);
     }
 
-    private void Start()
-    {
-        
-    }
 
     [ContextMenu("Get Random Item")]
     public void GetRandomItem()
