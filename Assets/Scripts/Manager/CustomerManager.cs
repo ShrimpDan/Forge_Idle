@@ -29,7 +29,7 @@ public class CustomerManager : MonoSingleton<CustomerManager>
 
 
     [Header("Nuisance")]
-    [SerializeField] private float nuisanceSpawnTime = 3f;
+    [SerializeField] private float nuisanceSpawnTime = 1f;
     [SerializeField, Range(0f, 1f)] private float nuisanceSpawnChance = 0.5f;
 
     [Header("Regular")]
