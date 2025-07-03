@@ -48,29 +48,26 @@ public class CustomerManager : MonoSingleton<CustomerManager>
 
     private void Start()
     {
-        var prefabDic = new Dictionary<CustomerJob, Customer>();
+        var prefabDic = new Dictionary<(CustomerJob,CustomerType), Customer>();
 
         foreach (var data in customerPrefabs)
         {
-            
+
+            var key = (data.job, data.type);
+
+            if (!prefabDic.ContainsKey(key))
+                prefabDic[key] = data.prefabs;
+
             if (data.type == CustomerType.Normal)
             {
-
-                if (!prefabDic.ContainsKey(data.job))
-                {
-                    prefabDic[data.job] = data.prefabs;
-                }
-
                 if (!normalcustomerCounter.ContainsKey(data.job))
-                {
+                { 
                     normalcustomerCounter[data.job] = 0;
                 }
-
                 if (!normalVisitedCounter.ContainsKey(data.job))
-                {
+                { 
                     normalVisitedCounter[data.job] = 0;
                 }
-                
             }
         }
         customerLoader = new CustomerLoader(GameManager.Instance.DataManager.CustomerDataLoader, prefabDic, spawnPoint);
@@ -141,7 +138,7 @@ public class CustomerManager : MonoSingleton<CustomerManager>
         }
 
         var jobs = new List<CustomerJob>(normalcustomerCounter.Keys);
-        CustomerJob randomJob = jobs[Random.Range(0, jobs.Count)];//랜덤으로 직업 부여하자
+        CustomerJob randomJob = jobs[Random.Range(0, 1)];//랜덤으로 직업 부여하자jobs.Count 진상 다른 직업들 추가되면 jobs.Count로 해도됨
         customerLoader.SpawnNuisance(randomJob);
 
     }

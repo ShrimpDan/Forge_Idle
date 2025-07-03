@@ -5,11 +5,11 @@ using UnityEngine;
 public class CustomerLoader
 {
     private readonly CustomerDataLoader dataLoader;
-    private readonly Dictionary<CustomerJob, Customer> prefabsByJob;
+    private readonly Dictionary<(CustomerJob, CustomerType), Customer> prefabsByJob;
     private readonly Transform spawnPoint;
 
 
-    public CustomerLoader(CustomerDataLoader _dataLoader, Dictionary<CustomerJob, Customer> _prefabsByJob, Transform _spawnPoint)
+    public CustomerLoader(CustomerDataLoader _dataLoader, Dictionary<(CustomerJob,CustomerType), Customer> _prefabsByJob, Transform _spawnPoint)
     {
         dataLoader = _dataLoader;
         prefabsByJob = _prefabsByJob;
@@ -26,7 +26,7 @@ public class CustomerLoader
             return null;
         }
 
-        if (!prefabsByJob.TryGetValue(data.job, out var prefab))
+        if (!prefabsByJob.TryGetValue((data.job,data.type), out var prefab))
         {
             return null;
         }

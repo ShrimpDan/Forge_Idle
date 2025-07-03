@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8361461713828535794}
   - component: {fileID: 7199352319057860205}
   m_Layer: 0
-  m_Name: NuisanceCustomer
+  m_Name: NuisanceCustomerTanker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -127,9 +127,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buyPoint: {fileID: 0}
-  data: {fileID: 11400000, guid: 4620aedb1ef62bd41b08bcbeb2b47f67, type: 2}
-  moveWayPoint:
-  - {fileID: 430231704407215936, guid: 712630db6271ee2408d526e960add339, type: 3}
+  data:
+    Key: customer_nuisance_tanker
+    job: 5
+    type: 2
+    moveSpeed: 0
+  moveWayPoint: []
+  gold: 0
   waitTime: 3
   penaltyGold: 0
   InteractIcon: {fileID: 7921828885711947236}
