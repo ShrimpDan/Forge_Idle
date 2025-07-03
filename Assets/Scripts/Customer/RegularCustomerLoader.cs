@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 
 public class RegularCustomerLoader
@@ -18,8 +19,7 @@ public class RegularCustomerLoader
         rarityPrefabs = _rarityPrefabs;
     }
 
-    /*
-     * 
+    
     public Customer SpawnRandomByJob(CustomerJob job)
     {
         if (!prefabs.TryGetValue(job, out var prefab))
@@ -36,10 +36,38 @@ public class RegularCustomerLoader
                 list.Add(data);
             }
         }
-        return Customer;
+
+        if (list.Count == 0)
+        {
+            return null;
+        }
+
+
+        float total = 0f;
+
+        float pick = Random.value * total;  
+        foreach (var r in list)
+        {
+            total += rarityPrefabs[r.rarity];
+        }
+        foreach (var r in list)
+        {
+            pick -= rarityPrefabs[r.rarity];
+            if (pick <= 0f)
+            {
+                var baseData = GameManager.Instance.DataManager.CustomerDataLoader.GetByKey(r.customerKey);
+                var obj = Object.Instantiate(prefab, spawnPoint.position, Quaternion.identity);
+                obj.Init(baseData);
+                return obj;
+
+            }
+        }
+
+        return null;
+
 
     }
-     */
+    
 
 
 }
