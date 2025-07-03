@@ -5,18 +5,29 @@ using UnityEngine;
 public class WeaponSellingSystem : MonoBehaviour
 {
     private Forge forge;
-    
+    private CustomerManager customerManager;
+
     public Dictionary<CustomerJob, CraftingData> CraftingWeapon { get; private set; }
     private Queue<CraftingData> craftingQueue;
+    private Queue<Customer> customerQueue;
 
     private Coroutine craftingCoroutine;
 
     public void Init(Forge forge)
     {
         this.forge = forge;
+        customerManager = CustomerManager.Instance;
 
         InitDictionary();
         craftingQueue = new Queue<CraftingData>();
+        customerQueue = new Queue<Customer>();
+
+        customerManager.CustomerEvent.OnCustomerArrived += CraftItem;
+    }
+
+    private void OnDisable()
+    {
+        customerManager.CustomerEvent.OnCustomerArrived -= CraftItem;
     }
 
     private void InitDictionary()
@@ -43,20 +54,23 @@ public class WeaponSellingSystem : MonoBehaviour
         CraftingWeapon[data.jobType] = data;
     }
 
-    private void CraftItem(CustomerJob jobType)
+    private void CraftItem(Customer customer)
     {
-        if (CraftingWeapon[jobType] != null)
-            craftingQueue.Enqueue(CraftingWeapon[jobType]);
+        customerQueue.Enqueue(customer);
+        
+        if (CraftingWeapon[customer.Job] != null)
+            craftingQueue.Enqueue(CraftingWeapon[customer.Job]);
 
         if (craftingCoroutine == null)
         {
+            Debug.Log($"[무기 판매 시스템] {customer.Job} 무기 제작 시작!!");
             craftingCoroutine = StartCoroutine(CraftingWeaponCoroutine());
         }
     }
 
     IEnumerator CraftingWeaponCoroutine()
     {
-        while (craftingQueue.Count > 0)
+        while (craftingQueue.Count > 0 && customerQueue.Count > 0)
         {
             float time = 0f;
 
@@ -69,8 +83,17 @@ public class WeaponSellingSystem : MonoBehaviour
                 yield return WaitForSecondsCache.Wait(0.1f);
             }
 
+            // 손님에게 알림
+            var customer = customerQueue.Dequeue();
+            customer.NotifiedCraftWeapon();
+
+            // 골드 지급
             int price = (int)(weapon.sellCost * forge.FinalSellPriceMultiplier);
             forge.AddGold(price);
+
+            Debug.Log($"[무기 판매 시스템] {weapon.jobType} 무기 제작 완료!");
         }
+
+        craftingCoroutine = null;
     }
 }
