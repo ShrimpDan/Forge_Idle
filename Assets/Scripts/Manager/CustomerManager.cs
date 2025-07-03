@@ -1,8 +1,6 @@
-﻿using DG.Tweening;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 public class CustomerManager : MonoSingleton<CustomerManager>
 {
@@ -55,10 +53,21 @@ public class CustomerManager : MonoSingleton<CustomerManager>
     private CustomerLoader customerLoader;
     private RegularDataLoader regularLoader;
 
+    // 현재 방문 중인 손님
+    public List<Customer> visitCustomers = new List<Customer>();
+
+    public CustomerEventHandler CustomerEvent { get; private set; }
+
+    protected override void Awake()
+    {
+        base.Awake();
+
+        CustomerEvent = new CustomerEventHandler();
+    }
 
     private void Start()
     {
-        var prefabDic = new Dictionary<(CustomerJob,CustomerType), Customer>();
+        var prefabDic = new Dictionary<(CustomerJob, CustomerType), Customer>();
 
         foreach (var data in customerPrefabs)
         {
@@ -71,17 +80,17 @@ public class CustomerManager : MonoSingleton<CustomerManager>
             if (data.type == CustomerType.Normal)
             {
                 if (!normalcustomerCounter.ContainsKey(data.job))
-                { 
+                {
                     normalcustomerCounter[data.job] = 0;
                 }
                 if (!normalVisitedCounter.ContainsKey(data.job))
-                { 
+                {
                     normalVisitedCounter[data.job] = 0;
                 }
             }
         }
         customerLoader = new CustomerLoader(GameManager.Instance.DataManager.CustomerDataLoader, prefabDic, spawnPoint);
-        
+
 
         StartCoroutine(SpawnNormalLoop());
         StartCoroutine(SpawnNunsanceLoop());
@@ -121,7 +130,7 @@ public class CustomerManager : MonoSingleton<CustomerManager>
 
         foreach (var pair in normalcustomerCounter)
         {
-            if (pair.Value < Customer.maxCount)
+            if (pair.Value < Customer.maxCount && GameManager.Instance.Forge.SellingSystem.CraftingWeapon[pair.Key] != null)
             {
                 availableJobs.Add(pair.Key);
             }
@@ -183,6 +192,4 @@ public class CustomerManager : MonoSingleton<CustomerManager>
             SpawnRegularCustomer(job);
         }
     }
-
-
 }

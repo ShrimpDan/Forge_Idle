@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
 public class CustomerEventHandler 
 {
-    public event Action<CustomerJob> OnCustomerArrived;
+    public event Action<Customer> OnCustomerArrived;
 
 
-    public void RaiseCustomerArrived(CustomerJob job) => OnCustomerArrived?.Invoke(job);
+    public void RaiseCustomerArrived(Customer customer) => OnCustomerArrived?.Invoke(customer);
 
     
 

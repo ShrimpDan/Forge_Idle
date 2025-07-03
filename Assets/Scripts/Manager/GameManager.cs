@@ -28,6 +28,11 @@ public class GameManager : MonoSingleton<GameManager>
             AssistantManager.Init(this);
     }
 
+    private void Start()
+    {
+        
+    }
+
     [ContextMenu("Get Random Item")]
     public void GetRandomItem()
     {

@@ -19,18 +19,18 @@ public enum CustomerState
 
 public abstract class Customer : MonoBehaviour
 {
+    private CustomerManager customerManager;
+
     public static readonly int maxCount = 5; //5명 이상은 존재 안할꺼다
 
     public CustomerType Type => data.type;
     public CustomerJob Job => data.job;
 
-    public CustomerEventHandler CustomerEvent;
-
     public int Gold => gold;
-
+    private bool isCrafted;
     [SerializeField] protected BuyPoint buyPoint;
 
-    
+
 
     [Header("Customerinfo")]
     [SerializeField] CustomerData data;
@@ -38,10 +38,10 @@ public abstract class Customer : MonoBehaviour
     [SerializeField] protected int gold;
 
 
-     
 
 
-    
+
+
 
     protected CustomerState state;
 
@@ -53,7 +53,6 @@ public abstract class Customer : MonoBehaviour
     protected virtual void Awake()
     {
         rigid2D = GetComponent<Rigidbody2D>();
-        CustomerEvent = new CustomerEventHandler();
     }
 
     protected virtual void Start()
@@ -62,19 +61,22 @@ public abstract class Customer : MonoBehaviour
     }
 
     protected virtual void Update()
-    { 
-        
+    {
+
     }
 
     public void Init(CustomerData customerData)
     {
-        this.data = customerData;
+        customerManager = CustomerManager.Instance;
+        data = customerData;
+
+        isCrafted = false;
     }
 
 
     private IEnumerator CustomerFlow()
     {
-       
+
         yield return MoveToBuyZone();
         yield return JoinQueue();
         yield return WaitMyTurn();
@@ -90,14 +92,16 @@ public abstract class Customer : MonoBehaviour
         yield return MoveingWayPoint(qPos);
     }
 
-   
+
 
     private IEnumerator JoinQueue()
     {
         state = CustomerState.InQueue;
         buyPoint.CustomerIn(this);
-        yield return null; 
         
+        customerManager.CustomerEvent?.RaiseCustomerArrived(this); //이벤트 연결
+        yield return null;
+
     }
 
 
@@ -105,10 +109,8 @@ public abstract class Customer : MonoBehaviour
     {
         state = CustomerState.WaitintTurn;
         yield return new WaitUntil(() => buyPoint.IsCustomFirst(this));
-
-        CustomerEvent?.RaiseCustomerArrived(this.Job); //이벤트 연결
-        yield return WaitForSecondsCache.Wait(3f);
         
+        yield return new WaitUntil(() => isCrafted);
     }
 
     protected virtual IEnumerator PerformPurChase()
@@ -117,7 +119,7 @@ public abstract class Customer : MonoBehaviour
         Interact();
         buyPoint.CustomerOut();
         yield return null;
-    
+
     }
 
     private IEnumerator MoveToExit()
@@ -131,13 +133,13 @@ public abstract class Customer : MonoBehaviour
 
     protected IEnumerator MoveingWayPoint(Vector2 wayPoint)
     {
-            while (Vector2.Distance(transform.position, wayPoint) > 0.1f)
-            { 
+        while (Vector2.Distance(transform.position, wayPoint) > 0.1f)
+        {
             Vector2 dir = (wayPoint - (Vector2)transform.position).normalized;
-            rigid2D.MovePosition(rigid2D.position + dir * Time.deltaTime* data.moveSpeed);
-            
+            rigid2D.MovePosition(rigid2D.position + dir * Time.deltaTime * data.moveSpeed);
+
             yield return new WaitForFixedUpdate();
-            }
+        }
     }
 
 
@@ -148,18 +150,20 @@ public abstract class Customer : MonoBehaviour
             StopCoroutine(moveRoutine);
         }
         moveRoutine = StartCoroutine(MoveingWayPoint(queuePos));//이동 
-        
+
     }
-    
+
     protected virtual void CustomerExit() //큐에서 나가는 메서드
     {
         CustomerManager.Instance.CustomerExit(this);
-
         Destroy(gameObject);
     }
 
     public abstract void Interact();
 
-
+    public void NotifiedCraftWeapon()
+    {
+        isCrafted = true;
+    }
 
 }
