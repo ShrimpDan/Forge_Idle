@@ -31,7 +31,11 @@ public class NuisanceCustomer : Customer
             return;
         }
         clicked = true;
-        InteractIcon?.SetActive(false);
+        if (InteractIcon != null)
+        {
+            Debug.Log("InteractIcon 비활성화 시도");
+            InteractIcon.SetActive(false);
+        }
 
 
         StopAllCoroutines();
@@ -85,6 +89,11 @@ public class NuisanceCustomer : Customer
         }
     }
 
+    private void OnMouseDown()
+    {
+        Interact();
+    }
+
     private IEnumerator ExitFlow()       
     {
         state = CustomerState.Exiting;
@@ -101,8 +110,7 @@ public class NuisanceCustomer : Customer
 
         CustomerExit();
     }
-
-
+  
 
     private BuyPoint GetRandomBuyPoint()
     {

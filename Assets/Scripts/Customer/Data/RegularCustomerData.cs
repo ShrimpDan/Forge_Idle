@@ -14,7 +14,7 @@ public enum CustomerRarity
 }
 
 [System.Serializable]
-public class RegualrCustomerData
+public class RegualrCustomerData //담기는 데이터
 {
     /// <summary>
     /// 키 값
@@ -47,7 +47,7 @@ public class RegualrCustomerData
     public CustomerRarity rarity;
 }
 
-public class RegularDataLoader
+public class RegularDataLoader //데이터 가져와줌
 {
     public List<RegualrCustomerData> ItemsList { get; private set; }
     public Dictionary<string, RegualrCustomerData> ItemsDict { get; private set; }
