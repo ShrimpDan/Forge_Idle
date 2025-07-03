@@ -40,10 +40,20 @@ public class CustomerManager : MonoSingleton<CustomerManager>
     private Dictionary<CustomerJob, int> normalcustomerCounter = new Dictionary<CustomerJob, int>(); //현재 수
     private Dictionary<CustomerJob, int> normalVisitedCounter = new Dictionary<CustomerJob, int>();
 
+    private readonly Dictionary<CustomerRarity, float> rarityProbabilities = new()
+    {
+        {CustomerRarity.Common, 0.5f },
+        {CustomerRarity.Rare , 0.3f },
+        {CustomerRarity.Epic , 0.1f },
+        {CustomerRarity.Unique,0.07f },
+        {CustomerRarity.Legendary,0.03f }
+    };
+
 
 
     //Loader
     private CustomerLoader customerLoader;
+    private RegularDataLoader regularLoader;
 
 
     private void Start()
@@ -71,6 +81,8 @@ public class CustomerManager : MonoSingleton<CustomerManager>
             }
         }
         customerLoader = new CustomerLoader(GameManager.Instance.DataManager.CustomerDataLoader, prefabDic, spawnPoint);
+        
+
         StartCoroutine(SpawnNormalLoop());
         StartCoroutine(SpawnNunsanceLoop());
 
