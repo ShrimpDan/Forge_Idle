@@ -5,6 +5,7 @@ using UnityEngine;
 public class WeaponSellingSystem : MonoBehaviour
 {
     private Forge forge;
+    
     public Dictionary<CustomerJob, CraftingData> CraftingWeapon { get; private set; }
     private Queue<CraftingData> craftingQueue;
 
@@ -60,7 +61,7 @@ public class WeaponSellingSystem : MonoBehaviour
             float time = 0f;
 
             CraftingData weapon = craftingQueue.Dequeue();
-            float duration = weapon.craftTime * (1 - forge.FinalCraftSpeedMultiplier);
+            float duration = weapon.craftTime * forge.FinalCraftSpeedMultiplier;
 
             while (time < duration)
             {

@@ -48,6 +48,7 @@ public static class UIName
     public const string Forge_Recipe_Popup = "Forge_Recipe_Popup";
     public const string DungeonPopup = "DungeonPopup";
     public const string CollectionPopup = "CollectionPopup";
+    public const string SellWeaponPopup = "SellWeaponPopup";
 
     public static string GetUINameByType(ButtonType type)
     {

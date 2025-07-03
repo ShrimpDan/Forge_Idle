@@ -1,10 +1,12 @@
-﻿public class DataManager
+﻿using System.Collections.Generic;
+
+public class DataManager
 {
     public ItemDataLoader ItemLoader { get; private set; }
-    public CraftingDataLoader CraftingLoader{ get; private set; }
+    public CraftingDataLoader CraftingLoader { get; private set; }
     public DungeonDataLoader DungeonDataLoader { get; private set; }
-    public PersonalityDataLoader PersonalityLoader{ get; private set; }
-    public SpecializationDataLoader SpecializationLoader{ get; private set; }
+    public PersonalityDataLoader PersonalityLoader { get; private set; }
+    public SpecializationDataLoader SpecializationLoader { get; private set; }
     public MineLoader MineLoader { get; private set; }
     public CustomerDataLoader CustomerDataLoader { get; private set; }
     public RegularDataLoader RegularDataLoader { get; private set; }

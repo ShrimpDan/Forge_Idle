@@ -67,9 +67,9 @@ public class CraftingDataLoader
         }
 
         foreach (var data in CraftingList)
-            {
-                CraftingDict[data.ItemKey] = data;
-            }
+        {
+            CraftingDict[data.ItemKey] = data;
+        }
     }
 
     [System.Serializable]

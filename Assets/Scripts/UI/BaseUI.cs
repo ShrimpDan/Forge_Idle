@@ -8,8 +8,10 @@ public abstract class BaseUI : MonoBehaviour
 
     public virtual void Init(GameManager gameManager, UIManager uIManager)
     {
-        this.uIManager = uIManager;
-        this.gameManager = gameManager;
+        if(this.uIManager == null)
+            this.uIManager = uIManager;
+        if(this.gameManager == null)
+            this.gameManager = gameManager;
     }
 
     public virtual void Open() => gameObject.SetActive(true);

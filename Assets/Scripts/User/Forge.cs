@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class Forge : MonoBehaviour
 {
+    private GameManager gameManager;
+
     private ForgeData forgeData;
 
     // 스탯
@@ -45,13 +47,22 @@ public class Forge : MonoBehaviour
 
     // 장착된 제자
     public Dictionary<SpecializationType, TraineeData> EquippedAssistant;
+
+    public WeaponSellingSystem SellingSystem { get; private set; }
     // 이벤트 핸들러
     public ForgeEventHandler Events { get; private set; } = new ForgeEventHandler();
 
-    public void Init()
+    public void Init(GameManager gameManager)
     {
+        this.gameManager = gameManager;
+
         InitData();
         InitAssistant();
+
+        SellingSystem = GetComponent<WeaponSellingSystem>();
+
+        if (SellingSystem)
+            SellingSystem.Init(this);
     }
 
     private void InitData()

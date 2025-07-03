@@ -6,6 +6,8 @@ namespace Jang
 {
     public class InventoryManager
     {
+        private GameManager gameManager;
+
         public List<ItemInstance> ResourceList { get; private set; }
         public List<ItemInstance> WeaponList { get; private set; }
         public List<ItemInstance> GemList { get; private set; }
@@ -16,8 +18,10 @@ namespace Jang
         public event Action<int, ItemInstance> OnItemEquipped;
         public event Action<int, ItemInstance> OnItemUnEquipped;
 
-        public InventoryManager()
+        public InventoryManager(GameManager gameManager)
         {
+            this.gameManager = gameManager;
+
             ResourceList = new();
             WeaponList = new();
             GemList = new();
@@ -34,7 +38,7 @@ namespace Jang
             switch (item.ItemType)
             {
                 case ItemType.Weapon:
-                    ItemInstance weapon = new ItemInstance(item.ItemKey, item);
+                    ItemInstance weapon = new ItemInstance(item.ItemKey, item, gameManager.DataManager.CraftingLoader.GetDataByKey(item.ItemKey));
                     WeaponList.Add(weapon);
                     break;
 
@@ -169,6 +173,21 @@ namespace Jang
             }
             OnItemAdded?.Invoke();
             return true;
+        }
+
+        public List<ItemData> GetItemDataListByType(CustomerJob jobType)
+        {
+            List<ItemData> itemDatas = new List<ItemData>();
+
+            foreach (var weapon in WeaponList)
+            {
+                if (weapon.CraftingData.jobType == jobType)
+                {
+                    itemDatas.Add(weapon.Data);
+                }
+            }
+
+            return itemDatas;
         }
     }
 }

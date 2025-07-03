@@ -14,7 +14,7 @@ public class GameManager : MonoSingleton<GameManager>
     protected override void Awake()
     {
         base.Awake();
-        Inventory = new Jang.InventoryManager();
+        Inventory = new Jang.InventoryManager(this);
         DataManager = new DataManager();
         AssistantManager = FindObjectOfType<TraineeManager>();
         UIManager = FindObjectOfType<UIManager>();
@@ -23,7 +23,7 @@ public class GameManager : MonoSingleton<GameManager>
         if (UIManager)
             UIManager.Init(this);
         if (Forge)
-            Forge.Init();
+            Forge.Init(this);
         if (AssistantManager)
             AssistantManager.Init(this);
     }
