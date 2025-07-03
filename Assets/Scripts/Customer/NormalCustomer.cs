@@ -17,9 +17,7 @@ public class NormalCustomer : Customer
     {
         // 상점 시스템이 필요함
         GameManager.Instance.Forge.AddGold(gold);
-        
-        CustomerManager.Instance.RegualrCounting(this.Job);
-
+        CustomerManager.Instance.NotifyNormalCustomerPurchased(Job);
     }
 
     //Make Prefabs

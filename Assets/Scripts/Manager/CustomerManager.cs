@@ -1,7 +1,8 @@
-﻿using System;
+﻿using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class CustomerManager : MonoSingleton<CustomerManager>
 {
@@ -11,61 +12,79 @@ public class CustomerManager : MonoSingleton<CustomerManager>
 
     //스폰 담당을 해야할듯
     [System.Serializable]
-    public class CustomerSpawnData
+    public struct CustomerSpawnData
     {
         public Customer prefabs;
         public CustomerType type;
         public CustomerJob job;
-        [HideInInspector]
-        public int curCount;
-        
     }
+
+
+
 
     [Header("SpawnSetting")]
     [SerializeField] private Transform spawnPoint;
     [SerializeField] private float spawnDelay = 2f;
-    [SerializeField] private List<CustomerSpawnData> customerPrefabs; //소환 가능 숫자.
-    //진상
-    [SerializeField] private float nuisanceSpawnTime = 3f;
-    [SerializeField] private float nuisnaceSpawnChance = 0.5f;
+    [SerializeField] private List<CustomerSpawnData> customerPrefabs = new();
 
+
+    [Header("Nuisance")]
+    [SerializeField] private float nuisanceSpawnTime = 3f;
+    [SerializeField, Range(0f, 1f)] private float nuisanceSpawnChance = 0.5f;
+
+    [Header("Regular")]
+    [SerializeField] private int RegularSpawnCount = 10;
 
     public List<BuyPoint> allBuyPoints;
 
-    private Dictionary<CustomerJob, CustomerSpawnData> spawnDict = new Dictionary<CustomerJob, CustomerSpawnData>();
-    private Dictionary<CustomerJob, int> customerCount = new Dictionary<CustomerJob, int>(); //현재 수
+    private Dictionary<CustomerJob, int> normalcustomerCounter = new Dictionary<CustomerJob, int>(); //현재 수
+    private Dictionary<CustomerJob, int> normalVisitedCounter = new Dictionary<CustomerJob, int>();
 
-    private Dictionary<CustomerJob, int> jobPurchaseCounts = new Dictionary<CustomerJob, int>();
-    [SerializeField] private int callingCount = 10;//단골 호출 카운트
 
+
+    //Loader
+    private CustomerLoader customerLoader;
 
 
     private void Start()
     {
+        var prefabDic = new Dictionary<(CustomerJob,CustomerType), Customer>();
+
         foreach (var data in customerPrefabs)
         {
-            CustomerJob job = data.prefabs.Job;
-            if (!spawnDict.ContainsKey(job))
+
+            var key = (data.job, data.type);
+
+            if (!prefabDic.ContainsKey(key))
+                prefabDic[key] = data.prefabs;
+
+            if (data.type == CustomerType.Normal)
             {
-                spawnDict[job] = data;
-                customerCount[job] = 0;
+                if (!normalcustomerCounter.ContainsKey(data.job))
+                { 
+                    normalcustomerCounter[data.job] = 0;
+                }
+                if (!normalVisitedCounter.ContainsKey(data.job))
+                { 
+                    normalVisitedCounter[data.job] = 0;
+                }
             }
         }
-
-
-        StartCoroutine(SpawnLoop());
+        customerLoader = new CustomerLoader(GameManager.Instance.DataManager.CustomerDataLoader, prefabDic, spawnPoint);
+        StartCoroutine(SpawnNormalLoop());
         StartCoroutine(SpawnNunsanceLoop());
+
     }
 
 
-    private IEnumerator SpawnLoop()
+    private IEnumerator SpawnNormalLoop()
     {
         while (true)
         {
-            SpwanNormalCustomer();
+            SpawnNormalCustomer();
             yield return WaitForSecondsCache.Wait(spawnDelay);
         }
-    
+
     }
 
     private IEnumerator SpawnNunsanceLoop()
@@ -73,23 +92,22 @@ public class CustomerManager : MonoSingleton<CustomerManager>
         while (true)
         {
             yield return WaitForSecondsCache.Wait(nuisanceSpawnTime);
-            if (UnityEngine.Random.value < nuisnaceSpawnChance)
+            if (UnityEngine.Random.value < nuisanceSpawnChance)
             {
                 Debug.Log("진상 소환");
-                SpawnCustomer(CustomerType.Nuisance);
-                
+                SpawnNuisanceCustomer();
             }
         }
-    
+
     }
 
 
-    private void SpwanNormalCustomer() //생성
+    private void SpawnNormalCustomer() //생성
     {
         //5명 이하인 애들을 골라야함
         List<CustomerJob> availableJobs = new List<CustomerJob>();
 
-        foreach (var pair in customerCount)
+        foreach (var pair in normalcustomerCounter)
         {
             if (pair.Value < Customer.maxCount)
             {
@@ -105,81 +123,54 @@ public class CustomerManager : MonoSingleton<CustomerManager>
 
         //랜덤소환
         CustomerJob selected = availableJobs[UnityEngine.Random.Range(0, availableJobs.Count)];
-        CustomerSpawnData selectedData = spawnDict[selected];
-
-
-        Customer newCusomter = Instantiate(selectedData.prefabs, spawnPoint.position, Quaternion.identity);
-        customerCount[selected]++; //인원 증가
-    }
-
-    private void SpawnCustomer(CustomerType type , CustomerJob job)
-    {
-        var data = customerPrefabs.Find(d => d.type == type && d.job == job);
-        Spawn(data);
-
-    }
-    private void SpawnCustomer(CustomerType type)
-    {
-        var data = customerPrefabs.Find(d => d.type == type);
-        Spawn(data);
-    }
-
-
-    private void Spawn(CustomerSpawnData data)
-    {
-        if (data == null)
+        Customer customer = customerLoader.SpawnNormal(selected);//만들고
+        if (customer != null)
         {
-            return;
+            normalcustomerCounter[selected]++; //카운트 증가
         }
-        customerCount.TryGetValue(data.job, out int cur);
-        if (cur >= Customer.maxCount)
+    }
+
+    private void SpawnNuisanceCustomer()
+    {
+        if (normalcustomerCounter.Count == 0)
         {
             return;
         }
 
-        Instantiate(data.prefabs, spawnPoint.position, Quaternion.identity);
-        data.curCount++;
-        customerCount[data.job] = cur + 1;
+        var jobs = new List<CustomerJob>(normalcustomerCounter.Keys);
+        CustomerJob randomJob = jobs[Random.Range(0, 1)];//랜덤으로 직업 부여하자jobs.Count 진상 다른 직업들 추가되면 jobs.Count로 해도됨
+        customerLoader.SpawnNuisance(randomJob);
 
     }
 
+    public void SpawnRegularCustomer(CustomerJob job)
+    {
+        customerLoader.SpawnRegular(job);
+    }
 
     //퇴장
     public void CustomerExit(Customer customer)
     {
-        //나가니까 제거 나중에 풀링도 해야것다
-        CustomerJob job = customer.Job;
-        if (customerCount.ContainsKey(job))
+        if (customer.Type == CustomerType.Normal && normalcustomerCounter.ContainsKey(customer.Job))
         {
-            customerCount[job] = Mathf.Max(0, customerCount[job] - 1);
+            normalcustomerCounter[customer.Job] = Mathf.Max(0, normalcustomerCounter[customer.Job] - 1);
         }
     }
 
-    public void RegualrCounting(CustomerJob job) //해당 직업 수치 달성 되면 소환해주는 메서드
+
+    public void NotifyNormalCustomerPurchased(CustomerJob job) //일반손님 구매 알림
     {
-        if (!jobPurchaseCounts.ContainsKey(job))
+        if (!normalcustomerCounter.ContainsKey(job))
         {
-            jobPurchaseCounts[job] = 0;
+            normalVisitedCounter[job] = 0;
         }
 
-        jobPurchaseCounts[job]++;
-        if (jobPurchaseCounts[job] >= callingCount)
+        if (++normalVisitedCounter[job] >= RegularSpawnCount)
         {
-            jobPurchaseCounts[job] = 0;//초기화 
-            //callingCount 증가 언제하지??
-            SpawnRegularCusomter(job);
+            normalVisitedCounter[job] = 0;
+            SpawnRegularCustomer(job);
         }
     }
 
-
-    private void SpawnRegularCusomter(CustomerJob job)
-    {
-        var regular = customerPrefabs.Find(data => data.type == CustomerType.Regualr && data.job == job);
-        if (regular != null)
-        {
-            Instantiate(regular.prefabs, spawnPoint.position, Quaternion.identity);
-        }
-        
-    }
 
 }

@@ -36,17 +36,6 @@ public class GameManager : MonoSingleton<GameManager>
             var itemData = DataManager.ItemLoader.GetRandomItem();
             Inventory.AddItem(itemData);
         }
-
-        var fabricData = DataManager.ItemLoader.GetItemByKey("resource_fabric");
-        if (fabricData != null)
-        {
-            Inventory.AddItem(fabricData, 3);
-            Debug.Log("<color=lime>[GameManager] 패브릭 3개 추가 완료!</color>");
-        }
-        else
-        {
-            Debug.LogWarning("[GameManager] resource_fabric 아이템을 찾을 수 없습니다!");
-        }
     }
 
     [ContextMenu("Get Random Assistant")]
@@ -56,6 +45,7 @@ public class GameManager : MonoSingleton<GameManager>
         {
             AssistantManager.RecruitSingle();
         }
+        Debug.Log("<color=yellow>[GameManager] 랜덤아이템 지급 완료!</color>");
     }
 
     [ContextMenu("Add Test Gold (5000)")]
