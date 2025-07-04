@@ -10,6 +10,8 @@ public class ItemInstance
     public bool IsEquipped;
     public bool CanEnhance => CurrentEnhanceLevel < Data.UpgradeInfo.MaxEnhanceLevel;
 
+     
+    [System.NonSerialized] public ItemData Data;
     public CraftingData CraftingData { get; private set; }
 
     public ItemInstance(string key, ItemData data, CraftingData craftingData = null)
@@ -22,18 +24,15 @@ public class ItemInstance
         CraftingData = craftingData;
     }
 
-    [System.NonSerialized]
-    public ItemData Data;
+   
 
     public void EquipItem()
     {
-        Debug.Log("Equip Item");
         IsEquipped = true;
     }
 
     public void UnEquipItem()
     {
-        Debug.Log("UnEquip Item");
         IsEquipped = false;
     }
 
