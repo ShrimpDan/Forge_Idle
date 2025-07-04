@@ -19,14 +19,14 @@ public class RecipeSlot : MonoBehaviour
     private CraftingData myCraftingData;
     private ItemDataLoader myItemLoader;
     private Forge myForge;
-    private Jang.InventoryManager myInventory;
+    private InventoryManager myInventory;
     private Action onSelectCallback;
 
     public void Setup(
         CraftingData data,
         ItemDataLoader itemLoader,
         Forge forge,
-        Jang.InventoryManager inventory,
+        InventoryManager inventory,
         Action onSelect)
     {
         myCraftingData = data;

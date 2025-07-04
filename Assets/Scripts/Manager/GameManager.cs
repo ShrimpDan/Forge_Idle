@@ -2,20 +2,21 @@
 
 public class GameManager : MonoSingleton<GameManager>
 {
-    public Jang.InventoryManager Inventory { get; private set; }
+    public InventoryManager Inventory { get; private set; }
     public DataManager DataManager { get; private set; }
     public TraineeManager AssistantManager { get; private set; }
     public TraineeInventory TraineeInventory => AssistantManager != null ? AssistantManager.TraineeInventory : null;
     public Forge Forge { get; private set; }
     public UIManager UIManager { get; private set; }
+    public CraftingManager CraftingManager { get; private set; }
+    public GameSaveManager SaveManager { get; private set; }
 
     public DungeonData CurrentDungeon { get; private set; }
-    public CraftingManager CraftingManager { get; private set; }
 
     protected override void Awake()
     {
         base.Awake();
-        Inventory = new Jang.InventoryManager(this);
+        Inventory = new InventoryManager(this);
         DataManager = new DataManager();
         AssistantManager = FindObjectOfType<TraineeManager>();
         UIManager = FindObjectOfType<UIManager>();
@@ -27,12 +28,16 @@ public class GameManager : MonoSingleton<GameManager>
             Forge.Init(this);
         if (AssistantManager)
             AssistantManager.Init(this);
+    }
 
-        // CraftingManager 동적 생성 및 초기화
-        var cmObj = new GameObject("CraftingManager");
-        CraftingManager = cmObj.AddComponent<CraftingManager>();
-        CraftingManager.Init(Inventory, Forge);
-        DontDestroyOnLoad(cmObj);
+    private void Start()
+    {
+        SaveManager = new GameSaveManager();
+
+        SaveManager.RegisterSaveHandler(new InventorySaveHandler(Inventory));
+        SaveManager.RegisterSaveHandler(new AssistantSaveHandler(AssistantManager, DataManager.PersonalityLoader));
+
+        SaveManager.LoadAll();
     }
 
 
@@ -94,5 +99,22 @@ public class GameManager : MonoSingleton<GameManager>
     public void ExitDungeon()
     {
         CurrentDungeon = null;
+    }
+
+    [ContextMenu("Save Game")]
+    public void SaveGame()
+    {
+        SaveManager?.SaveAll();
+    }
+
+    [ContextMenu("Load Game")]
+    public void LoadGame()
+    {
+        SaveManager?.LoadAll();
+    }
+
+    private void OnApplicationQuit()
+    {
+        SaveManager?.SaveAll();     
     }
 }

@@ -47,6 +47,6 @@ public class SellWeaponSlot : MonoBehaviour
         var ui = uIManager.OpenUI<SellWeaponPopup>(UIName.SellWeaponPopup);
         ui.Init(gameManager, uIManager);
 
-        ui.SetPopup(this, gameManager.Inventory.GetItemDataListByType(slotType));
+        ui.SetPopup(this, gameManager.Inventory.GetWeaponListByType(slotType));
     }   
 }

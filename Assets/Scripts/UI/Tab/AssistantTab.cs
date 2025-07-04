@@ -36,6 +36,8 @@ public class AssistantTab : BaseTab
     private Queue<GameObject> pooledSlots = new Queue<GameObject>();
     private List<GameObject> activeSlots = new List<GameObject>();
 
+    private bool isInit = false;
+
     public override void Init(GameManager gameManager, UIManager uIManager)
     {
         base.Init(gameManager, uIManager);
@@ -91,6 +93,15 @@ public class AssistantTab : BaseTab
         CreateSlots(craftingList, craftSlotRoot);
         CreateSlots(enhancingList, upgradeSlotRoot);
         CreateSlots(sellingList, gemSlotRoot);
+
+        if (!isInit)
+        {
+            foreach (var assi in assistantManager.TraineeInventory.GetEquippedTrainees())
+            {
+                SetAssistant(assi, true);
+            }
+            isInit = true;
+        }
     }
 
     private void CreateSlots(List<TraineeData> assiList, Transform parent)

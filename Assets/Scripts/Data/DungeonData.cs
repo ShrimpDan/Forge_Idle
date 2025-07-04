@@ -10,6 +10,8 @@ public class DungeonData
     public float BossHp;
     public float Duration;
     public int MaxMonster;
+    public int MinCount;
+    public int MaxCount;
     public List<string> RewardItemKeys;
 }
 
