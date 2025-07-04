@@ -6,7 +6,13 @@
             "CollectMin": 2,
             "CollectMax": 5,
             "CollectRatePerHour": 10,
-            "RewardMineralKeys": [ "resource_iron", "resource_wood" ]
+            "RewardMineralKeys": [
+                "resource_bronze",
+                "resource_copper",
+                "resource_iron",
+                "resource_silver",
+                "resource_gold"
+            ]
         },
         {
             "Key": "mine_silver",
@@ -14,7 +20,12 @@
             "CollectMin": 1,
             "CollectMax": 3,
             "CollectRatePerHour": 8,
-            "RewardMineralKeys": [ "resource_iron", "resource_fabric" ]
+            "RewardMineralKeys": [
+                "resource_silver",
+                "resource_gold",
+                "resource_iron",
+                "resource_mithril"
+            ]
         },
         {
             "Key": "mine_crystal",
@@ -22,7 +33,12 @@
             "CollectMin": 1,
             "CollectMax": 2,
             "CollectRatePerHour": 6,
-            "RewardMineralKeys": [ "resource_string", "resource_iron" ]
+            "RewardMineralKeys": [
+                "resource_amethyst",
+                "resource_sapphire",
+                "resource_iron",
+                "resource_silver"
+            ]
         },
         {
             "Key": "mine_ruby",
@@ -30,7 +46,12 @@
             "CollectMin": 1,
             "CollectMax": 2,
             "CollectRatePerHour": 4,
-            "RewardMineralKeys": [ "resource_fabric", "resource_wood" ]
+            "RewardMineralKeys": [
+                "resource_ruby",
+                "resource_mithril",
+                "resource_gold",
+                "resource_silver"
+            ]
         },
         {
             "Key": "mine_emerald",
@@ -38,7 +59,12 @@
             "CollectMin": 1,
             "CollectMax": 2,
             "CollectRatePerHour": 3,
-            "RewardMineralKeys": [ "resource_string", "resource_fabric" ]
+            "RewardMineralKeys": [
+                "resource_emerald",
+                "resource_gold",
+                "resource_amethyst",
+                "resource_sapphire"
+            ]
         }
     ]
 }
