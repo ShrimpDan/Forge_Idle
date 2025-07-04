@@ -18,7 +18,7 @@ public class UIManager : MonoBehaviour
     private Dictionary<string, BaseUI> activeUIs = new();
     private Dictionary<string, GameObject> loadedPrefabs = new();
 
-    // ¼ýÀÚ Ãµ´ÜÀ§ , ÀÛ¾÷ ------
+    // ï¿½ï¿½ï¿½ï¿½ Ãµï¿½ï¿½ï¿½ï¿½ , ï¿½Û¾ï¿½ ------
     public static string FormatNumber(long number)
     {
         return number.ToString("N0", CultureInfo.InvariantCulture);
@@ -37,7 +37,7 @@ public class UIManager : MonoBehaviour
         string fmt = decimalPoint > 0 ? $"N{decimalPoint}" : "N0";
         return number.ToString(fmt, CultureInfo.InvariantCulture);
     }
-    // ¼ýÀÚ Ãµ´ÜÀ§ , ÀÛ¾÷ ------
+    // ï¿½ï¿½ï¿½ï¿½ Ãµï¿½ï¿½ï¿½ï¿½ , ï¿½Û¾ï¿½ ------
 
 
 

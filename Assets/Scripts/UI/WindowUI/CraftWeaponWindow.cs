@@ -15,19 +15,8 @@ public class CraftWeaponWindow : BaseUI
 
     private List<Button> slotButtons = new List<Button>();
     private List<Image> slotIcons = new List<Image>();
-
-    private class SlotCraftProgress
-    {
-        public bool isCrafting = false;
-        public float totalTime = 0f;
-        public float timeLeft = 0f;
-        public Image progressBar;
-        public TMP_Text timeText;
-        public CraftingData data;
-        public ItemData itemData;
-        public bool rewardGiven = false;
-    }
-    private List<SlotCraftProgress> slotProgressList = new List<SlotCraftProgress>();
+    private List<Image> progressBars = new List<Image>();
+    private List<TMP_Text> timeTexts = new List<TMP_Text>();
 
     private int slotCount = 6;
     private int selectedSlotIndex = -1;
@@ -44,7 +33,8 @@ public class CraftWeaponWindow : BaseUI
 
         slotButtons.Clear();
         slotIcons.Clear();
-        slotProgressList.Clear();
+        progressBars.Clear();
+        timeTexts.Clear();
 
         for (int i = 0; i < slotCount; i++)
         {
@@ -60,21 +50,10 @@ public class CraftWeaponWindow : BaseUI
 
             var progressBar = go.transform.Find("CraftProgressBarBG/CraftProgressBar")?.GetComponent<Image>();
             var progressText = go.transform.Find("CraftProgressBarBG/CraftProgressText")?.GetComponent<TMP_Text>();
-
-            if (progressBar) { progressBar.fillAmount = 0; progressBar.gameObject.SetActive(false); }
-            if (progressText) { progressText.gameObject.SetActive(false); }
-
-            slotProgressList.Add(new SlotCraftProgress
-            {
-                isCrafting = false,
-                totalTime = 0f,
-                timeLeft = 0f,
-                progressBar = progressBar,
-                timeText = progressText,
-                data = null,
-                itemData = null,
-                rewardGiven = false
-            });
+            if (progressBar) progressBar.gameObject.SetActive(false);
+            if (progressText) progressText.gameObject.SetActive(false);
+            progressBars.Add(progressBar);
+            timeTexts.Add(progressText);
 
             icon.sprite = null;
             icon.enabled = false;
@@ -83,9 +62,9 @@ public class CraftWeaponWindow : BaseUI
 
     private void OnClickInputWeaponSlot(int index)
     {
-        if (index < 0 || index >= slotProgressList.Count)
-            return;
-        if (slotProgressList[index].isCrafting)
+        if (index < 0 || index >= slotCount) return;
+        var prog = gameManager.CraftingManager.GetCraftTask(index);
+        if (prog != null && prog.isCrafting)
             return;
 
         selectedSlotIndex = index;
@@ -108,7 +87,6 @@ public class CraftWeaponWindow : BaseUI
         if (inventory == null || forge == null)
             return;
 
-        // --- 재료, 골드 체크 ---
         var required = craftingData.RequiredResources
             .Select(r => (MapItemKey(r.ResourceKey), r.Amount)).ToList();
 
@@ -122,7 +100,6 @@ public class CraftWeaponWindow : BaseUI
         if (!hasAll)
             return;
 
-        // -- 차감 처리 --
         if (!inventory.UseCraftingMaterials(required))
             return;
         forge.AddGold(-goldNeed);
@@ -134,24 +111,9 @@ public class CraftWeaponWindow : BaseUI
         slotIcons[selectedSlotIndex].sprite = iconSprite;
         slotIcons[selectedSlotIndex].enabled = (iconSprite != null);
 
-        var prog = slotProgressList[selectedSlotIndex];
-        prog.isCrafting = true;
-        prog.totalTime = craftingData.craftTime;
-        prog.timeLeft = craftingData.craftTime;
-        prog.data = craftingData;
-        prog.itemData = itemData;
-        prog.rewardGiven = false;
+        // CraftingManager로 제작 시작 요청
+        gameManager.CraftingManager.StartCrafting(selectedSlotIndex, craftingData, itemData);
 
-        if (prog.progressBar)
-        {
-            prog.progressBar.fillAmount = 1f;
-            prog.progressBar.gameObject.SetActive(true);
-        }
-        if (prog.timeText)
-        {
-            prog.timeText.gameObject.SetActive(true);
-            prog.timeText.text = $"{prog.timeLeft:0.0}s";
-        }
         slotButtons[selectedSlotIndex].interactable = false;
     }
 
@@ -176,31 +138,47 @@ public class CraftWeaponWindow : BaseUI
 
     private void Update()
     {
-        for (int i = 0; i < slotProgressList.Count; i++)
+        for (int i = 0; i < slotCount; i++)
         {
-            var prog = slotProgressList[i];
-            if (!prog.isCrafting) continue;
+            var prog = gameManager.CraftingManager.GetCraftTask(i);
+            var icon = slotIcons[i];
+            var btn = slotButtons[i];
+            var progressBar = progressBars[i];
+            var timeText = timeTexts[i];
 
-            prog.timeLeft -= Time.deltaTime;
-            if (prog.timeLeft < 0f) prog.timeLeft = 0f;
-
-            if (prog.progressBar && prog.totalTime > 0f)
-                prog.progressBar.fillAmount = prog.timeLeft / prog.totalTime;
-            if (prog.timeText)
-                prog.timeText.text = $"{prog.timeLeft:0.0}s";
-
-            // 제작 완료 + 인벤토리 지급
-            if (prog.timeLeft <= 0f && prog.isCrafting && !prog.rewardGiven)
+            if (prog.isCrafting && prog.data != null)
             {
-                prog.isCrafting = false;
-                prog.rewardGiven = true;
+                if (icon && prog.itemData != null)
+                {
+                    Sprite sp = IconLoader.GetIcon(prog.itemData.IconPath);
+                    if (sp == null)
+                        sp = Resources.Load<Sprite>(prog.itemData.IconPath);
+                    icon.sprite = sp;
+                    icon.enabled = (sp != null);
+                }
+                if (progressBar && prog.totalTime > 0f)
+                {
+                    progressBar.gameObject.SetActive(true);
+                    progressBar.fillAmount = prog.timeLeft / prog.totalTime;
+                }
+                if (timeText)
+                {
+                    timeText.gameObject.SetActive(true);
+                    timeText.text = $"{prog.timeLeft:0.0}s";
+                }
+                btn.interactable = false;
+            }
+            else
+            {
+                if (progressBar) progressBar.gameObject.SetActive(false);
+                if (timeText) timeText.gameObject.SetActive(false);
+                btn.interactable = true;
 
-                if (prog.itemData != null)
-                    gameManager.Inventory.AddItem(prog.itemData, 1);
-
-                if (prog.progressBar) prog.progressBar.gameObject.SetActive(false);
-                if (prog.timeText) prog.timeText.gameObject.SetActive(false);
-                if (i < slotButtons.Count) slotButtons[i].interactable = true;
+                if (prog.itemData == null)
+                {
+                    icon.sprite = null;
+                    icon.enabled = false;
+                }
             }
         }
     }
@@ -208,21 +186,7 @@ public class CraftWeaponWindow : BaseUI
     public override void Open()
     {
         base.Open();
-        foreach (var icon in slotIcons)
-        {
-            icon.sprite = null;
-            icon.enabled = false;
-        }
         selectedSlotIndex = -1;
-        foreach (var prog in slotProgressList)
-        {
-            prog.isCrafting = false;
-            prog.rewardGiven = false;
-            prog.totalTime = 0f;
-            prog.timeLeft = 0f;
-            if (prog.progressBar) prog.progressBar.gameObject.SetActive(false);
-            if (prog.timeText) prog.timeText.gameObject.SetActive(false);
-        }
     }
 
     public override void Close()

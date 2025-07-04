@@ -162,11 +162,20 @@ public class TraineeDrawController : MonoBehaviour
 
     private void ConfirmAllFlippedCards()
     {
-        foreach (var card in new List<GameObject>(spawnedCards))
+        var remainingCards = new List<GameObject>(spawnedCards);
+
+        foreach (var card in remainingCards)
         {
-            var controller = card?.GetComponent<TraineeController>();
-            controller?.OnClick_FrontCard();
+            if (card == null) continue;
+
+            var controller = card.GetComponent<TraineeController>();
+            if (controller != null)
+            {
+                controller.OnClick_FrontCard();
+            }
         }
+
+        spawnedCards.RemoveAll(card => card == null);
     }
 
     public void ConfirmAllCards() => OnClick_ConfirmAllCards();
@@ -191,7 +200,9 @@ public class TraineeDrawController : MonoBehaviour
     {
         foreach (var card in spawnedCards)
         {
-            var controller = card?.GetComponent<TraineeController>();
+            if (card == null) continue;
+
+            var controller = card.GetComponent<TraineeController>();
             if (controller != null && !controller.IsFlipped)
                 return true;
         }

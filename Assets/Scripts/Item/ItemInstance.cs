@@ -1,3 +1,4 @@
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
@@ -10,7 +11,13 @@ public class ItemInstance
     public bool IsEquipped;
     public bool CanEnhance => CurrentEnhanceLevel < Data.UpgradeInfo.MaxEnhanceLevel;
 
+    // gem 데이터 효과 연산
+    public List<ItemInstance> GemSockets = new List<ItemInstance>() { null, null, null };
+
     public CraftingData CraftingData { get; private set; }
+
+
+
 
     public ItemInstance(string key, ItemData data, CraftingData craftingData = null)
     {
@@ -20,6 +27,7 @@ public class ItemInstance
         CurrentEnhanceLevel = 0;
         IsEquipped = false;
         CraftingData = craftingData;
+        GemSockets = new List<ItemInstance>() { null, null, null };
     }
 
     [System.NonSerialized]
@@ -50,31 +58,70 @@ public class ItemInstance
 
     public void EnhanceItem()
     {
-        if(CanEnhance)
+        if (CanEnhance)
             CurrentEnhanceLevel++;
     }
 
     public float GetTotalAttack()
     {
-        if (Data.ItemType != ItemType.Weapon)
+        if (Data == null || Data.ItemType != ItemType.Weapon || Data.WeaponStats == null)
             return 0;
 
-        if (CurrentEnhanceLevel == 0)
-            return Data.WeaponStats.Attack;
+        // 기본/강화 공격력 계산
+        float baseAttack = Data.WeaponStats.Attack;
+        float enhancedAttack = (CurrentEnhanceLevel == 0)
+            ? baseAttack
+            : baseAttack * (CurrentEnhanceLevel * Data.UpgradeInfo.AttackMultiplier);
 
-        float multiplier = CurrentEnhanceLevel * Data.UpgradeInfo.AttackMultiplier;
-        return Data.WeaponStats.Attack * multiplier;
+        // 젬 소켓 효과 적용
+        var (atkMul, _) = GetGemMultipliers();
+        return enhancedAttack * atkMul;
     }
 
     public float GetTotalInterval()
     {
-        if (Data.ItemType != ItemType.Weapon)
+        if (Data == null || Data.ItemType != ItemType.Weapon || Data.WeaponStats == null)
             return 0;
 
-        if (CurrentEnhanceLevel == 0)
-            return Data.WeaponStats.AttackInterval;
+        // 기본/강화 속도 계산
+        float baseInterval = Data.WeaponStats.AttackInterval;
+        float enhancedInterval = (CurrentEnhanceLevel == 0)
+            ? baseInterval
+            : Mathf.Max(0.1f, baseInterval - (CurrentEnhanceLevel * Data.UpgradeInfo.IntervalReductionPerLevel));
 
-        float reduction = CurrentEnhanceLevel * Data.UpgradeInfo.IntervalReductionPerLevel;
-        return Mathf.Max(0.1f, Data.WeaponStats.AttackInterval - reduction);
+        // 젬 소켓 효과 적용
+        var (_, speedMul) = GetGemMultipliers();
+        return Mathf.Max(0.05f, enhancedInterval / speedMul);
     }
+
+
+    // 장착된 젬 소켓 효과 계산
+    private (float atkMul, float speedMul) GetGemMultipliers()
+    {
+        float atkMul = 1f;
+        float speedMul = 1f;
+        foreach (var gem in GemSockets)
+        {
+            if (gem == null || gem.Data?.GemStats == null)
+                continue;
+
+            string key = gem.ItemKey;
+
+            // 공격력 계수 누적 (루비, 에메랄드, 사파이어)
+            if (key == "gem_ruby" || key == "gem_emerald")
+                atkMul *= gem.Data.GemStats.GemMultiplier;
+
+            // 속도 계수 누적 (아메시스트, 사파이어)
+            if (key == "gem_amethyst")
+                speedMul *= gem.Data.GemStats.GemMultiplier;
+
+            if (key == "gem_sapphire")
+            {
+                atkMul *= gem.Data.GemStats.GemMultiplier;
+                speedMul *= gem.Data.GemStats.GemMultiplier;
+            }
+        }
+        return (atkMul, speedMul);
+    }
+
 }

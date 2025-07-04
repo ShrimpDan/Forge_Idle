@@ -56,7 +56,6 @@ public class GemsSystemWindow : BaseUI
         selectedWeapon = weapon;
         if (weapon != null && weapon.Data == null && dataManager != null)
         {
-            // 혹시라도 Data가 비어있다면 DataLoader에서 보충
             weapon.Data = dataManager.ItemLoader.GetItemByKey(weapon.ItemKey);
         }
         if (weaponIconImg != null && selectedWeapon?.Data != null)
@@ -69,8 +68,24 @@ public class GemsSystemWindow : BaseUI
             weaponIconImg.sprite = null;
             weaponIconImg.enabled = false;
         }
+
+        // 장착된 젬 슬롯에 표시
+        if (selectedWeapon != null && selectedWeapon.GemSockets != null)
+        {
+            for (int i = 0; i < selectedGems.Length; i++)
+            {
+                selectedGems[i] = selectedWeapon.GemSockets.Count > i ? selectedWeapon.GemSockets[i] : null;
+            }
+        }
+        else
+        {
+            for (int i = 0; i < selectedGems.Length; i++)
+                selectedGems[i] = null;
+        }
+
         ResetGemSlots();
     }
+
 
     private void ResetGemSlots()
     {
@@ -134,17 +149,20 @@ public class GemsSystemWindow : BaseUI
     // 실제 강화 로직 적용 자리
     private void OnExecute()
     {
-        if (selectedWeapon == null)
-        {
+        if(selectedWeapon == null)
+    {
             Debug.LogWarning("[GemsSystem] 무기를 먼저 선택하세요!");
             return;
         }
 
-        // selectedWeapon.Data / selectedGems[i]?.Data를 활용해서 강화 효과 계산
+        // 선택된 젬을 무기에 연결
+        for (int i = 0; i < 3; i++)
+        {
+            selectedWeapon.GemSockets[i] = selectedGems[i];
+        }
 
-        Debug.Log("[GemsSystem] Execute 완료! (강화 적용 로직 자리)");
-
-        isExecuted = true; // 실행 완료 flag (Exit 때 복구 방지)
+        Debug.Log("[GemsSystem] Execute 완료! (젬 소켓 연결 완료)");
+        isExecuted = true;
     }
 
     // 보석 반환 처리

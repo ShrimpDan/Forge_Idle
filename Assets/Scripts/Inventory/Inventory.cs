@@ -49,6 +49,10 @@ namespace Jang
                 case ItemType.Resource:
                     AddOrMergeItem(ResourceList, item, amount);
                     break;
+
+                case ItemType.Ingot: 
+                    AddOrMergeItem(ResourceList, item, amount); 
+                    break;
             }
 
             OnItemAdded?.Invoke();

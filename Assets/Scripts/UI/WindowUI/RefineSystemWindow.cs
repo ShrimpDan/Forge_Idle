@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections.Generic;
 using System.Linq;
 
 public class RefineSystemWindow : BaseUI
@@ -9,21 +10,21 @@ public class RefineSystemWindow : BaseUI
 
     [Header("UI Elements")]
     [SerializeField] private Button exitButton;
-    [SerializeField] private Button inputSlotButton;
-    [SerializeField] private Image inputSlotIcon;
-    [SerializeField] private Image outputSlotIcon;
-    [SerializeField] private TMP_Text refineCostText;
-    [SerializeField] private Button executeButton;
+    [SerializeField] private Transform slotRoot;
+    [SerializeField] private GameObject refineSlotPrefab; // RefineSlotUI 프리팹
 
-    private ItemInstance selectedMaterial;
-    private ItemInstance resultItem;
+    private const int slotCount = 5;
+    private List<RefineSlotUI> refineSlots = new();
+    private List<ItemInstance> selectedMaterials = new();
+    private List<ItemInstance> resultItems = new();
+
     private GameManager gameManager;
     private UIManager uIManager;
     private DataManager dataManager;
 
-    private int refineCost = 1000;
-    private const int requiredAmount = 5;
-    private const int resultAmount = 1;
+    private int baseRefineCost = 1000;
+    private int requiredAmount = 5;
+    private int resultAmount = 1;
 
     public override void Init(GameManager gameManager, UIManager uIManager)
     {
@@ -35,47 +36,85 @@ public class RefineSystemWindow : BaseUI
         exitButton.onClick.RemoveAllListeners();
         exitButton.onClick.AddListener(() => uIManager.CloseUI(UIName.RefineSystemWindow));
 
-        inputSlotButton.onClick.RemoveAllListeners();
-        inputSlotButton.onClick.AddListener(OnClickInputSlot);
-
-        executeButton.onClick.RemoveAllListeners();
-        executeButton.onClick.AddListener(OnClickExecuteRefine);
-
+        InitSlots();
         ResetUI();
     }
 
-    private void OnClickInputSlot()
+    private void InitSlots()
+    {
+        foreach (Transform child in slotRoot)
+            Destroy(child.gameObject);
+        refineSlots.Clear();
+        selectedMaterials = new List<ItemInstance>(new ItemInstance[slotCount]);
+        resultItems = new List<ItemInstance>(new ItemInstance[slotCount]);
+
+        for (int i = 0; i < slotCount; i++)
+        {
+            var go = Instantiate(refineSlotPrefab, slotRoot);
+            var slot = go.GetComponent<RefineSlotUI>();
+            int idx = i;
+
+            // 버튼 이벤트 명확하게 등록 (매번 클리어 후 재등록)
+            slot.inputButton.onClick.RemoveAllListeners();
+            slot.inputButton.onClick.AddListener(() => OnClickInputSlot(idx));
+
+            slot.minusBtn.onClick.RemoveAllListeners();
+            slot.minusBtn.onClick.AddListener(() => {
+                slot.SetAmount(slot.Amount - 1);
+                UpdateSlot(idx);
+            });
+
+            slot.plusBtn.onClick.RemoveAllListeners();
+            slot.plusBtn.onClick.AddListener(() => {
+                slot.SetAmount(slot.Amount + 1);
+                UpdateSlot(idx);
+            });
+
+            slot.executeBtn.onClick.RemoveAllListeners();
+            slot.executeBtn.onClick.AddListener(() => OnClickExecute(idx));
+
+            slot.SetAmount(1);
+            refineSlots.Add(slot);
+        }
+    }
+
+    private void OnClickInputSlot(int index)
     {
         var popup = uIManager.OpenUI<Forge_Inventory_Popup>(UIName.Forge_Inventory_Popup);
-        popup.SetResourceSelectCallback(OnMaterialSelected);
+        popup.SetResourceSelectCallback((item) => OnMaterialSelected(index, item));
     }
 
-    private void OnMaterialSelected(ItemInstance item)
+    private void OnMaterialSelected(int index, ItemInstance item)
     {
-        selectedMaterial = item;
-        if (selectedMaterial != null && selectedMaterial.Data == null && dataManager != null)
-            selectedMaterial.Data = dataManager.ItemLoader.GetItemByKey(selectedMaterial.ItemKey);
+        if (item != null && item.Data == null && dataManager != null)
+            item.Data = dataManager.ItemLoader.GetItemByKey(item.ItemKey);
 
-        UpdatePreview();
+        selectedMaterials[index] = item;
+        UpdateSlot(index);
     }
 
-    private void UpdatePreview()
+    private void UpdateSlot(int index)
     {
-        if (inputSlotIcon != null)
-        {
-            inputSlotIcon.sprite = selectedMaterial?.Data != null ? IconLoader.GetIcon(selectedMaterial.Data.IconPath) : null;
-            inputSlotIcon.enabled = selectedMaterial?.Data != null;
-        }
+        var slot = refineSlots[index];
+        var input = selectedMaterials[index];
 
-        resultItem = GetRefineResult(selectedMaterial);
+        // Input 아이콘
+        slot.inputIcon.sprite = input?.Data != null ? IconLoader.GetIcon(input.Data.IconPath) : null;
+        slot.inputIcon.enabled = input?.Data != null;
 
-        if (outputSlotIcon != null)
-        {
-            outputSlotIcon.sprite = resultItem?.Data != null ? IconLoader.GetIcon(resultItem.Data.IconPath) : null;
-            outputSlotIcon.enabled = resultItem?.Data != null;
-        }
+        // Output 아이콘
+        var output = GetRefineResult(input);
+        resultItems[index] = output;
+        slot.outputIcon.sprite = output?.Data != null ? IconLoader.GetIcon(output.Data.IconPath) : null;
+        slot.outputIcon.enabled = output?.Data != null;
 
-        UpdateCost();
+        // 비용
+        int totalCost = baseRefineCost * slot.Amount;
+        if (slot.costText != null)
+            slot.costText.text = $"비용: {totalCost:N0}";
+
+        // 수량 표시
+        slot.amountText.text = slot.Amount.ToString();
     }
 
     private ItemInstance GetRefineResult(ItemInstance input)
@@ -99,55 +138,46 @@ public class RefineSystemWindow : BaseUI
         return new ItemInstance(outData.ItemKey, outData);
     }
 
-    private void UpdateCost()
+    private void OnClickExecute(int index)
     {
-        if (refineCostText != null)
-            refineCostText.text = $"정련 비용: {refineCost:N0} 골드";
-    }
-
-    private void OnClickExecuteRefine()
-    {
-        if (selectedMaterial == null || resultItem == null) return;
-        if (gameManager.Forge.Gold < refineCost) return;
+        var slot = refineSlots[index];
+        var input = selectedMaterials[index];
+        var output = resultItems[index];
+        int amount = slot.Amount;
+        int cost = baseRefineCost * amount;
+        if (input == null || output == null) return;
+        if (gameManager.Forge.Gold < cost) return;
 
         int owned = gameManager.Inventory.ResourceList
-            .Where(x => x.ItemKey == selectedMaterial.ItemKey)
+            .Where(x => x.ItemKey == input.ItemKey)
             .Sum(x => x.Quantity);
-        if (owned < requiredAmount) return;
 
-        // 골드 차감
-        gameManager.Forge.AddGold(-refineCost);
+        if (owned < requiredAmount * amount) return;
 
-        // 재료 차감
-        var reqList = new System.Collections.Generic.List<(string resourceKey, int amount)>()
+        var reqList = new List<(string resourceKey, int amount)>
         {
-            (selectedMaterial.ItemKey, requiredAmount)
+            (input.ItemKey, requiredAmount * amount)
         };
-        gameManager.Inventory.UseCraftingMaterials(reqList);
+        if (!gameManager.Inventory.UseCraftingMaterials(reqList)) return;
 
-        // 결과 아이템 생성 및 추가 (핵심)
-        var outData = dataManager.ItemLoader.GetItemByKey(resultItem.ItemKey);
-        if (outData == null) return;
-        gameManager.Inventory.AddItem(outData, resultAmount);
+        var outData = dataManager.ItemLoader.GetItemByKey(output.ItemKey);
+        if (outData != null)
+            gameManager.Inventory.AddItem(outData, resultAmount * amount);
 
-        ResetUI();
+        gameManager.Forge.AddGold(-cost);
+
+        selectedMaterials[index] = null;
+        UpdateSlot(index);
     }
 
     private void ResetUI()
     {
-        selectedMaterial = null;
-        resultItem = null;
-        if (inputSlotIcon != null)
+        for (int i = 0; i < refineSlots.Count; i++)
         {
-            inputSlotIcon.sprite = null;
-            inputSlotIcon.enabled = false;
+            refineSlots[i].SetAmount(1);
+            selectedMaterials[i] = null;
+            UpdateSlot(i);
         }
-        if (outputSlotIcon != null)
-        {
-            outputSlotIcon.sprite = null;
-            outputSlotIcon.enabled = false;
-        }
-        UpdateCost();
     }
 
     public override void Open()
