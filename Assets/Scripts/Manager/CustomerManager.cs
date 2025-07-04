@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -50,6 +51,7 @@ public class CustomerManager : MonoSingleton<CustomerManager>
     //Loader
     private CustomerLoader customerLoader;
     private RegularCustomerLoader regularLoader;
+    private CustomerPrefabLoader prefabLoader;
     public CustomerEventHandler CustomerEvent { get; private set; }
 
     protected override void Awake()
@@ -61,32 +63,57 @@ public class CustomerManager : MonoSingleton<CustomerManager>
 
     private void Start()
     {
-        var prefabDic = new Dictionary<(CustomerJob, CustomerType), Customer>();
-        var regularprefabDic = new Dictionary<(CustomerJob, CustomerRarity), Customer>();
 
-        foreach (var data in customerPrefabs)
+        //프리팹 자동로더
+        prefabLoader = new CustomerPrefabLoader();
+        prefabLoader.LoadAll();
+
+        var normalDic = new Dictionary<(CustomerJob, CustomerType), Customer>();
+        foreach (CustomerJob job in Enum.GetValues(typeof(CustomerJob)))
         {
-            prefabDic[(data.job, data.type)] = data.prefabs;
-
-            if (data.type == CustomerType.Normal)
+            var normalPreb = prefabLoader.GetNormal(job);
+            if (normalPreb)
             {
-                if (!normalcustomerCounter.ContainsKey(data.job))
-                {
-                    normalcustomerCounter[data.job] = 0;
-                }
-                if (!normalVisitedCounter.ContainsKey(data.job))
-                {
-                    normalVisitedCounter[data.job] = 0;
-                }
+                normalDic[(job, CustomerType.Normal)] = normalPreb;
             }
+            var nuisancePreb = prefabLoader.GetNuisance();
 
-            else if (data.type == CustomerType.Regualr)
+            if (nuisancePreb)
             {
-                regularprefabDic[(data.job,data.rarity)] = data.prefabs;
+                normalDic[(job, CustomerType.Nuisance)] = nuisancePreb;
             }
         }
-        customerLoader = new CustomerLoader(GameManager.Instance.DataManager.CustomerDataLoader, prefabDic, spawnPoint);
-        regularLoader = new RegularCustomerLoader(GameManager.Instance.DataManager.RegularDataLoader, regularprefabDic, spawnPoint, rarityProbabilities);
+        var regDic = new Dictionary<(CustomerJob, CustomerRarity), Customer>();
+        foreach (CustomerJob job in Enum.GetValues(typeof(CustomerJob)))
+        {
+            foreach (CustomerRarity rarity in Enum.GetValues(typeof(CustomerRarity)))
+            {
+                var regPreb = prefabLoader.GetRegular(job,rarity);
+                if (regPreb)
+                {
+                    regDic[(job, rarity)] = regPreb;
+                }
+
+                
+            }
+        
+        }
+
+        foreach (CustomerJob job in Enum.GetValues(typeof(CustomerJob)))
+        {
+            if (!normalcustomerCounter.ContainsKey(job))
+            {
+                normalcustomerCounter[job] = 0;
+            }
+
+            if (!normalVisitedCounter.ContainsKey(job))
+            { 
+                normalVisitedCounter[job] = 0;
+            }
+        }
+
+        customerLoader = new CustomerLoader(GameManager.Instance.DataManager.CustomerDataLoader, normalDic, spawnPoint);
+        regularLoader = new RegularCustomerLoader(GameManager.Instance.DataManager.RegularDataLoader, regDic, spawnPoint, rarityProbabilities);
 
         StartCoroutine(SpawnNormalLoop());
         StartCoroutine(SpawnNuisanceLoop());
@@ -155,7 +182,7 @@ public class CustomerManager : MonoSingleton<CustomerManager>
         }
 
         var jobs = new List<CustomerJob>(normalcustomerCounter.Keys);
-        CustomerJob randomJob = jobs[Random.Range(0, 1)];//랜덤으로 직업 부여하자jobs.Count 진상 다른 직업들 추가되면 jobs.Count로 해도됨
+        CustomerJob randomJob = jobs[UnityEngine.Random.Range(0, 1)];//랜덤으로 직업 부여하자jobs.Count 진상 다른 직업들 추가되면 jobs.Count로 해도됨
         customerLoader.SpawnNuisance(randomJob);
 
     }
