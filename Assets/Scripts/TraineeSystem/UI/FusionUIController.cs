@@ -13,6 +13,9 @@ public class FusionUIController : MonoBehaviour
     [SerializeField] private GameObject assistantIconPrefab;
     [SerializeField] private ScrollRect scrollRect;
 
+    [Header("합성 후 배경")]
+    [SerializeField] private GameObject fusionBackgroundPanel;
+
     [Header("합성 슬롯")]
     [SerializeField] private Transform slotGroupParent;
     [SerializeField] private GameObject fusionSlotPrefab;
@@ -333,8 +336,22 @@ public class FusionUIController : MonoBehaviour
         GameManager.Instance.AssistantManager.TraineeInventory.Add(fused);
         GameManager.Instance.AssistantManager.ConfirmTrainee(fused);
 
+        if (fusionBackgroundPanel != null)
+            fusionBackgroundPanel.SetActive(true);
+
         GameObject card = GameManager.Instance.AssistantManager.Spawner
-            .SpawnLargeCard(fused, largeCardParent, null, true, true);
+            .SpawnLargeCard(fused, largeCardParent, OnFusionCardConfirmed, true, true);
+    }
+
+    private void OnFusionCardConfirmed(TraineeData data)
+    {
+        if (fusionBackgroundPanel != null)
+            fusionBackgroundPanel.SetActive(false);
+
+        if (fusionStatusText != null)
+            fusionStatusText.gameObject.SetActive(false);
+
+        ClearAllSlots();
     }
 
     private void ResetFusionUIAfterFusion(TraineeData newTrainee)
