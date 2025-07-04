@@ -15,28 +15,28 @@ public class CustomerManager : MonoSingleton<CustomerManager>
         public Customer prefabs;
         public CustomerType type;
         public CustomerJob job;
+        public CustomerRarity rarity; //단골만 적용
     }
-
-
-
 
     [Header("SpawnSetting")]
     [SerializeField] private Transform spawnPoint;
     [SerializeField] private float spawnDelay = 2f;
     [SerializeField] private List<CustomerSpawnData> customerPrefabs = new();
 
-
     [Header("Nuisance")]
     [SerializeField] private float nuisanceSpawnTime = 1f;
     [SerializeField, Range(0f, 1f)] private float nuisanceSpawnChance = 0.5f;
 
     [Header("Regular")]
-    [SerializeField] private int RegularSpawnCount = 10;
+    [SerializeField] private int RegularSpawnCount = 1;
 
     public List<BuyPoint> allBuyPoints;
 
     private Dictionary<CustomerJob, int> normalcustomerCounter = new Dictionary<CustomerJob, int>(); //현재 수
     private Dictionary<CustomerJob, int> normalVisitedCounter = new Dictionary<CustomerJob, int>();
+
+    //단골손님
+    private Dictionary<(CustomerJob,CustomerRarity), Customer> regularPrefabDic = new();
 
     private readonly Dictionary<CustomerRarity, float> rarityProbabilities = new()
     {
@@ -47,15 +47,9 @@ public class CustomerManager : MonoSingleton<CustomerManager>
         {CustomerRarity.Legendary,0.03f }
     };
 
-
-
     //Loader
     private CustomerLoader customerLoader;
-    private RegularDataLoader regularLoader;
-
-    // 현재 방문 중인 손님
-    public List<Customer> visitCustomers = new List<Customer>();
-
+    private RegularCustomerLoader regularLoader;
     public CustomerEventHandler CustomerEvent { get; private set; }
 
     protected override void Awake()
@@ -68,14 +62,11 @@ public class CustomerManager : MonoSingleton<CustomerManager>
     private void Start()
     {
         var prefabDic = new Dictionary<(CustomerJob, CustomerType), Customer>();
+        var regularprefabDic = new Dictionary<(CustomerJob, CustomerRarity), Customer>();
 
         foreach (var data in customerPrefabs)
         {
-
-            var key = (data.job, data.type);
-
-            if (!prefabDic.ContainsKey(key))
-                prefabDic[key] = data.prefabs;
+            prefabDic[(data.job, data.type)] = data.prefabs;
 
             if (data.type == CustomerType.Normal)
             {
@@ -88,12 +79,17 @@ public class CustomerManager : MonoSingleton<CustomerManager>
                     normalVisitedCounter[data.job] = 0;
                 }
             }
+
+            else if (data.type == CustomerType.Regualr)
+            {
+                regularprefabDic[(data.job,data.rarity)] = data.prefabs;
+            }
         }
         customerLoader = new CustomerLoader(GameManager.Instance.DataManager.CustomerDataLoader, prefabDic, spawnPoint);
-
+        regularLoader = new RegularCustomerLoader(GameManager.Instance.DataManager.RegularDataLoader, regularprefabDic, spawnPoint, rarityProbabilities);
 
         StartCoroutine(SpawnNormalLoop());
-        StartCoroutine(SpawnNunsanceLoop());
+        StartCoroutine(SpawnNuisanceLoop());
 
     }
 
@@ -108,7 +104,7 @@ public class CustomerManager : MonoSingleton<CustomerManager>
 
     }
 
-    private IEnumerator SpawnNunsanceLoop()
+    private IEnumerator SpawnNuisanceLoop()
     {
         while (true)
         {
@@ -166,7 +162,7 @@ public class CustomerManager : MonoSingleton<CustomerManager>
 
     public void SpawnRegularCustomer(CustomerJob job)
     {
-        customerLoader.SpawnRegular(job);
+        regularLoader.SpawnRandomByJob(job);
     }
 
     //퇴장
@@ -181,15 +177,21 @@ public class CustomerManager : MonoSingleton<CustomerManager>
 
     public void NotifyNormalCustomerPurchased(CustomerJob job) //일반손님 구매 알림
     {
+        Debug.Log($"들어옴{normalVisitedCounter[job]}");
+
         if (!normalcustomerCounter.ContainsKey(job))
         {
             normalVisitedCounter[job] = 0;
         }
 
-        if (++normalVisitedCounter[job] >= RegularSpawnCount)
+        normalVisitedCounter[job]++;
+        Debug.Log($"{job}방문 {normalVisitedCounter[job]}/{RegularSpawnCount}");
+
+        if (normalVisitedCounter[job] >= RegularSpawnCount)
         {
             normalVisitedCounter[job] = 0;
-            SpawnRegularCustomer(job);
+            regularLoader.SpawnRandomByJob(job);
+            Debug.Log( "단골 손님 소환");
         }
     }
 }

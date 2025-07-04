@@ -158,9 +158,7 @@ public abstract class Customer : MonoBehaviour
         CustomerManager.Instance.CustomerExit(this);
         Destroy(gameObject);
     }
-
     public abstract void Interact();
-
     public void NotifiedCraftWeapon()
     {
         isCrafted = true;

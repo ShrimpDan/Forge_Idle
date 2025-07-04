@@ -27,7 +27,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.53, y: 0, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7507292130987811076}
@@ -73,8 +73,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  m_Color: {r: 0, g: 0.45916474, b: 0.9716981, a: 1}
+  m_Sprite: {fileID: -2413806693520163455, guid: ebe73ca9363db456bacf42c025bb4847, type: 3}
+  m_Color: {r: 0.1541919, g: 0.5625135, b: 0.990566, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -97,7 +97,7 @@ GameObject:
   - component: {fileID: 519940071911044702}
   - component: {fileID: 842627916342657262}
   m_Layer: 0
-  m_Name: Regular
+  m_Name: F_Rare
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -161,7 +161,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.30111146, g: 1, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -183,13 +183,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56af7ad04b9e55e429497fc08f797543, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buyPoint: {fileID: 3367438687136543233, guid: 5ee67ca923afb80428b5c61afda36939, type: 3}
-  data: {fileID: 11400000, guid: 2a3bb81b11fd059468b17504cbe36f52, type: 2}
+  buyPoint: {fileID: 3367438687136543233, guid: 06d43ed767e84b644a33f1d12b2d374d, type: 3}
+  data:
+    Key: ragular_farmer_rare
+    job: 1
+    type: 1
+    moveSpeed: 0
   moveWayPoint:
-  - {fileID: 7599354342047509208, guid: 5ee67ca923afb80428b5c61afda36939, type: 3}
+  - {fileID: 7599354342047509208, guid: 06d43ed767e84b644a33f1d12b2d374d, type: 3}
   - {fileID: 430231704407215936, guid: 712630db6271ee2408d526e960add339, type: 3}
+  gold: 0
   InteractObject: {fileID: 912466913645199007}
   WaitTime: 2
+  CollectData:
+    Key: 
+    customerKey: 
+    customerName: 
+    customerInfo: 
+    iconPath: 
+    rarity: 0
 --- !u!50 &842627916342657262
 Rigidbody2D:
   serializedVersion: 4
