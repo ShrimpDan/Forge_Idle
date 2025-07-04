@@ -35,11 +35,6 @@ public class MineralSlot : MonoBehaviour
         {
             assistantIconRoot?.SetActive(true);
             // 아이콘 적용: 현재 구조에선 TraineeData에 IconPath가 없으니, 추후 확장 필요
-            // if (assistantIcon != null && !string.IsNullOrEmpty(assistant.IconPath))
-            // {
-            //     assistantIcon.sprite = IconLoader.GetIcon(assistant.IconPath);
-            //     assistantIcon.enabled = true;
-            // }
         }
         else
         {
