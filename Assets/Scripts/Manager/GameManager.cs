@@ -11,6 +11,9 @@ public class GameManager : MonoSingleton<GameManager>
 
     public DungeonData CurrentDungeon { get; private set; }
 
+    // 게임 데이터 세이브&로드 매니저
+    public GameSaveManager SaveManager { get; private set; }
+
     protected override void Awake()
     {
         base.Awake();
@@ -30,7 +33,11 @@ public class GameManager : MonoSingleton<GameManager>
 
     private void Start()
     {
-        
+        SaveManager = new GameSaveManager();
+
+        SaveManager.RegisterSaveHandler(new InventorySaveHandler(Inventory));
+
+        SaveManager.LoadAll();
     }
 
     [ContextMenu("Get Random Item")]
@@ -91,5 +98,22 @@ public class GameManager : MonoSingleton<GameManager>
     public void ExitDungeon()
     {
         CurrentDungeon = null;
+    }
+
+    [ContextMenu("Save Game")]
+    public void SaveGame()
+    {
+        SaveManager?.SaveAll();
+    }
+
+    [ContextMenu("Load Game")]
+    public void LoadGame()
+    {
+        SaveManager?.LoadAll();
+    }
+
+    private void OnApplicationQuit()
+    {
+        SaveManager?.SaveAll();     
     }
 }

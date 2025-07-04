@@ -173,7 +173,7 @@ public class InventoryManager
         return true;
     }
 
-    public List<ItemData> GetItemDataListByType(CustomerJob jobType)
+    public List<ItemData> GetWeaponListByType(CustomerJob jobType)
     {
         List<ItemData> itemDatas = new List<ItemData>();
 
@@ -187,6 +187,99 @@ public class InventoryManager
 
         return itemDatas;
     }
+
+    #region  데이터 세이브/로드
+    public InventorySaveData ToSaveData()
+    {
+        InventorySaveData saveData = new();
+
+        saveData.ResourceItems = ResourceList.Select(i => new ItemSaveData
+        {
+            ItemKey = i.ItemKey,
+            Quantity = i.Quantity,
+            CurrentEnhanceLevel = i.CurrentEnhanceLevel,
+            IsEquipped = i.IsEquipped
+        }).ToList();
+
+        saveData.WeaponItems = WeaponList.Select(i => new ItemSaveData
+        {
+            ItemKey = i.ItemKey,
+            Quantity = i.Quantity,
+            CurrentEnhanceLevel = i.CurrentEnhanceLevel,
+            IsEquipped = i.IsEquipped
+        }).ToList();
+
+        saveData.GemItems = GemList.Select(i => new ItemSaveData
+        {
+            ItemKey = i.ItemKey,
+            Quantity = i.Quantity,
+            CurrentEnhanceLevel = i.CurrentEnhanceLevel,
+            IsEquipped = i.IsEquipped
+        }).ToList();
+
+        saveData.EquippedWeaponIndices = EquippedWeaponDict
+            .Where(pair => pair.Value != null)
+            .Select(pair => WeaponList.IndexOf(pair.Value))
+            .ToList();
+
+        return saveData;
+    }
+
+    public void LoadFromSaveData(InventorySaveData saveData)
+    {
+        ResourceList.Clear();
+        WeaponList.Clear();
+        GemList.Clear();
+        EquippedWeaponDict.Clear();
+
+        for (int i = 0; i < 10; i++)
+            EquippedWeaponDict[i] = null;
+
+        foreach (var data in saveData.ResourceItems)
+        {
+            var itemData = gameManager.DataManager.ItemLoader.GetItemByKey(data.ItemKey);
+            ResourceList.Add(new ItemInstance(data.ItemKey, itemData)
+            {
+                Quantity = data.Quantity,
+                CurrentEnhanceLevel = data.CurrentEnhanceLevel,
+                IsEquipped = data.IsEquipped
+            });
+        }
+
+        foreach (var data in saveData.WeaponItems)
+        {
+            var itemData = gameManager.DataManager.ItemLoader.GetItemByKey(data.ItemKey);
+            var craftingData = gameManager.DataManager.CraftingLoader.GetDataByKey(data.ItemKey);
+
+            WeaponList.Add(new ItemInstance(data.ItemKey, itemData, craftingData)
+            {
+                Quantity = data.Quantity,
+                CurrentEnhanceLevel = data.CurrentEnhanceLevel,
+                IsEquipped = data.IsEquipped
+            });
+        }
+
+        foreach (var data in saveData.GemItems)
+        {
+            var itemData = gameManager.DataManager.ItemLoader.GetItemByKey(data.ItemKey);
+            GemList.Add(new ItemInstance(data.ItemKey, itemData)
+            {
+                Quantity = data.Quantity,
+                CurrentEnhanceLevel = data.CurrentEnhanceLevel,
+                IsEquipped = data.IsEquipped
+            });
+        }
+
+        for (int i = 0; i < saveData.EquippedWeaponIndices.Count; i++)
+        {
+            int idx = saveData.EquippedWeaponIndices[i];
+            if (idx >= 0 && idx < WeaponList.Count)
+            {
+                EquippedWeaponDict[i] = WeaponList[idx];
+            }
+        }
+
+        OnItemAdded?.Invoke();
+    }
+    #endregion
 }
-
-

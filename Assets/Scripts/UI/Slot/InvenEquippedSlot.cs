@@ -12,7 +12,11 @@ public class InvenEquippedSlot : MonoBehaviour
 
     public void Init(UIManager uIManager, ItemInstance item)
     {
-        this.uIManager = uIManager;
+        if (item == null) return;
+        
+        if (this.uIManager == null)
+            this.uIManager = uIManager;
+
         EquippedItem = item;
         icon.sprite = IconLoader.GetIcon(item.Data.IconPath);
 
