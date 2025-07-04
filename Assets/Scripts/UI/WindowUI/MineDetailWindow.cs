@@ -19,8 +19,6 @@ public class MineDetailWindow : BaseUI
     private List<MineralSlot> mineralSlots = new();
     private MineData mineData;
     private DataManager dataManager;
-    private GameManager gameManager;
-    private UIManager uIManager;
 
     private class MineralCollectionInfo
     {

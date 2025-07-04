@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// Á¦ÀÛ ½½·Ô/ÁøÇà »óÅÂ °ü¸® Àü´ã
+// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 public class CraftingManager : MonoBehaviour
 {
     public const int CraftSlotCount = 6;
@@ -31,7 +31,7 @@ public class CraftingManager : MonoBehaviour
     private List<Coroutine> coroutines = new List<Coroutine>();
 
  
-    private Jang.InventoryManager inventory;
+    private InventoryManager inventory;
     private Forge forge;
 
     void Awake()
@@ -43,7 +43,7 @@ public class CraftingManager : MonoBehaviour
         }
     }
 
-    public void Init(Jang.InventoryManager inventory, Forge forge)
+    public void Init(InventoryManager inventory, Forge forge)
     {
         this.inventory = inventory;
         this.forge = forge;

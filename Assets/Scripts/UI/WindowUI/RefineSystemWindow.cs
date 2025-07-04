@@ -18,8 +18,6 @@ public class RefineSystemWindow : BaseUI
     private List<ItemInstance> selectedMaterials = new();
     private List<ItemInstance> resultItems = new();
 
-    private GameManager gameManager;
-    private UIManager uIManager;
     private DataManager dataManager;
 
     private int baseRefineCost = 1000;
