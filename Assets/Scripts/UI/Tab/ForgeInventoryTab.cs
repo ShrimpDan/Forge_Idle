@@ -8,17 +8,14 @@ public class ForgeInventoryTab : MonoBehaviour
     [SerializeField] private Button equipButton;
     [SerializeField] private Button gemButton;
     [SerializeField] private Button resourceButton;
-    [SerializeField] private Button traineeButton; 
 
     [Header("슬롯 루트")]
     [SerializeField] private Transform equipRoot;
     [SerializeField] private Transform gemRoot;
     [SerializeField] private Transform resourceRoot;
-    [SerializeField] private Transform traineeRoot;
 
     [Header("슬롯 프리팹")]
     [SerializeField] private GameObject slotPrefab;
-    [SerializeField] private GameObject traineeSlotPrefab;
 
     private Action<ItemInstance> weaponSlotCallback;
     private Action<ItemInstance> gemSlotCallback;
@@ -43,11 +40,6 @@ public class ForgeInventoryTab : MonoBehaviour
         resourceButton.onClick.RemoveAllListeners();
         resourceButton.onClick.AddListener(() => SwitchTab(TabType.Resource));
 
-        if (traineeButton != null && traineeRoot != null)
-        {
-            traineeButton.onClick.RemoveAllListeners();
-            traineeButton.onClick.AddListener(() => SwitchTab(TabType.Trainee));
-        }
 
         SwitchTab(TabType.Weapon);
     }
@@ -71,7 +63,6 @@ public class ForgeInventoryTab : MonoBehaviour
         if (equipRoot) equipRoot.gameObject.SetActive(tab == TabType.Weapon);
         if (gemRoot) gemRoot.gameObject.SetActive(tab == TabType.Gem);
         if (resourceRoot) resourceRoot.gameObject.SetActive(tab == TabType.Resource);
-        if (traineeRoot) traineeRoot.gameObject.SetActive(tab == TabType.Trainee);
         RefreshSlots();
     }
 
@@ -80,7 +71,6 @@ public class ForgeInventoryTab : MonoBehaviour
         ClearSlots(equipRoot);
         ClearSlots(gemRoot);
         ClearSlots(resourceRoot);
-        if (traineeRoot != null) ClearSlots(traineeRoot);
 
         if (gameManager == null) return;
 
@@ -98,11 +88,6 @@ public class ForgeInventoryTab : MonoBehaviour
         {
             foreach (var item in gameManager.Inventory?.ResourceList ?? new System.Collections.Generic.List<ItemInstance>())
                 CreateSlot(resourceRoot, item, resourceSlotCallback);
-        }
-        else if (curTab == TabType.Trainee && traineeRoot != null && gameManager.TraineeInventory != null)
-        {
-            foreach (var trainee in gameManager.TraineeInventory.GetAll())
-                CreateTraineeSlot(traineeRoot, trainee, traineeSlotCallback);
         }
     }
 
@@ -122,19 +107,6 @@ public class ForgeInventoryTab : MonoBehaviour
         slot.Init(item, i =>
         {
             callback?.Invoke(i);
-            if (uiManager != null)
-                uiManager.CloseUI(UIName.Forge_Inventory_Popup);
-        });
-    }
-
-    private void CreateTraineeSlot(Transform parent, TraineeData trainee, Action<TraineeData> callback)
-    {
-        if (parent == null || traineeSlotPrefab == null) return;
-        var go = Instantiate(traineeSlotPrefab, parent);
-        var slot = go.GetComponent<AssistantSlot>();
-        slot.Init(trainee, t =>
-        {
-            callback?.Invoke(t);
             if (uiManager != null)
                 uiManager.CloseUI(UIName.Forge_Inventory_Popup);
         });
