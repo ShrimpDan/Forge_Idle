@@ -66,4 +66,9 @@ public class TraineeInventory
             sameType[i].SpecializationIndex = i + 1;
         }
     }
+
+    public List<TraineeData> GetEquippedTrainees()
+    {
+        return traineeList.FindAll(t => t.IsEquipped);
+    }
 }

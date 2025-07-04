@@ -91,6 +91,11 @@ public class AssistantTab : BaseTab
         CreateSlots(craftingList, craftSlotRoot);
         CreateSlots(enhancingList, upgradeSlotRoot);
         CreateSlots(sellingList, gemSlotRoot);
+
+        foreach (var assi in assistantManager.TraineeInventory.GetEquippedTrainees())
+        {
+            SetAssistant(assi, true);
+        }
     }
 
     private void CreateSlots(List<TraineeData> assiList, Transform parent)
