@@ -94,10 +94,75 @@ public class FusionUIController : MonoBehaviour
         string name = $"합성제자_{spec}_{selected.personalityName}";
         TraineeData newTrainee = new(name, selected, spec, multipliers, 1, false, false);
 
+        Debug.Log($"[합성 결과] 티어: {selected.tier}, 성격 이름: {selected.personalityName}");
+
         HandleFusionResult(newTrainee);
         ResetFusionUIAfterFusion(newTrainee);
         SetButtonsInteractable(true);
     }
+
+    public void PerformAutoFusionAll()
+    {
+        var inventory = GameManager.Instance.AssistantManager.TraineeInventory;
+        var all = inventory.GetAll();
+        bool didFusion = false;
+
+        for (int tier = 5; tier >= 2; tier--)
+        {
+            int requiredCount = TierToSlotCount.TryGetValue(tier, out int count) ? count : 0;
+            if (requiredCount == 0) continue;
+
+            var grouped = all
+                .Where(t => t.Personality.tier == tier)
+                .GroupBy(t => t.Specialization)
+                .ToList();
+
+            foreach (var group in grouped)
+            {
+                var trainees = group.ToList();
+
+                while (trainees.Count >= requiredCount)
+                {
+                    var useList = trainees.Take(requiredCount).ToList();
+                    foreach (var t in useList)
+                    {
+                        inventory.Remove(t);
+                        all.Remove(t);
+                        trainees.Remove(t);
+                    }
+
+                    int newTier = tier - 1;
+                    var candidates = GameManager.Instance.DataManager.PersonalityLoader.DataList
+                        .FindAll(p => p.tier == newTier);
+
+                    if (candidates == null || candidates.Count == 0)
+                        continue;
+
+                    var selected = candidates[Random.Range(0, candidates.Count)];
+                    var assigner = new PersonalityAssigner(GameManager.Instance.DataManager);
+                    var multipliers = assigner.GenerateMultipliers(selected, group.Key);
+
+                    string name = $"합성제자_{group.Key}_{selected.personalityName}";
+                    TraineeData newTrainee = new(name, selected, group.Key, multipliers, 1, false, false);
+                    inventory.Add(newTrainee);
+                    GameManager.Instance.AssistantManager.ConfirmTrainee(newTrainee);
+
+                    didFusion = true;
+                }
+            }
+        }
+
+        if (didFusion)
+        {
+            fullTraineeList = new List<TraineeData>(inventory.GetAll());
+            ShowAllIcons(fullTraineeList);
+            ClearAllSlots();
+            UpdateFusionStatusText();
+        }
+    }
+
+
+
 
     private void ConfigureFusionSlots(int tier)
     {
@@ -257,7 +322,10 @@ public class FusionUIController : MonoBehaviour
     {
         foreach (var slot in slotViews)
             if (slot.Data != null)
+            {
+                Debug.Log($"[제거] {slot.Data.Name} 제거됨");
                 GameManager.Instance.AssistantManager.TraineeInventory.Remove(slot.Data);
+            }
     }
 
     private void HandleFusionResult(TraineeData fused)
@@ -271,9 +339,14 @@ public class FusionUIController : MonoBehaviour
 
     private void ResetFusionUIAfterFusion(TraineeData newTrainee)
     {
-        fullTraineeList.Add(newTrainee);
-        foreach (var slot in slotViews) slot.Clear();
+        var inventory = GameManager.Instance.AssistantManager.TraineeInventory;
+        fullTraineeList = new List<TraineeData>(inventory.GetAll());
+
+        foreach (var slot in slotViews)
+            slot.Clear();
+
         ShowAllIcons(fullTraineeList);
+        UpdateFusionStatusText();
     }
 
     private void OnTraineeIconClicked(TraineeData data)

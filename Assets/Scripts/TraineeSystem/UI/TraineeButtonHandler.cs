@@ -45,8 +45,6 @@ public class TraineeButtonHandler : MonoBehaviour
         {
             fusionAnimator.PlayMergeAnimation(slots, () =>
             {
-                Debug.Log("합성 완료!");
-
                 fusionUIController.OnClick_FusionButton();
             });
         }
@@ -55,6 +53,13 @@ public class TraineeButtonHandler : MonoBehaviour
             fusionAnimator.PlayEmphasizeEmptySlots(slots);
             fusionUIController.SetButtonsInteractable(true);
         }
+    }
+
+    public void OnClickAutoFusionAll()
+    {
+        fusionUIController.SetButtonsInteractable(false);
+        fusionUIController.PerformAutoFusionAll();
+        fusionUIController.SetButtonsInteractable(true);
     }
 
 }
