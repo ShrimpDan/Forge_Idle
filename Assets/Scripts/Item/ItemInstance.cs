@@ -14,6 +14,8 @@ public class ItemInstance
     // gem 데이터 효과 연산
     public List<ItemInstance> GemSockets = new List<ItemInstance>() { null, null, null };
 
+    [System.NonSerialized] public ItemData Data;
+
     public CraftingData CraftingData { get; private set; }
 
 
@@ -30,18 +32,15 @@ public class ItemInstance
         GemSockets = new List<ItemInstance>() { null, null, null };
     }
 
-    [System.NonSerialized]
-    public ItemData Data;
+   
 
     public void EquipItem()
     {
-        Debug.Log("Equip Item");
         IsEquipped = true;
     }
 
     public void UnEquipItem()
     {
-        Debug.Log("UnEquip Item");
         IsEquipped = false;
     }
 

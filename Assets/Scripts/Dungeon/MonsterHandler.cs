@@ -68,7 +68,7 @@ public class MonsterHandler : MonoBehaviour
         killedMonster++;
         dungeonUI.UpdateMonsterUI(killedMonster, dungeonData.MaxMonster);
 
-        dungeonManager.AddReward(Random.Range(3, 10));
+        dungeonManager.AddReward(Random.Range(dungeonData.MinCount, dungeonData.MaxCount));
 
         if (monstersQueue.Count != 0)
             SpawnNextMonster();

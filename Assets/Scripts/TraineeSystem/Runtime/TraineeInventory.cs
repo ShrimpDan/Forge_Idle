@@ -6,13 +6,19 @@ using UnityEngine;
 /// </summary>
 public class TraineeInventory
 {
-    private readonly List<TraineeData> traineeList = new();
+    private List<TraineeData> traineeList = new();
 
     /// <summary>
     /// 제자를 리스트에 추가하고 특화 인덱스를 갱신합니다.
     /// </summary>
     public void Add(TraineeData data)
     {
+        if (data == null)
+        {
+            Debug.LogWarning("[TraineeInventory] Null 데이터를 추가하려고 시도했습니다.");
+            return;
+        }
+
         traineeList.Add(data);
         ReindexSpecialization(data.Specialization);
     }
@@ -22,7 +28,12 @@ public class TraineeInventory
     /// </summary>
     public void Remove(TraineeData data)
     {
-        traineeList.Remove(data);
+        if (!traineeList.Remove(data))
+        {
+            Debug.LogWarning("[TraineeInventory] 리스트에서 제거 실패: 해당 제자가 존재하지 않습니다.");
+            return;
+        }
+
         ReindexSpecialization(data.Specialization);
     }
 
@@ -31,7 +42,7 @@ public class TraineeInventory
     /// </summary>
     public List<TraineeData> GetAll()
     {
-        return traineeList;
+        return new List<TraineeData>(traineeList); // 보호용 복사본 반환
     }
 
     /// <summary>
@@ -43,7 +54,15 @@ public class TraineeInventory
     }
 
     /// <summary>
-    /// 현재 저장된 제자들을 디버그 로그로 출력합니다.
+    /// 장착 중인 제자들을 반환합니다.
+    /// </summary>
+    public List<TraineeData> GetEquippedTrainees()
+    {
+        return traineeList.FindAll(t => t.IsEquipped);
+    }
+
+    /// <summary>
+    /// 디버그 용도로 제자 리스트 전체를 출력합니다.
     /// </summary>
     public void DebugPrint()
     {
@@ -51,8 +70,13 @@ public class TraineeInventory
         for (int i = 0; i < traineeList.Count; i++)
         {
             var t = traineeList[i];
-            Debug.Log($"[{i + 1}] 이름: {t.Name} / 특화: {t.Specialization} / 번호: {t.SpecializationIndex}");
+            Debug.Log($"[{i + 1}] {ToStringTrainee(t)}");
         }
+    }
+
+    private string ToStringTrainee(TraineeData data)
+    {
+        return $"이름: {data.Name} / 특화: {data.Specialization} / 인덱스: {data.SpecializationIndex} / 레벨: {data.Level}";
     }
 
     /// <summary>
@@ -64,6 +88,35 @@ public class TraineeInventory
         for (int i = 0; i < sameType.Count; i++)
         {
             sameType[i].SpecializationIndex = i + 1;
+        }
+    }
+
+    /// <summary>
+    /// 티어 우선, 특화 후순 정렬
+    /// </summary>
+    public void SortByTierThenSpecialization()
+    {
+        traineeList.Sort((a, b) =>
+        {
+            int tierCompare = a.Personality.tier.CompareTo(b.Personality.tier);
+            if (tierCompare != 0)
+                return tierCompare;
+
+            return a.Specialization.CompareTo(b.Specialization);
+        });
+
+        // 정렬 이후 인덱스 재정렬
+        ReindexAllSpecializations();
+    }
+
+    /// <summary>
+    /// 모든 특화 인덱스를 전부 재계산합니다.
+    /// </summary>
+    private void ReindexAllSpecializations()
+    {
+        foreach (SpecializationType type in System.Enum.GetValues(typeof(SpecializationType)))
+        {
+            ReindexSpecialization(type);
         }
     }
 }

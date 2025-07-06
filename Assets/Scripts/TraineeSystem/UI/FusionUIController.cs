@@ -47,6 +47,13 @@ public class FusionUIController : MonoBehaviour
         { 2, new Vector2(400, 400) }
     };
 
+    private static readonly Dictionary<SpecializationType, int> SpecializationOrder = new()
+    {
+        { SpecializationType.Crafting, 0 },
+        { SpecializationType.Enhancing, 1 },
+        { SpecializationType.Selling, 2 }
+    };
+
     public void OpenUI(List<TraineeData> traineeList)
     {
         fusionUI.SetActive(true);
@@ -75,7 +82,6 @@ public class FusionUIController : MonoBehaviour
 
         if (currentTier <= 1)
         {
-            Debug.LogWarning("이미 최상위 티어입니다.");
             return;
         }
 
@@ -85,7 +91,6 @@ public class FusionUIController : MonoBehaviour
 
         if (candidates == null || candidates.Count == 0)
         {
-            Debug.LogError($"티어 {newTier}에 해당하는 성격이 없습니다.");
             return;
         }
 
@@ -96,8 +101,6 @@ public class FusionUIController : MonoBehaviour
 
         string name = $"합성제자_{spec}_{selected.personalityName}";
         TraineeData newTrainee = new(name, selected, spec, multipliers, 1, false, false);
-
-        Debug.Log($"[합성 결과] 티어: {selected.tier}, 성격 이름: {selected.personalityName}");
 
         HandleFusionResult(newTrainee);
         ResetFusionUIAfterFusion(newTrainee);
@@ -112,8 +115,7 @@ public class FusionUIController : MonoBehaviour
 
         for (int tier = 5; tier >= 2; tier--)
         {
-            int requiredCount = TierToSlotCount.TryGetValue(tier, out int count) ? count : 0;
-            if (requiredCount == 0) continue;
+            if (!TierToSlotCount.TryGetValue(tier, out int requiredCount) || requiredCount == 0) continue;
 
             var grouped = all
                 .Where(t => t.Personality.tier == tier)
@@ -163,9 +165,6 @@ public class FusionUIController : MonoBehaviour
             UpdateFusionStatusText();
         }
     }
-
-
-
 
     private void ConfigureFusionSlots(int tier)
     {
@@ -326,7 +325,6 @@ public class FusionUIController : MonoBehaviour
         foreach (var slot in slotViews)
             if (slot.Data != null)
             {
-                Debug.Log($"[제거] {slot.Data.Name} 제거됨");
                 GameManager.Instance.AssistantManager.TraineeInventory.Remove(slot.Data);
             }
     }
@@ -416,6 +414,8 @@ public class FusionUIController : MonoBehaviour
         };
     }
 
+    public List<FusionSlotView> GetCurrentSlots() => slotViews;
+
     public void SetButtonsInteractable(bool interactable)
     {
         foreach (var btn in buttonsToDisableDuringFusion)
@@ -431,12 +431,5 @@ public class FusionUIController : MonoBehaviour
                 buttonsToDisableDuringFusion.Add(btn);
         }
     }
-    private static readonly Dictionary<SpecializationType, int> SpecializationOrder = new()
-{
-    { SpecializationType.Crafting, 0 },
-    { SpecializationType.Enhancing, 1 },
-    { SpecializationType.Selling, 2 }
-};
-
-    public List<FusionSlotView> GetCurrentSlots() => slotViews;
 }
+

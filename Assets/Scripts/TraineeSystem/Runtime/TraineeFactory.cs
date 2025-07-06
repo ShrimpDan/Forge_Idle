@@ -7,60 +7,52 @@
 public class TraineeFactory
 {
     private readonly Dictionary<SpecializationType, int> specializationCounts = new();
-    private readonly PersonalityAssigner assigner;
+    private readonly AssistantDataLoader assistantLoader;
+    private readonly PersonalityDataLoader personalityLoader;
+    private readonly SpecializationDataLoader specializationLoader;
+    private readonly System.Random rng = new();
+
     private bool canRecruit = true;
 
-    public TraineeFactory(DataManager dataManger)
+    public TraineeFactory(DataManager dataManager)
     {
-        assigner = new PersonalityAssigner(dataManger);
+        assistantLoader = dataManager.AssistantLoader;
+        personalityLoader = dataManager.PersonalityLoader;
+        specializationLoader = dataManager.SpecializationLoader;
     }
 
-    /// <summary>
-    /// 현재 제자 생성이 가능한 상태인지 반환합니다.
-    /// </summary>
     public bool CanRecruit => canRecruit;
 
-    /// <summary>
-    /// 제자 생성 가능 상태를 설정합니다.
-    /// </summary>
     public void SetCanRecruit(bool value)
     {
         canRecruit = value;
     }
 
-    /// <summary>
-    /// 무작위 특화의 제자를 생성합니다.
-    /// </summary>
     public TraineeData CreateRandomTrainee(bool bypassRecruitCheck = false)
     {
         if (!canRecruit && !bypassRecruitCheck) return null;
-
         canRecruit = false;
-        var data = assigner.GenerateTrainee();
-        if (data != null)
-            AssignInfo(data);
 
-        return data;
+        var candidates = assistantLoader.ItemsList.FindAll(t => GetTier(t.grade) >= 2);
+        if (candidates.Count == 0) return null;
+
+        var selected = candidates[rng.Next(candidates.Count)];
+        return CreateTraineeFromData(selected);
     }
 
-    /// <summary>
-    /// 특정 특화의 제자를 생성합니다.
-    /// </summary>
     public TraineeData CreateFixedTrainee(SpecializationType type, bool bypassRecruitCheck = false)
     {
         if (!canRecruit && !bypassRecruitCheck) return null;
-
         canRecruit = false;
-        var data = assigner.GenerateTrainee(type);
-        if (data != null)
-            AssignInfo(data);
 
-        return data;
+        var candidates = assistantLoader.ItemsList.FindAll(t => GetTier(t.grade) >= 2 &&
+                                                                specializationLoader.GetByKey(t.specializationKey)?.specializationType == type);
+        if (candidates.Count == 0) return null;
+
+        var selected = candidates[rng.Next(candidates.Count)];
+        return CreateTraineeFromData(selected);
     }
 
-    /// <summary>
-    /// 여러 명의 제자를 일괄 생성합니다.
-    /// </summary>
     public List<TraineeData> CreateMultiple(int count, SpecializationType? fixedType = null)
     {
         var results = new List<TraineeData>();
@@ -76,26 +68,57 @@ public class TraineeFactory
         return results;
     }
 
-    /// <summary>
-    /// 제자 생성 잠금을 해제합니다. (10연 뽑기용)
-    /// </summary>
     public void ResetRecruitLock()
     {
         canRecruit = true;
     }
 
-    /// <summary>
-    /// 특화별로 고유 이름과 인덱스를 부여합니다.
-    /// </summary>
+    private TraineeData CreateTraineeFromData(AssistantData assistant)
+    {
+        int tier = GetTier(assistant.grade);
+
+        var personality = personalityLoader.GetByKey(assistant.personalityKey);
+        var specialization = specializationLoader.GetByKey(assistant.specializationKey)?.specializationType ?? SpecializationType.Crafting;
+
+        var multipliers = new List<TraineeData.AbilityMultiplier>
+        {
+            new("Crafting", personality?.craftingMultiplier ?? 1f),
+            new("Enhancing", personality?.enhancingMultiplier ?? 1f),
+            new("Selling", personality?.sellingMultiplier ?? 1f)
+        };
+
+        var data = new TraineeData(
+            name: assistant.Name,
+            personality: personality,
+            specialization: specialization,
+            multipliers: multipliers
+        );
+
+        AssignInfo(data);
+        return data;
+    }
+
     private void AssignInfo(TraineeData data)
     {
         var spec = data.Specialization;
-
         if (!specializationCounts.ContainsKey(spec))
             specializationCounts[spec] = 0;
 
         specializationCounts[spec]++;
         data.SpecializationIndex = specializationCounts[spec];
         data.SetName($"제자_{spec} {data.SpecializationIndex}");
+    }
+
+    private int GetTier(string grade)
+    {
+        return grade switch
+        {
+            "UR" => 1,
+            "SSR" => 2,
+            "SR" => 3,
+            "R" => 4,
+            "N" => 5,
+            _ => 5
+        };
     }
 }

@@ -11,8 +11,6 @@ public class MineWindow : BaseUI
     [SerializeField] private GameObject mineSlotPrefab;
 
     private List<MineListSlot> mineSlots = new();
-    private GameManager gameManager;
-    private UIManager uIManager;
     private DataManager dataManager;
     private List<MineData> mineDataList = new();
 

@@ -1,10 +1,11 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class InventoryTab : BaseTab
 {
-    private Jang.InventoryManager inventory;
+    private InventoryManager inventory;
 
     [Header("Tab Buttons")]
     [SerializeField] private Button[] tabButtons;
@@ -85,6 +86,11 @@ public class InventoryTab : BaseTab
         CreateSlots(inventory.WeaponList, EquipRoot);
         CreateSlots(inventory.GemList, GemRoot);
         CreateSlots(inventory.ResourceList, ResourceRoot);
+
+        for (int i = 0; i < invenEquippedSlots.Length; i++)
+        {
+            invenEquippedSlots[i].Init(uIManager, inventory.EquippedWeaponDict[i]);
+        }
     }
 
     private void CreateSlots(List<ItemInstance> itemList, Transform parent)

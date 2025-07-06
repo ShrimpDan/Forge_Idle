@@ -13,11 +13,11 @@ public class TraineeController : MonoBehaviour
 
     [SerializeField] private TraineeCardUI cardUI;
     [SerializeField] private TraineeCardAnimator cardAnimator;
-
     [SerializeField] private Button backCardButton;
 
     private bool isFlipped = false;
     private bool isFlipping = false;
+
     public bool IsFlipped => isFlipped;
 
     private System.Action<TraineeData> onConfirm;
@@ -25,16 +25,22 @@ public class TraineeController : MonoBehaviour
     /// <summary>
     /// 카드 설정 및 UI 초기화
     /// </summary>
-    public void Setup(TraineeData traineeData, TraineeFactory traineeFactory, TraineeDrawController drawCtrl,
-                      System.Action<TraineeData> onConfirmAction,
-                      bool enableFlipOnStart = false, bool isMultiDrawCard = false, bool playSpawnEffect = true)
+    public void Setup(
+        TraineeData traineeData,
+        TraineeFactory traineeFactory,
+        TraineeDrawController drawCtrl,
+        System.Action<TraineeData> onConfirmAction,
+        bool enableFlipOnStart = false,
+        bool isMultiDrawCard = false,
+        bool playSpawnEffect = true)
     {
         data = traineeData;
         factory = traineeFactory;
         drawController = drawCtrl;
-        isFlipped = false;
         onConfirm = onConfirmAction;
+        isFlipped = false;
 
+        // UI 및 애니메이터 초기화
         cardUI?.UpdateUI(data);
         cardAnimator?.Setup(data);
 
@@ -91,11 +97,11 @@ public class TraineeController : MonoBehaviour
         isFlipping = false;
 
         cardUI?.UpdateUI(data);
-        cardAnimator?.FlipCard(); // Tier 연출 없이 즉시 앞면으로 전환
+        cardAnimator?.FlipCard();
     }
 
     /// <summary>
-    /// 뒤집기 버튼을 사용 가능하게 설정
+    /// 카드 뒤집기 버튼을 사용 가능하게 설정
     /// </summary>
     public void EnableFlip()
     {
@@ -112,6 +118,7 @@ public class TraineeController : MonoBehaviour
 
         onConfirm?.Invoke(data);
         Destroy(gameObject);
+
         drawController?.OnCardConfirmed();
         factory?.SetCanRecruit(true);
     }

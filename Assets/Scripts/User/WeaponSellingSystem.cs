@@ -45,12 +45,6 @@ public class WeaponSellingSystem : MonoBehaviour
 
     public void SetCraftingItem(CraftingData data)
     {
-        CraftingData preData = CraftingWeapon[data.jobType];
-        if (preData != null)
-        {
-
-        }
-
         CraftingWeapon[data.jobType] = data;
     }
 
@@ -63,7 +57,7 @@ public class WeaponSellingSystem : MonoBehaviour
 
         if (craftingCoroutine == null)
         {
-            Debug.Log($"[무기 판매 시스템] {customer.Job} 무기 제작 시작!!");
+            Debug.Log($"[무기 판매 시스템] 무기 제작 시작!!");
             craftingCoroutine = StartCoroutine(CraftingWeaponCoroutine());
         }
     }

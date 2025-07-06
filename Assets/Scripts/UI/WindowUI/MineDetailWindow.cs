@@ -13,14 +13,52 @@ public class MineDetailWindow : BaseUI
     [SerializeField] private Transform mineralSlotParent;
     [SerializeField] private GameObject mineralSlotPrefab;
 
-    [Range(0f, 1f)]
-    [SerializeField] private float firstRewardProbability = 0.7f;
-
     private List<MineralSlot> mineralSlots = new();
     private MineData mineData;
     private DataManager dataManager;
-    private GameManager gameManager;
-    private UIManager uIManager;
+
+    // 드랍테이블: 마인별 자원, 확률(weight)
+    private static readonly Dictionary<string, List<(string key, float weight)>> mineDropTable = new()
+    {
+        ["mine_bronze"] = new List<(string, float)> {
+            ("resource_bronze", 80f),
+            ("resource_copper", 15f),
+            ("resource_iron", 4f),
+            ("resource_silver", 0.8f),
+            ("resource_gold", 0.2f)
+        },
+        ["mine_silver"] = new List<(string, float)> {
+            ("resource_silver", 75f),
+            ("resource_gold", 15f),
+            ("resource_iron", 8f),
+            ("resource_mithril", 1.5f),
+            ("resource_amethyst", 0.5f)
+        },
+        ["mine_crystal"] = new List<(string, float)> {
+            ("resource_iron", 60f),
+            ("resource_silver", 20f),
+            ("resource_amethyst", 8f),
+            ("resource_sapphire", 6f),
+            ("resource_gold", 5f),
+            ("resource_mithril", 1f)
+        },
+        ["mine_ruby"] = new List<(string, float)> {
+            ("resource_gold", 50f),
+            ("resource_silver", 20f),
+            ("resource_mithril", 8f),
+            ("resource_ruby", 1.5f),
+            ("resource_amethyst", 10f),
+            ("resource_sapphire", 10f)
+        },
+        ["mine_emerald"] = new List<(string, float)> {
+            ("resource_gold", 50f),
+            ("resource_emerald", 2f),
+            ("resource_amethyst", 10f),
+            ("resource_sapphire", 10f),
+            ("resource_mithril", 8f),
+            ("resource_ruby", 0.5f)
+        }
+    };
 
     private class MineralCollectionInfo
     {
@@ -51,9 +89,10 @@ public class MineDetailWindow : BaseUI
         collectionInfos.Clear();
 
         var itemLoader = dataManager.ItemLoader;
+
         for (int i = 0; i < 5; i++)
         {
-            string key = PickRandomResourceKey();
+            string key = PickDropResourceKey(mineData.Key);
             ItemData resourceData = itemLoader?.GetItemByKey(key);
             Sprite icon = resourceData != null ? IconLoader.GetIcon(resourceData.IconPath) : null;
             string mineralName = resourceData != null ? resourceData.Name : $"광물{i + 1}";
@@ -74,38 +113,77 @@ public class MineDetailWindow : BaseUI
         }
     }
 
-    private string PickRandomResourceKey()
+    private string PickDropResourceKey(string mineKey)
     {
-        if (mineData.RewardMineralKeys == null || mineData.RewardMineralKeys.Count < 2)
-            return mineData.RewardMineralKeys?[0] ?? "";
-        float r = UnityEngine.Random.value;
-        return (r < firstRewardProbability) ? mineData.RewardMineralKeys[0] : mineData.RewardMineralKeys[1];
+        if (!mineDropTable.ContainsKey(mineKey))
+            return "";
+
+        var dropList = mineDropTable[mineKey];
+        float totalWeight = 0;
+        foreach (var pair in dropList)
+            totalWeight += pair.weight;
+
+        float r = UnityEngine.Random.Range(0, totalWeight);
+        float sum = 0;
+        foreach (var pair in dropList)
+        {
+            sum += pair.weight;
+            if (r <= sum)
+                return pair.key;
+        }
+        return dropList[0].key;
     }
 
     private void OnClickAssignAssistant(int idx)
     {
         var info = collectionInfos[idx];
         var traineeInventory = gameManager.TraineeInventory;
-        // 어시스턴트 이미 배정? -> 해제
+
         if (info.assignedTrainee != null)
         {
             traineeInventory.Add(info.assignedTrainee);
             info.assignedTrainee = null;
             info.assignTime = DateTime.MinValue;
             info.pendingReward = 0;
+            mineralSlots[idx].SetAssistant(null);
             Debug.Log("어시스턴트 해제됨, 채집 중단");
             return;
         }
-        // Trainee 선택 콜백
-        var popup = uIManager.OpenUI<Forge_Inventory_Popup>(UIName.Forge_Inventory_Popup);
-        popup.SetTraineeSelectCallback((trainee) =>
+
+        // AssistantSelectPopup 사용
+        var popup = uIManager.OpenUI<AssistantSelectPopup>(UIName.AssistantSelectPopup);
+        popup.Init(gameManager, uIManager);
+
+        popup.OpenForSelection((trainee) =>
         {
             if (trainee == null) return;
-            info.assignedTrainee = trainee;
-            info.assignTime = DateTime.Now;
-            info.pendingReward = 0;
-            traineeInventory.Remove(trainee);
-            Debug.Log($"어시스턴트 배정, 채집 시작: {trainee.Name}");
+            // Mine_AssistantPopup 호출
+            var assiPopup = uIManager.OpenUI<Mine_AssistantPopup>(UIName.Mine_AssistantPopup);
+            assiPopup.Init(gameManager, uIManager);
+
+            assiPopup.SetAssistant(trainee, false, (selected, isAssign) =>
+            {
+                if (isAssign)
+                {
+                    info.assignedTrainee = selected;
+                    info.assignTime = DateTime.Now;
+                    info.pendingReward = 0;
+                    traineeInventory.Remove(selected);
+                    mineralSlots[idx].SetAssistant(selected);
+                    Debug.Log($"어시스턴트 배정, 채집 시작: {selected.Name}");
+                }
+                else
+                {
+                    if (info.assignedTrainee != null)
+                        traineeInventory.Add(info.assignedTrainee);
+
+                    info.assignedTrainee = null;
+                    info.assignTime = DateTime.MinValue;
+                    info.pendingReward = 0;
+                    mineralSlots[idx].SetAssistant(null);
+                    Debug.Log("어시스턴트 해제됨, 채집 중단");
+                }
+            });
         });
     }
 

@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 /// <summary>
 /// 개별 제자 정보를 담고 있는 데이터 클래스입니다.
 /// 이름, 성격, 특화, 능력치 계수 등을 포함합니다.
 /// </summary>
+[Serializable]
 public class TraineeData
 {
     public const int MaxLevel = 10;
@@ -37,6 +39,10 @@ public class TraineeData
         IsInUse = isInuse;
     }
 
+    /// <summary>
+    /// 능력치 계수 정의용 내부 클래스
+    /// </summary>
+    [Serializable]
     public class AbilityMultiplier
     {
         public string AbilityName;
@@ -47,27 +53,43 @@ public class TraineeData
             AbilityName = abilityName;
             Multiplier = multiplier;
         }
+
+        public override string ToString()
+        {
+            return $"{AbilityName}: x{Multiplier:F2}";
+        }
     }
 
+    /// <summary>
+    /// 이름을 변경합니다.
+    /// </summary>
     public void SetName(string name)
     {
         Name = name;
     }
 
-    public void LevelUp()
+    /// <summary>
+    /// 레벨업 시 능력치 계수를 증가시킵니다.
+    /// </summary>
+    public void LevelUp(float growthRate = 1.2f)
     {
-        if (Level >= MaxLevel)
-        {
-            return;
-        }
+        if (Level >= MaxLevel) return;
 
         Level++;
 
         for (int i = 0; i < Multipliers.Count; i++)
         {
-            var multiplier = Multipliers[i];
-            float newMultiplier = multiplier.Multiplier * 1.2f;
-            Multipliers[i] = new AbilityMultiplier(multiplier.AbilityName, newMultiplier);
+            var m = Multipliers[i];
+            float newMultiplier = m.Multiplier * growthRate;
+            Multipliers[i] = new AbilityMultiplier(m.AbilityName, newMultiplier);
         }
+    }
+
+    /// <summary>
+    /// 계수를 외부에서 갱신할 때 사용
+    /// </summary>
+    public void SetMultipliers(List<AbilityMultiplier> newMultipliers)
+    {
+        Multipliers = newMultipliers;
     }
 }

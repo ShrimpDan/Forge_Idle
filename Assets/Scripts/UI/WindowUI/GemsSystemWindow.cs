@@ -19,8 +19,6 @@ public class GemsSystemWindow : BaseUI
     private List<Forge_ItemSlot> gemSlots = new List<Forge_ItemSlot>();
     private bool isExecuted = false;
 
-    private GameManager gameManager;
-    private UIManager uIManager;
     private DataManager dataManager;  // ★ 추가: 데이터 매니저 직접 참조
 
     public override void Init(GameManager gameManager, UIManager uIManager)

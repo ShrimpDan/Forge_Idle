@@ -9,14 +9,18 @@ public class TraineeCardUI : MonoBehaviour
     [SerializeField] private Image specializationIcon;
 
     [Header("아이콘 스프라이트")]
-    [SerializeField] private Sprite[] tierSprites; // 성격 티어 1~5 ( 인덱스 0 ~ 4)
+    [SerializeField] private Sprite[] tierSprites; // 성격 티어 1~5 (인덱스 0~4)
     [SerializeField] private Sprite craftingIcon;
     [SerializeField] private Sprite enhancingIcon;
     [SerializeField] private Sprite sellingIcon;
 
     public void UpdateUI(TraineeData data)
     {
-        characterIcon.sprite = GetRandomCharacterSprite(); // 랜덤 캐릭터 이미지 지정 (추후 구현)
+        if (!string.IsNullOrEmpty(data.Personality.Key))
+        {
+            string iconPath = data.Personality.Key;
+            characterIcon.sprite = LoadCharacterIcon(data);
+        }
 
         int tierIndex = Mathf.Clamp(data.Personality.tier - 1, 0, tierSprites.Length - 1);
         tierIcon.sprite = tierSprites[tierIndex];
@@ -30,8 +34,9 @@ public class TraineeCardUI : MonoBehaviour
         };
     }
 
-    private Sprite GetRandomCharacterSprite()
+    private Sprite LoadCharacterIcon(TraineeData data)
     {
-        return null;
+        string assumedIconPath = $"Icons/{data.Name}";
+        return Resources.Load<Sprite>(assumedIconPath);
     }
 }

@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
 
 public class MineralSlot : MonoBehaviour
 {
@@ -8,11 +9,37 @@ public class MineralSlot : MonoBehaviour
     [SerializeField] private Image mineralIcon;
     [SerializeField] private Button assignAssistantBtn;
 
-    public void Init(string mineralName, Sprite mineralSprite, UnityEngine.Events.UnityAction onClick)
+    [Header("Assistant")]
+    [SerializeField] private GameObject assistantIconRoot;
+    [SerializeField] private Image assistantIcon;
+
+    private TraineeData assignedAssistant;
+    private Action onClickSlot;
+
+    public void Init(string mineralName, Sprite mineralSprite, Action onClick)
     {
         mineralNameText.text = mineralName;
         mineralIcon.sprite = mineralSprite;
+        onClickSlot = onClick;
+
         assignAssistantBtn.onClick.RemoveAllListeners();
-        assignAssistantBtn.onClick.AddListener(onClick);
+        assignAssistantBtn.onClick.AddListener(() => onClickSlot?.Invoke());
+
+        SetAssistant(null);
+    }
+
+    public void SetAssistant(TraineeData assistant)
+    {
+        assignedAssistant = assistant;
+        if (assistant != null)
+        {
+            assistantIconRoot?.SetActive(true);
+            // 아이콘 적용: 현재 구조에선 TraineeData에 IconPath가 없으니, 추후 확장 필요
+        }
+        else
+        {
+            if (assistantIconRoot != null)
+                assistantIconRoot.SetActive(false);
+        }
     }
 }
