@@ -52,7 +52,7 @@ public class CustomerLoader
 
 
     public Customer SpawnNormal(CustomerJob job) => SpawnByJob(job, CustomerType.Normal);
-    public Customer SpawnRegular(CustomerJob job) => SpawnByJob(job, CustomerType.Regualr);
+    public Customer SpawnRegular(CustomerJob job) => SpawnByJob(job, CustomerType.Regular);
     public Customer SpawnNuisance(CustomerJob job) => SpawnByJob(job, CustomerType.Nuisance);
 
 

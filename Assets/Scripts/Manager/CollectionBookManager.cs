@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 
 public class CollectionBookManager : MonoSingleton<CollectionBookManager>
@@ -15,40 +16,79 @@ public class CollectionBookManager : MonoSingleton<CollectionBookManager>
 
     private Dictionary<CustomerJob, List<RegualrCustomerData>> regularDic = new Dictionary<CustomerJob, List<RegualrCustomerData>>();
 
-    private void InitDic()
+    public void InitDic()
     {
         dataManager = GameManager.Instance.DataManager;
-        
-        discovered.Clear();
-        foreach (var rc in bookData.regularCustomers)
-        {
-            if (rc == null) continue;
 
-            CustomerData data = dataManager.CustomerDataLoader.GetByKey(rc.customerKey);//이거 수정해야함
-            if (!regularDic.TryGetValue(data.job, out var list))
+        ///  dataManager.RegularDataLoader;
+        RegularDataLoader regularDataLoader = dataManager.RegularDataLoader;
+        CustomerDataLoader dataLoader = dataManager.CustomerDataLoader;
+
+        foreach (var data in regularDataLoader.ItemsList)
+        {
+            if (data == null)
             {
-                list = new List<RegualrCustomerData>();
-                regularDic[data.job] = list;
+                continue;
+            }
+            CustomerData baseData = dataLoader.GetByKey(data.customerKey); //키를 사용해서 찾은다음
+
+            if(baseData == null)
+            {
+                 continue; //기본 데이터가 없으면 건너뛰기
             }
 
-            list.Add(rc);
-            //rc.isDiscovered = false; // 항상 초기화
+            if (!regularDic.TryGetValue(baseData.job, out var list))
+            {
+                list = new List<RegualrCustomerData>();
+                regularDic[baseData.job] = list; 
+            }
+
+            if (!list.Contains(data))
+            {
+                list.Add(data);
+
+            }
+            
         }
 
+        Debug.Log("StopPoint");
 
-        foreach (var list in regularDic.Values)
-        {
-            list.Sort((a, b) => a.rarity.CompareTo(b.rarity)); //등급 비교스
-        }
+
+        /*
+
+                                discovered.Clear();
+                                foreach (var rc in bookData.regularCustomers)
+                                {
+                                    if (rc == null) continue;
+
+                                    CustomerData data = dataManager.CustomerDataLoader.GetByKey(rc.customerKey);//이거 수정해야함
+                                    if (!regularDic.TryGetValue(data.job, out var list))
+                                    {
+                                        list = new List<RegualrCustomerData>();
+                                        regularDic[data.job] = list;
+                                    }
+
+                                    list.Add(rc);
+
+                                }
+
+
+                                foreach (var list in regularDic.Values)
+                                {
+                                    list.Sort((a, b) => a.rarity.CompareTo(b.rarity)); //등급 비교스
+                                }
+
+                        */
 
 
     }
+
 
     public void Discover(RegualrCustomerData data)
     {
         if (data == null || discovered.Contains(data))
         {
-            //data.isDiscovered = true;
+            //데이터는 유동적으로 변환이 불가능 하게 설정함 
             discovered.Add(data);
 
             OnCustomerDiscovered?.Invoke(data);
@@ -116,5 +156,5 @@ public class CollectionBookManager : MonoSingleton<CollectionBookManager>
 
         return false;
     }
-    
+
 }

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class RegualrCustomer : Customer
 {
 
+    
     public Action<CustomerJob> OnPriceBoosted;//단골손님 가격올리기
 
     [SerializeField] private GameObject InteractObject; //말풍선
@@ -20,11 +20,7 @@ public class RegualrCustomer : Customer
 
     public override void Interact()
     {
-        if (!isInteracting)
-        {
-            //여기서 이제 버프 효과 주면 될듯
-        }
-
+        //아이에 사용 안됨
     }
 
 
@@ -46,10 +42,14 @@ public class RegualrCustomer : Customer
             if (Input.GetMouseButtonDown(0))
             {
                 click = true;
+                isDiscovered = true;
+                
             }
 
             time += Time.deltaTime;
             yield return null;
+            
+            
 
         }
 
@@ -57,6 +57,7 @@ public class RegualrCustomer : Customer
         {
             RegualrEvent();
             InteractObject.SetActive(false);
+            CollectionBookManager.Instance.Discover(Job, CollectData.rarity); //직접 호출해주기
             buyPoint.CustomerOut();
         }
         buyPoint.CustomerOut(); //이어서 나가기

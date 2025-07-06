@@ -115,6 +115,8 @@ public class CustomerManager : MonoSingleton<CustomerManager>
         customerLoader = new CustomerLoader(GameManager.Instance.DataManager.CustomerDataLoader, normalDic, spawnPoint);
         regularLoader = new RegularCustomerLoader(GameManager.Instance.DataManager.RegularDataLoader, regDic, spawnPoint, rarityProbabilities);
 
+        
+
         StartCoroutine(SpawnNormalLoop());
         StartCoroutine(SpawnNuisanceLoop());
 

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Unity.VisualScripting;
+using UnityEngine;
 
 public class GameManager : MonoSingleton<GameManager>
 {
@@ -12,7 +13,7 @@ public class GameManager : MonoSingleton<GameManager>
     public DungeonData CurrentDungeon { get; private set; }
     public CraftingManager CraftingManager { get; private set; }
 
-    protected override void Awake()
+       protected override void Awake()
     {
         base.Awake();
         Inventory = new Jang.InventoryManager(this);
@@ -20,7 +21,8 @@ public class GameManager : MonoSingleton<GameManager>
         AssistantManager = FindObjectOfType<TraineeManager>();
         UIManager = FindObjectOfType<UIManager>();
         Forge = FindObjectOfType<Forge>();
-
+        
+       CollectionBookManager.Instance.InitDic();
         if (UIManager)
             UIManager.Init(this);
         if (Forge)
@@ -32,6 +34,8 @@ public class GameManager : MonoSingleton<GameManager>
         var cmObj = new GameObject("CraftingManager");
         CraftingManager = cmObj.AddComponent<CraftingManager>();
         CraftingManager.Init(Inventory, Forge);
+
+       
         DontDestroyOnLoad(cmObj);
     }
 

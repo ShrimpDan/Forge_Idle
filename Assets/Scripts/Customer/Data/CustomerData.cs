@@ -5,7 +5,7 @@ using UnityEngine;
 public enum CustomerType
 { 
     Normal,
-    Regualr,
+    Regular,
     Nuisance
 }
 
