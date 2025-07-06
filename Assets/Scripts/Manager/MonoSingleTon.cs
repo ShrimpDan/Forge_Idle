@@ -10,7 +10,9 @@ public class MonoSingleton<T> : MonoBehaviour where T : MonoSingleton<T>
         get
         {
             if (isApplicationQuit)
+            { 
                 return null;
+            }
             if (instance == null)
             {
                 instance = (T)FindAnyObjectByType(typeof(T));

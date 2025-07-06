@@ -27,7 +27,7 @@ public class CustomerSlotUI : MonoBehaviour
 
         if (discovered)
         {
-            //image.sprite = IconLoader.GetIcon(data.iconPath);
+            image.sprite = IconLoader.GetIcon(data.iconPath);
             image.color = Color.white;
         }
         else
@@ -35,6 +35,22 @@ public class CustomerSlotUI : MonoBehaviour
             image.sprite = silhouetteSprite;
             image.color = new Color(1, 1, 1, 0.3f);
         }
+    }
+
+    private Sprite LoadIconSprite(string path)
+    {
+        if (string.IsNullOrEmpty(path))
+        {
+            return null;  //없는거
+        }
+
+        var sprite = Resources.Load<Sprite>(path);
+        if (sprite == null)
+        {
+            Debug.Log("사진 없음");
+        }
+        return sprite;
+
     }
 
 }

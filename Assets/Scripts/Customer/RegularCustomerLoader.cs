@@ -69,6 +69,12 @@ public class RegularCustomerLoader
         var baseCustomerData = GameManager.Instance.DataManager.CustomerDataLoader.GetByKey(choice.customerKey);
         var obj = Object.Instantiate(prefab, spawnPoint.position, Quaternion.identity);
         obj.Init(baseCustomerData);
+
+        if (obj is RegualrCustomer rc)
+        {
+            rc.SettingCollectData(choice);
+        }
+
         Debug.Log($"<color=lime>[Regular]</color> {choice.customerName} ({choice.rarity}) 등장!");
         return obj;
     }

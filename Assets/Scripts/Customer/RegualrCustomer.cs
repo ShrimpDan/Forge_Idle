@@ -24,7 +24,10 @@ public class RegualrCustomer : Customer
     }
 
 
-
+    public void SettingCollectData(RegualrCustomerData data)
+    {
+        CollectData = data;
+    }
 
 
 
@@ -43,6 +46,7 @@ public class RegualrCustomer : Customer
             {
                 click = true;
                 isDiscovered = true;
+                CollectionBookManager.Instance.Discover(CollectData); //직접 호출해주기
                 
             }
 
@@ -57,7 +61,6 @@ public class RegualrCustomer : Customer
         {
             RegualrEvent();
             InteractObject.SetActive(false);
-            CollectionBookManager.Instance.Discover(Job, CollectData.rarity); //직접 호출해주기
             buyPoint.CustomerOut();
         }
         buyPoint.CustomerOut(); //이어서 나가기
