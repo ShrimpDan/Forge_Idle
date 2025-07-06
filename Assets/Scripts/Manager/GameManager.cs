@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class GameManager : MonoSingleton<GameManager>
 {
-    public Jang.InventoryManager Inventory { get; private set; }
+    public InventoryManager Inventory { get; private set; }
     public DataManager DataManager { get; private set; }
     public TraineeManager AssistantManager { get; private set; }
     public TraineeInventory TraineeInventory => AssistantManager != null ? AssistantManager.TraineeInventory : null;
