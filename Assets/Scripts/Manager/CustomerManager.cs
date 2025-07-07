@@ -165,8 +165,6 @@ public class CustomerManager : MonoSingleton<CustomerManager>
         {
             return;
         }
-
-
         //랜덤소환
         CustomerJob selected = availableJobs[UnityEngine.Random.Range(0, availableJobs.Count)];
         Customer customer = customerLoader.SpawnNormal(selected);//만들고

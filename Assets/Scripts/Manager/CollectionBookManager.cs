@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
 
 public class CollectionBookManager : MonoSingleton<CollectionBookManager>
@@ -25,7 +21,7 @@ public class CollectionBookManager : MonoSingleton<CollectionBookManager>
         RegularDataLoader regularDataLoader = dataManager.RegularDataLoader;
         CustomerDataLoader dataLoader = dataManager.CustomerDataLoader;
 
-        
+
 
         foreach (var data in regularDataLoader.ItemsList)
         {
@@ -45,16 +41,12 @@ public class CollectionBookManager : MonoSingleton<CollectionBookManager>
                 list = new List<RegualrCustomerData>();
                 regularDic.Add(baseData.job, list);
             }
-
             if (!list.Contains(data))
             {
                 list.Add(data);
-
             }
 
         }
-
-        Debug.Log("StopPoint");
     }
 
 
@@ -74,8 +66,6 @@ public class CollectionBookManager : MonoSingleton<CollectionBookManager>
 
         //나중에 여기 Save()추가
     }
-
-
 
      public void Discover(CustomerJob job, CustomerRarity rarity)
     {
@@ -108,8 +98,6 @@ public class CollectionBookManager : MonoSingleton<CollectionBookManager>
         }
     }
 
-   
-
     public List<RegualrCustomerData> GetByJob(CustomerJob job)
     {
         if (regularDic.TryGetValue(job, out var list))
@@ -120,5 +108,4 @@ public class CollectionBookManager : MonoSingleton<CollectionBookManager>
         return new List<RegualrCustomerData>();
         //없을때 새로운 리스트를 만들어야지
     }
-
 }
