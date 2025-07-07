@@ -32,15 +32,15 @@ public class CollectionBookManager : MonoSingleton<CollectionBookManager>
             }
             CustomerData baseData = dataLoader.GetByKey(data.customerKey); //키를 사용해서 찾은다음
 
-            if(baseData == null)
+            if (baseData == null)
             {
-                 continue; //기본 데이터가 없으면 건너뛰기
+                continue; //기본 데이터가 없으면 건너뛰기
             }
 
             if (!regularDic.TryGetValue(baseData.job, out var list))
             {
                 list = new List<RegualrCustomerData>();
-                regularDic[baseData.job] = list; 
+                regularDic[baseData.job] = list;
             }
 
             if (!list.Contains(data))
@@ -48,51 +48,26 @@ public class CollectionBookManager : MonoSingleton<CollectionBookManager>
                 list.Add(data);
 
             }
-            
+
         }
 
         Debug.Log("StopPoint");
-
-
-        /*
-
-                                discovered.Clear();
-                                foreach (var rc in bookData.regularCustomers)
-                                {
-                                    if (rc == null) continue;
-
-                                    CustomerData data = dataManager.CustomerDataLoader.GetByKey(rc.customerKey);//이거 수정해야함
-                                    if (!regularDic.TryGetValue(data.job, out var list))
-                                    {
-                                        list = new List<RegualrCustomerData>();
-                                        regularDic[data.job] = list;
-                                    }
-
-                                    list.Add(rc);
-
-                                }
-
-
-                                foreach (var list in regularDic.Values)
-                                {
-                                    list.Sort((a, b) => a.rarity.CompareTo(b.rarity)); //등급 비교스
-                                }
-
-                        */
-
-
     }
 
 
     public void Discover(RegualrCustomerData data)
     {
-        if (data == null || discovered.Contains(data))
+        if (data == null)
         {
-            //데이터는 유동적으로 변환이 불가능 하게 설정함 
-            discovered.Add(data);
-
-            OnCustomerDiscovered?.Invoke(data);
+            return;
         }
+        if (discovered.Contains(data))
+        {
+            return;
+        }
+
+        discovered.Add(data);
+        OnCustomerDiscovered?.Invoke(data);
     }
 
     public void Discover(CustomerJob job, CustomerRarity rarity)

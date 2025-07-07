@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using UnityEditor;
 
 public class InventoryManager
 {
@@ -201,7 +203,7 @@ public class InventoryManager
             IsEquipped = i.IsEquipped
         }).ToList();
 
-        saveData.WeaponItems = WeaponList.Select(i => new ItemSaveData
+        saveData.GemItems = GemList.Select(i => new ItemSaveData
         {
             ItemKey = i.ItemKey,
             Quantity = i.Quantity,
@@ -209,12 +211,24 @@ public class InventoryManager
             IsEquipped = i.IsEquipped
         }).ToList();
 
-        saveData.GemItems = GemList.Select(i => new ItemSaveData
+        saveData.WeaponItems = WeaponList.Select(i =>
         {
-            ItemKey = i.ItemKey,
-            Quantity = i.Quantity,
-            CurrentEnhanceLevel = i.CurrentEnhanceLevel,
-            IsEquipped = i.IsEquipped
+            var data = new ItemSaveData
+            {
+                ItemKey = i.ItemKey,
+                Quantity = i.Quantity,
+                CurrentEnhanceLevel = i.CurrentEnhanceLevel,
+                IsEquipped = i.IsEquipped,
+                GemSocketIDs = new List<string>()
+            };
+
+            foreach (var gem in i.GemSockets)
+            {
+                if (gem == null) data.GemSocketIDs.Add(null);
+                else data.GemSocketIDs.Add(gem.Data.ItemKey);
+            }
+
+            return data;
         }).ToList();
 
         saveData.EquippedWeaponIndices = EquippedWeaponDict
@@ -251,12 +265,25 @@ public class InventoryManager
             var itemData = gameManager.DataManager.ItemLoader.GetItemByKey(data.ItemKey);
             var craftingData = gameManager.DataManager.CraftingLoader.GetDataByKey(data.ItemKey);
 
-            WeaponList.Add(new ItemInstance(data.ItemKey, itemData, craftingData)
+            ItemInstance item = new ItemInstance(data.ItemKey, itemData, craftingData)
             {
                 Quantity = data.Quantity,
                 CurrentEnhanceLevel = data.CurrentEnhanceLevel,
                 IsEquipped = data.IsEquipped
-            });
+            };
+
+            item.GemSockets = new List<ItemInstance> { null, null, null };
+            for(int i = 0; i < item.GemSockets.Count;  i++)
+            {
+                string id = data.GemSocketIDs[i];
+                if (id != string.Empty)
+                {
+                    ItemData gemData = gameManager.DataManager.ItemLoader.GetItemByKey(id);
+                    item.GemSockets[i] = new ItemInstance(gemData.ItemKey, gemData);
+                }
+            }
+
+            WeaponList.Add(item);
         }
 
         foreach (var data in saveData.GemItems)

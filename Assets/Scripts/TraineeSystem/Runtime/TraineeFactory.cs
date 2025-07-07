@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using Unity.VisualScripting;
 
 /// <summary>
 /// 제자 생성과 이름 자동 부여를 담당하는 팩토리 클래스입니다.
@@ -77,25 +79,57 @@ public class TraineeFactory
     {
         int tier = GetTier(assistant.grade);
 
-        var personality = personalityLoader.GetByKey(assistant.personalityKey);
-        var specialization = specializationLoader.GetByKey(assistant.specializationKey)?.specializationType ?? SpecializationType.Crafting;
+        PersonalityData personalityData = personalityLoader.GetByKey(assistant.personalityKey);
+        SpecializationData specializationData = specializationLoader.GetByKey(assistant.specializationKey);
 
-        var multipliers = new List<TraineeData.AbilityMultiplier>
+        float m = 1f;
+        switch (specializationData.specializationType)
         {
-            new("Crafting", personality?.craftingMultiplier ?? 1f),
-            new("Enhancing", personality?.enhancingMultiplier ?? 1f),
-            new("Selling", personality?.sellingMultiplier ?? 1f)
-        };
+            case SpecializationType.Crafting:
+                m = personalityData.craftingMultiplier;
+                break;
+            case SpecializationType.Enhancing:
+                m = personalityData.enhancingMultiplier;
+                break;
+            case SpecializationType.Selling:
+                m = personalityData.sellingMultiplier;
+                break;
+        }
 
-        var data = new TraineeData(
+        var multipliers = new List<TraineeData.AbilityMultiplier>();
+
+        for (int i = 0; i < specializationData.statNames.Count; i++)
+        {
+            multipliers.Add(new TraineeData.AbilityMultiplier(
+                abilityName: specializationData.statNames[i],
+                multiplier: specializationData.statValues[i] * m));
+        }
+
+        TraineeData traineeData = new TraineeData(
             name: assistant.Name,
-            personality: personality,
-            specialization: specialization,
+            personality: personalityData,
+            specialization: specializationData.specializationType,
             multipliers: multipliers
         );
 
-        AssignInfo(data);
-        return data;
+        AssignInfo(traineeData);
+
+        return traineeData;
+    }
+
+    public TraineeData CreateFromSpecAndPersonality(SpecializationType spec, string personalityKey, int minTier = 1)
+    {
+        var candidates = assistantLoader.ItemsList
+            .Where(a =>
+                specializationLoader.GetByKey(a.specializationKey)?.specializationType == spec &&
+                a.personalityKey == personalityKey &&
+                GetTier(a.grade) <= minTier)
+            .ToList();
+
+        if (candidates == null || candidates.Count == 0) return null;
+
+        var selected = candidates[rng.Next(candidates.Count)];
+        return CreateTraineeFromData(selected);
     }
 
     private void AssignInfo(TraineeData data)
@@ -106,7 +140,6 @@ public class TraineeFactory
 
         specializationCounts[spec]++;
         data.SpecializationIndex = specializationCounts[spec];
-        data.SetName($"제자_{spec} {data.SpecializationIndex}");
     }
 
     private int GetTier(string grade)
