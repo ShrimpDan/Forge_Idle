@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using TMPro;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class AssistantTab : BaseTab
 {
-    private AssistantManager assistantManager;
+    private TraineeManager assistantManager;
 
     [Header("Tab Buttons")]
     [SerializeField] private Button[] tabButtons;
@@ -34,6 +35,7 @@ public class AssistantTab : BaseTab
 
     private Queue<GameObject> pooledSlots = new Queue<GameObject>();
     private List<GameObject> activeSlots = new List<GameObject>();
+
     private bool isInit = false;
 
     public override void Init(GameManager gameManager, UIManager uIManager)
@@ -50,6 +52,7 @@ public class AssistantTab : BaseTab
 
         assistantManager = gameManager.AssistantManager;
 
+        // 장착된 Assistant 슬롯 초기화
         craftAssi.Init(uIManager);
         enhanceAssi.Init(uIManager);
         sellingAssi.Init(uIManager);
@@ -59,6 +62,7 @@ public class AssistantTab : BaseTab
     {
         base.OpenTab();
         gameManager.Forge.Events.OnAssistantChanged += SetAssistant;
+
         RefreshSlots();
     }
 
@@ -71,7 +75,9 @@ public class AssistantTab : BaseTab
     private void RefreshSlots()
     {
         if (assistantManager == null)
+        {
             assistantManager = GameManager.Instance.AssistantManager;
+        }
 
         foreach (var slot in activeSlots)
         {
@@ -80,9 +86,9 @@ public class AssistantTab : BaseTab
         }
         activeSlots.Clear();
 
-        List<AssistantData> craftingList = assistantManager.GetAssistantsByType(SpecializationType.Crafting);
-        List<AssistantData> enhancingList = assistantManager.GetAssistantsByType(SpecializationType.Enhancing);
-        List<AssistantData> sellingList = assistantManager.GetAssistantsByType(SpecializationType.Selling);
+        List<TraineeData> craftingList = assistantManager.GetTraineesByType(SpecializationType.Crafting);
+        List<TraineeData> enhancingList = assistantManager.GetTraineesByType(SpecializationType.Enhancing);
+        List<TraineeData> sellingList = assistantManager.GetTraineesByType(SpecializationType.Selling);
 
         CreateSlots(craftingList, craftSlotRoot);
         CreateSlots(enhancingList, upgradeSlotRoot);
@@ -90,7 +96,7 @@ public class AssistantTab : BaseTab
 
         if (!isInit)
         {
-            foreach (var assi in assistantManager.AssistantInventory.GetEquippedAssistants())
+            foreach (var assi in assistantManager.TraineeInventory.GetEquippedTrainees())
             {
                 SetAssistant(assi, true);
             }
@@ -98,7 +104,7 @@ public class AssistantTab : BaseTab
         }
     }
 
-    private void CreateSlots(List<AssistantData> assiList, Transform parent)
+    private void CreateSlots(List<TraineeData> assiList, Transform parent)
     {
         foreach (var assi in assiList)
         {
@@ -120,7 +126,9 @@ public class AssistantTab : BaseTab
         for (int i = 0; i < tabPanels.Length; i++)
         {
             bool isSelected = i == index;
+
             tabPanels[i].SetActive(isSelected);
+
             tabButtons[i].image.color = isSelected ? selectedColor : defaultColor;
         }
     }
@@ -129,25 +137,91 @@ public class AssistantTab : BaseTab
     {
         if (pooledSlots.Count > 0)
             return pooledSlots.Dequeue();
+
         return Instantiate(assiSlotPrefab);
     }
 
-    private void SetAssistant(AssistantData assi, bool isActive)
+    private void SetAssistant(TraineeData assi, bool isActive)
     {
-        var type = AssistantInventory.SpecializationKeyToType(assi.specializationKey);
-        switch (type)
+        switch (assi.Specialization)
         {
             case SpecializationType.Crafting:
                 craftAssi.SetAssistant(assi);
                 break;
+
             case SpecializationType.Enhancing:
                 enhanceAssi.SetAssistant(assi);
                 break;
+
             case SpecializationType.Selling:
                 sellingAssi.SetAssistant(assi);
                 break;
         }
-        // 보너스 스탯 구현 필요시 아래 함수 사용
-        // ShowAssistantStat(assi, isActive);
+
+        ShowAssistantStat(assi, isActive);
+    }
+
+    private void ShowAssistantStat(TraineeData assi, bool isAcitve)
+    {
+        if (!isAcitve)
+        {
+            ClearStat(assi.Specialization);
+            return;
+        }
+
+        Transform parent = null;
+
+        switch (assi.Specialization)
+        {
+            case SpecializationType.Crafting:
+                parent = craftStatRoot;
+                break;
+
+            case SpecializationType.Enhancing:
+                parent = enhanceStatRoot;
+                break;
+
+            case SpecializationType.Selling:
+                parent = sellingStatRoot;
+                break;
+        }
+
+        foreach (var stat in assi.Multipliers)
+        {
+            GameObject obj = Instantiate(bonusStatPrefab, parent);
+            if (obj.TryGetComponent(out TextMeshProUGUI tmp))
+            {
+                tmp.text = stat.AbilityName;
+                tmp.text += $"\nx{stat.Multiplier}";
+            }
+        }
+    }
+
+    private void ClearStat(SpecializationType type)
+    {
+        Transform parent = null;
+
+        switch (type)
+        {
+            case SpecializationType.Crafting:
+                parent = craftStatRoot;
+                craftAssi.UnEquipAssistant();
+                break;
+
+            case SpecializationType.Enhancing:
+                parent = enhanceStatRoot;
+                enhanceAssi.UnEquipAssistant();
+                break;
+
+            case SpecializationType.Selling:
+                parent = sellingStatRoot;
+                sellingAssi.UnEquipAssistant();
+                break;
+        }
+
+        foreach (Transform child in parent)
+        {
+            Destroy(child.gameObject);
+        }
     }
 }
