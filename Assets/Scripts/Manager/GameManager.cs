@@ -4,8 +4,8 @@ public class GameManager : MonoSingleton<GameManager>
 {
     public InventoryManager Inventory { get; private set; }
     public DataManager DataManager { get; private set; }
-    public TraineeManager AssistantManager { get; private set; }
-    public TraineeInventory TraineeInventory => AssistantManager != null ? AssistantManager.TraineeInventory : null;
+    public AssistantManager AssistantManager { get; private set; }
+    public AssistantInventory AssistantInventory => AssistantManager != null ? AssistantManager.AssistantInventory : null;
     public Forge Forge { get; private set; }
     public UIManager UIManager { get; private set; }
 
@@ -19,7 +19,7 @@ public class GameManager : MonoSingleton<GameManager>
         base.Awake();
         Inventory = new InventoryManager(this);
         DataManager = new DataManager();
-        AssistantManager = FindObjectOfType<TraineeManager>();
+        AssistantManager = FindObjectOfType<AssistantManager>();
         UIManager = FindObjectOfType<UIManager>();
         Forge = FindObjectOfType<Forge>();
 

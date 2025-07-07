@@ -13,7 +13,7 @@ public class MineralSlot : MonoBehaviour
     [SerializeField] private GameObject assistantIconRoot;
     [SerializeField] private Image assistantIcon;
 
-    private TraineeData assignedAssistant;
+    private AssistantInstance assignedAssistant;
     private Action onClickSlot;
 
     public void Init(string mineralName, Sprite mineralSprite, Action onClick)
@@ -28,13 +28,13 @@ public class MineralSlot : MonoBehaviour
         SetAssistant(null);
     }
 
-    public void SetAssistant(TraineeData assistant)
+    public void SetAssistant(AssistantInstance assistant)
     {
         assignedAssistant = assistant;
         if (assistant != null)
         {
             assistantIconRoot?.SetActive(true);
-            // ¾î½Ã½ºÅÏÆ® ¾ÆÀÌÄÜÀº ÀÌÈÄ È®Àå °¡´É
+            // ï¿½ï¿½Ã½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         }
         else
         {

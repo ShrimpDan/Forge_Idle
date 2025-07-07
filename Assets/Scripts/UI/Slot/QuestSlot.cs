@@ -17,7 +17,7 @@ public class QuestSlot : MonoBehaviour
     [SerializeField] private Button collectButton;
 
     private QuestData questData;
-    private List<TraineeData> assignedAssistants = new();
+    private List<AssistantInstance> assignedAssistants = new();
     private List<GameObject> assistantSlots = new();
     private float timer;
     private bool isRunning;
@@ -32,7 +32,7 @@ public class QuestSlot : MonoBehaviour
         isRunning = false;
         timer = questData.Duration;
 
-        // º¸»ó ¾ÆÀÌÄÜ Ç¥½Ã
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½
         if (dataManager.ItemLoader != null && questData.RewardItemKeys != null && questData.RewardItemKeys.Count > 0)
         {
             var itemData = dataManager.ItemLoader.GetItemByKey(questData.RewardItemKeys[0]);
@@ -40,14 +40,14 @@ public class QuestSlot : MonoBehaviour
         }
         rewardAmountText.text = $"{questData.RewardMin}~{questData.RewardMax}";
         questNameText.text = questData.QuestName;
-        difficultyText.text = $"³­ÀÌµµ {questData.Difficulty + 1}";
+        difficultyText.text = $"ï¿½ï¿½ï¿½Ìµï¿½ {questData.Difficulty + 1}";
         timeLeftText.text = $"{FormatTime(questData.Duration)}";
 
-        // ±âÁ¸ ½½·Ô Á¦°Å
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         foreach (Transform child in assistantsRoot)
             Destroy(child.gameObject);
 
-        // ÇÊ¿ä ½½·Ô »ý¼º
+        // ï¿½Ê¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         for (int i = 0; i < questData.RequiredAssistants; i++)
         {
             var slot = Instantiate(assistantSlotPrefab, assistantsRoot);
@@ -70,27 +70,27 @@ public class QuestSlot : MonoBehaviour
 
         var popup = uiManager.OpenUI<AssistantSelectPopup>(UIName.AssistantSelectPopup);
         popup.Init(GameManager.Instance, uiManager);
-        popup.OpenForSelection(trainee =>
+        popup.OpenForSelection(assistant =>
         {
-            if (trainee == null) return;
-            assignedAssistants[idx] = trainee;
-            SetAssistantSlot(assistantSlots[idx], trainee);
+            if (assistant == null) return;
+            assignedAssistants[idx] = assistant;
+            SetAssistantSlot(assistantSlots[idx], assistant);
 
             if (assignedAssistants.TrueForAll(a => a != null))
                 StartQuest();
         });
     }
 
-    // **Áß¿ä: ¾ÆÀÌÄÜ °æ·Î¸¦ IconPath·Î ÅëÀÏ**
-    private void SetAssistantSlot(GameObject slotObj, TraineeData trainee)
+    // **ï¿½ß¿ï¿½: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Î¸ï¿½ IconPathï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½**
+    private void SetAssistantSlot(GameObject slotObj, AssistantInstance assistant)
     {
         var icon = slotObj.transform.Find("Icon")?.GetComponent<Image>();
         var plus = slotObj.transform.Find("Plus");
         if (icon != null)
         {
-            if (trainee != null)
+            if (assistant != null)
             {
-                string iconPath = trainee?.IconPath;
+                string iconPath = assistant?.IconPath;
                 icon.sprite = !string.IsNullOrEmpty(iconPath) ? IconLoader.GetIcon(iconPath) : null;
                 icon.enabled = icon.sprite != null;
             }
@@ -101,7 +101,7 @@ public class QuestSlot : MonoBehaviour
             }
         }
         if (plus != null)
-            plus.gameObject.SetActive(trainee == null);
+            plus.gameObject.SetActive(assistant == null);
     }
 
     private void StartQuest()
@@ -122,7 +122,7 @@ public class QuestSlot : MonoBehaviour
         if (timer <= 0)
         {
             isRunning = false;
-            timeLeftText.text = "<color=yellow>¿Ï·á!</color>";
+            timeLeftText.text = "<color=yellow>ï¿½Ï·ï¿½!</color>";
             collectButton.gameObject.SetActive(true);
         }
     }

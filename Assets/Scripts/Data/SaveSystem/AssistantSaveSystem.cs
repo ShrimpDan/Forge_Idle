@@ -36,7 +36,7 @@ public class AssistantSaveSystem
 {
     private static string SavePath => Path.Combine(Application.persistentDataPath, "assistant_save.json");
 
-    public static void SaveAssistant(TraineeInventory inventory)
+    public static void SaveAssistant(AssistantInventory inventory)
     {
         var saveData = new AssistantSaveData
         {
@@ -70,7 +70,7 @@ public class AssistantSaveSystem
         Debug.Log("[저장 시스템] 제자 데이터 저장 완료");
     }
 
-    public static void LoadAssistants(TraineeInventory inventory, PersonalityDataLoader personalityLoader)
+    public static void LoadAssistants(AssistantInventory inventory, PersonalityDataLoader personalityLoader)
     {
         if (!File.Exists(SavePath))
         {
@@ -86,10 +86,10 @@ public class AssistantSaveSystem
         foreach (var a in saveData.Assistants)
         {
             var personality = personalityLoader.GetByKey(a.PersonalityKey);
-            var multipliers = a.Multipliers.ConvertAll(m => new TraineeData.AbilityMultiplier(m.AbilityName, m.Multiplier));
+            var multipliers = a.Multipliers.ConvertAll(m => new AssistantInstance.AbilityMultiplier(m.AbilityName, m.Multiplier));
 
 
-            var assi = new TraineeData(
+            var assi = new AssistantInstance(
                 name: a.Name,
                 personality: personality,
                 specialization: a.Specialization,
@@ -111,22 +111,22 @@ public class AssistantSaveSystem
 
 public class AssistantSaveHandler : ISaveHandler
 {
-    private TraineeManager traineeManager;
+    private AssistantManager assistantManager;
     private PersonalityDataLoader personalityLoader;
 
-    public AssistantSaveHandler(TraineeManager manager, PersonalityDataLoader loader)
+    public AssistantSaveHandler(AssistantManager manager, PersonalityDataLoader loader)
     {
-        traineeManager = manager;
+        assistantManager = manager;
         personalityLoader = loader;
     }
 
     public void Save()
     {
-        AssistantSaveSystem.SaveAssistant(traineeManager.TraineeInventory);
+        AssistantSaveSystem.SaveAssistant(assistantManager.AssistantInventory);
     }
 
     public void Load()
     {
-        AssistantSaveSystem.LoadAssistants(traineeManager.TraineeInventory, personalityLoader);
+        AssistantSaveSystem.LoadAssistants(assistantManager.AssistantInventory, personalityLoader);
     }
 }

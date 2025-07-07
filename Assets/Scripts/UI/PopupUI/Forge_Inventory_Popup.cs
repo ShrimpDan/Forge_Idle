@@ -12,7 +12,7 @@ public class Forge_Inventory_Popup : BaseUI
     private Action<ItemInstance> weaponSelectCallback;
     private Action<ItemInstance> gemSelectCallback;
     private Action<ItemInstance> resourceSelectCallback;
-    private Action<TraineeData> traineeSelectCallback;
+    private Action<AssistantInstance> assistantSelectCallback;
 
     public override void Init(GameManager gameManager, UIManager uiManager)
     {
@@ -37,9 +37,9 @@ public class Forge_Inventory_Popup : BaseUI
     {
         resourceSelectCallback = callback; ApplyCallbacks();
     }
-    public void SetTraineeSelectCallback(Action<TraineeData> callback)
+    public void SetTraineeSelectCallback(Action<AssistantInstance> callback)
     {
-        traineeSelectCallback = callback; ApplyCallbacks();
+        assistantSelectCallback = callback; ApplyCallbacks();
     }
 
     private void ApplyCallbacks()
@@ -50,7 +50,7 @@ public class Forge_Inventory_Popup : BaseUI
                 weaponSelectCallback,
                 gemSelectCallback,
                 resourceSelectCallback,
-                traineeSelectCallback
+                assistantSelectCallback
             );
         }
     }
@@ -61,6 +61,6 @@ public class Forge_Inventory_Popup : BaseUI
         weaponSelectCallback = null;
         gemSelectCallback = null;
         resourceSelectCallback = null;
-        traineeSelectCallback = null;
+        assistantSelectCallback = null;
     }
 }

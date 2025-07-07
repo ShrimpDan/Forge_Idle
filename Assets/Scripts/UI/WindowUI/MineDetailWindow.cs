@@ -21,7 +21,7 @@ public class MineDetailWindow : BaseUI
 
     private class MineralCollectionInfo
     {
-        public TraineeData assignedTrainee;
+        public AssistantInstance assignedTrainee;
         public DateTime assignTime;
         public float pendingReward;
         public string mineralKey;
@@ -77,11 +77,11 @@ public class MineDetailWindow : BaseUI
     private void OnClickAssignTrainee(int idx)
     {
         var info = collectionInfos[idx];
-        var traineeInventory = gameManager.TraineeInventory;
+        var assistantInventory = gameManager.AssistantInventory;
 
         if (info.assignedTrainee != null)
         {
-            traineeInventory.Add(info.assignedTrainee);
+            assistantInventory.Add(info.assignedTrainee);
             info.assignedTrainee = null;
             info.assignTime = DateTime.MinValue;
             info.pendingReward = 0;
@@ -92,26 +92,26 @@ public class MineDetailWindow : BaseUI
         var popup = uIManager.OpenUI<AssistantSelectPopup>(UIName.AssistantSelectPopup);
         popup.Init(gameManager, uIManager);
 
-        popup.OpenForSelection((trainee) =>
+        popup.OpenForSelection((assistant) =>
         {
-            if (trainee == null) return;
+            if (assistant == null) return;
             var assiPopup = uIManager.OpenUI<Mine_AssistantPopup>(UIName.Mine_AssistantPopup);
             assiPopup.Init(gameManager, uIManager);
 
-            assiPopup.SetAssistant(trainee, false, (selected, isAssign) =>
+            assiPopup.SetAssistant(assistant, false, (selected, isAssign) =>
             {
                 if (isAssign)
                 {
                     info.assignedTrainee = selected;
                     info.assignTime = DateTime.Now;
                     info.pendingReward = 0;
-                    traineeInventory.Remove(selected);
+                    assistantInventory.Remove(selected);
                     mineralSlots[idx].SetAssistant(selected);
                 }
                 else
                 {
                     if (info.assignedTrainee != null)
-                        traineeInventory.Add(info.assignedTrainee);
+                        assistantInventory.Add(info.assignedTrainee);
 
                     info.assignedTrainee = null;
                     info.assignTime = DateTime.MinValue;

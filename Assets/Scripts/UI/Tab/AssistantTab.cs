@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class AssistantTab : BaseTab
 {
-    private TraineeManager assistantManager;
+    private AssistantManager assistantManager;
 
     [Header("Tab Buttons")]
     [SerializeField] private Button[] tabButtons;
@@ -86,9 +86,9 @@ public class AssistantTab : BaseTab
         }
         activeSlots.Clear();
 
-        List<TraineeData> craftingList = assistantManager.GetTraineesByType(SpecializationType.Crafting);
-        List<TraineeData> enhancingList = assistantManager.GetTraineesByType(SpecializationType.Enhancing);
-        List<TraineeData> sellingList = assistantManager.GetTraineesByType(SpecializationType.Selling);
+        List<AssistantInstance> craftingList = assistantManager.GetAssistantByType(SpecializationType.Crafting);
+        List<AssistantInstance> enhancingList = assistantManager.GetAssistantByType(SpecializationType.Enhancing);
+        List<AssistantInstance> sellingList = assistantManager.GetAssistantByType(SpecializationType.Selling);
 
         CreateSlots(craftingList, craftSlotRoot);
         CreateSlots(enhancingList, upgradeSlotRoot);
@@ -96,7 +96,7 @@ public class AssistantTab : BaseTab
 
         if (!isInit)
         {
-            foreach (var assi in assistantManager.TraineeInventory.GetEquippedTrainees())
+            foreach (var assi in assistantManager.AssistantInventory.GetEquippedTrainees())
             {
                 SetAssistant(assi, true);
             }
@@ -104,7 +104,7 @@ public class AssistantTab : BaseTab
         }
     }
 
-    private void CreateSlots(List<TraineeData> assiList, Transform parent)
+    private void CreateSlots(List<AssistantInstance> assiList, Transform parent)
     {
         foreach (var assi in assiList)
         {
@@ -141,7 +141,7 @@ public class AssistantTab : BaseTab
         return Instantiate(assiSlotPrefab);
     }
 
-    private void SetAssistant(TraineeData assi, bool isActive)
+    private void SetAssistant(AssistantInstance assi, bool isActive)
     {
         switch (assi.Specialization)
         {
@@ -161,7 +161,7 @@ public class AssistantTab : BaseTab
         ShowAssistantStat(assi, isActive);
     }
 
-    private void ShowAssistantStat(TraineeData assi, bool isAcitve)
+    private void ShowAssistantStat(AssistantInstance assi, bool isAcitve)
     {
         if (!isAcitve)
         {

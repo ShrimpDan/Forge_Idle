@@ -5,7 +5,7 @@ public class AssiEquippedSlot : MonoBehaviour
 {
     private UIManager uIManager;
 
-    public TraineeData EquippedAssi { get; private set; }
+    public AssistantInstance EquippedAssi { get; private set; }
 
     [SerializeField] private Image icon;
     [SerializeField] private Button slotBtn;
@@ -20,7 +20,7 @@ public class AssiEquippedSlot : MonoBehaviour
         slotBtn.onClick.AddListener(OnClickSlot);
     }
 
-    public void SetAssistant(TraineeData assi)
+    public void SetAssistant(AssistantInstance assi)
     {
         if (assi == null)
         {

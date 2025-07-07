@@ -20,7 +20,7 @@ public class ForgeInventoryTab : MonoBehaviour
     private Action<ItemInstance> weaponSlotCallback;
     private Action<ItemInstance> gemSlotCallback;
     private Action<ItemInstance> resourceSlotCallback;
-    private Action<TraineeData> traineeSlotCallback;
+    private Action<AssistantInstance> assistantSlotCallback;
 
     private GameManager gameManager;
     private UIManager uiManager;
@@ -48,12 +48,12 @@ public class ForgeInventoryTab : MonoBehaviour
     {
         SetSlotCallbacks(weapon, gem, resource, null);
     }
-    public void SetSlotCallbacks(Action<ItemInstance> weapon, Action<ItemInstance> gem, Action<ItemInstance> resource, Action<TraineeData> trainee)
+    public void SetSlotCallbacks(Action<ItemInstance> weapon, Action<ItemInstance> gem, Action<ItemInstance> resource, Action<AssistantInstance> assistant)
     {
         weaponSlotCallback = weapon;
         gemSlotCallback = gem;
         resourceSlotCallback = resource;
-        traineeSlotCallback = trainee;
+        assistantSlotCallback = assistant;
         RefreshSlots();
     }
 

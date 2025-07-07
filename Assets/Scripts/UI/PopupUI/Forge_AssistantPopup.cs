@@ -22,7 +22,7 @@ public class Forge_AssistantPopup : BaseUI
     [SerializeField] private Button exitButton;
     [SerializeField] private Button iconSlotBtn;
 
-    private TraineeData assiData;
+    private AssistantInstance assiData;
 
     public override void Init(GameManager gameManager, UIManager uIManager)
     {
@@ -53,7 +53,7 @@ public class Forge_AssistantPopup : BaseUI
 
     public override void Open() => base.Open();
 
-    public void SetAssistant(TraineeData data)
+    public void SetAssistant(AssistantInstance data)
     {
         assiData = data;
         assiName.text = data.Name;

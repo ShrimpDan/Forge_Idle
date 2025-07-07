@@ -5,12 +5,12 @@ using System;
 public class AssistantSlot : MonoBehaviour
 {
     private UIManager uIManager;
-    public TraineeData AssistantData { get; private set; }
+    public AssistantInstance AssistantData { get; private set; }
     [SerializeField] private Image icon;
     [SerializeField] private Button slotBtn;
-    private Action<TraineeData> clickCallback;
+    private Action<AssistantInstance> clickCallback;
 
-    public void Init(TraineeData data, Action<TraineeData> onClick)
+    public void Init(AssistantInstance data, Action<AssistantInstance> onClick)
     {
         AssistantData = data;
         clickCallback = onClick;

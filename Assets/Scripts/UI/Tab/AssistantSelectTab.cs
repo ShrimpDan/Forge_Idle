@@ -5,23 +5,23 @@ using System.Collections.Generic;
 
 public class AssistantSelectTab : MonoBehaviour
 {
-    [Header("ÅÇ ¹öÆ°")]
+    [Header("ï¿½ï¿½ ï¿½ï¿½Æ°")]
     [SerializeField] private Button craftTabBtn;
     [SerializeField] private Button enhanceTabBtn;
     [SerializeField] private Button sellTabBtn;
 
-    [Header("ÅÇ Root")]
+    [Header("ï¿½ï¿½ Root")]
     [SerializeField] private Transform craftRoot;
     [SerializeField] private Transform enhanceRoot;
     [SerializeField] private Transform sellRoot;
 
-    [Header("½½·Ô ÇÁ¸®ÆÕ")]
+    [Header("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½")]
     [SerializeField] private GameObject assistantSlotPrefab;
 
     private GameManager gameManager;
     private UIManager uiManager;
 
-    private Action<TraineeData> selectCallback;
+    private Action<AssistantInstance> selectCallback;
 
     private enum TabType { Craft, Enhance, Sell }
     private TabType curTab = TabType.Craft;
@@ -42,10 +42,10 @@ public class AssistantSelectTab : MonoBehaviour
         sellTabBtn.onClick.RemoveAllListeners();
         sellTabBtn.onClick.AddListener(() => SwitchTab(TabType.Sell));
 
-        SwitchTab(TabType.Craft); // ±âº»°ª
+        SwitchTab(TabType.Craft); // ï¿½âº»ï¿½ï¿½
     }
 
-    public void OpenForSelection(Action<TraineeData> callback)
+    public void OpenForSelection(Action<AssistantInstance> callback)
     {
         selectCallback = callback;
         RefreshAllTabs();
@@ -71,9 +71,9 @@ public class AssistantSelectTab : MonoBehaviour
     {
         foreach (var go in pool) go.SetActive(false);
 
-        var trainees = gameManager?.TraineeInventory?.GetBySpecialization(type) ?? new List<TraineeData>();
+        var assistants = gameManager?.AssistantInventory?.GetBySpecialization(type) ?? new List<AssistantInstance>();
         int idx = 0;
-        foreach (var trainee in trainees)
+        foreach (var assistant in assistants)
         {
             GameObject slotObj;
             if (idx < pool.Count)
@@ -87,16 +87,16 @@ public class AssistantSelectTab : MonoBehaviour
                 pool.Add(slotObj);
             }
             var slot = slotObj.GetComponent<AssistantSlot>();
-            slot.Init(trainee, OnSelectAssistant);
+            slot.Init(assistant, OnSelectAssistant);
             idx++;
         }
         for (int i = idx; i < pool.Count; i++)
             pool[i].SetActive(false);
     }
 
-    private void OnSelectAssistant(TraineeData trainee)
+    private void OnSelectAssistant(AssistantInstance assistant)
     {
-        selectCallback?.Invoke(trainee);
+        selectCallback?.Invoke(assistant);
         if (uiManager != null)
             uiManager.CloseUI(UIName.AssistantSelectPopup);
     }

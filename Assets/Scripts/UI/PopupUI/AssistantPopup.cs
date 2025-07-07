@@ -22,7 +22,7 @@ public class AssistantPopup : BaseUI
     [SerializeField] private Button deApplyButton;
     [SerializeField] private Button exitButton;
 
-    TraineeData assiData;
+    AssistantInstance assiData;
 
     public override void Init(GameManager gameManager, UIManager uIManager)
     {
@@ -39,7 +39,7 @@ public class AssistantPopup : BaseUI
         base.Open();
     }
 
-    public void SetAssistant(TraineeData data)
+    public void SetAssistant(AssistantInstance data)
     {
         assiData = data;
         // 캐릭터 아이콘 & 타입별 아이콘 설정

@@ -22,8 +22,8 @@ public class Mine_AssistantPopup : BaseUI
     [SerializeField] private Button unassignButton;
     [SerializeField] private Button exitButton;
 
-    private Action<TraineeData, bool> onAssignToggleCallback;
-    private TraineeData assiData;
+    private Action<AssistantInstance, bool> onAssignToggleCallback;
+    private AssistantInstance assiData;
     private bool isAssigned;
     private UIManager uiManager;
 
@@ -38,7 +38,7 @@ public class Mine_AssistantPopup : BaseUI
         unassignButton.onClick.AddListener(OnUnassign);
     }
 
-    public void SetAssistant(TraineeData data, bool isAlreadyAssigned, Action<TraineeData, bool> onAssignToggle)
+    public void SetAssistant(AssistantInstance data, bool isAlreadyAssigned, Action<AssistantInstance, bool> onAssignToggle)
     {
         assiData = data;
         isAssigned = isAlreadyAssigned;
@@ -64,7 +64,7 @@ public class Mine_AssistantPopup : BaseUI
     private void OnAssign()
     {
         onAssignToggleCallback?.Invoke(assiData, true);
-        // ÆË¾÷ Áï½Ã ´ÝÀ½
+        // ï¿½Ë¾ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         if (uiManager != null)
             uiManager.CloseUI(UIName.Mine_AssistantPopup);
     }
