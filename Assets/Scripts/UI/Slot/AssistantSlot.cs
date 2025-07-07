@@ -5,13 +5,12 @@ using UnityEngine.UI;
 public class AssistantSlot : MonoBehaviour
 {
     private UIManager uIManager;
-    public TraineeData AssistantData { get; private set; }
+    public AssistantData AssistantData { get; private set; }
     [SerializeField] Image icon;
     [SerializeField] Button slotBtn;
-    private Action<TraineeData> clickCallback;
+    private Action<AssistantData> clickCallback;
 
-    // 콜백 버전 Init!
-    public void Init(TraineeData data, Action<TraineeData> onClick)
+    public void Init(AssistantData data, Action<AssistantData> onClick)
     {
         AssistantData = data;
         clickCallback = onClick;
@@ -19,7 +18,8 @@ public class AssistantSlot : MonoBehaviour
         slotBtn.onClick.RemoveAllListeners();
         slotBtn.onClick.AddListener(OnClickSlot);
 
-        //icon.sprite = IconLoader.GetIcon()
+        if (icon != null)
+            icon.sprite = !string.IsNullOrEmpty(data?.iconPath) ? IconLoader.GetIcon(data.iconPath) : null;
 
         if (uIManager == null)
             uIManager = GameManager.Instance.UIManager;
@@ -31,6 +31,7 @@ public class AssistantSlot : MonoBehaviour
         if (AssistantData == null) return;
 
         var ui = uIManager.OpenUI<AssistantPopup>(UIName.AssistantPopup);
-        ui.SetAssistant(AssistantData);
+        if (ui != null)
+            ui.SetAssistant(AssistantData);
     }
 }

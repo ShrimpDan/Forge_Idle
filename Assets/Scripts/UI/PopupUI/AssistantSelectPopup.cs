@@ -25,7 +25,7 @@ public class AssistantSelectPopup : BaseUI
             tabRoot.Init(gameManager, uiManager);
     }
 
-    public void OpenForSelection(Action<TraineeData> callback)
+    public void OpenForSelection(Action<AssistantData> callback)
     {
         if (tabRoot != null)
             tabRoot.OpenForSelection(callback);

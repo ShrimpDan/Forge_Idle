@@ -14,6 +14,8 @@
 
     // 광산 관련 데이터 로더
     public MineLoader MineLoader { get; private set; }
+    // 의뢰 관련 데이터 로더
+    public QuestLoader QuestLoader { get; private set; }
 
     // 손님 관련 데이터 로더
     public CustomerDataLoader CustomerDataLoader { get; private set; }
@@ -35,6 +37,9 @@
 
         // 광산 관련 데이터
         MineLoader = new MineLoader();
+
+        // 의뢰 관련 데이터 로더
+        QuestLoader = new QuestLoader();
 
         // 손님 관련 데이터
         CustomerDataLoader = new CustomerDataLoader();

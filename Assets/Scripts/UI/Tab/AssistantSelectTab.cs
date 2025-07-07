@@ -21,7 +21,7 @@ public class AssistantSelectTab : MonoBehaviour
     private GameManager gameManager;
     private UIManager uiManager;
 
-    private Action<TraineeData> selectCallback;
+    private Action<AssistantData> selectCallback;
 
     private enum TabType { Craft, Enhance, Sell }
     private TabType curTab = TabType.Craft;
@@ -45,17 +45,16 @@ public class AssistantSelectTab : MonoBehaviour
         SwitchTab(TabType.Craft); // 기본값
     }
 
-    public void OpenForSelection(Action<TraineeData> callback)
+    public void OpenForSelection(Action<AssistantData> callback)
     {
         selectCallback = callback;
         RefreshAllTabs();
-        SwitchTab(curTab); // 현탭 유지
+        SwitchTab(curTab);
     }
 
     private void SwitchTab(TabType tab)
     {
         curTab = tab;
-
         craftRoot.gameObject.SetActive(tab == TabType.Craft);
         enhanceRoot.gameObject.SetActive(tab == TabType.Enhance);
         sellRoot.gameObject.SetActive(tab == TabType.Sell);
@@ -63,18 +62,21 @@ public class AssistantSelectTab : MonoBehaviour
 
     private void RefreshAllTabs()
     {
-        RefreshTab(SpecializationType.Crafting, craftRoot, craftPool);
-        RefreshTab(SpecializationType.Enhancing, enhanceRoot, enhancePool);
-        RefreshTab(SpecializationType.Selling, sellRoot, sellPool);
+        RefreshTab("Crafting", craftRoot, craftPool);
+        RefreshTab("Enhancing", enhanceRoot, enhancePool);
+        RefreshTab("Selling", sellRoot, sellPool);
     }
 
-    private void RefreshTab(SpecializationType type, Transform root, List<GameObject> pool)
+    private void RefreshTab(string specializationPrefix, Transform root, List<GameObject> pool)
     {
         foreach (var go in pool) go.SetActive(false);
 
-        var trainees = gameManager?.TraineeInventory?.GetBySpecialization(type) ?? new List<TraineeData>();
+        var assistants = gameManager?.DataManager?.AssistantLoader?.ItemsList?
+            .FindAll(a => a.specializationKey != null && a.specializationKey.StartsWith(specializationPrefix))
+            ?? new List<AssistantData>();
+
         int idx = 0;
-        foreach (var trainee in trainees)
+        foreach (var assistant in assistants)
         {
             GameObject slotObj;
             if (idx < pool.Count)
@@ -88,16 +90,16 @@ public class AssistantSelectTab : MonoBehaviour
                 pool.Add(slotObj);
             }
             var slot = slotObj.GetComponent<AssistantSlot>();
-            slot.Init(trainee, OnSelectAssistant);
+            slot.Init(assistant, OnSelectAssistant);
             idx++;
         }
         for (int i = idx; i < pool.Count; i++)
             pool[i].SetActive(false);
     }
 
-    private void OnSelectAssistant(TraineeData trainee)
+    private void OnSelectAssistant(AssistantData assistant)
     {
-        selectCallback?.Invoke(trainee);
+        selectCallback?.Invoke(assistant);
         if (uiManager != null)
             uiManager.CloseUI(UIName.AssistantSelectPopup);
     }

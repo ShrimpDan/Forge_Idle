@@ -22,26 +22,21 @@ public class Mine_AssistantPopup : BaseUI
     [SerializeField] private Button unassignButton;
     [SerializeField] private Button exitButton;
 
-    private UIManager uiManager;
+    private Action<TraineeData, bool> onAssignToggleCallback;
     private TraineeData assiData;
-    private Action<TraineeData, bool> onAssignToggleCallback; 
     private bool isAssigned;
+    private UIManager uiManager;
 
     public override void Init(GameManager gameManager, UIManager uIManager)
     {
         base.Init(gameManager, uIManager);
-        this.uiManager = uIManager;
-
         exitButton.onClick.RemoveAllListeners();
-        exitButton.onClick.AddListener(() => uiManager.CloseUI(UIName.Mine_AssistantPopup));
-
+        exitButton.onClick.AddListener(() => uIManager.CloseUI(UIName.Mine_AssistantPopup));
         assignButton.onClick.RemoveAllListeners();
         assignButton.onClick.AddListener(OnAssign);
-
         unassignButton.onClick.RemoveAllListeners();
         unassignButton.onClick.AddListener(OnUnassign);
     }
-
 
     public void SetAssistant(TraineeData data, bool isAlreadyAssigned, Action<TraineeData, bool> onAssignToggle)
     {
@@ -62,28 +57,22 @@ public class Mine_AssistantPopup : BaseUI
             optionText.text = $"{option.AbilityName}\nx{option.Multiplier}";
         }
 
-        UpdateButtonState();
-    }
-
-    private void UpdateButtonState()
-    {
         assignButton.gameObject.SetActive(!isAssigned);
         unassignButton.gameObject.SetActive(isAssigned);
     }
 
     private void OnAssign()
     {
-        onAssignToggleCallback?.Invoke(assiData, true); 
-        isAssigned = true;
-        UpdateButtonState();
-        uiManager.CloseUI(UIName.Mine_AssistantPopup);
+        onAssignToggleCallback?.Invoke(assiData, true);
+        // ÆË¾÷ Áï½Ã ´ÝÀ½
+        if (uiManager != null)
+            uiManager.CloseUI(UIName.Mine_AssistantPopup);
     }
 
     private void OnUnassign()
     {
-        onAssignToggleCallback?.Invoke(assiData, false); 
-        isAssigned = false;
-        UpdateButtonState();
-        uiManager.CloseUI(UIName.Mine_AssistantPopup);
+        onAssignToggleCallback?.Invoke(assiData, false);
+        if (uiManager != null)
+            uiManager.CloseUI(UIName.Mine_AssistantPopup);
     }
 }
