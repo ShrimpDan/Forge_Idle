@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,7 +12,7 @@ public class CollectionUI : BaseUI
     [SerializeField] private Button exitBtn;
 
 
-    private readonly Dictionary<RegualrCustomerData, CustomerSlotUI> slotDic = new();
+    private readonly List<CustomerSlotUI> slots = new();    // 슬롯 참조(파괴 시 정리)
 
     public override UIType UIType => UIType.Popup;
 
@@ -22,59 +23,41 @@ public class CollectionUI : BaseUI
         exitBtn.onClick.RemoveAllListeners();
         exitBtn.onClick.AddListener(() => uIManager.CloseUI(UIName.CollectionWindow));
 
-        SettingSlots();
-        CollectionBookManager.Instance.OnCustomerDiscovered += UpdateSlot;
     }
 
+    public void OnEnable()
+    {
+        BuildSlots();
+    }
 
     public override void Open()
     {
         panel.SetActive(true);
-        UpdateAllSlots(); //최신화
     }
 
     public override void Close()
     {
         panel.SetActive(false);
     }
-
-    private void SettingSlots()
+    private void BuildSlots()
     {
-        foreach (var data in CollectionBookManager.Instance.GetAllRegularCutsomer())
+        // 1) 기존 슬롯 제거
+        foreach (var s in slots)
         {
-            GameObject go = Instantiate(slotPrefabs, slotParent);
+            if (s) Destroy(s.gameObject);
+        }
+        slots.Clear();
+
+        // 2) 데이터 기준으로 새 슬롯 생성
+        foreach (var data in CollectionBookManager.Instance.GetAllCustomerData())
+        {
+            var go = Instantiate(slotPrefabs, slotParent);
             var slot = go.GetComponent<CustomerSlotUI>();
-            slot.Initialize(data);
-            slotDic[data] = slot;
+            slot.Initialize(data);  // 내부에서 발견 여부 판단 & 실루엣/아이콘 표시
+            slots.Add(slot);
         }
     }
 
 
-    private void UpdateAllSlots()
-    {
-        foreach (var slot in slotDic)
-        {
-            bool isDiscovered = CollectionBookManager.Instance.IsDiscovered(slot.Key);
-            slot.Value.UpdateState(isDiscovered);
-        }
-    }
-
-    private void ResetSlot(RegualrCustomerData data)
-    {
-        if (slotDic.TryGetValue(data, out var slot))
-        {
-            slot.UpdateState(true);
-        }
-    }
-
-
-    private void UpdateSlot(RegualrCustomerData data)
-    {
-        if (slotDic.TryGetValue(data, out var slot))
-        {
-            slot.UpdateState(true);
-        }
-        
-    }
 
 }
