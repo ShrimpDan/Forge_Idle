@@ -23,9 +23,17 @@ public class CollectionUI : BaseUI
         exitBtn.onClick.AddListener(() => uIManager.CloseUI(UIName.CollectionWindow));
 
         SettingSlots();
-        CollectionBookManager.Instance.OnCustomerDiscovered += UpdateSlot;
     }
 
+
+    private void OnEnable()
+    {
+        CollectionBookManager.Instance.OnCustomerDiscovered += UpdateSlot;
+    }
+    private void OnDisable()
+    {
+        CollectionBookManager.Instance.OnCustomerDiscovered -= UpdateSlot;
+    }
 
     public override void Open()
     {
@@ -40,7 +48,17 @@ public class CollectionUI : BaseUI
 
     private void SettingSlots()
     {
-        foreach (var data in CollectionBookManager.Instance.GetAllRegularCutsomer())
+        if (slotPrefabs == null)
+        {
+            Debug.Log("[CollectionUI] 설정 안됨");
+            return;
+        }
+        if (slotParent == null)
+        {
+            return;
+        }
+
+        foreach (var data in CollectionBookManager.Instance.GetAllCustomerData())
         {
             GameObject go = Instantiate(slotPrefabs, slotParent);
             var slot = go.GetComponent<CustomerSlotUI>();
@@ -59,22 +77,18 @@ public class CollectionUI : BaseUI
         }
     }
 
-    private void ResetSlot(RegualrCustomerData data)
-    {
-        if (slotDic.TryGetValue(data, out var slot))
-        {
-            slot.UpdateState(true);
-        }
-    }
-
 
     private void UpdateSlot(RegualrCustomerData data)
     {
+        Debug.Log($"[CollectionUI] UpdateSlot 호출됨: {data.customerName}");
         if (slotDic.TryGetValue(data, out var slot))
         {
             slot.UpdateState(true);
         }
-        
+        else
+        {
+            Debug.LogWarning($"[CollectionUI] slotDic에서 {data.customerName} 찾지 못함");
+        }
     }
 
 }
