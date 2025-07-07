@@ -80,32 +80,32 @@ public class FusionUIController : MonoBehaviour
         SpecializationType spec = slotViews[0].Data.Specialization;
         int currentTier = slotViews[0].Data.Personality.tier;
 
-        if (currentTier <= 1)
-        {
-            return;
-        }
+        if (currentTier <= 1) return;
 
         int newTier = currentTier - 1;
-        List<PersonalityData> candidates = GameManager.Instance.DataManager.PersonalityLoader.DataList
+
+        var personalityCandidates = GameManager.Instance.DataManager.PersonalityLoader.DataList
             .FindAll(p => p.tier == newTier);
 
-        if (candidates == null || candidates.Count == 0)
+        if (personalityCandidates == null || personalityCandidates.Count == 0) return;
+
+        var selectedPersonality = personalityCandidates[Random.Range(0, personalityCandidates.Count)];
+
+        var factory = new TraineeFactory(GameManager.Instance.DataManager);
+        TraineeData newTrainee = factory.CreateFromSpecAndPersonality(spec, selectedPersonality.Key, newTier);
+
+        if (newTrainee == null)
         {
+            Debug.LogWarning("JSON 기반 제자 생성 실패 (CreateFromSpecAndPersonality)");
             return;
         }
 
         RemoveUsedTrainees();
-        PersonalityData selected = candidates[Random.Range(0, candidates.Count)];
-        var assigner = new PersonalityAssigner(GameManager.Instance.DataManager);
-        var multipliers = assigner.GenerateMultipliers(selected, spec);
-
-        string name = $"합성제자_{spec}_{selected.personalityName}";
-        TraineeData newTrainee = new(name, selected, spec, multipliers, 1, false, false);
-
         HandleFusionResult(newTrainee);
         ResetFusionUIAfterFusion(newTrainee);
         SetButtonsInteractable(true);
     }
+
 
     public void PerformAutoFusionAll()
     {
@@ -137,18 +137,22 @@ public class FusionUIController : MonoBehaviour
                     }
 
                     int newTier = tier - 1;
-                    var candidates = GameManager.Instance.DataManager.PersonalityLoader.DataList
+                    var personalityCandidates = GameManager.Instance.DataManager.PersonalityLoader.DataList
                         .FindAll(p => p.tier == newTier);
 
-                    if (candidates == null || candidates.Count == 0)
+                    if (personalityCandidates == null || personalityCandidates.Count == 0) continue;
+
+                    var selectedPersonality = personalityCandidates[Random.Range(0, personalityCandidates.Count)];
+
+                    var factory = new TraineeFactory(GameManager.Instance.DataManager);
+                    var newTrainee = factory.CreateFromSpecAndPersonality(group.Key, selectedPersonality.Key, newTier);
+
+                    if (newTrainee == null)
+                    {
+                        Debug.LogWarning("자동 합성 실패: JSON 기반 제자 없음");
                         continue;
+                    }
 
-                    var selected = candidates[Random.Range(0, candidates.Count)];
-                    var assigner = new PersonalityAssigner(GameManager.Instance.DataManager);
-                    var multipliers = assigner.GenerateMultipliers(selected, group.Key);
-
-                    string name = $"합성제자_{group.Key}_{selected.personalityName}";
-                    TraineeData newTrainee = new(name, selected, group.Key, multipliers, 1, false, false);
                     inventory.Add(newTrainee);
                     GameManager.Instance.AssistantManager.ConfirmTrainee(newTrainee);
 
@@ -165,6 +169,7 @@ public class FusionUIController : MonoBehaviour
             UpdateFusionStatusText();
         }
     }
+
 
     private void ConfigureFusionSlots(int tier)
     {

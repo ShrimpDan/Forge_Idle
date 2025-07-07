@@ -19,8 +19,8 @@ public class ItemSaveData
     public int Quantity;
     public int CurrentEnhanceLevel;
     public bool IsEquipped;
+    public List<string> GemSocketIDs;
 }
-
 
 public class InventorySaveSystem
 {
