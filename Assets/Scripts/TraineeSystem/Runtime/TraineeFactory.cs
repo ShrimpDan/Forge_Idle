@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 
 /// <summary>
@@ -114,6 +115,21 @@ public class TraineeFactory
         AssignInfo(traineeData);
 
         return traineeData;
+    }
+
+    public TraineeData CreateFromSpecAndPersonality(SpecializationType spec, string personalityKey, int minTier = 1)
+    {
+        var candidates = assistantLoader.ItemsList
+            .Where(a =>
+                specializationLoader.GetByKey(a.specializationKey)?.specializationType == spec &&
+                a.personalityKey == personalityKey &&
+                GetTier(a.grade) <= minTier)
+            .ToList();
+
+        if (candidates == null || candidates.Count == 0) return null;
+
+        var selected = candidates[rng.Next(candidates.Count)];
+        return CreateTraineeFromData(selected);
     }
 
     private void AssignInfo(TraineeData data)
