@@ -186,6 +186,11 @@ public class AssistantTab : BaseTab
                 break;
         }
 
+        foreach (Transform child in parent)
+        {
+            Destroy(child.gameObject);
+        }
+
         foreach (var stat in assi.Multipliers)
         {
             GameObject obj = Instantiate(bonusStatPrefab, parent);
@@ -199,29 +204,19 @@ public class AssistantTab : BaseTab
 
     private void ClearStat(SpecializationType type)
     {
-        Transform parent = null;
-
         switch (type)
         {
             case SpecializationType.Crafting:
-                parent = craftStatRoot;
                 craftAssi.UnEquipAssistant();
                 break;
 
             case SpecializationType.Enhancing:
-                parent = enhanceStatRoot;
                 enhanceAssi.UnEquipAssistant();
                 break;
 
             case SpecializationType.Selling:
-                parent = sellingStatRoot;
                 sellingAssi.UnEquipAssistant();
                 break;
-        }
-
-        foreach (Transform child in parent)
-        {
-            Destroy(child.gameObject);
         }
     }
 }
