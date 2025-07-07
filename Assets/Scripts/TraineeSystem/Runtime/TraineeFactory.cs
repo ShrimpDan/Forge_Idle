@@ -1,11 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 
-/// <summary>
-/// 제자 생성과 이름 자동 부여를 담당하는 팩토리 클래스입니다.
-/// 특화 랜덤/고정 제자 모두 생성 가능하며, 이름은 특화별로 카운팅됩니다.
-/// </summary>
 public class TraineeFactory
 {
     private readonly Dictionary<SpecializationType, int> specializationCounts = new();
@@ -24,11 +19,7 @@ public class TraineeFactory
     }
 
     public bool CanRecruit => canRecruit;
-
-    public void SetCanRecruit(bool value)
-    {
-        canRecruit = value;
-    }
+    public void SetCanRecruit(bool value) => canRecruit = value;
 
     public TraineeData CreateRandomTrainee(bool bypassRecruitCheck = false)
     {
@@ -48,7 +39,7 @@ public class TraineeFactory
         canRecruit = false;
 
         var candidates = assistantLoader.ItemsList.FindAll(t => GetTier(t.grade) >= 2 &&
-                                                                specializationLoader.GetByKey(t.specializationKey)?.specializationType == type);
+            specializationLoader.GetByKey(t.specializationKey)?.specializationType == type);
         if (candidates.Count == 0) return null;
 
         var selected = candidates[rng.Next(candidates.Count)];
@@ -70,34 +61,23 @@ public class TraineeFactory
         return results;
     }
 
-    public void ResetRecruitLock()
-    {
-        canRecruit = true;
-    }
+    public void ResetRecruitLock() => canRecruit = true;
 
     private TraineeData CreateTraineeFromData(AssistantData assistant)
     {
         int tier = GetTier(assistant.grade);
-
         PersonalityData personalityData = personalityLoader.GetByKey(assistant.personalityKey);
         SpecializationData specializationData = specializationLoader.GetByKey(assistant.specializationKey);
 
         float m = 1f;
         switch (specializationData.specializationType)
         {
-            case SpecializationType.Crafting:
-                m = personalityData.craftingMultiplier;
-                break;
-            case SpecializationType.Enhancing:
-                m = personalityData.enhancingMultiplier;
-                break;
-            case SpecializationType.Selling:
-                m = personalityData.sellingMultiplier;
-                break;
+            case SpecializationType.Crafting: m = personalityData.craftingMultiplier; break;
+            case SpecializationType.Enhancing: m = personalityData.enhancingMultiplier; break;
+            case SpecializationType.Selling: m = personalityData.sellingMultiplier; break;
         }
 
         var multipliers = new List<TraineeData.AbilityMultiplier>();
-
         for (int i = 0; i < specializationData.statNames.Count; i++)
         {
             multipliers.Add(new TraineeData.AbilityMultiplier(
@@ -105,15 +85,16 @@ public class TraineeFactory
                 multiplier: specializationData.statValues[i] * m));
         }
 
+        // 핵심: iconPath 반영
         TraineeData traineeData = new TraineeData(
             name: assistant.Name,
             personality: personalityData,
             specialization: specializationData.specializationType,
-            multipliers: multipliers
+            multipliers: multipliers,
+            iconPath: assistant.iconPath // 중요
         );
 
         AssignInfo(traineeData);
-
         return traineeData;
     }
 
@@ -137,7 +118,6 @@ public class TraineeFactory
         var spec = data.Specialization;
         if (!specializationCounts.ContainsKey(spec))
             specializationCounts[spec] = 0;
-
         specializationCounts[spec]++;
         data.SpecializationIndex = specializationCounts[spec];
     }

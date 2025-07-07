@@ -29,6 +29,7 @@ public class AssistantDataSave
     public bool IsEquipped;
     public bool IsInUse;
     public int SpecializationIndex;
+    public string IconPath;
 }
 
 public class AssistantSaveSystem
@@ -57,7 +58,8 @@ public class AssistantSaveSystem
                 }),
                 IsEquipped = assi.IsEquipped,
                 IsInUse = assi.IsInUse,
-                SpecializationIndex = assi.SpecializationIndex
+                SpecializationIndex = assi.SpecializationIndex,
+                IconPath = assi.IconPath
             };
 
             saveData.Assistants.Add(a);
@@ -84,9 +86,19 @@ public class AssistantSaveSystem
         foreach (var a in saveData.Assistants)
         {
             var personality = personalityLoader.GetByKey(a.PersonalityKey);
-            var multipliers = a.Multipliers.ConvertAll(a => new TraineeData.AbilityMultiplier(a.AbilityName, a.Multiplier));
+            var multipliers = a.Multipliers.ConvertAll(m => new TraineeData.AbilityMultiplier(m.AbilityName, m.Multiplier));
 
-            var assi = new TraineeData(a.Name, personality, a.Specialization, multipliers, a.Level, a.IsEquipped, a.IsInUse);
+
+            var assi = new TraineeData(
+                name: a.Name,
+                personality: personality,
+                specialization: a.Specialization,
+                multipliers: multipliers,
+                iconPath: a.IconPath,
+                level: a.Level,
+                isEquipped: a.IsEquipped,
+                isInuse: a.IsInUse
+            );
             assi.SpecializationIndex = a.SpecializationIndex;
 
             inventory.Add(assi);
@@ -94,6 +106,7 @@ public class AssistantSaveSystem
 
         Debug.Log("[저장 시스템] 제자 데이터 불러오기 완료");
     }
+
 }
 
 public class AssistantSaveHandler : ISaveHandler

@@ -16,7 +16,6 @@ public class QuestSlot : MonoBehaviour
     [SerializeField] private GameObject assistantSlotPrefab;
     [SerializeField] private Button collectButton;
 
-    // 내부 상태
     private QuestData questData;
     private List<TraineeData> assignedAssistants = new();
     private List<GameObject> assistantSlots = new();
@@ -33,7 +32,7 @@ public class QuestSlot : MonoBehaviour
         isRunning = false;
         timer = questData.Duration;
 
-        // UI 설정
+        // 보상 아이콘 표시
         if (dataManager.ItemLoader != null && questData.RewardItemKeys != null && questData.RewardItemKeys.Count > 0)
         {
             var itemData = dataManager.ItemLoader.GetItemByKey(questData.RewardItemKeys[0]);
@@ -44,9 +43,11 @@ public class QuestSlot : MonoBehaviour
         difficultyText.text = $"난이도 {questData.Difficulty + 1}";
         timeLeftText.text = $"{FormatTime(questData.Duration)}";
 
+        // 기존 슬롯 제거
         foreach (Transform child in assistantsRoot)
             Destroy(child.gameObject);
 
+        // 필요 슬롯 생성
         for (int i = 0; i < questData.RequiredAssistants; i++)
         {
             var slot = Instantiate(assistantSlotPrefab, assistantsRoot);
@@ -80,6 +81,7 @@ public class QuestSlot : MonoBehaviour
         });
     }
 
+    // **중요: 아이콘 경로를 IconPath로 통일**
     private void SetAssistantSlot(GameObject slotObj, TraineeData trainee)
     {
         var icon = slotObj.transform.Find("Icon")?.GetComponent<Image>();
@@ -88,8 +90,9 @@ public class QuestSlot : MonoBehaviour
         {
             if (trainee != null)
             {
-                icon.sprite = !string.IsNullOrEmpty(trainee.IconPath) ? IconLoader.GetIcon(trainee.IconPath) : null;
-                icon.enabled = true;
+                string iconPath = trainee?.IconPath;
+                icon.sprite = !string.IsNullOrEmpty(iconPath) ? IconLoader.GetIcon(iconPath) : null;
+                icon.enabled = icon.sprite != null;
             }
             else
             {

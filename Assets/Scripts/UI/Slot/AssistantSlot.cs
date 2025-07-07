@@ -1,6 +1,6 @@
-using System;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 public class AssistantSlot : MonoBehaviour
 {
@@ -20,7 +20,7 @@ public class AssistantSlot : MonoBehaviour
 
         if (icon != null)
         {
-            string iconPath = data?.Personality?.iconPath ?? null;
+            string iconPath = data?.IconPath;
             icon.sprite = !string.IsNullOrEmpty(iconPath)
                 ? IconLoader.GetIcon(iconPath)
                 : null;

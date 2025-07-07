@@ -21,7 +21,7 @@ public class MineDetailWindow : BaseUI
 
     private class MineralCollectionInfo
     {
-        public AssistantData assignedAssistant;
+        public TraineeData assignedTrainee;
         public DateTime assignTime;
         public float pendingReward;
         public string mineralKey;
@@ -53,17 +53,17 @@ public class MineDetailWindow : BaseUI
 
         for (int i = 0; i < 5; i++)
         {
-            string key = "resource_bronze"; // 예시용. 드랍키 로직 추가 필요
+            string key = "resource_bronze"; 
             ItemData resourceData = itemLoader?.GetItemByKey(key);
             Sprite icon = resourceData != null ? IconLoader.GetIcon(resourceData.IconPath) : null;
             string mineralName = resourceData != null ? resourceData.Name : $"광물{i + 1}";
             GameObject go = Instantiate(mineralSlotPrefab, mineralSlotParent);
             int idx = i;
-            var info = new MineralCollectionInfo { assignedAssistant = null, assignTime = DateTime.MinValue, pendingReward = 0, mineralKey = key };
+            var info = new MineralCollectionInfo { assignedTrainee = null, assignTime = DateTime.MinValue, pendingReward = 0, mineralKey = key };
             collectionInfos.Add(info);
 
             MineralSlot slot = go.GetComponent<MineralSlot>();
-            slot.Init(mineralName, icon, () => OnClickAssignAssistant(idx));
+            slot.Init(mineralName, icon, () => OnClickAssignTrainee(idx)); 
             mineralSlots.Add(slot);
         }
 
@@ -74,15 +74,15 @@ public class MineDetailWindow : BaseUI
         }
     }
 
-    private void OnClickAssignAssistant(int idx)
+    private void OnClickAssignTrainee(int idx)
     {
         var info = collectionInfos[idx];
-        var assistantInventory = gameManager.AssistantManager.AssistantInventory;
+        var traineeInventory = gameManager.TraineeInventory;
 
-        if (info.assignedAssistant != null)
+        if (info.assignedTrainee != null)
         {
-            assistantInventory.Add(info.assignedAssistant);
-            info.assignedAssistant = null;
+            traineeInventory.Add(info.assignedTrainee);
+            info.assignedTrainee = null;
             info.assignTime = DateTime.MinValue;
             info.pendingReward = 0;
             mineralSlots[idx].SetAssistant(null);
@@ -92,28 +92,28 @@ public class MineDetailWindow : BaseUI
         var popup = uIManager.OpenUI<AssistantSelectPopup>(UIName.AssistantSelectPopup);
         popup.Init(gameManager, uIManager);
 
-        popup.OpenForSelection((assistant) =>
+        popup.OpenForSelection((trainee) =>
         {
-            if (assistant == null) return;
+            if (trainee == null) return;
             var assiPopup = uIManager.OpenUI<Mine_AssistantPopup>(UIName.Mine_AssistantPopup);
             assiPopup.Init(gameManager, uIManager);
 
-            assiPopup.SetAssistant(assistant, false, (selected, isAssign) =>
+            assiPopup.SetAssistant(trainee, false, (selected, isAssign) =>
             {
                 if (isAssign)
                 {
-                    info.assignedAssistant = selected;
+                    info.assignedTrainee = selected;
                     info.assignTime = DateTime.Now;
                     info.pendingReward = 0;
-                    assistantInventory.Remove(selected);
+                    traineeInventory.Remove(selected);
                     mineralSlots[idx].SetAssistant(selected);
                 }
                 else
                 {
-                    if (info.assignedAssistant != null)
-                        assistantInventory.Add(info.assignedAssistant);
+                    if (info.assignedTrainee != null)
+                        traineeInventory.Add(info.assignedTrainee);
 
-                    info.assignedAssistant = null;
+                    info.assignedTrainee = null;
                     info.assignTime = DateTime.MinValue;
                     info.pendingReward = 0;
                     mineralSlots[idx].SetAssistant(null);
@@ -121,5 +121,10 @@ public class MineDetailWindow : BaseUI
                 uIManager.CloseUI(UIName.Mine_AssistantPopup);
             });
         });
+    }
+
+    private void CollectAllReward()
+    {
+        // 여기에 전체 보상 수령 로직 구현
     }
 }
