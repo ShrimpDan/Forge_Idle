@@ -93,7 +93,7 @@ public class WeaponSellingSystem : MonoBehaviour
         craftingCoroutine = null;
     }
 
-    public WeaponSellingSaveData SaveData()
+    public WeaponSellingSaveData SaveToData()
     {
         var data = new WeaponSellingSaveData();
 
@@ -113,7 +113,7 @@ public class WeaponSellingSystem : MonoBehaviour
         return data;
     }
 
-    public void LoadData(WeaponSellingSaveData data)
+    public void LoadFromSaveData(WeaponSellingSaveData data)
     {
         CraftingWeapon = new Dictionary<CustomerJob, CraftingData>();
 

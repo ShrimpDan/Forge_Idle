@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using UnityEngine;
 
@@ -7,21 +8,19 @@ public class CollectionBookManager : MonoSingleton<CollectionBookManager>
 {
     private DataManager dataManager;
 
-    public event Action<RegualrCustomerData> OnCustomerDiscovered;
+    public event Action<RegularCustomerData> OnCustomerDiscovered;
 
-    private readonly HashSet<RegualrCustomerData> discovered = new();
+    private readonly HashSet<RegularCustomerData> discovered = new();
 
-    private Dictionary<CustomerJob, List<RegualrCustomerData>> regularDic = new Dictionary<CustomerJob, List<RegualrCustomerData>>();
+    private Dictionary<CustomerJob, List<RegularCustomerData>> regularDic = new Dictionary<CustomerJob, List<RegularCustomerData>>();
 
     public void Initialize()
     {
         dataManager = GameManager.Instance.DataManager;
         regularDic.Clear();
-      
+
         RegularDataLoader regularDataLoader = dataManager.RegularDataLoader;
         CustomerDataLoader dataLoader = dataManager.CustomerDataLoader;
-
-
 
         foreach (var data in regularDataLoader.ItemsList)
         {
@@ -38,19 +37,21 @@ public class CollectionBookManager : MonoSingleton<CollectionBookManager>
 
             if (!regularDic.TryGetValue(baseData.job, out var list))
             {
-                list = new List<RegualrCustomerData>();
+                list = new List<RegularCustomerData>();
                 regularDic.Add(baseData.job, list);
             }
+
             if (!list.Contains(data))
             {
                 list.Add(data);
             }
-
         }
+
+        Debug.Log("StopPoint");
     }
 
 
-    public void Discover(RegualrCustomerData data)
+    public void Discover(RegularCustomerData data)
     {
         if (data == null)
         {
@@ -67,7 +68,7 @@ public class CollectionBookManager : MonoSingleton<CollectionBookManager>
         //나중에 여기 Save()추가
     }
 
-     public void Discover(CustomerJob job, CustomerRarity rarity)
+    public void Discover(CustomerJob job, CustomerRarity rarity)
     {
         if (!regularDic.TryGetValue(job, out var list))
         {
@@ -82,12 +83,12 @@ public class CollectionBookManager : MonoSingleton<CollectionBookManager>
         }
     }
 
-    public bool IsDiscovered(RegualrCustomerData data)
+    public bool IsDiscovered(RegularCustomerData data)
     {
         return discovered.Contains(data);
     }
 
-    public IEnumerable<RegualrCustomerData> GetAllCustomerData()
+    public IEnumerable<RegularCustomerData> GetAllCustomerData()
     {
         foreach (var list in regularDic.Values)
         {
@@ -98,14 +99,21 @@ public class CollectionBookManager : MonoSingleton<CollectionBookManager>
         }
     }
 
-    public List<RegualrCustomerData> GetByJob(CustomerJob job)
+    public List<RegularCustomerData> GetByJob(CustomerJob job)
     {
         if (regularDic.TryGetValue(job, out var list))
         {
             return list;
         }
 
-        return new List<RegualrCustomerData>();
+        return new List<RegularCustomerData>();
         //없을때 새로운 리스트를 만들어야지
+    }
+
+    public CollectionBookSaveData ToSaveData()
+    {
+        var data = new CollectionBookSaveData();
+
+        return data;
     }
 }

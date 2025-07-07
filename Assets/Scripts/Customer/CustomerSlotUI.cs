@@ -6,9 +6,9 @@ public class CustomerSlotUI : MonoBehaviour
     [SerializeField] private Sprite silhouetteSprite; //실루엣
 
 
-    private RegualrCustomerData data;
+    private RegularCustomerData data;
 
-    public void Initialize(RegualrCustomerData data)
+    public void Initialize(RegularCustomerData data)
     {
         this.data = data;
         bool isDiscovered = CollectionBookManager.Instance.IsDiscovered(data);
@@ -28,7 +28,7 @@ public class CustomerSlotUI : MonoBehaviour
 
         if (discovered)
         {
-            Debug.Log($"[RegualrCustomerData] iconPath: {data.iconPath}");
+            Debug.Log($"[RegularCustomerData] iconPath: {data.iconPath}");
             image.sprite = IconLoader.GetIcon(data.iconPath);
             image.color = Color.white;
         }
