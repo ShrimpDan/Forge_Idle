@@ -12,14 +12,10 @@ public class ItemInstance
     public bool CanEnhance => CurrentEnhanceLevel < Data.UpgradeInfo.MaxEnhanceLevel;
 
     // gem 데이터 효과 연산
-    public List<ItemInstance> GemSockets = new List<ItemInstance>() { null, null, null };
+    [System.NonSerialized] public List<ItemInstance> GemSockets = new List<ItemInstance>() { null, null, null };
 
     [System.NonSerialized] public ItemData Data;
-
     public CraftingData CraftingData { get; private set; }
-
-
-
 
     public ItemInstance(string key, ItemData data, CraftingData craftingData = null)
     {
