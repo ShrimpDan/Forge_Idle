@@ -13,7 +13,9 @@ public class GameManager : MonoSingleton<GameManager>
     public DungeonData CurrentDungeon { get; private set; }
     public CraftingManager CraftingManager { get; private set; }
 
-       protected override void Awake()
+    public GameSaveManager SaveManager { get; private set; }
+
+    protected override void Awake()
     {
         base.Awake();
         Inventory = new InventoryManager(this);
@@ -21,8 +23,8 @@ public class GameManager : MonoSingleton<GameManager>
         AssistantManager = FindObjectOfType<TraineeManager>();
         UIManager = FindObjectOfType<UIManager>();
         Forge = FindObjectOfType<Forge>();
-        
-       CollectionBookManager.Instance.InitDic();
+
+        CollectionBookManager.Instance.InitDic();
         if (UIManager)
             UIManager.Init(this);
         if (Forge)
@@ -35,8 +37,17 @@ public class GameManager : MonoSingleton<GameManager>
         CraftingManager = cmObj.AddComponent<CraftingManager>();
         CraftingManager.Init(Inventory, Forge);
 
-       
+
         DontDestroyOnLoad(cmObj);
+    }
+
+    private void Start()
+    {
+        SaveManager = new GameSaveManager();
+
+        SaveManager.RegisterSaveHandler(new InventorySaveHandler(Inventory));
+        SaveManager.RegisterSaveHandler(new AssistantSaveHandler(AssistantManager, DataManager.PersonalityLoader));
+        SaveManager.LoadAll();
     }
 
 
@@ -98,5 +109,10 @@ public class GameManager : MonoSingleton<GameManager>
     public void ExitDungeon()
     {
         CurrentDungeon = null;
+    }
+
+    private void OnApplicationQuit()
+    {
+        SaveManager.SaveAll();
     }
 }
