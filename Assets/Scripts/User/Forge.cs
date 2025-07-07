@@ -4,7 +4,6 @@ using UnityEngine;
 public class Forge : MonoBehaviour
 {
     private GameManager gameManager;
-
     private ForgeData forgeData;
 
     // 스탯
@@ -61,7 +60,7 @@ public class Forge : MonoBehaviour
         SellingSystem = GetComponent<WeaponSellingSystem>();
 
         if (SellingSystem)
-            SellingSystem.Init(this);
+            SellingSystem.Init(this, gameManager.DataManager.CraftingLoader);
     }
 
     private void InitAssistant()

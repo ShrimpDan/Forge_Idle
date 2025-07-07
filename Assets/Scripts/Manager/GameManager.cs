@@ -1,5 +1,4 @@
-﻿using Unity.VisualScripting;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class GameManager : MonoSingleton<GameManager>
 {
@@ -48,7 +47,8 @@ public class GameManager : MonoSingleton<GameManager>
         SaveManager.RegisterSaveHandler(new ForgeSaveHandeler(Forge));
         SaveManager.RegisterSaveHandler(new InventorySaveHandler(Inventory));
         SaveManager.RegisterSaveHandler(new AssistantSaveHandler(AssistantManager, DataManager.PersonalityLoader));
-        
+        SaveManager.RegisterSaveHandler(new WeaponSellingSaveHandler(Forge.SellingSystem));
+
         SaveManager.LoadAll();
     }
 
