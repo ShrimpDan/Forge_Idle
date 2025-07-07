@@ -20,7 +20,7 @@ public class RegularCustomerLoader
 
     public Customer SpawnRandomByJob(CustomerJob job)
     {
-        var list = new List<RegualrCustomerData>();
+        var list = new List<RegularCustomerData>();
 
         foreach (var data in dataLoader.ItemsList)
         {
@@ -43,7 +43,7 @@ public class RegularCustomerLoader
         float pick = Random.value * total;
 
 
-        RegualrCustomerData choice = null; // 확률 선택
+        RegularCustomerData choice = null; // 확률 선택
 
         foreach (var r in list)
         {

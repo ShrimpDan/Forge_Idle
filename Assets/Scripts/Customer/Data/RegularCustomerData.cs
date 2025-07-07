@@ -14,7 +14,7 @@ public enum CustomerRarity
 }
 
 [System.Serializable]
-public class RegualrCustomerData //담기는 데이터
+public class RegularCustomerData //담기는 데이터
 {
     /// <summary>
     /// 키 값
@@ -49,15 +49,15 @@ public class RegualrCustomerData //담기는 데이터
 
 public class RegularDataLoader //데이터 가져와줌
 {
-    public List<RegualrCustomerData> ItemsList { get; private set; }
-    public Dictionary<string, RegualrCustomerData> ItemsDict { get; private set; }
+    public List<RegularCustomerData> ItemsList { get; private set; }
+    public Dictionary<string, RegularCustomerData> ItemsDict { get; private set; }
 
     public RegularDataLoader(string path = "Data/regular_data")
     {
         string jsonData;
         jsonData = Resources.Load<TextAsset>(path).text;
         ItemsList = JsonUtility.FromJson<Wrapper>(jsonData).Items;
-        ItemsDict = new Dictionary<string, RegualrCustomerData>();
+        ItemsDict = new Dictionary<string, RegularCustomerData>();
         foreach (var item in ItemsList)
         {
             ItemsDict.Add(item.Key, item);
@@ -67,10 +67,10 @@ public class RegularDataLoader //데이터 가져와줌
     [System.Serializable]
     private class Wrapper
     {
-        public List<RegualrCustomerData> Items;
+        public List<RegularCustomerData> Items;
     }
 
-    public RegualrCustomerData GetByKey(string key)
+    public RegularCustomerData GetByKey(string key)
     {
         if (ItemsDict.ContainsKey(key))
         {

@@ -10,7 +10,7 @@ public class RegualrCustomer : Customer
 
     [SerializeField] private GameObject InteractObject; //말풍선
     [SerializeField] private float WaitTime = 4.0f;
-    [SerializeField] private RegualrCustomerData CollectData;
+    [SerializeField] private RegularCustomerData CollectData;
 
 
 
@@ -72,7 +72,7 @@ public class RegualrCustomer : Customer
     }
 
 
-    public void SettingCollectData(RegualrCustomerData data)
+    public void SettingCollectData(RegularCustomerData data)
     {
         CollectData = data;
     }
