@@ -18,7 +18,7 @@ public class QuestSlot : MonoBehaviour
 
     // 내부 상태
     private QuestData questData;
-    private List<AssistantData> assignedAssistants = new();
+    private List<TraineeData> assignedAssistants = new();
     private List<GameObject> assistantSlots = new();
     private float timer;
     private bool isRunning;
@@ -44,7 +44,6 @@ public class QuestSlot : MonoBehaviour
         difficultyText.text = $"난이도 {questData.Difficulty + 1}";
         timeLeftText.text = $"{FormatTime(questData.Duration)}";
 
-        // 어시스턴트 슬롯 생성
         foreach (Transform child in assistantsRoot)
             Destroy(child.gameObject);
 
@@ -70,26 +69,26 @@ public class QuestSlot : MonoBehaviour
 
         var popup = uiManager.OpenUI<AssistantSelectPopup>(UIName.AssistantSelectPopup);
         popup.Init(GameManager.Instance, uiManager);
-        popup.OpenForSelection(assistant =>
+        popup.OpenForSelection(trainee =>
         {
-            if (assistant == null) return;
-            assignedAssistants[idx] = assistant;
-            SetAssistantSlot(assistantSlots[idx], assistant);
+            if (trainee == null) return;
+            assignedAssistants[idx] = trainee;
+            SetAssistantSlot(assistantSlots[idx], trainee);
 
             if (assignedAssistants.TrueForAll(a => a != null))
                 StartQuest();
         });
     }
 
-    private void SetAssistantSlot(GameObject slotObj, AssistantData assistant)
+    private void SetAssistantSlot(GameObject slotObj, TraineeData trainee)
     {
         var icon = slotObj.transform.Find("Icon")?.GetComponent<Image>();
         var plus = slotObj.transform.Find("Plus");
         if (icon != null)
         {
-            if (assistant != null)
+            if (trainee != null)
             {
-                icon.sprite = !string.IsNullOrEmpty(assistant.iconPath) ? IconLoader.GetIcon(assistant.iconPath) : null;
+                icon.sprite = !string.IsNullOrEmpty(trainee.IconPath) ? IconLoader.GetIcon(trainee.IconPath) : null;
                 icon.enabled = true;
             }
             else
@@ -99,7 +98,7 @@ public class QuestSlot : MonoBehaviour
             }
         }
         if (plus != null)
-            plus.gameObject.SetActive(assistant == null);
+            plus.gameObject.SetActive(trainee == null);
     }
 
     private void StartQuest()
@@ -136,7 +135,6 @@ public class QuestSlot : MonoBehaviour
         }
         collectButton.gameObject.SetActive(false);
         onQuestCompleted?.Invoke();
-        // 슬롯 리셋 필요시: Init 호출 등으로 재설정 (여기선 생략)
     }
 
     private void UpdateTimeUI()
