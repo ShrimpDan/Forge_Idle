@@ -23,7 +23,7 @@ public class GameManager : MonoSingleton<GameManager>
         UIManager = FindObjectOfType<UIManager>();
         Forge = FindObjectOfType<Forge>();
 
-        CollectionBookManager.Instance.InitDic();
+        CollectionBookManager.Instance.Initialize();
         if (UIManager)
             UIManager.Init(this);
         if (Forge)

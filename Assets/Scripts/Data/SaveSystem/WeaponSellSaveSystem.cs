@@ -14,7 +14,7 @@ public class WeaponSellingSaveSystem
 
     public static void Save(WeaponSellingSystem system)
     {
-        var saveData = system.SaveData();
+        var saveData = system.SaveToData();
         string json = JsonUtility.ToJson(saveData, true);
         File.WriteAllText(SavePath, json);
         Debug.Log($"[저장 시스템] 무기 판매정보 저장이 완료되었습니다.\n 경로: {SavePath}");
@@ -30,7 +30,7 @@ public class WeaponSellingSaveSystem
 
         string json = File.ReadAllText(SavePath);
         var saveData = JsonUtility.FromJson<WeaponSellingSaveData>(json);
-        system.LoadData(saveData);
+        system.LoadFromSaveData(saveData);
         Debug.Log("[저장 시스템] 무기 판매정보 로드 완료.");
     }
 }
