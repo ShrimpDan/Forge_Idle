@@ -48,7 +48,8 @@ public class GameManager : MonoSingleton<GameManager>
         SaveManager.RegisterSaveHandler(new InventorySaveHandler(Inventory));
         SaveManager.RegisterSaveHandler(new AssistantSaveHandler(AssistantManager, DataManager.PersonalityLoader));
         SaveManager.RegisterSaveHandler(new WeaponSellingSaveHandler(Forge.SellingSystem));
-
+        SaveManager.RegisterSaveHandler(new CollectionBookSaveHandler(CollectionBookManager.Instance));
+        
         SaveManager.LoadAll();
     }
 
