@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 8598609521008385764}
   - component: {fileID: 8361461713828535794}
   - component: {fileID: 7199352319057860205}
-  - component: {fileID: 214692065055181167}
+  - component: {fileID: 2742448136484454418}
   m_Layer: 0
-  m_Name: NuisanceCustomerFarmer
+  m_Name: NuisanceCustomerAssasin
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -96,7 +96,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 342497988493757623}
-  m_BodyType: 0
+  m_BodyType: 1
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -129,8 +129,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buyPoint: {fileID: 0}
   data:
-    Key: customer_nuisance_farmer
-    job: 1
+    Key: customer_nuisance_assasin
+    job: 0
     type: 2
     moveSpeed: 0
   moveWayPoint: []
@@ -140,7 +140,7 @@ MonoBehaviour:
   InteractIcon: {fileID: 7921828885711947236}
   offsetY: 0.5
   exitPoint: {fileID: 430231704407215936, guid: 712630db6271ee2408d526e960add339, type: 3}
---- !u!61 &214692065055181167
+--- !u!61 &2742448136484454418
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
