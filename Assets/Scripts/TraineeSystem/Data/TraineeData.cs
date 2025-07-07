@@ -1,5 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+
+using System;
 
 /// <summary>
 /// 개별 제자 정보를 담고 있는 데이터 클래스입니다.

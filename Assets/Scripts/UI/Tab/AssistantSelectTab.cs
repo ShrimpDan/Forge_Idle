@@ -71,9 +71,7 @@ public class AssistantSelectTab : MonoBehaviour
     {
         foreach (var go in pool) go.SetActive(false);
 
-        var trainees = gameManager?.AssistantManager?.TraineeInventory?.GetBySpecialization(type)
-            ?? new List<TraineeData>();
-
+        var trainees = gameManager?.TraineeInventory?.GetBySpecialization(type) ?? new List<TraineeData>();
         int idx = 0;
         foreach (var trainee in trainees)
         {
