@@ -33,7 +33,7 @@ public class QuestSlot : MonoBehaviour
         isRunning = false;
         timer = questData.Duration;
 
-        // UI
+        // UI 설정
         if (dataManager.ItemLoader != null && questData.RewardItemKeys != null && questData.RewardItemKeys.Count > 0)
         {
             var itemData = dataManager.ItemLoader.GetItemByKey(questData.RewardItemKeys[0]);
@@ -66,6 +66,7 @@ public class QuestSlot : MonoBehaviour
     private void OnClickAssistantSlot(int idx, DataManager dataManager, UIManager uiManager)
     {
         if (isRunning) return;
+
         var popup = uiManager.OpenUI<AssistantSelectPopup>(UIName.AssistantSelectPopup);
         popup.Init(GameManager.Instance, uiManager);
         popup.OpenForSelection(trainee =>
@@ -87,11 +88,7 @@ public class QuestSlot : MonoBehaviour
         {
             if (trainee != null)
             {
-                // 아이콘 경로: Personality 혹은 특화 데이터에 접근해서 적절히!
-                // 예시로 PersonalityData나 특화 데이터가 아이콘 갖고 있으면 그걸 사용
-                icon.sprite = !string.IsNullOrEmpty(trainee.Personality?.iconPath)
-                    ? IconLoader.GetIcon(trainee.Personality.iconPath)
-                    : null;
+                icon.sprite = !string.IsNullOrEmpty(trainee.IconPath) ? IconLoader.GetIcon(trainee.IconPath) : null;
                 icon.enabled = true;
             }
             else
@@ -138,7 +135,6 @@ public class QuestSlot : MonoBehaviour
         }
         collectButton.gameObject.SetActive(false);
         onQuestCompleted?.Invoke();
-        // Init을 다시 호출하거나, 상태 초기화는 필요에 따라 구현
     }
 
     private void UpdateTimeUI()
