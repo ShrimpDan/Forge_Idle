@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using UnityEngine;
 
@@ -113,7 +112,21 @@ public class CollectionBookManager : MonoSingleton<CollectionBookManager>
     public CollectionBookSaveData ToSaveData()
     {
         var data = new CollectionBookSaveData();
+        data.discoveredKeys = new List<string>();
 
+        foreach (var discover in discovered)
+        {
+            data.discoveredKeys.Add(discover.Key);
+        }
+        
         return data;
+    }
+
+    public void LoadFromSaveData(CollectionBookSaveData saveData)
+    {
+        foreach (var key in saveData.discoveredKeys)
+        {
+            discovered.Add(dataManager.RegularDataLoader.GetByKey(key));
+        }
     }
 }
