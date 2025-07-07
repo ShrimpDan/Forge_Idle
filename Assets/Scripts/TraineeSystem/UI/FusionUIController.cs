@@ -245,7 +245,11 @@ public class FusionUIController : MonoBehaviour
             .ToHashSet();
 
         var sortedList = list
-            .Where(t => !used.Contains(t) && t.Personality.tier >= 2)
+            .Where(t =>
+                !used.Contains(t) &&
+                t.Personality.tier >= 2 &&
+                !t.IsEquipped &&
+                !t.IsInUse)
             .OrderBy(t => SpecializationOrder.TryGetValue(t.Specialization, out int order) ? order : 99)
             .ThenBy(t => t.Personality.tier)
             .ToList();
@@ -268,6 +272,8 @@ public class FusionUIController : MonoBehaviour
         if (scrollRect != null)
             StartCoroutine(ForceScrollToTop());
     }
+
+
 
     private void ShowFilteredIcons(TraineeData reference)
     {
