@@ -21,30 +21,32 @@ public class ForgeData
     public int Dia;
 }
 
-public static class ForgeDataSaveLoader
+public static class ForgeSaveSystem
 {
     private static string SavePath => Path.Combine(Application.persistentDataPath, "forge_data.json");
 
-    public static void Save(ForgeData data)
+    public static void SaveForge(Forge forge)
     {
+        var data = forge.SaveData();
         string json = JsonUtility.ToJson(data, true);
         File.WriteAllText(SavePath, json);
+        Debug.Log($"[저장 시스템] ForgeData 저장이 완료되었습니다.\n 경로: {SavePath}");
     }
 
-    public static ForgeData Load()
+    public static void LoadForge(Forge forge)
     {
         if (!File.Exists(SavePath))
         {
-            Debug.LogWarning("ForgeData 존재하지 않습니다.");
+            Debug.LogWarning("[저장 시스템] ForgeData가 존재하지 않습니다.");
 
-            ForgeData newData = GetDefaultData();
-            Save(newData);
-
-            return newData;
+            var newData = GetDefaultData();
+            forge.LoadData(newData);
+            return;
         }
 
         string json = File.ReadAllText(SavePath);
-        return JsonUtility.FromJson<ForgeData>(json.ToString());
+        var data = JsonUtility.FromJson<ForgeData>(json.ToString());
+        forge.LoadData(data);
     }
 
     public static void Delete()
@@ -76,5 +78,25 @@ public static class ForgeDataSaveLoader
             Gold = 0,
             Dia = 0
         };
+    }
+}
+
+public class ForgeSaveHandeler : ISaveHandler
+{
+    private Forge forge;
+
+    public ForgeSaveHandeler(Forge forge)
+    {
+        this.forge = forge;
+    }
+
+    public void Save()
+    {
+        ForgeSaveSystem.SaveForge(forge);
+    }
+
+    public void Load()
+    {
+        ForgeSaveSystem.LoadForge(forge);
     }
 }

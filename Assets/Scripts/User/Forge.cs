@@ -56,41 +56,12 @@ public class Forge : MonoBehaviour
     {
         this.gameManager = gameManager;
 
-        InitData();
         InitAssistant();
 
         SellingSystem = GetComponent<WeaponSellingSystem>();
 
         if (SellingSystem)
             SellingSystem.Init(this);
-    }
-
-    private void InitData()
-    {
-        forgeData = ForgeDataSaveLoader.Load();
-
-        // 제작 관련 스탯
-        craftSpeedMultiplier = forgeData.CraftSpeedMultiplier;
-        rareItemChance = forgeData.RareItemChance;
-
-        // 강화 관련 스탯
-        enhanceSuccessRate = forgeData.EnhanceSuccessRate;
-        breakChanceReduction = forgeData.BreakChanceReduction;
-        enhanceCostMultiplier = forgeData.EnhanceCostMultiplier;
-
-        // 판매 관련 스탯
-        sellPriceMultiplier = forgeData.SellPriceMultiplier;
-        customerSpawnRate = forgeData.CustomerSpawnRate;
-
-        Level = forgeData.Level;
-        CurrentFame = forgeData.CurrentFame;
-        MaxFame = forgeData.MaxFame;
-        TotalFame = forgeData.TotalFame;
-
-        Gold = forgeData.Gold;
-        Dia = forgeData.Dia;
-
-        RaiseAllEvents();
     }
 
     private void InitAssistant()
@@ -111,7 +82,33 @@ public class Forge : MonoBehaviour
         Events.RasieTotalFameChanged(TotalFame);
     }
 
-    public void SaveData()
+    public void LoadData(ForgeData data)
+    {
+        // 제작 관련 스탯
+        craftSpeedMultiplier = data.CraftSpeedMultiplier;
+        rareItemChance = data.RareItemChance;
+
+        // 강화 관련 스탯
+        enhanceSuccessRate = data.EnhanceSuccessRate;
+        breakChanceReduction = data.BreakChanceReduction;
+        enhanceCostMultiplier = data.EnhanceCostMultiplier;
+
+        // 판매 관련 스탯
+        sellPriceMultiplier = data.SellPriceMultiplier;
+        customerSpawnRate = data.CustomerSpawnRate;
+
+        Level = data.Level;
+        CurrentFame = data.CurrentFame;
+        MaxFame = data.MaxFame;
+        TotalFame = data.TotalFame;
+
+        Gold = data.Gold;
+        Dia = data.Dia;
+
+        RaiseAllEvents();
+    }
+
+    public ForgeData SaveData()
     {
         ForgeData data = new ForgeData
         {
@@ -133,7 +130,7 @@ public class Forge : MonoBehaviour
             Dia = Dia
         };
 
-        ForgeDataSaveLoader.Save(data);
+        return data;
     }
 
     public void AddFame(int amount)
