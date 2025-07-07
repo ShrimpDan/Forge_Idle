@@ -5,6 +5,7 @@ using UnityEngine;
 public class WeaponSellingSystem : MonoBehaviour
 {
     private Forge forge;
+    private CraftingDataLoader craftingLoader;
     private CustomerManager customerManager;
 
     public Dictionary<CustomerJob, CraftingData> CraftingWeapon { get; private set; }
@@ -13,9 +14,10 @@ public class WeaponSellingSystem : MonoBehaviour
 
     private Coroutine craftingCoroutine;
 
-    public void Init(Forge forge)
+    public void Init(Forge forge, CraftingDataLoader craftingLoader)
     {
         this.forge = forge;
+        this.craftingLoader = craftingLoader;
         customerManager = CustomerManager.Instance;
 
         InitDictionary();
@@ -51,7 +53,7 @@ public class WeaponSellingSystem : MonoBehaviour
     private void CraftItem(Customer customer)
     {
         customerQueue.Enqueue(customer);
-        
+
         if (CraftingWeapon[customer.Job] != null)
             craftingQueue.Enqueue(CraftingWeapon[customer.Job]);
 
@@ -89,5 +91,42 @@ public class WeaponSellingSystem : MonoBehaviour
         }
 
         craftingCoroutine = null;
+    }
+
+    public WeaponSellingSaveData SaveData()
+    {
+        var data = new WeaponSellingSaveData();
+
+        data.CraftingKeys = new List<string>();
+
+        foreach (var craftingKey in CraftingWeapon.Values)
+        {
+            if (craftingKey != null)
+            {
+                data.CraftingKeys.Add(craftingKey.ItemKey);
+                continue;
+            }
+
+            data.CraftingKeys.Add(null);
+        }
+
+        return data;
+    }
+
+    public void LoadData(WeaponSellingSaveData data)
+    {
+        CraftingWeapon = new Dictionary<CustomerJob, CraftingData>();
+
+        for (int i = 0; i < data.CraftingKeys.Count; i++)
+        {
+            if (data.CraftingKeys[i] != null)
+            {
+                var craftData = craftingLoader.GetDataByKey(data.CraftingKeys[i]);
+                CraftingWeapon[(CustomerJob)i] = craftData;
+                continue;
+            }
+
+            CraftingWeapon[(CustomerJob)i] = null;
+        }
     }
 }
