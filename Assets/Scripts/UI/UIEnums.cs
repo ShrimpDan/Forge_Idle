@@ -17,8 +17,8 @@ public enum ButtonType
     Refine,   // 추가
     MineDetail, // 추가
     MineMiniGame, //Add
-    Collection
-
+    Collection,
+    Setting
 }
 
 public static class UIName
@@ -37,7 +37,7 @@ public static class UIName
     public const string RefineSystemWindow = "RefineSystemWindow";
     public const string MineDetailWindow = "MineDetailWindow";
     public const string CollectionWindow = "CollectionWindow";
-   
+    public const string SettingWindow = "SettingWindow";
   
 
     // Popup UI
@@ -66,6 +66,7 @@ public static class UIName
             ButtonType.Refine => RefineSystemWindow,
             ButtonType.MineDetail => MineDetailWindow,
             ButtonType.Collection => CollectionWindow,
+            ButtonType.Setting => SettingWindow,
             _ => string.Empty
         };
     }
