@@ -10,10 +10,13 @@ public class AssistantSlot : MonoBehaviour
     [SerializeField] private Button slotBtn;
     private Action<AssistantInstance> clickCallback;
 
-    public void Init(AssistantInstance data, Action<AssistantInstance> onClick)
+    private bool preventPopup = false;
+
+    public void Init(AssistantInstance data, Action<AssistantInstance> onClick, bool preventPopup = false)
     {
         AssistantData = data;
         clickCallback = onClick;
+        this.preventPopup = preventPopup;
 
         slotBtn.onClick.RemoveAllListeners();
         slotBtn.onClick.AddListener(OnClickSlot);
@@ -34,7 +37,9 @@ public class AssistantSlot : MonoBehaviour
     private void OnClickSlot()
     {
         clickCallback?.Invoke(AssistantData);
-        if (AssistantData == null) return;
+
+        // 다른곳에서 안킴
+        if (AssistantData == null || preventPopup) return;
 
         var ui = uIManager.OpenUI<AssistantPopup>(UIName.AssistantPopup);
         ui.SetAssistant(AssistantData);

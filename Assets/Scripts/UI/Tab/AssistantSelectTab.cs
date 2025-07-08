@@ -30,6 +30,8 @@ public class AssistantSelectTab : MonoBehaviour
     private List<GameObject> enhancePool = new();
     private List<GameObject> sellPool = new();
 
+    private bool preventPopup = false;
+
     public void Init(GameManager gameManager, UIManager uiManager)
     {
         this.gameManager = gameManager;
@@ -45,12 +47,15 @@ public class AssistantSelectTab : MonoBehaviour
         SwitchTab(TabType.Craft); // �⺻��
     }
 
-    public void OpenForSelection(Action<AssistantInstance> callback)
+    public void OpenForSelection(Action<AssistantInstance> callback, bool preventPopup = false)
     {
         selectCallback = callback;
+        this.preventPopup = preventPopup;
         RefreshAllTabs();
         SwitchTab(curTab);
     }
+
+
 
     private void SwitchTab(TabType tab)
     {
@@ -87,7 +92,7 @@ public class AssistantSelectTab : MonoBehaviour
                 pool.Add(slotObj);
             }
             var slot = slotObj.GetComponent<AssistantSlot>();
-            slot.Init(assistant, OnSelectAssistant);
+            slot.Init(assistant, OnSelectAssistant, preventPopup); 
             idx++;
         }
         for (int i = idx; i < pool.Count; i++)

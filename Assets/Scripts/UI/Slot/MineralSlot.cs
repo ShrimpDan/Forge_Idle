@@ -34,7 +34,14 @@ public class MineralSlot : MonoBehaviour
         if (assistant != null)
         {
             assistantIconRoot?.SetActive(true);
-            // ��ý���Ʈ �������� ���� Ȯ�� ����
+            if (assistantIcon != null)
+            {
+                string iconPath = assistant?.IconPath;
+                assistantIcon.sprite = !string.IsNullOrEmpty(iconPath)
+                    ? IconLoader.GetIcon(iconPath)
+                    : null;
+                assistantIcon.enabled = assistantIcon.sprite != null;
+            }
         }
         else
         {
@@ -42,4 +49,5 @@ public class MineralSlot : MonoBehaviour
                 assistantIconRoot.SetActive(false);
         }
     }
+
 }

@@ -14,26 +14,44 @@ public class QuestWindow : BaseUI
     [SerializeField] private ScrollRect scrollRect;
 
     private List<QuestSlot> questSlots = new();
-
-    private const int DailyQuestCount = 5; 
+    private const int DailyQuestCount = 5;
 
     public override void Init(GameManager gameManager, UIManager uIManager)
     {
         base.Init(gameManager, uIManager);
+
         exitBtn.onClick.RemoveAllListeners();
         exitBtn.onClick.AddListener(() => uIManager.CloseUI(UIName.QuestWindow));
+
+        GenerateQuestSlots();
     }
 
-    public void OpenQuests()
+    private void GenerateQuestSlots()
     {
-        // 날짜 체크 후 오늘의 의뢰가 없거나 날짜가 바뀌었으면 갱신
-        if (IsDailyResetNeeded())
+        Debug.Log("GenerateQuestSlots 호출됨");
+        Debug.Log(gameManager == null ? "gameManager null!" : "gameManager 연결됨");
+        Debug.Log(gameManager?.DataManager == null ? "DataManager null!" : "DataManager 연결됨");
+        Debug.Log(gameManager?.DataManager?.QuestLoader == null ? "QuestLoader null!" : "QuestLoader 연결됨");
+
+        if (gameManager == null || gameManager.DataManager == null || gameManager.DataManager.QuestLoader == null)
         {
-            RefreshDailyQuests();
+            Debug.LogError("필수 참조 누락! QuestSlot 생성 불가!");
+            return;
         }
 
-        // 오늘의 의뢰 가져오기
+        if (IsDailyResetNeeded())
+            RefreshDailyQuests();
+
         var questList = LoadTodayQuests();
+
+        if (questList == null || questList.Count == 0)
+        {
+            Debug.LogWarning("[QuestWindow] 오늘의 의뢰가 없어 새로 갱신합니다.");
+            RefreshDailyQuests();
+            questList = LoadTodayQuests();
+        }
+
+        Debug.Log($"슬롯 생성할 퀘스트 개수: {questList.Count}");
 
         foreach (Transform child in questSlotRoot)
             Destroy(child.gameObject);
@@ -44,7 +62,7 @@ public class QuestWindow : BaseUI
         {
             var slotObj = Instantiate(questSlotPrefab, questSlotRoot);
             var slot = slotObj.GetComponent<QuestSlot>();
-            slot.Init(quest, gameManager.DataManager, uIManager, () => { /* 퀘스트 완료 후 행동 */ });
+            slot.Init(quest, gameManager.DataManager, uIManager, () => { });
             questSlots.Add(slot);
         }
 
@@ -59,7 +77,6 @@ public class QuestWindow : BaseUI
         return savedDate != today;
     }
 
-    // 오늘의 의뢰 저장
     private void SaveTodayQuests(List<QuestData> todayQuests)
     {
         var keys = new List<string>();
@@ -89,7 +106,6 @@ public class QuestWindow : BaseUI
         return todayQuests;
     }
 
-    // 오늘의 의뢰 갱신 (랜덤)
     private void RefreshDailyQuests()
     {
         var allQuests = gameManager.DataManager.QuestLoader.QuestLists;

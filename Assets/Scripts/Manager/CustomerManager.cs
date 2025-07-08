@@ -21,11 +21,13 @@ public class CustomerManager : MonoSingleton<CustomerManager>
 
     [Header("SpawnSetting")]
     [SerializeField] private Transform spawnPoint;
-    [SerializeField] private float spawnDelay = 2f;
     [SerializeField] private List<CustomerSpawnData> customerPrefabs = new();
+    [SerializeField] private float spawnDelay;
+
+
 
     [Header("Nuisance")]
-    [SerializeField] private float nuisanceSpawnTime = 1f;
+    [SerializeField] private float nuisanceSpawnTime = 3f;
     [SerializeField, Range(0f, 1f)] private float nuisanceSpawnChance = 0.5f;
 
     [Header("Regular")]
@@ -38,6 +40,9 @@ public class CustomerManager : MonoSingleton<CustomerManager>
 
     //단골손님
     private Dictionary<(CustomerJob,CustomerRarity), Customer> regularPrefabDic = new();
+    //Forge
+    private Forge forge;
+
 
     private readonly Dictionary<CustomerRarity, float> rarityProbabilities = new()
     {
@@ -63,7 +68,7 @@ public class CustomerManager : MonoSingleton<CustomerManager>
 
     private void Start()
     {
-
+        forge = GameManager.Instance.Forge;
         //프리팹 자동로더
         prefabLoader = new CustomerPrefabLoader();
         prefabLoader.LoadAll();
@@ -128,7 +133,7 @@ public class CustomerManager : MonoSingleton<CustomerManager>
         while (true)
         {
             SpawnNormalCustomer();
-            yield return WaitForSecondsCache.Wait(spawnDelay);
+            yield return WaitForSecondsCache.Wait(GameManager.Instance.Forge.FinalCustomerSpawnRate);
         }
 
     }

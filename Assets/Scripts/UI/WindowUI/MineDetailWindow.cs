@@ -120,7 +120,7 @@ public class MineDetailWindow : BaseUI
                 }
                 uIManager.CloseUI(UIName.Mine_AssistantPopup);
             });
-        });
+        }, true);
     }
 
     private void CollectAllReward()
