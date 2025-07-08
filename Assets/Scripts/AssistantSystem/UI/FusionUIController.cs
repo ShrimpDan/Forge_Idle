@@ -29,10 +29,15 @@ public class FusionUIController : MonoBehaviour
     [Header("합성 상태 텍스트")]
     [SerializeField] private TMP_Text fusionStatusText;
 
+    [Header("전체 합성 버튼")]
+    [SerializeField] private Button autoFusionAllButton;
+
     private readonly List<FusionSlotView> slotViews = new();
     private readonly List<GameObject> currentIcons = new();
     private List<AssistantInstance> fullTraineeList = new();
     private int slotCount = 0;
+
+    private bool isFilteredMode = false;
 
     private static readonly Dictionary<int, int> TierToSlotCount = new()
     {
@@ -54,6 +59,13 @@ public class FusionUIController : MonoBehaviour
         { SpecializationType.Selling, 2 }
     };
 
+
+    public void SetFilteredMode(bool isFiltered)
+    {
+        isFilteredMode = isFiltered;
+        autoFusionAllButton.interactable = !isFiltered;
+    }
+
     public void OpenUI(List<AssistantInstance> assistantList)
     {
         fusionUI.SetActive(true);
@@ -61,6 +73,7 @@ public class FusionUIController : MonoBehaviour
         ClearAllSlots();
         ClearIcons();
         ShowAllIcons(fullTraineeList);
+        SetFilteredMode(false);
     }
 
     public void CloseUI()
@@ -203,6 +216,7 @@ public class FusionUIController : MonoBehaviour
         foreach (var slot in slotViews)
             slot.Clear();
         ShowAllIcons(fullTraineeList);
+        SetFilteredMode(false);
         UpdateFusionStatusText();
     }
 
@@ -354,6 +368,7 @@ public class FusionUIController : MonoBehaviour
 
     private void OnFusionCardConfirmed(AssistantInstance data)
     {
+
         if (fusionBackgroundPanel != null)
             fusionBackgroundPanel.SetActive(false);
 
@@ -372,6 +387,7 @@ public class FusionUIController : MonoBehaviour
             slot.Clear();
 
         ShowAllIcons(fullTraineeList);
+        SetFilteredMode(false);
         UpdateFusionStatusText();
     }
 
@@ -395,6 +411,9 @@ public class FusionUIController : MonoBehaviour
         }
 
         ShowFilteredIcons(slotViews[0].Data);
+
+        SetFilteredMode(true);
+
         UpdateFusionStatusText();
     }
 
@@ -441,6 +460,15 @@ public class FusionUIController : MonoBehaviour
             if (btn != null && !buttonsToDisableDuringFusion.Contains(btn))
                 buttonsToDisableDuringFusion.Add(btn);
         }
+    }
+
+    public void RefreshUIFromInventory()
+    {
+        var inventory = GameManager.Instance.AssistantManager.AssistantInventory;
+        fullTraineeList = new List<AssistantInstance>(inventory.GetAll());
+        ShowAllIcons(fullTraineeList);
+        ClearAllSlots();
+        UpdateFusionStatusText();
     }
 }
 

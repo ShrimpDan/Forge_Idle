@@ -26,6 +26,8 @@ public class AssistantManager : MonoBehaviour
     [Header("UI 배경")]
     [SerializeField] private GameObject backgroundPanel;
 
+    [SerializeField] private FusionUIController fusionUIController;
+
     private AssistantFactory factory;
     private AssistantCardSpawner spawner;
     private AssistantInventory inventory = new();
@@ -57,6 +59,20 @@ public class AssistantManager : MonoBehaviour
             if (backgroundPanel != null)
                 backgroundPanel.SetActive(false);
         };
+    }
+
+    [ContextMenu("제자 인벤토리 초기화")]
+    public void ClearAllAssistants()
+    {
+        inventory.Clear();
+        currentBatch.Clear();
+
+        if (fusionUIController != null)
+            fusionUIController.SetFilteredMode(false);
+
+        GameManager.Instance.SaveManager.SaveAll();
+
+        Debug.Log("<color=red>[AssistantManager] 제자 전체 초기화 및 저장 완료</color>");
     }
 
     // 단일 뽑기 처리 (외부에서 호출)

@@ -49,6 +49,8 @@ public class AssistantController : MonoBehaviour
             backCardButton.interactable = enableFlipOnStart;
             backCardButton.onClick.RemoveAllListeners();
             backCardButton.onClick.AddListener(OnClick_FlipCard);
+            Debug.Log($"[AssistantController] Setup 호출됨: {assistantData.Name}, IconPath: {assistantData.IconPath}");
+
         }
 
         if (playSpawnEffect)

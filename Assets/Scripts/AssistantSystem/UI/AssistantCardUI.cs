@@ -16,9 +16,8 @@ public class AssistantCardUI : MonoBehaviour
 
     public void UpdateUI(AssistantInstance data)
     {
-        if (!string.IsNullOrEmpty(data.Personality.Key))
+        if (!string.IsNullOrEmpty(data.IconPath))
         {
-            string iconPath = data.Personality.Key;
             characterIcon.sprite = LoadCharacterIcon(data);
         }
 
@@ -36,7 +35,6 @@ public class AssistantCardUI : MonoBehaviour
 
     private Sprite LoadCharacterIcon(AssistantInstance data)
     {
-        string assumedIconPath = $"Icons/{data.Name}";
-        return Resources.Load<Sprite>(assumedIconPath);
+        return Resources.Load<Sprite>(data.IconPath);
     }
 }
