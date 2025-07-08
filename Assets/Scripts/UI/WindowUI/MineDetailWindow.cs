@@ -89,6 +89,7 @@ public class MineDetailWindow : BaseUI
             return;
         }
 
+        // *** 여기서 mineAssign true로 ***
         var popup = uIManager.OpenUI<AssistantSelectPopup>(UIName.AssistantSelectPopup);
         popup.Init(gameManager, uIManager);
 
@@ -98,6 +99,7 @@ public class MineDetailWindow : BaseUI
             var assiPopup = uIManager.OpenUI<Mine_AssistantPopup>(UIName.Mine_AssistantPopup);
             assiPopup.Init(gameManager, uIManager);
 
+            // Mine_AssistantPopup 콜백 구현
             assiPopup.SetAssistant(assistant, false, (selected, isAssign) =>
             {
                 if (isAssign)
@@ -106,6 +108,7 @@ public class MineDetailWindow : BaseUI
                     info.assignTime = DateTime.Now;
                     info.pendingReward = 0;
                     assistantInventory.Remove(selected);
+                    // 아이콘 적용!!
                     mineralSlots[idx].SetAssistant(selected);
                 }
                 else
@@ -120,7 +123,7 @@ public class MineDetailWindow : BaseUI
                 }
                 uIManager.CloseUI(UIName.Mine_AssistantPopup);
             });
-        });
+        }, true); // <--- mineAssign true로
     }
 
     private void CollectAllReward()

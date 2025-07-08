@@ -11,21 +11,22 @@ public class QuestSlot : MonoBehaviour
     [SerializeField] private TMP_Text rewardAmountText;
     [SerializeField] private TMP_Text questNameText;
     [SerializeField] private TMP_Text timeLeftText;
-    [SerializeField] private Transform starsRoot;           // ⭐ 별 5개 루트
-    [SerializeField] private Sprite starFilled;             // 채워진 별 스프라이트
-    [SerializeField] private Sprite starEmpty;              // 빈 별 스프라이트
+    [SerializeField] private Transform starsRoot;
+    [SerializeField] private Sprite starFilled;
+    [SerializeField] private Sprite starEmpty;
     [SerializeField] private Transform assistantsRoot;
     [SerializeField] private GameObject assistantSlotPrefab;
-    [SerializeField] private GameObject completeQuest;      // 완료 오브젝트 (버튼 포함)
+    [SerializeField] private GameObject completeQuest;      // 완료 패널
     [SerializeField] private Button completeButton;         // 완료 버튼
+    [SerializeField] private GameObject completeImage;      // 완료 이미지
 
     private QuestData questData;
     private List<AssistantInstance> assignedAssistants = new();
     private List<GameObject> assistantSlots = new();
     private float timer;
     private bool isRunning;
-    private Action onQuestCompleted;
     private bool questCompleted = false;
+    private Action onQuestCompleted;
 
     public void Init(QuestData data, DataManager dataManager, UIManager uiManager, Action onQuestCompleted = null)
     {
@@ -46,12 +47,13 @@ public class QuestSlot : MonoBehaviour
         rewardAmountText.text = $"{questData.RewardMin}~{questData.RewardMax}";
         questNameText.text = questData.QuestName;
 
+        // 별 UI 갱신
         UpdateStarsUI(questData.Difficulty);
 
-        // 시간
+        // 시간 표시
         timeLeftText.text = FormatTime(questData.Duration);
 
-        // 어시스턴트 슬롯 정리 및 생성
+        // 어시스턴트 슬롯 초기화
         foreach (Transform child in assistantsRoot)
             Destroy(child.gameObject);
         for (int i = 0; i < questData.RequiredAssistants; i++)
@@ -65,13 +67,15 @@ public class QuestSlot : MonoBehaviour
             assignedAssistants.Add(null);
         }
 
-        // 완료 UI
+        // 완료 패널/버튼/이미지 상태 초기화
         if (completeQuest != null) completeQuest.SetActive(false);
         if (completeButton != null)
         {
+            completeButton.gameObject.SetActive(false);
             completeButton.onClick.RemoveAllListeners();
-            completeButton.onClick.AddListener(CollectReward);
+            completeButton.onClick.AddListener(OnClickCompleteButton);
         }
+        if (completeImage != null) completeImage.SetActive(false);
     }
 
     private void OnClickAssistantSlot(int idx, DataManager dataManager, UIManager uiManager)
@@ -89,7 +93,6 @@ public class QuestSlot : MonoBehaviour
         });
     }
 
-    // 어시스턴트 슬롯 UI 아이콘 변경
     private void SetAssistantSlot(GameObject slotObj, AssistantInstance assistant)
     {
         var icon = slotObj.transform.Find("Icon")?.GetComponent<Image>();
@@ -112,12 +115,10 @@ public class QuestSlot : MonoBehaviour
             plus.gameObject.SetActive(assistant == null);
     }
 
-    // 별 난이도 UI
     private void UpdateStarsUI(int difficulty)
     {
         if (starsRoot == null || starFilled == null || starEmpty == null) return;
-        int filledCount = Mathf.Clamp(difficulty + 1, 1, 5); // 0=별1개, 4=별5개
-
+        int filledCount = Mathf.Clamp(difficulty + 1, 1, 5);
         for (int i = 0; i < starsRoot.childCount; i++)
         {
             var star = starsRoot.GetChild(i).GetComponent<Image>();
@@ -132,6 +133,8 @@ public class QuestSlot : MonoBehaviour
         isRunning = true;
         timer = questData.Duration;
         if (completeQuest != null) completeQuest.SetActive(false);
+        if (completeButton != null) completeButton.gameObject.SetActive(false);
+        if (completeImage != null) completeImage.SetActive(false);
         UpdateTimeUI();
     }
 
@@ -146,14 +149,27 @@ public class QuestSlot : MonoBehaviour
         {
             isRunning = false;
             questCompleted = true;
-            // 시간 그대로 멈추고 완료UI만 활성화
+
+            // 완료 패널 세팅
             if (completeQuest != null) completeQuest.SetActive(true);
+            if (completeButton != null) completeButton.gameObject.SetActive(true);
+            if (completeImage != null) completeImage.SetActive(false);
         }
+    }
+
+    private void OnClickCompleteButton()
+    {
+        // 보상 지급
+        CollectReward();
+        // 버튼만 끄고, 이미지 키기
+        if (completeButton != null)
+            completeButton.gameObject.SetActive(false);
+        if (completeImage != null)
+            completeImage.SetActive(true);
     }
 
     private void CollectReward()
     {
-        // 이미 완료 처리했다면 중복 지급 방지
         if (!questCompleted) return;
         int rewardCnt = UnityEngine.Random.Range(questData.RewardMin, questData.RewardMax + 1);
         foreach (var key in questData.RewardItemKeys)
@@ -162,7 +178,6 @@ public class QuestSlot : MonoBehaviour
             if (item != null)
                 GameManager.Instance.Inventory.AddItem(item, rewardCnt);
         }
-        if (completeQuest != null) completeQuest.SetActive(false);
         onQuestCompleted?.Invoke();
     }
 
