@@ -20,16 +20,16 @@ public class AssiEquippedSlot : MonoBehaviour
         slotBtn.onClick.AddListener(OnClickSlot);
     }
 
-    public void SetAssistant(AssistantInstance assi)
+    public void SetAssistant(AssistantInstance assi, bool isAcitve)
     {
-        if (assi == null)
+        if (assi == null || !isAcitve)
         {
             UnEquipAssistant();
             return;
         }
         
         EquippedAssi = assi;
-        //icon.sprite = IconLoader.GetIcon(assi.IconPath);
+        icon.sprite = IconLoader.GetIcon(assi.IconPath);
     }
     
     private void OnClickSlot()
