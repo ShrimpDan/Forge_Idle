@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2467416444926511008}
   - component: {fileID: 7634530231060669648}
   - component: {fileID: 7171775329052522557}
+  - component: {fileID: 348867296134635663}
   m_Layer: 0
   m_Name: woodCutter
   m_TagString: Untagged
@@ -28,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 1125382921414982740}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.66, y: 1.85, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -76,7 +77,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  m_Color: {r: 0.9811321, g: 0, b: 0, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -99,7 +100,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buyPoint: {fileID: 3367438687136543233, guid: 5ee67ca923afb80428b5c61afda36939, type: 3}
-  data: {fileID: 11400000, guid: e1b2d60530a224a4fbb9450f338bf7fd, type: 2}
+  data:
+    Key: 
+    job: 0
+    type: 2
+    moveSpeed: 0
   moveWayPoint:
   - {fileID: 7599354342047509208, guid: 5ee67ca923afb80428b5c61afda36939, type: 3}
   - {fileID: 430231704407215936, guid: 712630db6271ee2408d526e960add339, type: 3}
@@ -131,3 +136,24 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!95 &348867296134635663
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1125382921414982740}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 9c29b8b4560a93c4f8dac05d10546f45, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

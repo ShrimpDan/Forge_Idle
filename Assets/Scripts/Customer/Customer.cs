@@ -6,12 +6,12 @@ using UnityEngine;
 
 public enum CustomerState
 { 
-    Idle,
-    MovingToBuyZone,
-    InQueue,
-    WaitintTurn,
-    Purchasing,
-    Exiting
+    Idle =0,
+    MovingToBuyZone =1,
+    InQueue =2,
+    WaitintTurn =3,
+    Purchasing =4,
+    Exiting =5
 }
 
 //enum추가 하는것도 괜찮다. 
@@ -44,6 +44,9 @@ public abstract class Customer : MonoBehaviour
 
 
     protected CustomerState state;
+    //애니메이션
+    protected Animator animator;
+    protected bool hasWeapon = false;
 
     private Transform targetPos;
     protected Rigidbody2D rigid2D; //buyingLine 
@@ -53,6 +56,7 @@ public abstract class Customer : MonoBehaviour
     protected virtual void Awake()
     {
         rigid2D = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
     }
 
     protected virtual void Start()
@@ -87,7 +91,9 @@ public abstract class Customer : MonoBehaviour
 
     private IEnumerator MoveToBuyZone()
     {
+        
         state = CustomerState.MovingToBuyZone;
+        SetAnimationState(state);
         Vector2 qPos = buyPoint.GetLastPosition();
         yield return MoveingWayPoint(qPos);
     }
@@ -97,6 +103,7 @@ public abstract class Customer : MonoBehaviour
     private IEnumerator JoinQueue()
     {
         state = CustomerState.InQueue;
+        SetAnimationState(state);
         buyPoint.CustomerIn(this);
         
         customerManager.CustomerEvent?.RaiseCustomerArrived(this); //이벤트 연결
@@ -133,6 +140,7 @@ public abstract class Customer : MonoBehaviour
 
     protected IEnumerator MoveingWayPoint(Vector2 wayPoint)
     {
+        animator?.SetBool("HasWeapon", hasWeapon);
         while (Vector2.Distance(transform.position, wayPoint) > 0.1f)
         {
             Vector2 dir = (wayPoint - (Vector2)transform.position).normalized;
@@ -162,6 +170,21 @@ public abstract class Customer : MonoBehaviour
     public void NotifiedCraftWeapon()
     {
         isCrafted = true;
+    }
+
+    protected void SetAnimationState(CustomerState state)
+    {
+        animator?.SetInteger("State", (int)state);
+        animator?.SetBool("HasWeapon", hasWeapon);
+        if (state == CustomerState.MovingToBuyZone || state == CustomerState.Exiting)
+        {
+            animator.speed = data.moveSpeed / 2.0f;
+        }
+        else
+        {
+            animator.speed = 1.0f;
+        }
+
     }
 
 }

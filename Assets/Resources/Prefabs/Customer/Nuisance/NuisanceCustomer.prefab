@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8361461713828535794}
   - component: {fileID: 7199352319057860205}
   - component: {fileID: 1167539211925660221}
+  - component: {fileID: 633608143150406722}
   m_Layer: 0
   m_Name: NuisanceCustomer
   m_TagString: Untagged
@@ -185,6 +186,27 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!95 &633608143150406722
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 342497988493757623}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 9c29b8b4560a93c4f8dac05d10546f45, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &7921828885711947236
 GameObject:
   m_ObjectHideFlags: 0
