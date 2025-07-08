@@ -38,7 +38,7 @@ public class AssistantSlot : MonoBehaviour
     {
         clickCallback?.Invoke(AssistantData);
 
-        // 마인에서 안킴
+        // 다른곳에서 안킴
         if (AssistantData == null || preventPopup) return;
 
         var ui = uIManager.OpenUI<AssistantPopup>(UIName.AssistantPopup);

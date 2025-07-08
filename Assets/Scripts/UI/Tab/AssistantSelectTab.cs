@@ -47,13 +47,14 @@ public class AssistantSelectTab : MonoBehaviour
         SwitchTab(TabType.Craft); // �⺻��
     }
 
-    public void OpenForSelection(Action<AssistantInstance> callback, bool isMineAssign = false)
+    public void OpenForSelection(Action<AssistantInstance> callback, bool preventPopup = false)
     {
         selectCallback = callback;
-        this.preventPopup = isMineAssign;
+        this.preventPopup = preventPopup;
         RefreshAllTabs();
         SwitchTab(curTab);
     }
+
 
 
     private void SwitchTab(TabType tab)
@@ -91,8 +92,7 @@ public class AssistantSelectTab : MonoBehaviour
                 pool.Add(slotObj);
             }
             var slot = slotObj.GetComponent<AssistantSlot>();
-            // preventPopup 전달
-            slot.Init(assistant, OnSelectAssistant, preventPopup);
+            slot.Init(assistant, OnSelectAssistant, preventPopup); 
             idx++;
         }
         for (int i = idx; i < pool.Count; i++)

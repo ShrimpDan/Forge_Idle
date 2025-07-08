@@ -25,10 +25,10 @@ public class AssistantSelectPopup : BaseUI
             tabRoot.Init(gameManager, uiManager);
     }
 
-    public void OpenForSelection(Action<AssistantInstance> callback, bool isMineAssign = false)
+    public void OpenForSelection(Action<AssistantInstance> callback, bool isMineOrQuestAssign = false)
     {
         if (tabRoot != null)
-            tabRoot.OpenForSelection(callback, isMineAssign);
+            tabRoot.OpenForSelection(callback, isMineOrQuestAssign);
     }
 
     private void ClosePopup()

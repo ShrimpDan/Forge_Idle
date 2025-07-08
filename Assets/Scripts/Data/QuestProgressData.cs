@@ -1,6 +1,7 @@
 using System.Collections.Generic;
+using System;
 
-[System.Serializable]
+[Serializable]
 public class QuestProgressData
 {
     public bool IsRunning = false;
