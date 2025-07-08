@@ -461,5 +461,14 @@ public class FusionUIController : MonoBehaviour
                 buttonsToDisableDuringFusion.Add(btn);
         }
     }
+
+    public void RefreshUIFromInventory()
+    {
+        var inventory = GameManager.Instance.AssistantManager.AssistantInventory;
+        fullTraineeList = new List<AssistantInstance>(inventory.GetAll());
+        ShowAllIcons(fullTraineeList);
+        ClearAllSlots();
+        UpdateFusionStatusText();
+    }
 }
 

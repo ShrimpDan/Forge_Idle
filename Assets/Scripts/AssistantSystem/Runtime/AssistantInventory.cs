@@ -38,6 +38,15 @@ public class AssistantInventory
     }
 
     /// <summary>
+    /// 보유중인 모든 제자를 삭제합니다.
+    /// </summary>
+    public void Clear()
+    {
+        assistantList.Clear();
+        Debug.Log("[AssistantInventory] 제자 인벤토리 초기화 완료!");
+    }
+
+    /// <summary>
     /// 전체 제자 리스트를 반환합니다.
     /// </summary>
     public List<AssistantInstance> GetAll()
