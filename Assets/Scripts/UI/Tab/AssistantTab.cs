@@ -146,15 +146,15 @@ public class AssistantTab : BaseTab
         switch (assi.Specialization)
         {
             case SpecializationType.Crafting:
-                craftAssi.SetAssistant(assi);
+                craftAssi.SetAssistant(assi, isActive);
                 break;
 
             case SpecializationType.Enhancing:
-                enhanceAssi.SetAssistant(assi);
+                enhanceAssi.SetAssistant(assi, isActive);
                 break;
 
             case SpecializationType.Selling:
-                sellingAssi.SetAssistant(assi);
+                sellingAssi.SetAssistant(assi, isActive);
                 break;
         }
 
@@ -186,37 +186,41 @@ public class AssistantTab : BaseTab
                 break;
         }
 
-        foreach (Transform child in parent)
-        {
-            Destroy(child.gameObject);
-        }
-
+        ClearStat(assi.Specialization);
+        
         foreach (var stat in assi.Multipliers)
         {
             GameObject obj = Instantiate(bonusStatPrefab, parent);
             if (obj.TryGetComponent(out TextMeshProUGUI tmp))
             {
                 tmp.text = stat.AbilityName;
-                tmp.text += $"\nx{stat.Multiplier}";
+                tmp.text += $"\nx{stat.Multiplier:F2}";
             }
         }
     }
 
     private void ClearStat(SpecializationType type)
     {
+        Transform parent = null;
+
         switch (type)
         {
             case SpecializationType.Crafting:
-                craftAssi.UnEquipAssistant();
+                parent = craftStatRoot;
                 break;
 
             case SpecializationType.Enhancing:
-                enhanceAssi.UnEquipAssistant();
+                parent = enhanceStatRoot;
                 break;
 
             case SpecializationType.Selling:
-                sellingAssi.UnEquipAssistant();
+                parent = sellingStatRoot;
                 break;
+        }
+
+        foreach (Transform child in parent)
+        {
+            Destroy(child.gameObject);
         }
     }
 }
