@@ -33,6 +33,13 @@ public class TraineeButtonHandler : MonoBehaviour
         var assistantList = assistantManager.AssistantInventory.GetAll();
         fusionUIController.OpenUI(assistantList);
     }
+
+    // 합성 UI 닫기
+    public void OnClickCloseFusionUI()
+    {
+        fusionUIController.CloseUI();
+    }
+
     public void OnClickStartFusion()
     {
         var slots = fusionUIController.GetCurrentSlots();
