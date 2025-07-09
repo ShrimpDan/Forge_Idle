@@ -6,7 +6,9 @@ public class WeaponSellingSystem : MonoBehaviour
 {
     private Forge forge;
     private CraftingDataLoader craftingLoader;
+    private ItemDataLoader itemLoader;
     private CustomerManager customerManager;
+    private BlackSmith blackSmith;
 
     public Dictionary<CustomerJob, CraftingData> CraftingWeapon { get; private set; }
     private Queue<CraftingData> craftingQueue;
@@ -14,11 +16,13 @@ public class WeaponSellingSystem : MonoBehaviour
 
     private Coroutine craftingCoroutine;
 
-    public void Init(Forge forge, CraftingDataLoader craftingLoader)
+    public void Init(Forge forge, DataManager dataManager)
     {
         this.forge = forge;
-        this.craftingLoader = craftingLoader;
+        craftingLoader = dataManager.CraftingLoader;
+        itemLoader = dataManager.ItemLoader;
         customerManager = CustomerManager.Instance;
+        blackSmith = forge.BlackSmith;
 
         InitDictionary();
         craftingQueue = new Queue<CraftingData>();
@@ -66,6 +70,8 @@ public class WeaponSellingSystem : MonoBehaviour
 
     IEnumerator CraftingWeaponCoroutine()
     {
+        blackSmith.SetCraftingAnimation(true);
+
         while (craftingQueue.Count > 0 && customerQueue.Count > 0)
         {
             float time = 0f;
@@ -73,9 +79,15 @@ public class WeaponSellingSystem : MonoBehaviour
             CraftingData weapon = craftingQueue.Dequeue();
             float duration = weapon.craftTime * forge.FinalCraftSpeedMultiplier;
 
+            // 어떤 무기를 만드는지 아이콘 이벤트 호출
+            string iconPath = itemLoader.GetItemByKey(weapon.ItemKey).IconPath;
+            forge.Events.RaiseCraftStarted(IconLoader.GetIcon(iconPath));
+
             while (time < duration)
             {
                 time += 0.1f;
+                forge.Events.RaiseCraftProgress(time, duration);
+
                 yield return WaitForSecondsCache.Wait(0.1f);
             }
 
@@ -90,7 +102,11 @@ public class WeaponSellingSystem : MonoBehaviour
             Debug.Log($"[무기 판매 시스템] {weapon.jobType} 무기 제작 완료!");
         }
 
+        blackSmith.SetCraftingAnimation(false);
         craftingCoroutine = null;
+        
+        forge.Events.RaiseCraftStarted(null);
+        forge.Events.RaiseCraftProgress(0, 1);
     }
 
     public WeaponSellingSaveData SaveToData()
