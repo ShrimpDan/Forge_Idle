@@ -151,6 +151,8 @@ public class AssistantDrawController : MonoBehaviour
             var controller = card?.GetComponent<AssistantController>();
             if (controller == null || controller.IsFlipped) continue;
 
+            SoundManager.Instance.Play("SFX_CardFlipFront");
+
             bool finished = false;
             controller.ForceFlipWithCallback(() => finished = true);
             yield return new WaitUntil(() => finished);
@@ -172,6 +174,8 @@ public class AssistantDrawController : MonoBehaviour
             if (controller != null)
             {
                 controller.OnClick_FrontCard();
+
+                SoundManager.Instance.Play("SFX_CardVanishClick");
             }
         }
 

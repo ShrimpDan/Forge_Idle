@@ -34,6 +34,11 @@ public class AssistantCardLayoutAnimator : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
 
+        SoundManager.Instance.Play("SFX_CardDealSpread");
+
+        yield return new WaitForSeconds(0.15f);
+
+
         for (int i = 0; i < cards.Count; i++)
         {
             var rt = cards[i].GetComponent<RectTransform>();
