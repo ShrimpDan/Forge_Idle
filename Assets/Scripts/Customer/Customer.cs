@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.U2D.Animation;
 
@@ -33,7 +34,7 @@ public abstract class Customer : MonoBehaviour
     [SerializeField] protected List<Vector2> movePoint = new();
     [SerializeField] protected BuyPoint buyPoint;
     [SerializeField] private float stayMaxTime = 3f;
-    [SerializeField] private float stayMinTime= 1f;
+    [SerializeField] private float stayMinTime = 1f;
 
     [Header("Customerinfo")]
     [SerializeField] CustomerData data;
@@ -47,6 +48,7 @@ public abstract class Customer : MonoBehaviour
     protected Rigidbody2D rigid2D;
     [SerializeField] SpriteResolver spriteResolver;
     [SerializeField] SpriteLibrary spriteLibrary;
+    [SerializeField] SpriteRenderer spriteRenderer;
 
 
     private Coroutine moveRoutine; //큐에서 사용
@@ -61,7 +63,7 @@ public abstract class Customer : MonoBehaviour
         animator = GetComponentInChildren<Animator>();
         spriteResolver = GetComponentInChildren<SpriteResolver>();
         spriteLibrary = GetComponentInChildren<SpriteLibrary>();
-
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
 
 
     }
@@ -176,8 +178,15 @@ public abstract class Customer : MonoBehaviour
         {
             Vector2 dir = (wayPoint - (Vector2)transform.position).normalized;
             rigid2D.MovePosition(rigid2D.position + dir * Time.deltaTime * data.moveSpeed);
+            if (dir.x <= 0)
+            {
+                spriteRenderer.flipX = true; // ← 왼쪽이면 flip
 
-
+            }
+            else
+            {
+                spriteRenderer.flipX = false; // → 오른쪽이면 flip
+            }   
             yield return new WaitForFixedUpdate();
         }
         rigid2D.velocity = Vector2.zero; // 안전
@@ -227,8 +236,10 @@ public abstract class Customer : MonoBehaviour
         {
             Vector3 worldPos = new Vector3(movePoint[i].x, movePoint[i].y, 0);
 
-           
+
             Gizmos.DrawSphere(worldPos, 0.2f);
         }
     }
+
+  
 }
