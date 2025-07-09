@@ -18,6 +18,11 @@ public class AssistantController : MonoBehaviour
     private bool isFlipped = false;
     private bool isFlipping = false;
 
+    // 🔽 사운드별 재생 제한
+    private static bool hasPlayedDropSound = false;
+    private static bool hasPlayedFlipSound = false;
+    private static bool hasPlayedVanishSound = false;
+
     public bool IsFlipped => isFlipped;
 
     private System.Action<AssistantInstance> onConfirm;
@@ -50,7 +55,6 @@ public class AssistantController : MonoBehaviour
             backCardButton.onClick.RemoveAllListeners();
             backCardButton.onClick.AddListener(OnClick_FlipCard);
             Debug.Log($"[AssistantController] Setup 호출됨: {assistantData.Name}, IconPath: {assistantData.IconPath}");
-
         }
 
         if (playSpawnEffect)
@@ -63,6 +67,13 @@ public class AssistantController : MonoBehaviour
     private IEnumerator DelayedSpawnEffect()
     {
         yield return null;
+
+        if (!hasPlayedDropSound)
+        {
+            hasPlayedDropSound = true;
+            SoundManager.Instance.Play("SFX_CardDrop");
+        }
+
         PlaySpawnEffect();
     }
 
@@ -79,6 +90,8 @@ public class AssistantController : MonoBehaviour
 
         isFlipping = true;
         cardUI?.UpdateUI(data);
+
+        SoundManager.Instance.Play("SFX_CardFlipFront");
 
         cardAnimator?.PlayTieredFlip(() =>
         {
@@ -118,6 +131,8 @@ public class AssistantController : MonoBehaviour
     {
         if (drawController != null && drawController.IsCardInteractionLocked) return;
 
+        SoundManager.Instance.Play("SFX_CardVanishClick");
+
         onConfirm?.Invoke(data);
         Destroy(gameObject);
 
@@ -136,6 +151,8 @@ public class AssistantController : MonoBehaviour
         isFlipping = true;
         cardUI?.UpdateUI(data);
 
+        SoundManager.Instance.Play("SFX_CardFlipFront");
+
         cardAnimator?.PlayTieredFlip(() =>
         {
             isFlipped = true;
@@ -149,6 +166,16 @@ public class AssistantController : MonoBehaviour
     public void PlaySpawnEffect()
     {
         cardAnimator?.PlaySpawnEffect();
+    }
+
+    /// <summary>
+    /// 사운드 재생 상태 초기화용 함수 (외부에서 호출)
+    /// </summary>
+    public static void ResetSoundOnce()
+    {
+        hasPlayedDropSound = false;
+        hasPlayedFlipSound = false;
+        hasPlayedVanishSound = false;
     }
 
     /// <summary>

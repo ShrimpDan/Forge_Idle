@@ -21,6 +21,7 @@ public class AbilityMultiplierSave
 [System.Serializable]
 public class AssistantDataSave
 {
+    public string Key;
     public string Name;
     public int Level;
     public string PersonalityKey;
@@ -47,6 +48,7 @@ public class AssistantSaveSystem
         {
             var a = new AssistantDataSave
             {
+                Key = assi.Key,
                 Name = assi.Name,
                 Level = assi.Level,
                 PersonalityKey = assi.Personality.Key,
@@ -67,7 +69,7 @@ public class AssistantSaveSystem
 
         string json = JsonUtility.ToJson(saveData, true);
         File.WriteAllText(SavePath, json);
-        Debug.Log("[저장 시스템] 제자 데이터 저장 완료");
+        Debug.Log($"[저장 시스템] 제자 데이터 저장 완료 \n경로: {SavePath}");
     }
 
     public static void LoadAssistants(AssistantInventory inventory, PersonalityDataLoader personalityLoader)
@@ -90,6 +92,7 @@ public class AssistantSaveSystem
 
 
             var assi = new AssistantInstance(
+                key: a.Key,
                 name: a.Name,
                 personality: personality,
                 specialization: a.Specialization,

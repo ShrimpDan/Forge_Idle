@@ -9,15 +9,9 @@ public class ResourceSlot : MonoBehaviour
 
     public void Set(Sprite sprite, int owned, int needed)
     {
-        if (icon != null)
-        {
-            icon.sprite = sprite;
-            icon.enabled = (sprite != null);
-        }
-        if (amountText != null)
-        {
-            amountText.text = $"{owned}/{needed}";
-            amountText.color = owned < needed ? Color.red : Color.white;
-        }
+        icon.sprite = sprite;
+        icon.enabled = (sprite != null);
+        amountText.text = $"{owned}/{needed}";
+        amountText.color = owned < needed ? Color.red : Color.white;
     }
 }

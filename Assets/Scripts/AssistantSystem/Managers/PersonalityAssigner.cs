@@ -21,8 +21,10 @@ public class PersonalityAssigner
         var specialization = GetRandomSpecialization();
         var multipliers = GenerateMultipliers(personality, specialization);
         string name = $"제자{assistantCount++}_{specialization}";
-
+        string key = "What The Fuck";
+        
         return new AssistantInstance(
+            key,
             name,
             personality,
             specialization,
@@ -87,8 +89,10 @@ public class PersonalityAssigner
         var personality = personalityDatas[Random.Range(0, personalityDatas.Count)];
         var multipliers = GenerateMultipliers(personality, fixedType);
         string name = $"제자{assistantCount++}_{fixedType}";
+        string key = "What The Fuck";
 
         return new AssistantInstance(
+            key,
             name,
             personality,
             fixedType,
@@ -138,8 +142,10 @@ public class PersonalityAssigner
 
         var multipliers = GenerateMultipliers(personality, fixedType);
         string name = $"제자{assistantCount++}_{fixedType}";
+        string key = "What The Fuck";
 
         return new AssistantInstance(
+            key,
             name,
             personality,
             fixedType,

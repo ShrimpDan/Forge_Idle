@@ -18,7 +18,7 @@ public class UIManager : MonoBehaviour
     private Dictionary<string, BaseUI> activeUIs = new();
     private Dictionary<string, GameObject> loadedPrefabs = new();
 
-    // ���� õ���� , �۾� ------
+
     public static string FormatNumber(long number)
     {
         return number.ToString("N0", CultureInfo.InvariantCulture);
@@ -37,7 +37,7 @@ public class UIManager : MonoBehaviour
         string fmt = decimalPoint > 0 ? $"N{decimalPoint}" : "N0";
         return number.ToString(fmt, CultureInfo.InvariantCulture);
     }
-    // ���� õ���� , �۾� ------
+
 
 
 
@@ -85,8 +85,8 @@ public class UIManager : MonoBehaviour
         if (ui == null)
             return null;
 
-        ui.Open();
         ui.Init(gameManager, this);
+        ui.Open();
         activeUIs[uiName] = ui;
 
         if (ui.UIType == UIType.Popup && popupBlockRay != null)
@@ -163,6 +163,14 @@ public class UIManager : MonoBehaviour
         {
             CloseUI(uiName);
         }
+    }
+
+    public void ReLoadUI(string uiName)
+    {
+        if (!activeUIs.TryGetValue(uiName, out var ui) || ui == null)
+            return;
+
+        ui.Init(gameManager, this);
     }
 }
 

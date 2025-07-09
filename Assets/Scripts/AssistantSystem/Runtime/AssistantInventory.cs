@@ -6,7 +6,13 @@ using UnityEngine;
 /// </summary>
 public class AssistantInventory
 {
+    private Forge forge;
     private List<AssistantInstance> assistantList = new();
+
+    public AssistantInventory(Forge forge)
+    {
+        this.forge = forge;
+    }
 
     /// <summary>
     /// 제자를 리스트에 추가하고 특화 인덱스를 갱신합니다.
@@ -19,6 +25,11 @@ public class AssistantInventory
             return;
         }
 
+        if (data.IsEquipped)
+        {
+            forge.ActiveAssistant(data);
+        }
+        
         assistantList.Add(data);
         ReindexSpecialization(data.Specialization);
     }

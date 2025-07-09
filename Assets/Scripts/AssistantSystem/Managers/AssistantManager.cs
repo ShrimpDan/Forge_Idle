@@ -30,7 +30,7 @@ public class AssistantManager : MonoBehaviour
 
     private AssistantFactory factory;
     private AssistantCardSpawner spawner;
-    private AssistantInventory inventory = new();
+    private AssistantInventory inventory;
     public AssistantInventory AssistantInventory => inventory;
     public AssistantCardSpawner Spawner => spawner;
 
@@ -40,7 +40,8 @@ public class AssistantManager : MonoBehaviour
     public void Init(GameManager gameManager)
     {
         this.gameManager = gameManager;
-
+        
+        inventory = new AssistantInventory(gameManager.Forge);
         factory = new AssistantFactory(gameManager.DataManager);
         spawner = new AssistantCardSpawner(
             largeTraineeCardPrefab,
@@ -78,6 +79,8 @@ public class AssistantManager : MonoBehaviour
     // 단일 뽑기 처리 (외부에서 호출)
     public void RecruitSingle(SpecializationType? type = null)
     {
+        AssistantController.ResetSoundOnce();
+
         HandleSingleRecruit(() =>
             type == null
                 ? factory.CreateRandomTrainee()

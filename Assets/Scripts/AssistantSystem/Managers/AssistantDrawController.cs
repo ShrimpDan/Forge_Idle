@@ -37,6 +37,8 @@ public class AssistantDrawController : MonoBehaviour
 
     public void StartMultipleRecruit(int count, SpecializationType? fixedType = null)
     {
+        AssistantController.ResetSoundOnce();
+
         factory.ResetRecruitLock();
         cardsToConfirm = count;
 
@@ -127,6 +129,8 @@ public class AssistantDrawController : MonoBehaviour
 
         if (isFlippingCards)
         {
+            SoundManager.Instance.Play("SFX_CardFlipFront");
+
             foreach (var card in spawnedCards)
             {
                 var controller = card?.GetComponent<AssistantController>();

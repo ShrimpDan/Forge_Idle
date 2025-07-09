@@ -4,11 +4,12 @@ using UnityEngine.UI;
 
 public class DungeonSlot : MonoBehaviour
 {
-    [SerializeField] TextMeshProUGUI dungeonName;
-    [SerializeField] Button startBtn;
-
     private GameManager gameManager;
     private DungeonData dungeonData;
+
+    [SerializeField] TextMeshProUGUI dungeonName;
+    [SerializeField] Button startBtn;
+    [SerializeField] GameObject unlockIndicator;
 
     public void Init(GameManager gameManager, DungeonData data)
     {
@@ -17,10 +18,17 @@ public class DungeonSlot : MonoBehaviour
 
         dungeonName.text = data.DungeonName;
         startBtn.onClick.AddListener(StartDungeon);
+
+        SetUnlock();
+    }
+
+    public void SetUnlock()
+    {
+        unlockIndicator.SetActive(!gameManager.DungeonSystem.CheckUnlock(dungeonData.Key));
     }
 
     private void StartDungeon()
     {
-        gameManager.StartDungeon(dungeonData);
+        gameManager.DungeonSystem.EnterDungeon(dungeonData);
     }
 }
