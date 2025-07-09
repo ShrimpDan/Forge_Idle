@@ -22,7 +22,6 @@ public class CustomerManager : MonoSingleton<CustomerManager>
 
     [Header("SpawnSetting")]
     [SerializeField] private Transform spawnPoint;
-    [SerializeField] private List<CustomerSpawnData> customerPrefabs = new();
     [SerializeField] private float spawnDelay;
     [SerializeField] private List<SpriteLibraryAsset> normalSpriteAssets;
 
@@ -133,10 +132,13 @@ public class CustomerManager : MonoSingleton<CustomerManager>
 
     private IEnumerator SpawnNormalLoop()
     {
+    
+
         while (true)
         {
+            
+            yield return WaitForSecondsCache.Wait(GameManager.Instance.Forge.FinalCustomerSpawnRate * spawnDelay);
             SpawnNormalCustomer();
-            yield return WaitForSecondsCache.Wait(GameManager.Instance.Forge.FinalCustomerSpawnRate);
         }
 
     }

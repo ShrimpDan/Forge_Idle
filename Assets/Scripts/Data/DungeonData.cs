@@ -12,6 +12,8 @@ public class DungeonData
     public int MaxMonster;
     public int MinCount;
     public int MaxCount;
+    public string BossMonsterKey;
+    public List<string> NormalMonsterKeys;
     public List<string> RewardItemKeys;
 }
 
@@ -49,5 +51,18 @@ public class DungeonDataLoader
     {
         DungeonDict.TryGetValue(key, out DungeonData data);
         return data;
+    }
+
+    public string GetNextDungeonKey(DungeonData curDungeon)
+    {
+        int idx = DungeonLists.IndexOf(curDungeon);
+
+        if (idx + 1 < DungeonLists.Count)
+        {
+            DungeonData nextDungeon = DungeonLists[idx + 1];
+            return nextDungeon.Key;
+        }
+
+        return null;
     }
 }

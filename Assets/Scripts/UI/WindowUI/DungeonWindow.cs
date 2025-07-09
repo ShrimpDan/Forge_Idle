@@ -10,19 +10,32 @@ public class DungeonWindow : BaseUI
     [SerializeField] GameObject dungeonSlotPrefab;
     [SerializeField] Transform dungeonRoot;
 
-
     public override void Init(GameManager gameManager, UIManager uIManager)
     {
         base.Init(gameManager, uIManager);
         exitBtn.onClick.AddListener(() => uIManager.CloseUI(UIName.DungeonWindow));
 
-        foreach (var data in gameManager.DataManager.DungeonDataLoader.DungeonLists)
+        if (dungeonRoot.childCount == 0)
         {
-            GameObject obj = Instantiate(dungeonSlotPrefab, dungeonRoot);
-
-            if (obj.TryGetComponent(out DungeonSlot slot))
+            foreach (var data in gameManager.DataManager.DungeonDataLoader.DungeonLists)
             {
-                slot.Init(gameManager, data);
+                GameObject obj = Instantiate(dungeonSlotPrefab, dungeonRoot);
+
+                if (obj.TryGetComponent(out DungeonSlot slot))
+                {
+                    slot.Init(gameManager, data);
+                }
+            }
+        }
+        
+        else
+        {
+            foreach (Transform child in dungeonRoot)
+            {
+                if (child.TryGetComponent(out DungeonSlot slot))
+                {
+                    slot.SetUnlock();
+                }
             }
         }
     }

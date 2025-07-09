@@ -164,5 +164,13 @@ public class UIManager : MonoBehaviour
             CloseUI(uiName);
         }
     }
+
+    public void ReLoadUI(string uiName)
+    {
+        if (!activeUIs.TryGetValue(uiName, out var ui) || ui == null)
+            return;
+
+        ui.Init(gameManager, this);
+    }
 }
 

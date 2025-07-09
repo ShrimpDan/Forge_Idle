@@ -80,6 +80,8 @@ public class AssistantController : MonoBehaviour
         isFlipping = true;
         cardUI?.UpdateUI(data);
 
+        SoundManager.Instance.Play("SFX_CardFlipFront");
+
         cardAnimator?.PlayTieredFlip(() =>
         {
             isFlipped = true;
@@ -118,6 +120,8 @@ public class AssistantController : MonoBehaviour
     {
         if (drawController != null && drawController.IsCardInteractionLocked) return;
 
+        SoundManager.Instance.Play("SFX_CardVanishClick");
+
         onConfirm?.Invoke(data);
         Destroy(gameObject);
 
@@ -135,6 +139,8 @@ public class AssistantController : MonoBehaviour
 
         isFlipping = true;
         cardUI?.UpdateUI(data);
+
+        SoundManager.Instance.Play("SFX_CardFlipFront");
 
         cardAnimator?.PlayTieredFlip(() =>
         {
