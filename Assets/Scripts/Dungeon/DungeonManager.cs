@@ -23,7 +23,7 @@ public class DungeonManager : MonoBehaviour
 
     public void Init()
     {
-        DungeonData = GameManager.CurrentDungeon;
+        DungeonData = GameManager.DungeonSystem.CurrentDungeon;
 
         DungeonUI = FindObjectOfType<DungeonUI>();
         DungeonUI.Init(this);
@@ -71,18 +71,19 @@ public class DungeonManager : MonoBehaviour
     {
         IsRunning = false;
         DungeonUI.OpenClearPopup(isClear);
+        GameManager.DungeonSystem.UnlockNextDungeon(DungeonData);
     }
 
     public void ExitDungeon()
     {
         RewardHandler.ApplyReward();
-        GameManager.ExitDungeon();
+        GameManager.DungeonSystem.ExitDungeon();
         LoadSceneManager.Instance.UnLoadScene(SceneType.Dungeon);
     }
 
     public void BackToMain()
     {
-        GameManager.ExitDungeon();
+        GameManager.DungeonSystem.ExitDungeon();
         LoadSceneManager.Instance.UnLoadScene(SceneType.Dungeon);
     }
 }
