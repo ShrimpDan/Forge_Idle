@@ -6,7 +6,7 @@ public class MonsterHandler : MonoBehaviour
 {
     private DungeonManager dungeonManager;
     private DungeonUI dungeonUI;
-    
+
     private DungeonData dungeonData;
 
 
@@ -45,7 +45,7 @@ public class MonsterHandler : MonoBehaviour
             Monster monster = go.GetComponent<Monster>();
 
             // 몬스터 초기 설정
-            monster.Init(dungeonData.MonsterHp);
+            monster.Init(this, dungeonData.MonsterHp);
             monster.OnDeath += HandleMonsterDeath;
             go.SetActive(false);
 
@@ -58,7 +58,7 @@ public class MonsterHandler : MonoBehaviour
         Monster boss = bossGo.GetComponent<Monster>();
 
         // 보스 몬스터 초기 설정
-        boss.Init(dungeonData.BossHp, isBoss: true);
+        boss.Init(this, dungeonData.BossHp, isBoss: true);
         boss.OnDeath += HandleMonsterDeath;
         bossGo.SetActive(false);
 
@@ -74,8 +74,6 @@ public class MonsterHandler : MonoBehaviour
             OnDungeonCleared?.Invoke();
             return;
         }
-
-        currentMonster = null;
 
         Monster monster = monstersQueue.Dequeue();
         monster.gameObject.SetActive(true);
@@ -100,5 +98,10 @@ public class MonsterHandler : MonoBehaviour
     public Monster GetCurrentMonster()
     {
         return currentMonster;
+    }
+
+    public void ClearCurrentMonster()
+    {
+        currentMonster = null;
     }
 }

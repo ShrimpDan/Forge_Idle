@@ -4,6 +4,8 @@ using UnityEngine.UI;
 
 public class Monster : MonoBehaviour
 {
+    private MonsterHandler monsterHandler;
+
     private Animator animator;
     private readonly int hitHash = Animator.StringToHash("Hit");
     private readonly int deathHash = Animator.StringToHash("Death");
@@ -17,8 +19,9 @@ public class Monster : MonoBehaviour
 
     public System.Action OnDeath;
 
-    public void Init(float hp, bool isBoss = false)
+    public void Init(MonsterHandler monsterHandler, float hp, bool isBoss = false)
     {
+        this.monsterHandler = monsterHandler;
         maxHp = hp;
         currentHp = hp;
         this.isBoss = isBoss;
@@ -37,6 +40,7 @@ public class Monster : MonoBehaviour
 
         if (currentHp <= 0)
         {
+            monsterHandler.ClearCurrentMonster();
             StartCoroutine(DeathCoroutine());
         }
     }

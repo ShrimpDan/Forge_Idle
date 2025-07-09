@@ -8,6 +8,7 @@ public class WeaponHandler : MonoBehaviour
     private DungeonManager dungeonManager;
     private MonsterHandler monsterHandler;
 
+    [Header("To Get Weapon")]
     [SerializeField] private EquippedWeaponSlot[] equippedSlots;
     private Queue<EquippedWeaponSlot> attackQueue = new Queue<EquippedWeaponSlot>();
 
@@ -23,6 +24,10 @@ public class WeaponHandler : MonoBehaviour
     [SerializeField] float maxRotation;
     [SerializeField] float minRotation;
     [SerializeField] float duration;
+
+    [Header("Player")]
+    [SerializeField] Animator animator;
+    private int attackHash = Animator.StringToHash("BlackSmith_Attack");
 
     private bool isAttack = false;
 
@@ -89,6 +94,7 @@ public class WeaponHandler : MonoBehaviour
 
         if (monster != null)
         {
+            animator.Play(attackHash);
             SpawnProjectile(slot, monster);
         }
     }
