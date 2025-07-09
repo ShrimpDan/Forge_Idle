@@ -15,13 +15,13 @@ public class Forge : MonoBehaviour
     private float customerSpawnRate;
 
     // 보너스 스탯
-    private float bonusCraftSpeedMultiplier;
-    private float bonusRareItemChance;
-    private float bonusEnhanceSuccessRate;
-    private float bonusBreakChanceReduction;
-    private float bonusEnhanceCostMultiplier;
-    private float bonusSellPriceMultiplier;
-    private float bonusCustomerSpawnRate;
+    private float bonusCraftSpeedMultiplier = 1f;
+    private float bonusRareItemChance = 0f;
+    private float bonusEnhanceSuccessRate = 0f;
+    private float bonusBreakChanceReduction =0f;
+    private float bonusEnhanceCostMultiplier = 1f;
+    private float bonusSellPriceMultiplier = 1f;
+    private float bonusCustomerSpawnRate = 0f;
 
     // 최종 스탯
     public float FinalCraftSpeedMultiplier => craftSpeedMultiplier * bonusCraftSpeedMultiplier;
