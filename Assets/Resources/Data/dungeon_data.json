@@ -1,46 +1,99 @@
 {
   "Items": [
     {
-      "Key": "dungeon_slime",
-      "DungeonName": "Slime Cave",
-      "MonsterHp": 30,
+      "Key": "dungeon_wolf_1",
+      "DungeonName": "늑대의 숲 - 1",
+      "MonsterHp": 10,
       "BossHp": 100,
       "Duration": 60,
-      "MaxMonster": 40,
+      "MaxMonster": 20,
       "MinCount": 2,
-      "MaxCount": 5,
+      "MaxCount": 3,
+      "BossMonsterKey": "blackwolf_boss",
+      "NormalMonsterKeys": [
+        "blackwolf_normal",
+        "bluewolf_normal"
+      ],
       "RewardItemKeys": [
         "resource_iron",
         "resource_bronze"
       ]
     },
     {
-      "Key": "dungeon_goblin",
-      "DungeonName": "Goblin Forest",
-      "MonsterHp": 50,
-      "BossHp": 150,
-      "Duration": 90,
-      "MaxMonster": 40,
+      "Key": "dungeon_wolf_2",
+      "DungeonName": "늑대의 숲 - 2",
+      "MonsterHp": 30,
+      "BossHp": 300,
+      "Duration": 60,
+      "MaxMonster": 20,
       "MinCount": 3,
-      "MaxCount": 8,
+      "MaxCount": 4,
+      "BossMonsterKey": "blackwolf_boss",
+      "NormalMonsterKeys": [
+        "blackwolf_normal",
+        "bluewolf_normal"
+      ],
       "RewardItemKeys": [
         "resource_iron",
-        "resource_silver"
+        "resource_bronze"
       ]
     },
     {
-      "Key": "dungeon_dragon",
-      "DungeonName": "Dragon Lair",
-      "MonsterHp": 100,
+      "Key": "dungeon_wolf_3",
+      "DungeonName": "늑대의 숲 - 3",
+      "MonsterHp": 50,
       "BossHp": 500,
-      "Duration": 120,
-      "MaxMonster": 40,
-      "MinCount": 5,
-      "MaxCount": 10,
+      "Duration": 60,
+      "MaxMonster": 20,
+      "MinCount": 2,
+      "MaxCount": 3,
+      "BossMonsterKey": "greywolf_boss",
+      "NormalMonsterKeys": [
+        "brownWolf_normal",
+        "greywolf_normal"
+      ],
       "RewardItemKeys": [
         "resource_iron",
-        "resource_sapphire",
-        "resource_copper"
+        "resource_bronze"
+      ]
+    },
+    {
+      "Key": "dungeon_wolf_4",
+      "DungeonName": "늑대의 숲 - 4",
+      "MonsterHp": 80,
+      "BossHp": 800,
+      "Duration": 60,
+      "MaxMonster": 20,
+      "MinCount": 3,
+      "MaxCount": 4,
+      "BossMonsterKey": "greywolf_boss",
+      "NormalMonsterKeys": [
+        "brownWolf_normal",
+        "greywolf_normal"
+      ],
+      "RewardItemKeys": [
+        "resource_iron",
+        "resource_bronze"
+      ]
+    },
+    {
+      "Key": "dungeon_wolf_5",
+      "DungeonName": "늑대의 숲 - 5",
+      "MonsterHp": 150,
+      "BossHp": 1500,
+      "Duration": 60,
+      "MaxMonster": 20,
+      "MinCount": 5,
+      "MaxCount": 6,
+      "BossMonsterKey": "blackwerewolf_boss",
+      "NormalMonsterKeys": [
+        "redwerewolf_normal",
+        "blackwerewolf_normal",
+        "brownwerewolf_normal"
+      ],
+      "RewardItemKeys": [
+        "resource_iron",
+        "resource_bronze"
       ]
     }
   ]

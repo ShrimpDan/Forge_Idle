@@ -12,6 +12,8 @@ public class DungeonData
     public int MaxMonster;
     public int MinCount;
     public int MaxCount;
+    public string BossMonsterKey;
+    public List<string> NormalMonsterKeys;
     public List<string> RewardItemKeys;
 }
 

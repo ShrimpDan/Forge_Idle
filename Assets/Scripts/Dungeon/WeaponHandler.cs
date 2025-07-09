@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class WeaponHandler : MonoBehaviour
 {
@@ -13,13 +12,18 @@ public class WeaponHandler : MonoBehaviour
     private Queue<EquippedWeaponSlot> attackQueue = new Queue<EquippedWeaponSlot>();
 
     [Header("Weapon Prefab")]
-    [SerializeField] private RectTransform BattleSlot;
     [SerializeField] private GameObject projectilePrefab;
-    [SerializeField] private RectTransform playerAnchor;
-    [SerializeField] private RectTransform monsterAnchor;
+    [SerializeField] private Transform weaponPivot;
+    [SerializeField] private Transform monsterPos;
 
     [Header("Attack Setting")]
     [SerializeField] float attackDelay;
+    [SerializeField] float maxJumpPower;
+    [SerializeField] float minJumpPower;
+    [SerializeField] float maxRotation;
+    [SerializeField] float minRotation;
+    [SerializeField] float duration;
+
     private bool isAttack = false;
 
     public void Init(DungeonManager dungeonManager, List<ItemInstance> equippedWeapons)
@@ -92,20 +96,17 @@ public class WeaponHandler : MonoBehaviour
     // 투사체 소환 및 효과 적용
     private void SpawnProjectile(EquippedWeaponSlot slot, Monster monster = null)
     {
-        Vector2 startPos = GetLocalPosFromAnchor(playerAnchor);
-        Vector2 endPos = GetLocalPosFromAnchor(monsterAnchor);
+        Vector2 startPos = weaponPivot.position;
+        Vector2 endPos = monsterPos.position;
 
-        GameObject go = Instantiate(projectilePrefab, BattleSlot);
+        GameObject go = Instantiate(projectilePrefab, startPos, Quaternion.identity);
 
-        if (go.TryGetComponent(out Image icon))
+        if (go.TryGetComponent(out SpriteRenderer icon))
         {
             icon.sprite = IconLoader.GetIcon(slot.WeaponData.Data.IconPath);
         }
 
-        RectTransform rt = go.GetComponent<RectTransform>();
-        rt.anchoredPosition = startPos;
-
-        rt.DOJumpAnchorPos(endPos, 200f, 1, 1f)
+        go.transform.DOJump(endPos, Random.Range(minJumpPower, maxJumpPower), 1, duration)
             .SetEase(Ease.OutQuad)
             .OnComplete(() =>
             {
@@ -113,7 +114,7 @@ public class WeaponHandler : MonoBehaviour
                 Destroy(go);
             });
 
-        rt.DORotate(new Vector3(0, 0, 540f), 1f, RotateMode.FastBeyond360);
+        go.transform.DORotate(new Vector3(0, 0, Random.Range(minRotation, maxRotation)), 1f, RotateMode.FastBeyond360);
     }
 
     private void DamageToMonster(float damage, Monster monster)
@@ -128,13 +129,5 @@ public class WeaponHandler : MonoBehaviour
     {
         yield return new WaitUntil(() => slot.IsReady);
         attackQueue.Enqueue(slot);
-    }
-
-    private Vector2 GetLocalPosFromAnchor(RectTransform anchor)
-    {
-        Vector2 screenPos = RectTransformUtility.WorldToScreenPoint(Camera.main, anchor.position);
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(
-            BattleSlot, screenPos, Camera.main, out Vector2 localPoint);
-        return localPoint;
     }
 }

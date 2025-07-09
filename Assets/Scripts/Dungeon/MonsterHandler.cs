@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 
 public class MonsterHandler : MonoBehaviour
@@ -8,9 +9,11 @@ public class MonsterHandler : MonoBehaviour
     
     private DungeonData dungeonData;
 
-    [SerializeField] private RectTransform spawnRoot;
-    [SerializeField] private GameObject normalMonsterPrefab;
-    [SerializeField] private GameObject bossMonsterPrefab;
+
+    [Header("SpawnMosnter Setting")]
+    [SerializeField] MonsterPrefabSO monsterPrefabSO;
+    [SerializeField] private Transform spawnRoot;
+    [SerializeField] private Transform monsterPos;
 
     private Queue<Monster> monstersQueue = new();
     private Monster currentMonster;
@@ -25,27 +28,42 @@ public class MonsterHandler : MonoBehaviour
         dungeonUI = dungeonManager.DungeonUI;
         dungeonData = dungeonManager.DungeonData;
 
+        InitMonserPool();
+        killedMonster = 0;
+
+        SpawnNextMonster();
+    }
+
+    private void InitMonserPool()
+    {
         // 일반 몬스터 생성
         for (int i = 0; i < dungeonData.MaxMonster; i++)
         {
-            var go = Instantiate(normalMonsterPrefab, spawnRoot);
-            var monster = go.GetComponent<Monster>();
+            string key = dungeonData.NormalMonsterKeys[Random.Range(0, dungeonData.NormalMonsterKeys.Count)];
+
+            GameObject go = Instantiate(monsterPrefabSO.GetMonsterByKey(key), spawnRoot);
+            Monster monster = go.GetComponent<Monster>();
+
+            // 몬스터 초기 설정
             monster.Init(dungeonData.MonsterHp);
             monster.OnDeath += HandleMonsterDeath;
-            monstersQueue.Enqueue(monster);
             go.SetActive(false);
+
+            // 몬스터 큐에 추가
+            monstersQueue.Enqueue(monster);
         }
 
         // 보스 몬스터 생성
-        var bossGo = Instantiate(bossMonsterPrefab, spawnRoot);
-        var boss = bossGo.GetComponent<Monster>();
+        GameObject bossGo = Instantiate(monsterPrefabSO.GetMonsterByKey(dungeonData.BossMonsterKey), spawnRoot);
+        Monster boss = bossGo.GetComponent<Monster>();
+
+        // 보스 몬스터 초기 설정
         boss.Init(dungeonData.BossHp, isBoss: true);
         boss.OnDeath += HandleMonsterDeath;
         bossGo.SetActive(false);
-        monstersQueue.Enqueue(boss);
 
-        killedMonster = 0;
-        SpawnNextMonster();
+        // 몬스터 큐에 추가
+        monstersQueue.Enqueue(boss);
     }
 
     private void SpawnNextMonster()
@@ -57,8 +75,11 @@ public class MonsterHandler : MonoBehaviour
             return;
         }
 
-        currentMonster = monstersQueue.Dequeue();
-        currentMonster.gameObject.SetActive(true);
+        currentMonster = null;
+
+        Monster monster = monstersQueue.Dequeue();
+        monster.gameObject.SetActive(true);
+        monster.transform.DOMoveX(monsterPos.position.x, 0.5f).SetEase(Ease.OutBack).OnComplete(() => currentMonster = monster);
     }
 
     private void HandleMonsterDeath()
