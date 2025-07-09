@@ -9,7 +9,8 @@ public class GameManager : MonoSingleton<GameManager>
     public Forge Forge { get; private set; }
     public UIManager UIManager { get; private set; }
 
-    public DungeonData CurrentDungeon { get; private set; }
+    public DungeonSystem DungeonSystem{ get; private set; }
+
     public CraftingManager CraftingManager { get; private set; }
 
     public GameSaveManager SaveManager { get; private set; }
@@ -22,6 +23,7 @@ public class GameManager : MonoSingleton<GameManager>
         AssistantManager = FindObjectOfType<AssistantManager>();
         UIManager = FindObjectOfType<UIManager>();
         Forge = FindObjectOfType<Forge>();
+        DungeonSystem = new DungeonSystem(this);
 
         CollectionBookManager.Instance.Initialize();
         if (UIManager)
@@ -44,11 +46,13 @@ public class GameManager : MonoSingleton<GameManager>
     {
         SaveManager = new GameSaveManager();
 
+        // 세이브 핸들러 등록
         SaveManager.RegisterSaveHandler(new ForgeSaveHandeler(Forge));
         SaveManager.RegisterSaveHandler(new InventorySaveHandler(Inventory));
         SaveManager.RegisterSaveHandler(new AssistantSaveHandler(AssistantManager, DataManager.PersonalityLoader));
         SaveManager.RegisterSaveHandler(new WeaponSellingSaveHandler(Forge.SellingSystem));
         SaveManager.RegisterSaveHandler(new CollectionBookSaveHandler(CollectionBookManager.Instance));
+        SaveManager.RegisterSaveHandler(new DungeonSaveHandler(DungeonSystem));
         
         SaveManager.LoadAll();
     }
@@ -101,17 +105,6 @@ public class GameManager : MonoSingleton<GameManager>
             }
         }
         Debug.Log($"<color=cyan>[GameManager] 리소스 아이템 {addedTypes}종 20개씩 지급 완료!</color>");
-    }
-
-    public void StartDungeon(DungeonData data)
-    {
-        CurrentDungeon = data;
-        LoadSceneManager.Instance.LoadSceneAsync(SceneType.Dungeon, true);
-    }
-
-    public void ExitDungeon()
-    {
-        CurrentDungeon = null;
     }
 
     private void OnApplicationQuit()

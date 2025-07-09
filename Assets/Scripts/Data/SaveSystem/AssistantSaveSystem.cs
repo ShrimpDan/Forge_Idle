@@ -67,7 +67,7 @@ public class AssistantSaveSystem
 
         string json = JsonUtility.ToJson(saveData, true);
         File.WriteAllText(SavePath, json);
-        Debug.Log("[저장 시스템] 제자 데이터 저장 완료");
+        Debug.Log($"[저장 시스템] 제자 데이터 저장 완료 \n경로: {SavePath}");
     }
 
     public static void LoadAssistants(AssistantInventory inventory, PersonalityDataLoader personalityLoader)
