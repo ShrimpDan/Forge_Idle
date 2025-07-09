@@ -13,7 +13,6 @@ public class BlackSmith : MonoBehaviour
 
     [Header("CashRegister Setting")]
     [SerializeField] private Animator cashAnim;
-    [SerializeField] private Transform goldRoot;
     [SerializeField] private TextMeshPro goldTextPrefab;
 
     public void Init()
@@ -26,14 +25,14 @@ public class BlackSmith : MonoBehaviour
         blackSmithAnim.SetBool(craftingHash, isCrafting);
     }
 
-    public void PlayBuyEffect(int cost)
+    public void PlayBuyEffect(int cost, Vector3 pos)
     {
         cashAnim.SetTrigger(buyHash);
-        TextMeshPro goldText = Instantiate(goldTextPrefab, goldRoot);
+        TextMeshPro goldText = Instantiate(goldTextPrefab, pos, Quaternion.identity);
         goldText.text = $"+{cost}G";
 
         Sequence seq = DOTween.Sequence();
-        seq.Append(goldText.transform.DOMoveY(goldText.transform.position.y + 1.5f, 0.5f).SetEase(Ease.OutFlash));
+        seq.Append(goldText.transform.DOMoveY(pos.y + 1.5f, 0.5f).SetEase(Ease.OutFlash));
         seq.Join(goldText.transform.DOScale(Vector3.one, 0.5f).SetEase(Ease.OutBack));
         seq.AppendInterval(0.3f);
         seq.Append(goldText.DOFade(0f, 0.5f));
