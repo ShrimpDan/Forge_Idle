@@ -22,7 +22,6 @@ public class CustomerManager : MonoSingleton<CustomerManager>
 
     [Header("SpawnSetting")]
     [SerializeField] private Transform spawnPoint;
-    [SerializeField] private List<CustomerSpawnData> customerPrefabs = new();
     [SerializeField] private float spawnDelay;
     [SerializeField] private List<SpriteLibraryAsset> normalSpriteAssets;
 

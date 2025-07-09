@@ -857,39 +857,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Reputation: 0
   spawnPoint: {fileID: 1582978597}
-  customerPrefabs:
-  - prefabs: {fileID: 7634530231060669648, guid: baa0da5450ee9924698d410a18dcd859, type: 3}
-    type: 0
-    job: 0
-    rarity: 0
-  - prefabs: {fileID: 7634530231060669648, guid: 6e617dd73cae4b449a8a527bf5811bf2, type: 3}
-    type: 0
-    job: 1
-    rarity: 0
-  - prefabs: {fileID: 519940071911044702, guid: 1ad6b2711363a0649847e31c017bc228, type: 3}
-    type: 1
-    job: 0
-    rarity: 0
-  - prefabs: {fileID: 519940071911044702, guid: e9506efc5116bd541852b48d62ec38b8, type: 3}
-    type: 1
-    job: 1
-    rarity: 0
-  - prefabs: {fileID: 7199352319057860205, guid: e3f187ba8304f0e488dc516b1c909605, type: 3}
-    type: 2
-    job: 0
-    rarity: 0
-  - prefabs: {fileID: 519940071911044702, guid: 1ad6b2711363a0649847e31c017bc228, type: 3}
-    type: 1
-    job: 0
-    rarity: 0
-  - prefabs: {fileID: 519940071911044702, guid: cb82d91b5fa21844e86024543aa58451, type: 3}
-    type: 1
-    job: 0
-    rarity: 1
-  - prefabs: {fileID: 519940071911044702, guid: a311992166bc6724dbbede3e000b74df, type: 3}
-    type: 1
-    job: 0
-    rarity: 2
   spawnDelay: 1
   normalSpriteAssets:
   - {fileID: 11400000, guid: 29350131cbeab8442b255d8600e993b6, type: 2}
@@ -1462,6 +1429,37 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1786283019}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1819321293
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1819321295}
+  m_Layer: 0
+  m_Name: MovePoint1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1819321295
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1819321293}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 3.6, y: -5.71, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1366603631058548840
@@ -2406,3 +2404,4 @@ SceneRoots:
   - {fileID: 2138191288418680789}
   - {fileID: 9187877706831675187}
   - {fileID: 357122283}
+  - {fileID: 1819321295}
