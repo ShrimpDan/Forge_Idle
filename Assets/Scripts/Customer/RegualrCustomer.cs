@@ -82,7 +82,6 @@ public class RegualrCustomer : Customer
     protected override IEnumerator PerformPurChase()
     {
         state = CustomerState.Purchasing;
-
         Interact(); // 가격 상승 등 효과
         buyPoint.CustomerOut();
 

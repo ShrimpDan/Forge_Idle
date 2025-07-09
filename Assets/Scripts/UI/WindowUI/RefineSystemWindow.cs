@@ -8,184 +8,182 @@ public class RefineSystemWindow : BaseUI
 {
     public override UIType UIType => UIType.Window;
 
-    [Header("UI Elements")]
+    [Header("UI")]
     [SerializeField] private Button exitButton;
-    [SerializeField] private Transform slotRoot;
-    [SerializeField] private GameObject refineSlotPrefab; // RefineSlotUI 프리팹
+    [SerializeField] private Button gemTabButton;
+    [SerializeField] private Button ingotTabButton;
+    [SerializeField] private RefineOutputSlot outputSlot;
+    [SerializeField] private Transform inputListRoot;
+    [SerializeField] private GameObject inputItemSlotPrefab;
+    [SerializeField] private Transform refineListRoot;
+    [SerializeField] private GameObject refineListSlotPrefab;
 
-    private const int slotCount = 5;
-    private List<RefineSlotUI> refineSlots = new();
-    private List<ItemInstance> selectedMaterials = new();
-    private List<ItemInstance> resultItems = new();
+    [Header("Amount UI")]
+    [SerializeField] private Button minusBtn;
+    [SerializeField] private Button plusBtn;
+    [SerializeField] private TMP_Text amountText;
+    [SerializeField] private Button craftBtn;
 
     private DataManager dataManager;
+    private List<ItemData> gemList = new();
+    private List<ItemData> ingotList = new();
+    private List<RefineInputItemSlot> inputSlots = new();
+    private List<RefineListSlot> refineListSlots = new();
 
-    private int baseRefineCost = 1000;
-    private int requiredAmount = 5;
-    private int resultAmount = 1;
+    private ItemData selectedOutput;
+    private List<ItemData> currentList;
 
-    public override void Init(GameManager gameManager, UIManager uIManager)
+    private int baseRequiredAmount = 5; 
+    private int craftAmount = 1;
+    private int maxCraftAmount = 99;
+
+    public override void Init(GameManager gameManager, UIManager uiManager)
     {
-        base.Init(gameManager, uIManager);
-        this.gameManager = gameManager;
-        this.uIManager = uIManager;
-        this.dataManager = gameManager?.DataManager;
+        base.Init(gameManager, uiManager);
+        dataManager = gameManager.DataManager;
 
         exitButton.onClick.RemoveAllListeners();
-        exitButton.onClick.AddListener(() => uIManager.CloseUI(UIName.RefineSystemWindow));
+        exitButton.onClick.AddListener(() => uiManager.CloseUI(UIName.RefineSystemWindow));
 
-        InitSlots();
-        ResetUI();
+        gemTabButton.onClick.RemoveAllListeners();
+        gemTabButton.onClick.AddListener(ShowGemTab);
+
+        ingotTabButton.onClick.RemoveAllListeners();
+        ingotTabButton.onClick.AddListener(ShowIngotTab);
+
+        minusBtn.onClick.RemoveAllListeners();
+        minusBtn.onClick.AddListener(() => { SetCraftAmount(craftAmount - 1); });
+
+        plusBtn.onClick.RemoveAllListeners();
+        plusBtn.onClick.AddListener(() => { SetCraftAmount(craftAmount + 1); });
+
+        craftBtn.onClick.RemoveAllListeners();
+        craftBtn.onClick.AddListener(OnClickCraft);
+
+        var all = dataManager.ItemLoader.ItemList;
+        gemList = all.Where(x => x.ItemKey.StartsWith("gem_")).ToList();
+        ingotList = all.Where(x => x.ItemKey.StartsWith("ingot_")).ToList();
+
+        ShowGemTab();
     }
 
-    private void InitSlots()
+    private void ShowGemTab()
     {
-        foreach (Transform child in slotRoot)
-            Destroy(child.gameObject);
-        refineSlots.Clear();
-        selectedMaterials = new List<ItemInstance>(new ItemInstance[slotCount]);
-        resultItems = new List<ItemInstance>(new ItemInstance[slotCount]);
+        currentList = gemList;
+        UpdateRefineList();
+        SelectOutput(null);
+    }
 
-        for (int i = 0; i < slotCount; i++)
+    private void ShowIngotTab()
+    {
+        currentList = ingotList;
+        UpdateRefineList();
+        SelectOutput(null);
+    }
+
+    private void UpdateRefineList()
+    {
+        foreach (Transform child in refineListRoot) Destroy(child.gameObject);
+        refineListSlots.Clear();
+
+        foreach (var data in currentList)
         {
-            var go = Instantiate(refineSlotPrefab, slotRoot);
-            var slot = go.GetComponent<RefineSlotUI>();
-            int idx = i;
-
-            // 버튼 이벤트 명확하게 등록 (매번 클리어 후 재등록)
-            slot.inputButton.onClick.RemoveAllListeners();
-            slot.inputButton.onClick.AddListener(() => OnClickInputSlot(idx));
-
-            slot.minusBtn.onClick.RemoveAllListeners();
-            slot.minusBtn.onClick.AddListener(() => {
-                slot.SetAmount(slot.Amount - 1);
-                UpdateSlot(idx);
-            });
-
-            slot.plusBtn.onClick.RemoveAllListeners();
-            slot.plusBtn.onClick.AddListener(() => {
-                slot.SetAmount(slot.Amount + 1);
-                UpdateSlot(idx);
-            });
-
-            slot.executeBtn.onClick.RemoveAllListeners();
-            slot.executeBtn.onClick.AddListener(() => OnClickExecute(idx));
-
-            slot.SetAmount(1);
-            refineSlots.Add(slot);
+            var go = Instantiate(refineListSlotPrefab, refineListRoot);
+            var slot = go.GetComponent<RefineListSlot>();
+            slot.Set(data, () => SelectOutput(data));
+            refineListSlots.Add(slot);
         }
+        var scroll = refineListRoot.GetComponentInParent<ScrollRect>();
+        if (scroll != null) scroll.verticalNormalizedPosition = 1f;
     }
 
-    private void OnClickInputSlot(int index)
+    private void SelectOutput(ItemData data)
     {
-        var popup = uIManager.OpenUI<Forge_Inventory_Popup>(UIName.Forge_Inventory_Popup);
-        popup.SetResourceSelectCallback((item) => OnMaterialSelected(index, item));
+        selectedOutput = data;
+        craftAmount = 1;
+        UpdateAmountUI();
+
+        outputSlot.Set(data);
+
+        foreach (Transform child in inputListRoot) Destroy(child.gameObject);
+        inputSlots.Clear();
+
+        if (data == null) return;
+
+        string resourceKey = GetResourceKeyForOutput(data);
+        if (string.IsNullOrEmpty(resourceKey)) return;
+
+        int owned = 0;
+        var invList = GameManager.Instance.Inventory.ResourceList;
+        if (invList != null)
+            owned = invList.Where(inst => inst.ItemKey == resourceKey).Sum(inst => inst.Quantity);
+
+        int required = baseRequiredAmount * craftAmount;
+        var slotGo = Instantiate(inputItemSlotPrefab, inputListRoot);
+        var slot = slotGo.GetComponent<RefineInputItemSlot>();
+        slot.Set(
+            dataManager.ItemLoader.GetItemByKey(resourceKey),
+            owned,
+            required
+        );
+        inputSlots.Add(slot);
     }
 
-    private void OnMaterialSelected(int index, ItemInstance item)
+    private void SetCraftAmount(int value)
     {
-        if (item != null && item.Data == null && dataManager != null)
-            item.Data = dataManager.ItemLoader.GetItemByKey(item.ItemKey);
+        if (selectedOutput == null) return;
+        craftAmount = Mathf.Clamp(value, 1, maxCraftAmount);
 
-        selectedMaterials[index] = item;
-        UpdateSlot(index);
+        UpdateAmountUI();
+
+        // input 재료 갱신
+        string resourceKey = GetResourceKeyForOutput(selectedOutput);
+        if (string.IsNullOrEmpty(resourceKey) || inputSlots.Count == 0) return;
+
+        int owned = 0;
+        var invList = GameManager.Instance.Inventory.ResourceList;
+        if (invList != null)
+            owned = invList.Where(inst => inst.ItemKey == resourceKey).Sum(inst => inst.Quantity);
+
+        int required = baseRequiredAmount * craftAmount;
+        inputSlots[0].Set(dataManager.ItemLoader.GetItemByKey(resourceKey), owned, required);
     }
 
-    private void UpdateSlot(int index)
+    private void UpdateAmountUI()
     {
-        var slot = refineSlots[index];
-        var input = selectedMaterials[index];
-
-        // Input 아이콘
-        slot.inputIcon.sprite = input?.Data != null ? IconLoader.GetIcon(input.Data.IconPath) : null;
-        slot.inputIcon.enabled = input?.Data != null;
-
-        // Output 아이콘
-        var output = GetRefineResult(input);
-        resultItems[index] = output;
-        slot.outputIcon.sprite = output?.Data != null ? IconLoader.GetIcon(output.Data.IconPath) : null;
-        slot.outputIcon.enabled = output?.Data != null;
-
-        // 비용
-        int totalCost = baseRefineCost * slot.Amount;
-        if (slot.costText != null)
-            slot.costText.text = $"비용: {totalCost:N0}";
-
-        // 수량 표시
-        slot.amountText.text = slot.Amount.ToString();
+        if (amountText != null)
+            amountText.text = craftAmount.ToString();
     }
 
-    private ItemInstance GetRefineResult(ItemInstance input)
+    private void OnClickCraft()
     {
-        if (input?.Data == null) return null;
-        if (!input.ItemKey.StartsWith("resource_")) return null;
+        if (selectedOutput == null || inputSlots.Count == 0) return;
+        string resourceKey = GetResourceKeyForOutput(selectedOutput);
+        int totalNeed = baseRequiredAmount * craftAmount;
+        int owned = GameManager.Instance.Inventory.ResourceList
+            .Where(x => x.ItemKey == resourceKey).Sum(x => x.Quantity);
 
-        string coreName = input.ItemKey.Substring("resource_".Length);
-        string[] gemTypes = { "ruby", "emerald", "amethyst", "sapphire" };
-        string[] metalTypes = { "copper", "bronze", "iron", "silver", "gold", "mithril" };
-
-        string outKey = null;
-        if (gemTypes.Contains(coreName))
-            outKey = "gem_" + coreName;
-        else if (metalTypes.Contains(coreName))
-            outKey = "ingot_" + coreName;
-
-        if (outKey == null) return null;
-        var outData = dataManager.ItemLoader.GetItemByKey(outKey);
-        if (outData == null) return null;
-        return new ItemInstance(outData.ItemKey, outData);
-    }
-
-    private void OnClickExecute(int index)
-    {
-        var slot = refineSlots[index];
-        var input = selectedMaterials[index];
-        var output = resultItems[index];
-        int amount = slot.Amount;
-        int cost = baseRefineCost * amount;
-        if (input == null || output == null) return;
-        if (gameManager.Forge.Gold < cost) return;
-
-        int owned = gameManager.Inventory.ResourceList
-            .Where(x => x.ItemKey == input.ItemKey)
-            .Sum(x => x.Quantity);
-
-        if (owned < requiredAmount * amount) return;
-
-        var reqList = new List<(string resourceKey, int amount)>
+        if (owned < totalNeed)
         {
-            (input.ItemKey, requiredAmount * amount)
-        };
-        if (!gameManager.Inventory.UseCraftingMaterials(reqList)) return;
-
-        var outData = dataManager.ItemLoader.GetItemByKey(output.ItemKey);
-        if (outData != null)
-            gameManager.Inventory.AddItem(outData, resultAmount * amount);
-
-        gameManager.Forge.AddGold(-cost);
-
-        selectedMaterials[index] = null;
-        UpdateSlot(index);
-    }
-
-    private void ResetUI()
-    {
-        for (int i = 0; i < refineSlots.Count; i++)
-        {
-            refineSlots[i].SetAmount(1);
-            selectedMaterials[i] = null;
-            UpdateSlot(i);
+            Debug.LogWarning("재료 부족!");
+            return;
         }
+
+        GameManager.Instance.Inventory.UseCraftingMaterials(new List<(string resourceKey, int amount)> { (resourceKey, totalNeed) });
+
+        var outItem = dataManager.ItemLoader.GetItemByKey(selectedOutput.ItemKey);
+        GameManager.Instance.Inventory.AddItem(outItem, craftAmount);
+
+
+        SetCraftAmount(1);
+        SelectOutput(selectedOutput); 
     }
 
-    public override void Open()
+    private string GetResourceKeyForOutput(ItemData output)
     {
-        base.Open();
-        ResetUI();
-    }
-
-    public override void Close()
-    {
-        base.Close();
+        if (output == null) return null;
+        if (output.ItemKey.StartsWith("gem_")) return "resource_" + output.ItemKey.Substring(4);
+        if (output.ItemKey.StartsWith("ingot_")) return "resource_" + output.ItemKey.Substring(6);
+        return null;
     }
 }

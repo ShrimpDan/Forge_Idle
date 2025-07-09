@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.U2D.Animation;
 
 public class CustomerManager : MonoSingleton<CustomerManager>
 {
@@ -23,6 +24,7 @@ public class CustomerManager : MonoSingleton<CustomerManager>
     [SerializeField] private Transform spawnPoint;
     [SerializeField] private List<CustomerSpawnData> customerPrefabs = new();
     [SerializeField] private float spawnDelay;
+    [SerializeField] private List<SpriteLibraryAsset> normalSpriteAssets;
 
 
 
@@ -34,6 +36,7 @@ public class CustomerManager : MonoSingleton<CustomerManager>
     [SerializeField] private int RegularSpawnCount = 1;
 
     public List<BuyPoint> allBuyPoints;
+
 
     private Dictionary<CustomerJob, int> normalcustomerCounter = new Dictionary<CustomerJob, int>(); //현재 수
     private Dictionary<CustomerJob, int> normalVisitedCounter = new Dictionary<CustomerJob, int>();
@@ -176,6 +179,14 @@ public class CustomerManager : MonoSingleton<CustomerManager>
         if (customer != null)
         {
             normalcustomerCounter[selected]++; //카운트 증가
+
+            //랜덤 스프라이트 추가하기
+            if (normalSpriteAssets.Count > 0)
+            {
+                var randomAsset = normalSpriteAssets[UnityEngine.Random.Range(0, normalSpriteAssets.Count)];
+                customer.ChangeSpriteLibrary(randomAsset);
+                
+            }
         }
     }
 
