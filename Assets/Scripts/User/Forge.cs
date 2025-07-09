@@ -46,8 +46,18 @@ public class Forge : MonoBehaviour
 
     // 장착된 제자
     public Dictionary<SpecializationType, AssistantInstance> EquippedAssistant;
-    
+
+    [Header("Player")]
+    [SerializeField] BlackSmith blackSmith;
+
+    [Header("Assitant Roots")]
+    [SerializeField] Transform craftingAssitantRoot;
+    [SerializeField] Transform enhanceAssistantRoot;
+    [SerializeField] Transform sellingAssitantRoot;
+
+    public BlackSmith BlackSmith { get => blackSmith; }
     public WeaponSellingSystem SellingSystem { get; private set; }
+
     // 이벤트 핸들러
     public ForgeEventHandler Events { get; private set; } = new ForgeEventHandler();
 
@@ -60,7 +70,10 @@ public class Forge : MonoBehaviour
         SellingSystem = GetComponent<WeaponSellingSystem>();
 
         if (SellingSystem)
-            SellingSystem.Init(this, gameManager.DataManager.CraftingLoader);
+            SellingSystem.Init(this, gameManager.DataManager);
+
+        if (blackSmith != null)
+            blackSmith.Init();
     }
 
     private void InitAssistant()

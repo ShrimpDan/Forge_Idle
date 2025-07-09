@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6244770298588789860}
   - component: {fileID: 4152326649871417776}
   m_Layer: 0
-  m_Name: Particle
+  m_Name: CraftingParticle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -227,7 +227,7 @@ ParticleSystem:
       maxColor: {r: 1, g: 1, b: 1, a: 1}
       maxGradient:
         serializedVersion: 2
-        key0: {r: 0.745283, g: 0.23044895, b: 0.0035154943, a: 1}
+        key0: {r: 1, g: 0.3069307, b: 0, a: 1}
         key1: {r: 1, g: 1, b: 1, a: 0}
         key2: {r: 0, g: 0, b: 0, a: 0}
         key3: {r: 0, g: 0, b: 0, a: 0}
@@ -257,7 +257,7 @@ ParticleSystem:
         m_NumAlphaKeys: 2
       minGradient:
         serializedVersion: 2
-        key0: {r: 0.754717, g: 0, b: 0.0073897163, a: 1}
+        key0: {r: 0.5566038, g: 0, b: 0.0057978677, a: 1}
         key1: {r: 1, g: 1, b: 1, a: 0}
         key2: {r: 1, g: 1, b: 1, a: 0}
         key3: {r: 1, g: 1, b: 1, a: 0}
@@ -288,7 +288,7 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.15
+      scalar: 0.1
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -4913,6 +4913,7 @@ GameObject:
   - component: {fileID: 5328654005989187877}
   - component: {fileID: 4547605759280755115}
   - component: {fileID: 6063015173232214021}
+  - component: {fileID: 5925936015454588451}
   m_Layer: 0
   m_Name: BlackSmith
   m_TagString: Untagged
@@ -5021,3 +5022,16 @@ SortingGroup:
   m_SortingLayer: 0
   m_SortingOrder: 53
   m_SortAtRoot: 0
+--- !u!114 &5925936015454588451
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8321866209466776390}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ccb486fe0245b194bb13ace501c190d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  craftingParticle: {fileID: 784897540780021055}
