@@ -4,7 +4,6 @@ using UnityEngine;
 public class Forge : MonoBehaviour
 {
     private GameManager gameManager;
-    private ForgeData forgeData;
 
     // 스탯
     private float craftSpeedMultiplier;
@@ -25,12 +24,12 @@ public class Forge : MonoBehaviour
     private float bonusCustomerSpawnRate;
 
     // 최종 스탯
-    public float FinalCraftSpeedMultiplier => craftSpeedMultiplier + bonusCraftSpeedMultiplier;
+    public float FinalCraftSpeedMultiplier => craftSpeedMultiplier * bonusCraftSpeedMultiplier;
     public float FinalRareItemChance => rareItemChance + bonusRareItemChance;
     public float FinalEnhanceSuccessRate => enhanceSuccessRate + bonusEnhanceSuccessRate;
     public float FinalBreakChanceReduction => breakChanceReduction + bonusBreakChanceReduction;
-    public float FinalEnhanceCostMultiplier => enhanceCostMultiplier + bonusEnhanceCostMultiplier;
-    public float FinalSellPriceMultiplier => sellPriceMultiplier + bonusSellPriceMultiplier;
+    public float FinalEnhanceCostMultiplier => enhanceCostMultiplier * bonusEnhanceCostMultiplier;
+    public float FinalSellPriceMultiplier => sellPriceMultiplier * bonusSellPriceMultiplier;
     public float FinalCustomerSpawnRate => customerSpawnRate + bonusCustomerSpawnRate;
 
 
@@ -45,15 +44,16 @@ public class Forge : MonoBehaviour
     public int Dia { get; private set; }
 
     // 장착된 제자
-    public Dictionary<SpecializationType, AssistantInstance> EquippedAssistant;
+    public Dictionary<SpecializationType, AssistantInstance> EquippedAssistant { get; private set; }
 
     [Header("Player")]
     [SerializeField] BlackSmith blackSmith;
 
     [Header("Assitant Roots")]
-    [SerializeField] Transform craftingAssitantRoot;
-    [SerializeField] Transform enhanceAssistantRoot;
-    [SerializeField] Transform sellingAssitantRoot;
+    [SerializeField] AssistantPrefabSO assistantPrefabSO;
+    [SerializeField] Transform craftingSpawnRoot;
+    [SerializeField] Transform enhanceSpawnRoot;
+    [SerializeField] Transform sellingSpawnRoot;
 
     public BlackSmith BlackSmith { get => blackSmith; }
     public WeaponSellingSystem SellingSystem { get; private set; }
@@ -65,8 +65,6 @@ public class Forge : MonoBehaviour
     {
         this.gameManager = gameManager;
 
-        InitAssistant();
-
         SellingSystem = GetComponent<WeaponSellingSystem>();
 
         if (SellingSystem)
@@ -74,6 +72,8 @@ public class Forge : MonoBehaviour
 
         if (blackSmith != null)
             blackSmith.Init();
+
+        InitAssistant();
     }
 
     private void InitAssistant()
@@ -92,6 +92,32 @@ public class Forge : MonoBehaviour
         Events.RaiseFameChanged(CurrentFame, MaxFame);
         Events.RaiseLevelChanged(Level);
         Events.RasieTotalFameChanged(TotalFame);
+    }
+
+
+    public ForgeData SaveData()
+    {
+        ForgeData data = new ForgeData
+        {
+            CraftSpeedMultiplier = craftSpeedMultiplier,
+            RareItemChance = rareItemChance,
+
+            EnhanceSuccessRate = enhanceSuccessRate,
+            BreakChanceReduction = breakChanceReduction,
+            EnhanceCostMultiplier = enhanceCostMultiplier,
+
+            SellPriceMultiplier = sellPriceMultiplier,
+            CustomerSpawnRate = customerSpawnRate,
+
+            Level = Level,
+            MaxFame = MaxFame,
+            CurrentFame = CurrentFame,
+            TotalFame = TotalFame,
+            Gold = Gold,
+            Dia = Dia
+        };
+
+        return data;
     }
 
     public void LoadData(ForgeData data)
@@ -118,31 +144,6 @@ public class Forge : MonoBehaviour
         Dia = data.Dia;
 
         RaiseAllEvents();
-    }
-
-    public ForgeData SaveData()
-    {
-        ForgeData data = new ForgeData
-        {
-            CraftSpeedMultiplier = craftSpeedMultiplier,
-            RareItemChance = rareItemChance,
-
-            EnhanceSuccessRate = enhanceSuccessRate,
-            BreakChanceReduction = breakChanceReduction,
-            EnhanceCostMultiplier = enhanceCostMultiplier,
-
-            SellPriceMultiplier = sellPriceMultiplier,
-            CustomerSpawnRate = customerSpawnRate,
-
-            Level = Level,
-            MaxFame = MaxFame,
-            CurrentFame = CurrentFame,
-            TotalFame = TotalFame,
-            Gold = Gold,
-            Dia = Dia
-        };
-
-        return data;
     }
 
     public void AddFame(int amount)
@@ -213,6 +214,7 @@ public class Forge : MonoBehaviour
         assi.IsEquipped = true;
 
         ApplyAssistantStat(assi);
+        SpawnAssistantPrefab(assi);
     }
 
     public void DeActiveAssistant(AssistantInstance assi)
@@ -222,6 +224,7 @@ public class Forge : MonoBehaviour
         Events.RaiseAssistantChanged(assi, false);
 
         DeApplyAssistantStat(assi);
+        ClearSpawnRoot(assi.Specialization);
     }
 
     private void ApplyAssistantStat(AssistantInstance assi)
@@ -294,6 +297,57 @@ public class Forge : MonoBehaviour
                 case AssistantStatNames.IncreaseCustomerCount:
                     bonusCustomerSpawnRate -= stat.Multiplier;
                     break;
+            }
+        }
+    }
+
+    private void SpawnAssistantPrefab(AssistantInstance assi)
+    {
+        Transform spawnRoot = null;
+
+        switch (assi.Specialization)
+        {
+            case SpecializationType.Crafting:
+                spawnRoot = craftingSpawnRoot;
+                break;
+
+            case SpecializationType.Enhancing:
+                spawnRoot = enhanceSpawnRoot;
+                break;
+
+            case SpecializationType.Selling:
+                spawnRoot = sellingSpawnRoot;
+                break;
+        }
+
+        ClearSpawnRoot(assi.Specialization);
+        Instantiate(assistantPrefabSO.GetAssistantByKey(assi.Key), spawnRoot);
+    }
+
+    private void ClearSpawnRoot(SpecializationType type)
+    {
+        Transform spawnRoot = null;
+
+        switch (type)
+        {
+            case SpecializationType.Crafting:
+                spawnRoot = craftingSpawnRoot;
+                break;
+
+            case SpecializationType.Enhancing:
+                spawnRoot = enhanceSpawnRoot;
+                break;
+
+            case SpecializationType.Selling:
+                spawnRoot = sellingSpawnRoot;
+                break;
+        }
+
+        if (spawnRoot != null && spawnRoot.childCount > 0)
+        {
+            foreach (Transform child in spawnRoot)
+            {
+                Destroy(child.gameObject);
             }
         }
     }
