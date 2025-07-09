@@ -87,6 +87,7 @@ public class AssistantFactory
 
         // 핵심: iconPath 반영
         AssistantInstance assistantData = new AssistantInstance(
+            key: assistant.Key,
             name: assistant.Name,
             personality: personalityData,
             specialization: specializationData.specializationType,

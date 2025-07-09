@@ -6,6 +6,7 @@ public class AssistantInstance
 {
     public const int MaxLevel = 10;
 
+    public string Key { get; private set; }
     public string Name { get; private set; }
     public int Level { get; private set; }
     public PersonalityData Personality { get; private set; }
@@ -21,6 +22,7 @@ public class AssistantInstance
     public string IconPath { get; set; }
 
     public AssistantInstance(
+        string key,
         string name,
         PersonalityData personality,
         SpecializationType specialization,
@@ -30,6 +32,7 @@ public class AssistantInstance
         bool isEquipped = false,
         bool isInuse = false)
     {
+        Key = key;
         Name = name;
         Personality = personality;
         Specialization = specialization;

@@ -21,6 +21,7 @@ public class AbilityMultiplierSave
 [System.Serializable]
 public class AssistantDataSave
 {
+    public string Key;
     public string Name;
     public int Level;
     public string PersonalityKey;
@@ -47,6 +48,7 @@ public class AssistantSaveSystem
         {
             var a = new AssistantDataSave
             {
+                Key = assi.Key,
                 Name = assi.Name,
                 Level = assi.Level,
                 PersonalityKey = assi.Personality.Key,
@@ -90,6 +92,7 @@ public class AssistantSaveSystem
 
 
             var assi = new AssistantInstance(
+                key: a.Key,
                 name: a.Name,
                 personality: personality,
                 specialization: a.Specialization,

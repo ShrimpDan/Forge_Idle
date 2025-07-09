@@ -30,7 +30,7 @@ public class AssistantManager : MonoBehaviour
 
     private AssistantFactory factory;
     private AssistantCardSpawner spawner;
-    private AssistantInventory inventory = new();
+    private AssistantInventory inventory;
     public AssistantInventory AssistantInventory => inventory;
     public AssistantCardSpawner Spawner => spawner;
 
@@ -40,7 +40,8 @@ public class AssistantManager : MonoBehaviour
     public void Init(GameManager gameManager)
     {
         this.gameManager = gameManager;
-
+        
+        inventory = new AssistantInventory(gameManager.Forge);
         factory = new AssistantFactory(gameManager.DataManager);
         spawner = new AssistantCardSpawner(
             largeTraineeCardPrefab,
