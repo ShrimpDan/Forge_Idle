@@ -177,18 +177,14 @@ public class UpgradeWeaponWindow : BaseUI
         upgradeButton.interactable = false;
         float duration = 2.0f;
         float timer = 0f;
-        float[] fillStages = { 0f, 0.5f, 0.8f, 1.0f };
-        int stage = 0;
 
+        // 자연스럽게 0→1로 진행
         while (timer < duration)
         {
             timer += Time.deltaTime;
-            float t = timer / duration;
-            // 중간 fill 단계를 연출 (0 > 0.5 > 0.8 > 1.0)
-            if (t > 0.8f && stage < 3) { stage = 3; }
-            else if (t > 0.5f && stage < 2) { stage = 2; }
-            else if (t > 0.2f && stage < 1) { stage = 1; }
-            progressBar.fillAmount = Mathf.Lerp(fillStages[stage], fillStages[Mathf.Min(stage + 1, 3)], (t * 4) % 1f);
+            float t = Mathf.Clamp01(timer / duration);
+
+            progressBar.fillAmount = Mathf.SmoothStep(0f, 1f, t);
             yield return null;
         }
 
@@ -200,18 +196,19 @@ public class UpgradeWeaponWindow : BaseUI
         {
             progressBar.fillAmount = 1f;
             selectedWeapon.EnhanceItem();
-            // 강화 성공 효과 등 추가 가능
+            // TODO: 성공 애니메이션 등 추가
         }
         else
         {
-            // 실패 시 fill이 0.8에서 0으로 감소
+            // 실패 시 fill이 1에서 0으로 서서히 감소
             float failTime = 0.5f;
+            float failTimer = 0f;
             float start = progressBar.fillAmount;
-            float t = 0;
-            while (t < failTime)
+            while (failTimer < failTime)
             {
-                t += Time.deltaTime;
-                progressBar.fillAmount = Mathf.Lerp(start, 0, t / failTime);
+                failTimer += Time.deltaTime;
+                float t = Mathf.Clamp01(failTimer / failTime);
+                progressBar.fillAmount = Mathf.Lerp(start, 0, t);
                 yield return null;
             }
         }
@@ -219,4 +216,5 @@ public class UpgradeWeaponWindow : BaseUI
         RefreshUpgradePanel();
         upgradeButton.interactable = true;
     }
+
 }
