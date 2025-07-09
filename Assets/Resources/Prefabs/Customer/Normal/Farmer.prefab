@@ -47,7 +47,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 550fbac5e5527704e95769320e750595, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  movePoint:
+  - {x: 2.86, y: -5.23}
+  - {x: -3.06, y: -4.74}
+  - {x: -2.75, y: -3.35}
+  - {x: 2.2, y: -3.18}
   buyPoint: {fileID: 3367438687136543233, guid: 06d43ed767e84b644a33f1d12b2d374d, type: 3}
+  stayMaxTime: 3
+  stayMinTime: 1
   data:
     Key: 
     job: 1
@@ -246,7 +253,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 55
   m_Sprite: {fileID: 4723107735738678597, guid: c4591dc7f6a9bf14e8919d6bf9bbf3d9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
