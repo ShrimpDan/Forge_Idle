@@ -45,9 +45,10 @@ public abstract class Customer : MonoBehaviour
     protected Animator animator;
     protected bool IsMoving = true;
     protected Rigidbody2D rigid2D; 
-
-
     [SerializeField]SpriteResolver spriteResolver;
+    [SerializeField] SpriteLibrary spriteLibrary;
+
+
     private int currentFrame;
     private Transform targetPos;
     private Coroutine moveRoutine;
@@ -62,8 +63,10 @@ public abstract class Customer : MonoBehaviour
         rigid2D = GetComponent<Rigidbody2D>();
         animator = GetComponentInChildren<Animator>();
         spriteResolver = GetComponentInChildren<SpriteResolver>();
+        spriteLibrary = GetComponentInChildren<SpriteLibrary>();
 
-        
+
+
     }
 
 
@@ -201,6 +204,16 @@ public abstract class Customer : MonoBehaviour
         isCrafted = true;
     }
 
-  
+    public void ChangeSpriteLibrary(SpriteLibraryAsset  asset)
+    {
+        if (spriteLibrary != null && asset != null)
+        {
+            spriteLibrary.spriteLibraryAsset = asset;
+        }
+        else
+        {
+            Debug.Log("스프라이트 라이브러리 문제 발생");
+        }
+    }
 
 }
