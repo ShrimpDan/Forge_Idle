@@ -132,10 +132,13 @@ public class CustomerManager : MonoSingleton<CustomerManager>
 
     private IEnumerator SpawnNormalLoop()
     {
+    
+
         while (true)
         {
+            
+            yield return WaitForSecondsCache.Wait(GameManager.Instance.Forge.FinalCustomerSpawnRate * spawnDelay);
             SpawnNormalCustomer();
-            yield return WaitForSecondsCache.Wait(GameManager.Instance.Forge.FinalCustomerSpawnRate);
         }
 
     }

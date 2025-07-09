@@ -99,7 +99,7 @@ public abstract class Customer : MonoBehaviour
         yield return MoveToExit();
     }
 
-    private IEnumerator MoveRandomPlace()
+    protected IEnumerator MoveRandomPlace()
     {
         state = CustomerState.Idle;
         Vector2 pos = Vector2.zero;
@@ -219,7 +219,7 @@ public abstract class Customer : MonoBehaviour
             Debug.Log("스프라이트 라이브러리 문제 발생");
         }
     }
-    private void OnDrawGizmosSelected()
+    private void OnDrawGizmosSelected() // 움직이는 포인트 시각화
     {
         Gizmos.color = Color.green;
 
