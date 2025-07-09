@@ -12,185 +12,220 @@ public class CraftWeaponWindow : BaseUI
     [SerializeField] private Button exitBtn;
     [SerializeField] private Transform inputWeaponSlots;
     [SerializeField] private GameObject weaponSlotBtnPrefab;
+    [SerializeField] private Transform recipeListRoot;
+    [SerializeField] private GameObject recipeSlotPrefab;
+    [SerializeField] private Transform tabsRoot;
 
-    private List<Button> slotButtons = new List<Button>();
-    private List<Image> slotIcons = new List<Image>();
-    private List<Image> progressBars = new List<Image>();
-    private List<TMP_Text> timeTexts = new List<TMP_Text>();
+    private List<InputSlotContext> inputSlots = new();
+    private List<Button> tabButtons = new();
 
     private int slotCount = 6;
     private int selectedSlotIndex = -1;
 
-    public override void Init(GameManager gameManager, UIManager uIManager)
+    private GameManager gameManager;
+    private UIManager uIManager;
+    private ItemDataLoader itemLoader;
+    private CraftingDataLoader craftingLoader;
+
+    private class InputSlotContext
     {
-        base.Init(gameManager, uIManager);
+        public Button Btn;
+        public Image Icon;
+        public Image ProgressBar;
+        public TMP_Text TimeText;
+        public Button ReceiveBtn;
+        public int TaskIndex;
+    }
+
+    public override void Init(GameManager gm, UIManager ui)
+    {
+        base.Init(gm, ui);
+        gameManager = gm;
+        uIManager = ui;
+        itemLoader = gm.DataManager.ItemLoader;
+        craftingLoader = gm.DataManager.CraftingLoader;
 
         exitBtn.onClick.RemoveAllListeners();
         exitBtn.onClick.AddListener(() => uIManager.CloseUI(UIName.CraftWeaponWindow));
 
+        // 탭 버튼 세팅
+        tabButtons.Clear();
+        foreach (Transform t in tabsRoot)
+        {
+            var btn = t.GetComponent<Button>();
+            int jobIdx = tabButtons.Count;
+            btn.onClick.RemoveAllListeners();
+            btn.onClick.AddListener(() => ShowRecipeListByJob(jobIdx));
+            tabButtons.Add(btn);
+        }
+
+        // 인풋 슬롯 세팅
         foreach (Transform child in inputWeaponSlots)
             Destroy(child.gameObject);
-
-        slotButtons.Clear();
-        slotIcons.Clear();
-        progressBars.Clear();
-        timeTexts.Clear();
+        inputSlots.Clear();
 
         for (int i = 0; i < slotCount; i++)
         {
             GameObject go = Instantiate(weaponSlotBtnPrefab, inputWeaponSlots);
+            var ctx = new InputSlotContext();
+            ctx.Btn = go.GetComponent<Button>();
+            ctx.Icon = go.transform.Find("Icon")?.GetComponent<Image>() ?? go.GetComponent<Image>();
+            ctx.ProgressBar = go.transform.Find("CraftProgressBarBG/CraftProgressBar")?.GetComponent<Image>();
+            ctx.TimeText = go.transform.Find("CraftProgressBarBG/CraftProgressText")?.GetComponent<TMP_Text>();
+            ctx.ReceiveBtn = go.transform.Find("ReceiveButton")?.GetComponent<Button>();
+            ctx.TaskIndex = i;
 
-            Button btn = go.GetComponent<Button>();
-            Image icon = go.transform.Find("Icon")?.GetComponent<Image>() ?? go.GetComponent<Image>();
             int idx = i;
-            btn.onClick.RemoveAllListeners();
-            btn.onClick.AddListener(() => OnClickInputWeaponSlot(idx));
-            slotButtons.Add(btn);
-            slotIcons.Add(icon);
+            ctx.Btn.onClick.RemoveAllListeners();
+            ctx.Btn.onClick.AddListener(() => OnClickInputWeaponSlot(idx));
+            if (ctx.ReceiveBtn)
+            {
+                ctx.ReceiveBtn.onClick.RemoveAllListeners();
+                ctx.ReceiveBtn.onClick.AddListener(() => OnClickReceive(idx));
+                ctx.ReceiveBtn.gameObject.SetActive(false);
+            }
+            ctx.Icon.sprite = null;
+            ctx.Icon.enabled = false;
+            ctx.ProgressBar?.gameObject.SetActive(false);
+            ctx.TimeText?.gameObject.SetActive(false);
 
-            var progressBar = go.transform.Find("CraftProgressBarBG/CraftProgressBar")?.GetComponent<Image>();
-            var progressText = go.transform.Find("CraftProgressBarBG/CraftProgressText")?.GetComponent<TMP_Text>();
-            if (progressBar) progressBar.gameObject.SetActive(false);
-            if (progressText) progressText.gameObject.SetActive(false);
-            progressBars.Add(progressBar);
-            timeTexts.Add(progressText);
+            inputSlots.Add(ctx);
+        }
 
-            icon.sprite = null;
-            icon.enabled = false;
+        // 첫 탭 선택(기본)
+        ShowRecipeListByJob(0);
+    }
+
+    void ShowRecipeListByJob(int jobTypeIdx)
+    {
+        foreach (Transform child in recipeListRoot)
+            Destroy(child.gameObject);
+
+        var recipes = craftingLoader.CraftingList
+            .Where(x => (int)x.jobType == jobTypeIdx)
+            .ToList();
+
+        foreach (var data in recipes)
+        {
+            GameObject go = Instantiate(recipeSlotPrefab, recipeListRoot);
+            var slot = go.GetComponent<RecipeSlot>();
+            slot.Setup(
+                data,
+                itemLoader,
+                gameManager.Forge,
+                gameManager.Inventory,
+                () => OnRecipeSelected(data));
         }
     }
 
-    private void OnClickInputWeaponSlot(int index)
+    void OnClickInputWeaponSlot(int index)
     {
-        if (index < 0 || index >= slotCount) return;
-        var prog = gameManager.CraftingManager.GetCraftTask(index);
-        if (prog != null && prog.isCrafting)
-            return;
-
+        if (gameManager.CraftingManager.GetCraftTask(index)?.isCrafting == true) return;
         selectedSlotIndex = index;
+        // 레시피 팝업 띄우는 부분 (선택 콜백은 OnRecipeSelected)
         var popup = uIManager.OpenUI<Forge_Recipe_Popup>(UIName.Forge_Recipe_Popup);
         popup.Init(gameManager.DataManager, uIManager);
-        popup.SetRecipeSelectCallback(OnRecipeSelected);
+        popup.SetRecipeSelectCallback((itemData, craftingData) => OnRecipeSelected(craftingData));
         popup.SetForgeAndInventory(gameManager.Forge, gameManager.Inventory);
     }
 
-    private void OnRecipeSelected(ItemData itemData, CraftingData craftingData)
+    void OnRecipeSelected(CraftingData craftingData)
     {
-        if (itemData == null || craftingData == null)
-            return;
-        if (selectedSlotIndex < 0 || selectedSlotIndex >= slotIcons.Count)
+        if (selectedSlotIndex < 0 || selectedSlotIndex >= slotCount)
             return;
 
         var inventory = gameManager.Inventory;
         var forge = gameManager.Forge;
-
         if (inventory == null || forge == null)
             return;
 
+        // 필요 재료
         var required = craftingData.RequiredResources
-            .Select(r => (MapItemKey(r.ResourceKey), r.Amount)).ToList();
-
+            .Select(r => (r.ResourceKey, r.Amount)).ToList();
         int goldNeed = (int)craftingData.craftCost;
-        if (forge.Gold < goldNeed)
+
+        // 금액/재료 동시 소모 시도 (둘 다 성공해야 제작)
+        if (!forge.UseGold(goldNeed))
             return;
-
-        bool hasAll = required.All(req =>
-            inventory.ResourceList.Where(x => x.ItemKey == req.Item1).Sum(x => x.Quantity) >= req.Item2);
-
-        if (!hasAll)
-            return;
-
         if (!inventory.UseCraftingMaterials(required))
-            return;
-        forge.AddGold(-goldNeed);
-
-        Sprite iconSprite = IconLoader.GetIcon(itemData.IconPath);
-        if (iconSprite == null)
-            iconSprite = Resources.Load<Sprite>(itemData.IconPath);
-
-        slotIcons[selectedSlotIndex].sprite = iconSprite;
-        slotIcons[selectedSlotIndex].enabled = (iconSprite != null);
-
-        // CraftingManager로 제작 시작 요청
-        gameManager.CraftingManager.StartCrafting(selectedSlotIndex, craftingData, itemData);
-
-        slotButtons[selectedSlotIndex].interactable = false;
-    }
-
-    private string MapItemKey(string key)
-    {
-        if (string.IsNullOrEmpty(key)) return key;
-        if (key.StartsWith("weapon_") || key.StartsWith("resource_") || key.StartsWith("gem_") || key.StartsWith("ingot_"))
-            return key;
-        string[] types = { "axe", "pickaxe", "sword", "dagger", "bow", "shield", "hoe" };
-        var parts = key.Split('_');
-        if (parts.Length == 2)
         {
-            string p0 = parts[0];
-            string p1 = parts[1];
-            string type = types.Contains(p0) ? p0 : (types.Contains(p1) ? p1 : null);
-            string quality = types.Contains(p0) ? p1 : (types.Contains(p1) ? p0 : null);
-            if (!string.IsNullOrEmpty(type) && !string.IsNullOrEmpty(quality))
-                return $"weapon_{type}_{quality}";
+            // 골드 롤백
+            forge.AddGold(goldNeed);
+            return;
         }
-        return key;
+
+        var itemData = gameManager.DataManager.ItemLoader.GetItemByKey(craftingData.ItemKey);
+        Sprite iconSprite = IconLoader.GetIcon(itemData.IconPath);
+
+        var slot = inputSlots[selectedSlotIndex];
+        slot.Icon.sprite = iconSprite;
+        slot.Icon.enabled = (iconSprite != null);
+
+        gameManager.CraftingManager.StartCrafting(selectedSlotIndex, craftingData, itemData);
+        slot.Btn.interactable = false;
     }
 
-    private void Update()
+    void Update()
     {
-        for (int i = 0; i < slotCount; i++)
+        for (int i = 0; i < inputSlots.Count; i++)
         {
             var prog = gameManager.CraftingManager.GetCraftTask(i);
-            var icon = slotIcons[i];
-            var btn = slotButtons[i];
-            var progressBar = progressBars[i];
-            var timeText = timeTexts[i];
+            var slot = inputSlots[i];
 
             if (prog.isCrafting && prog.data != null)
             {
-                if (icon && prog.itemData != null)
-                {
-                    Sprite sp = IconLoader.GetIcon(prog.itemData.IconPath);
-                    if (sp == null)
-                        sp = Resources.Load<Sprite>(prog.itemData.IconPath);
-                    icon.sprite = sp;
-                    icon.enabled = (sp != null);
-                }
-                if (progressBar && prog.totalTime > 0f)
-                {
-                    progressBar.gameObject.SetActive(true);
-                    progressBar.fillAmount = prog.timeLeft / prog.totalTime;
-                }
-                if (timeText)
-                {
-                    timeText.gameObject.SetActive(true);
-                    timeText.text = $"{prog.timeLeft:0.0}s";
-                }
-                btn.interactable = false;
+                Sprite sp = IconLoader.GetIcon(prog.itemData.IconPath);
+                slot.Icon.sprite = sp;
+                slot.Icon.enabled = (sp != null);
+
+                slot.ProgressBar?.gameObject.SetActive(true);
+                slot.ProgressBar.fillAmount = prog.timeLeft / prog.totalTime;
+                slot.TimeText?.gameObject.SetActive(true);
+                slot.TimeText.text = $"{prog.timeLeft:0.0}s";
+
+                slot.Btn.interactable = false;
+                slot.ReceiveBtn.gameObject.SetActive(false); // 진행 중일 때 비활성
             }
             else
             {
-                if (progressBar) progressBar.gameObject.SetActive(false);
-                if (timeText) timeText.gameObject.SetActive(false);
-                btn.interactable = true;
+                slot.ProgressBar?.gameObject.SetActive(false);
+                slot.TimeText?.gameObject.SetActive(false);
 
-                if (prog.itemData == null)
+                // 제작 완료 & 보상 미수령이면 ReceiveBtn 활성화
+                if (prog.rewardGiven && prog.itemData != null)
                 {
-                    icon.sprite = null;
-                    icon.enabled = false;
+                    slot.ReceiveBtn.gameObject.SetActive(true);
+                    slot.Btn.interactable = false;
+                }
+                else
+                {
+                    slot.ReceiveBtn.gameObject.SetActive(false);
+                    slot.Btn.interactable = true;
+                    slot.Icon.sprite = null;
+                    slot.Icon.enabled = false;
                 }
             }
         }
     }
+
+    // 수령 버튼 클릭 처리 (보상 지급은 CraftingManager에서 이미 처리됨, UI만 리셋)
+    void OnClickReceive(int index)
+    {
+        var prog = gameManager.CraftingManager.GetCraftTask(index);
+        if (!prog.rewardGiven || prog.itemData == null) return;
+
+        prog.Reset(); // CraftingManager.CraftTask.Reset() 호출로 상태 초기화
+        var slot = inputSlots[index];
+        slot.Icon.sprite = null;
+        slot.Icon.enabled = false;
+        slot.Btn.interactable = true;
+        slot.ReceiveBtn.gameObject.SetActive(false);
+    }
+
 
     public override void Open()
     {
         base.Open();
         selectedSlotIndex = -1;
-    }
-
-    public override void Close()
-    {
-        base.Close();
     }
 }
