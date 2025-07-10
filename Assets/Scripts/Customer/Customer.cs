@@ -33,9 +33,9 @@ public abstract class Customer : MonoBehaviour
 
     [Header("손님 움직이는 지점 설정")]
     [SerializeField] protected List<Vector2> movePoint = new();
-    [SerializeField] protected BuyPoint buyPoint;
     [SerializeField] private float stayMaxTime = 3f;
     [SerializeField] private float stayMinTime = 1f;
+    protected BuyPoint buyPoint;
 
     [Header("Customerinfo")]
     [SerializeField] CustomerData data;
@@ -47,7 +47,7 @@ public abstract class Customer : MonoBehaviour
     protected Animator animator;
     protected bool IsMoving = true;
     protected Rigidbody2D rigid2D;
-    [SerializeField] SpriteResolver spriteResolver;
+    
     [SerializeField] SpriteLibrary spriteLibrary;
     [SerializeField] SpriteRenderer spriteRenderer;
 
@@ -62,11 +62,20 @@ public abstract class Customer : MonoBehaviour
     //풀링
     private GameObject sourcePrefab;
 
+    public void Init(CustomerData _customerData, BuyPoint _buyPoint)
+    {
+        customerManager = CustomerManager.Instance;
+        data = _customerData;
+        buyPoint = _buyPoint;
+        isCrafted = false;
+    }
+
+
     protected virtual void Awake()
     {
         rigid2D = GetComponent<Rigidbody2D>();
         animator = GetComponentInChildren<Animator>();
-        spriteResolver = GetComponentInChildren<SpriteResolver>();
+       
         spriteLibrary = GetComponentInChildren<SpriteLibrary>();
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
 

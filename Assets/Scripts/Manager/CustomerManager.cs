@@ -22,7 +22,7 @@ public class CustomerManager : MonoSingleton<CustomerManager>
 
     [Header("SpawnSetting")]
     [SerializeField] private Transform spawnPoint;
-    [SerializeField] private float spawnDelay;
+    [SerializeField] private BuyPoint mainBuyPoint;
     [SerializeField] private List<SpriteLibraryAsset> normalSpriteAssets;
 
 
@@ -119,8 +119,8 @@ public class CustomerManager : MonoSingleton<CustomerManager>
             }
         }
 
-        customerLoader = new CustomerLoader(GameManager.Instance.DataManager.CustomerDataLoader, normalDic, spawnPoint);
-        regularLoader = new RegularCustomerLoader(GameManager.Instance.DataManager.RegularDataLoader, regDic, spawnPoint, rarityProbabilities);
+        customerLoader = new CustomerLoader(GameManager.Instance.DataManager.CustomerDataLoader, normalDic, spawnPoint,mainBuyPoint);
+        regularLoader = new RegularCustomerLoader(GameManager.Instance.DataManager.RegularDataLoader, regDic, spawnPoint, rarityProbabilities , mainBuyPoint);
 
         
 
@@ -137,7 +137,7 @@ public class CustomerManager : MonoSingleton<CustomerManager>
         while (true)
         {
             
-            yield return WaitForSecondsCache.Wait(GameManager.Instance.Forge.FinalCustomerSpawnRate * spawnDelay);
+            yield return WaitForSecondsCache.Wait(GameManager.Instance.Forge.FinalCustomerSpawnRate);
             SpawnNormalCustomer();
         }
 

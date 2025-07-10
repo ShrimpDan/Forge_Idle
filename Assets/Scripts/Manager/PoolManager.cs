@@ -44,7 +44,7 @@ public class PoolManager : MonoSingleton<PoolManager>
             poolDictionary.Add(prefabs, new Queue<GameObject>());
         }
         Queue<GameObject> pool = poolDictionary[prefabs];
-        Debug.Log($"[Get] '{prefabs.name}' 풀 요청. 현재 개수: {pool.Count}");
+       
 
         GameObject obj;
 
@@ -54,12 +54,12 @@ public class PoolManager : MonoSingleton<PoolManager>
             obj.transform.position = position;
             obj.transform.rotation = rotation;
             obj.SetActive(true);
-            Debug.Log($"{prefabs.name} 재생성 현재 개수: {{pool.Count}} ");
+      
         }
         else
         {
             obj = Instantiate(prefabs, position, rotation);
-            Debug.Log($"{prefabs.name} 새로생성 현재 개수: {pool.Count}");
+     
         }
         return obj;
     }
@@ -68,7 +68,7 @@ public class PoolManager : MonoSingleton<PoolManager>
     {
         if (sourcePrefabs == null)
         {
-            Debug.LogError($"[PoolManager] {obj.name} 반납 실패! 원본 프리팹(sourcePrefab) 정보가 없습니다(null). 오브젝트를 파괴합니다.");
+  
 
             Destroy(obj);
             return;
@@ -78,11 +78,11 @@ public class PoolManager : MonoSingleton<PoolManager>
         {
             obj.SetActive(false);
             poolDictionary[sourcePrefabs].Enqueue(obj);
-            Debug.Log($"<color=lime>{obj.name} 반납 완료.</color> '{sourcePrefabs.name}' 풀에 추가됨.");
+
         }
         else
         {
-            Debug.LogError($"[PoolManager] {obj.name} 반납 실패! '{sourcePrefabs.name}'에 해당하는 풀이 없습니다. 오브젝트를 파괴합니다.");
+     
             // 풀이 없는 경우 그냥 파괴
             Destroy(obj);
         }
