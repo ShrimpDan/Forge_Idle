@@ -68,7 +68,7 @@ public static class ForgeSaveSystem
             BreakChanceReduction = 0.0f,
             EnhanceCostMultiplier = 1.0f,
             SellPriceMultiplier = 1.0f,
-            CustomerSpawnRate = 1.0f,
+            CustomerSpawnRate = 30.0f,
 
             Level = 1,
             CurrentFame = 0,
