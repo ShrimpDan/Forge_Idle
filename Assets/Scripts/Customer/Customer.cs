@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.Experimental.GraphView;
+using TMPro;
 using UnityEngine;
 using UnityEngine.U2D.Animation;
 
@@ -50,6 +51,8 @@ public abstract class Customer : MonoBehaviour
     [SerializeField] SpriteLibrary spriteLibrary;
     [SerializeField] SpriteRenderer spriteRenderer;
 
+    [Header("PurchaseEffect")]
+    [SerializeField] TextMeshPro goldText;
 
     private Coroutine moveRoutine; //큐에서 사용
 
