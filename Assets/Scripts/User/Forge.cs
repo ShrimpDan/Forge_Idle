@@ -5,6 +5,8 @@ public class Forge : MonoBehaviour
 {
     private GameManager gameManager;
 
+    [SerializeField] GameObject forgeMap;
+
     // 스탯
     private float craftSpeedMultiplier;
     private float rareItemChance;
@@ -18,7 +20,7 @@ public class Forge : MonoBehaviour
     private float bonusCraftSpeedMultiplier = 1f;
     private float bonusRareItemChance = 0f;
     private float bonusEnhanceSuccessRate = 0f;
-    private float bonusBreakChanceReduction =0f;
+    private float bonusBreakChanceReduction = 0f;
     private float bonusEnhanceCostMultiplier = 1f;
     private float bonusSellPriceMultiplier = 1f;
     private float bonusCustomerSpawnRate = 0f;
@@ -351,4 +353,17 @@ public class Forge : MonoBehaviour
             }
         }
     }
+
+    public void OpenForgeTab()
+    {
+        forgeMap.SetActive(true);
+        blackSmith.gameObject.SetActive(true);    
+    }
+
+    public void CloseForgeTab()
+    {
+        forgeMap.SetActive(false);
+        blackSmith.gameObject.SetActive(false);    
+    }
+
 }

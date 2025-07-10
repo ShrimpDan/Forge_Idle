@@ -99,6 +99,7 @@ public class WeaponSellingSystem : MonoBehaviour
             int price = (int)(weapon.sellCost * forge.FinalSellPriceMultiplier);
             forge.AddGold(price);
             blackSmith.PlayBuyEffect(price, customer.transform.position);
+            forge.AddFame(5);
 
             Debug.Log($"[무기 판매 시스템] {weapon.jobType} 무기 제작 완료!");
         }

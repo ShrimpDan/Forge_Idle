@@ -45,7 +45,7 @@ namespace PixelLandsVillage
             }
             foreach (var sr in GetComponentsInChildren<SpriteRenderer>())
             {
-                Undo.RecordObject(sr, $"Changed Configurable Object {name}");
+                //Undo.RecordObject(sr, $"Changed Configurable Object {name}");
                 sr.sprite = Options[selectedOption];
             }
         }
