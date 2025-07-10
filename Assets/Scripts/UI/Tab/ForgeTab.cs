@@ -5,7 +5,6 @@ public class ForgeTab : BaseTab
 {
     private Forge forge;
 
-    [SerializeField] GameObject forgeMap;
     [SerializeField] Image weaponIcon;
     [SerializeField] Image progressFill;
 
@@ -21,6 +20,7 @@ public class ForgeTab : BaseTab
     {
         base.OpenTab();
 
+        forge.OpenForgeTab();
         forge.Events.OnCraftProgress += UpdateProgress;
     }
 
@@ -28,6 +28,7 @@ public class ForgeTab : BaseTab
     {
         base.CloseTab();
 
+        forge.CloseForgeTab();
         forge.Events.OnCraftProgress -= UpdateProgress;
     }
 
