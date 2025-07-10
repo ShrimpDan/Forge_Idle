@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7634530231060669648}
   - component: {fileID: 7171775329052522557}
   - component: {fileID: 707897545587017697}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Miner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -60,12 +60,15 @@ MonoBehaviour:
     job: 1
     type: 0
     moveSpeed: 0
+    WeaponKeys: []
   moveWayPoint:
   - {fileID: 7599354342047509208, guid: 06d43ed767e84b644a33f1d12b2d374d, type: 3}
   - {fileID: 430231704407215936, guid: 712630db6271ee2408d526e960add339, type: 3}
   gold: 600
   spriteResolver: {fileID: 0}
   spriteLibrary: {fileID: 0}
+  spriteRenderer: {fileID: 0}
+  goldText: {fileID: 0}
 --- !u!50 &7171775329052522557
 Rigidbody2D:
   serializedVersion: 4
@@ -123,7 +126,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1825674814358222578}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Firearm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -156,7 +159,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3427819692020167320}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: FireMuzzle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -190,7 +193,7 @@ GameObject:
   - component: {fileID: 6747223697780597925}
   - component: {fileID: 2621038122534242474}
   - component: {fileID: 6206061747659305066}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -306,7 +309,7 @@ GameObject:
   - component: {fileID: 2256568679777108284}
   - component: {fileID: 591343209689011675}
   - component: {fileID: 4114155095736968893}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Renderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}

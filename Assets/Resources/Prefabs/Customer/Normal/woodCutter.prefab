@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7634530231060669648}
   - component: {fileID: 7171775329052522557}
   - component: {fileID: 1732388573420217755}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: woodCutter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -58,14 +58,17 @@ MonoBehaviour:
   data:
     Key: 
     job: 0
-    type: 2
+    type: 0
     moveSpeed: 0
+    WeaponKeys: []
   moveWayPoint:
   - {fileID: 7599354342047509208, guid: 5ee67ca923afb80428b5c61afda36939, type: 3}
   - {fileID: 430231704407215936, guid: 712630db6271ee2408d526e960add339, type: 3}
   gold: 500
   spriteResolver: {fileID: 0}
   spriteLibrary: {fileID: 0}
+  spriteRenderer: {fileID: 0}
+  goldText: {fileID: 0}
 --- !u!50 &7171775329052522557
 Rigidbody2D:
   serializedVersion: 4
@@ -125,7 +128,7 @@ GameObject:
   - component: {fileID: 3780985647799031900}
   - component: {fileID: 7799217409315433531}
   - component: {fileID: 1932071499589785716}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Renderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -229,7 +232,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7427497282776696515}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: FireMuzzle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -260,7 +263,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8627840045199660165}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Firearm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -296,7 +299,7 @@ GameObject:
   - component: {fileID: 3997401238673582090}
   - component: {fileID: 4404634818548312561}
   - component: {fileID: 2518212072651407059}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}

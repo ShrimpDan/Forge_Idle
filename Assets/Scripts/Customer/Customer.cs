@@ -59,6 +59,8 @@ public abstract class Customer : MonoBehaviour
 
     private float timer;
 
+    //풀링
+    private GameObject sourcePrefab;
 
     protected virtual void Awake()
     {
@@ -93,6 +95,11 @@ public abstract class Customer : MonoBehaviour
 
         isCrafted = false;
     }
+    public void SetSourcePrefab(GameObject prefab)
+    {
+        this.sourcePrefab = prefab; 
+    }
+
     private IEnumerator CustomerFlow()
     {
 
@@ -211,8 +218,9 @@ public abstract class Customer : MonoBehaviour
 
     protected virtual void CustomerExit() //큐에서 나가는 메서드
     {
+        Debug.Log("손님나감 호출");
         CustomerManager.Instance.CustomerExit(this);
-        Destroy(gameObject);
+        PoolManager.Instance.Return(this.gameObject, this.sourcePrefab);
     }
     public abstract void Interact();
     public void NotifiedCraftWeapon()

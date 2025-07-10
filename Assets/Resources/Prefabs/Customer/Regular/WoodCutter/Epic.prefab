@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3671264726314337295}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Firearm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -44,7 +44,7 @@ GameObject:
   - component: {fileID: 2929315861283897190}
   - component: {fileID: 1100532582082983440}
   - component: {fileID: 7084505286774701670}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Renderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -149,7 +149,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8035016414402726451}
   - component: {fileID: 5322700433541985013}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Circle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -232,7 +232,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4568095673606036811}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: FireMuzzle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -266,7 +266,7 @@ GameObject:
   - component: {fileID: 9037560401422325376}
   - component: {fileID: 5958776932098878168}
   - component: {fileID: 6821143166292706002}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -384,7 +384,7 @@ GameObject:
   - component: {fileID: 842627916342657262}
   - component: {fileID: 1186002937379249508}
   - component: {fileID: 343664323558343642}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Epic
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -433,6 +433,7 @@ MonoBehaviour:
     job: 0
     type: 1
     moveSpeed: 0
+    WeaponKeys: []
   moveWayPoint:
   - {fileID: 7599354342047509208, guid: 5ee67ca923afb80428b5c61afda36939, type: 3}
   - {fileID: 430231704407215936, guid: 712630db6271ee2408d526e960add339, type: 3}
@@ -440,6 +441,7 @@ MonoBehaviour:
   spriteResolver: {fileID: 0}
   spriteLibrary: {fileID: 0}
   spriteRenderer: {fileID: 0}
+  goldText: {fileID: 0}
   InteractObject: {fileID: 912466913645199007}
   WaitTime: 2
   CollectData:

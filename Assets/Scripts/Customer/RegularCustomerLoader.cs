@@ -67,7 +67,9 @@ public class RegularCustomerLoader
         }
 
         var baseCustomerData = GameManager.Instance.DataManager.CustomerDataLoader.GetByKey(choice.customerKey);
-        var obj = Object.Instantiate(prefab, spawnPoint.position, Quaternion.identity);
+        GameObject regularObj = GameManager.Instance.PoolManager.Get(prefab.gameObject, spawnPoint.position, Quaternion.identity);
+        var obj = regularObj.GetComponent<Customer>();
+
         obj.Init(baseCustomerData);
 
         if (obj is RegualrCustomer rc)

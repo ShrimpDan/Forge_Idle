@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7199352319057860205}
   - component: {fileID: 1167539211925660221}
   - component: {fileID: 633608143150406722}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: NuisanceCustomer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -89,11 +89,13 @@ MonoBehaviour:
     job: 0
     type: 2
     moveSpeed: 0
+    WeaponKeys: []
   moveWayPoint: []
   gold: 0
   spriteResolver: {fileID: 0}
   spriteLibrary: {fileID: 0}
   spriteRenderer: {fileID: 0}
+  goldText: {fileID: 0}
   waitTime: 3
   penaltyGold: 0
   InteractIcon: {fileID: 7921828885711947236}
@@ -174,7 +176,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6958772757390835171}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Firearm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -210,7 +212,7 @@ GameObject:
   - component: {fileID: 3393382965110382528}
   - component: {fileID: 577713926485508834}
   - component: {fileID: 5425869020911379350}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -326,7 +328,7 @@ GameObject:
   - component: {fileID: 4500622856603653036}
   - component: {fileID: 3609759233934919154}
   - component: {fileID: 5396934091025463349}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Renderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -430,7 +432,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7325311370766033521}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: FireMuzzle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -462,7 +464,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5399651349618944517}
   - component: {fileID: 3343962518849417533}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Circle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
