@@ -86,7 +86,6 @@ public class TraineeCardAnimator : MonoBehaviour
     /// </summary>
     public void FlipCard(System.Action onFlipped = null)
     {
-        SoundManager.Instance.Play("SFX_CardFlipFront");
         frontSide.transform.localEulerAngles = new Vector3(0, 270, 0);
 
         backSide.transform.DORotate(new Vector3(0, 90, 0), 0.13f).SetEase(Ease.InQuad)

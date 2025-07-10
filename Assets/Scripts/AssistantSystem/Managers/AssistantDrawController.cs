@@ -23,8 +23,10 @@ public class AssistantDrawController : MonoBehaviour
     private bool isCardInteractionLocked = false;
     private bool isSpreadingCards = false;
     private bool isFlippingCards = false;
+    private bool isMultiDrawMode = false;
 
     public bool IsCardInteractionLocked => isCardInteractionLocked;
+    public bool IsMultiDrawMode => isMultiDrawMode;
 
     public Action<AssistantInstance> OnTraineeConfirmed;
     public event Action OnRecruitingFinished;
@@ -42,6 +44,8 @@ public class AssistantDrawController : MonoBehaviour
         factory.ResetRecruitLock();
         cardsToConfirm = count;
 
+        isMultiDrawMode = count > 1;
+
         StartCoroutine(StartRecruitFlowWithBackground(count, fixedType));
     }
 
@@ -50,7 +54,6 @@ public class AssistantDrawController : MonoBehaviour
         if (backgroundPanel != null)
             backgroundPanel.SetActive(true);
 
-        // 버튼 미리 생성
         if (confirmAllButtonPrefab != null && confirmAllButtonInstance == null)
         {
             confirmAllButtonInstance = Instantiate(confirmAllButtonPrefab, multiDrawParent);
@@ -129,6 +132,7 @@ public class AssistantDrawController : MonoBehaviour
 
         if (isFlippingCards)
         {
+            SoundManager.Instance.Play("SFX_CardFlipFront");
             foreach (var card in spawnedCards)
             {
                 var controller = card?.GetComponent<AssistantController>();
@@ -156,7 +160,7 @@ public class AssistantDrawController : MonoBehaviour
             if (controller == null || controller.IsFlipped) continue;
 
             bool finished = false;
-            controller.ForceFlipWithCallback(() => finished = true);
+            controller.ForceFlipWithCallback(() => finished = true, true);
             yield return new WaitUntil(() => finished);
         }
 
@@ -166,8 +170,9 @@ public class AssistantDrawController : MonoBehaviour
 
     private void ConfirmAllFlippedCards()
     {
-        var remainingCards = new List<GameObject>(spawnedCards);
+        bool played = false;
 
+        var remainingCards = new List<GameObject>(spawnedCards);
         foreach (var card in remainingCards)
         {
             if (card == null) continue;
@@ -175,6 +180,11 @@ public class AssistantDrawController : MonoBehaviour
             var controller = card.GetComponent<AssistantController>();
             if (controller != null)
             {
+                if (!played)
+                {
+                    SoundManager.Instance.Play("SFX_CardVanishClick");
+                    played = true;
+                }
                 controller.OnClick_FrontCard();
             }
         }

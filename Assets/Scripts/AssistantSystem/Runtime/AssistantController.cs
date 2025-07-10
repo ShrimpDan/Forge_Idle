@@ -95,7 +95,6 @@ public class AssistantController : MonoBehaviour
         if (playSound)
             SoundManager.Instance.Play("SFX_CardFlipFront");
 
-
         cardAnimator?.PlayTieredFlip(() =>
         {
             isFlipped = true;
@@ -119,7 +118,7 @@ public class AssistantController : MonoBehaviour
     }
 
     /// <summary>
-    /// 카드 뒤집기 버튼을 사용 가능하게 설정
+    /// 카드 뒷면 클릭을 사용 가능하게 설정
     /// </summary>
     public void EnableFlip()
     {
@@ -133,8 +132,10 @@ public class AssistantController : MonoBehaviour
     public void OnClick_FrontCard()
     {
         if (drawController != null && drawController.IsCardInteractionLocked) return;
-
-        SoundManager.Instance.Play("SFX_CardVanishClick");
+        if (drawController != null && !drawController.IsMultiDrawMode)
+        {
+            SoundManager.Instance.Play("SFX_CardVanishClick");
+        }
 
         onConfirm?.Invoke(data);
         Destroy(gameObject);
@@ -144,7 +145,7 @@ public class AssistantController : MonoBehaviour
     }
 
     /// <summary>
-    /// 카드 뒤집기 버튼 클릭 시 실행
+    /// 카드 뒷면 클릭 시 실행
     /// </summary>
     public void OnClick_FlipCard()
     {
@@ -153,6 +154,8 @@ public class AssistantController : MonoBehaviour
 
         isFlipping = true;
         cardUI?.UpdateUI(data);
+
+        SoundManager.Instance.Play("SFX_CardFlipFront");
 
         cardAnimator?.PlayTieredFlip(() =>
         {
