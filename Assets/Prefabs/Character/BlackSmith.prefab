@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 166246970655988288}
   - component: {fileID: 596810911302698020}
   - component: {fileID: 7636508585544072764}
-  m_Layer: 3
+  m_Layer: 7
   m_Name: CashRegister
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -54,7 +54,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: 9dfc825aed78fcd4ba02077103263b40, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -118,7 +118,7 @@ GameObject:
   - component: {fileID: 5797024241169931269}
   - component: {fileID: 784897540780021055}
   - component: {fileID: 6244770298588789860}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: CraftingParticle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5008,7 +5008,7 @@ GameObject:
   - component: {fileID: 4547605759280755115}
   - component: {fileID: 6063015173232214021}
   - component: {fileID: 5925936015454588451}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: BlackSmith
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5052,7 +5052,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: 9dfc825aed78fcd4ba02077103263b40, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -5132,7 +5132,6 @@ MonoBehaviour:
   blackSmithAnim: {fileID: 4547605759280755115}
   craftingParticle: {fileID: 784897540780021055}
   cashAnim: {fileID: 7636508585544072764}
-  goldRoot: {fileID: 166246970655988288}
   goldTextPrefab: {fileID: 3305111850114404390, guid: 9f4a7a83ec5204647bb437a79ab186fc, type: 3}
 --- !u!1 &8756620124404145181
 GameObject:
@@ -5144,7 +5143,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6142951489045428767}
   - component: {fileID: 8524466092250207199}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: CoinEffect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5160,8 +5159,8 @@ Transform:
   m_GameObject: {fileID: 8756620124404145181}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.03, y: 1.28, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: -0.03, y: 0.21, z: 0}
+  m_LocalScale: {x: 0, y: 0, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 166246970655988288}
@@ -5186,7 +5185,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: 9dfc825aed78fcd4ba02077103263b40, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
