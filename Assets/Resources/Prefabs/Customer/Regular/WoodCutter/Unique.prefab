@@ -161,7 +161,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: 26dd96fb13c121b408f75b5e636bb15f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -383,6 +383,7 @@ GameObject:
   - component: {fileID: 519940071911044702}
   - component: {fileID: 842627916342657262}
   - component: {fileID: 5904324971536204727}
+  - component: {fileID: 9020476661344908542}
   m_Layer: 0
   m_Name: Unique
   m_TagString: Untagged
@@ -419,7 +420,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56af7ad04b9e55e429497fc08f797543, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movePoint: []
+  movePoint:
+  - {x: 2.86, y: -5.23}
+  - {x: -3.06, y: -4.74}
+  - {x: -2.75, y: -3.35}
+  - {x: 2.2, y: -3.18}
   buyPoint: {fileID: 3367438687136543233, guid: 5ee67ca923afb80428b5c61afda36939, type: 3}
   stayMaxTime: 3
   stayMinTime: 1
@@ -434,6 +439,7 @@ MonoBehaviour:
   gold: 0
   spriteResolver: {fileID: 0}
   spriteLibrary: {fileID: 0}
+  spriteRenderer: {fileID: 0}
   InteractObject: {fileID: 912466913645199007}
   WaitTime: 2
   CollectData:
@@ -515,3 +521,24 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1.3202044}
   m_EdgeRadius: 0
+--- !u!95 &9020476661344908542
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8147232743556060480}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 9c29b8b4560a93c4f8dac05d10546f45, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
