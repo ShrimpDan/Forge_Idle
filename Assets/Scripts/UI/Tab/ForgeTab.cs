@@ -13,13 +13,14 @@ public class ForgeTab : BaseTab
     {
         base.Init(gameManager, uIManager);
         forge = gameManager.Forge;
+
+        forge.Events.OnCraftStarted += SetWeaponIcon;
     }
 
     public override void OpenTab()
     {
         base.OpenTab();
 
-        forge.Events.OnCraftStarted += SetWeaponIcon;
         forge.Events.OnCraftProgress += UpdateProgress;
     }
 
@@ -27,7 +28,6 @@ public class ForgeTab : BaseTab
     {
         base.CloseTab();
 
-        forge.Events.OnCraftStarted -= SetWeaponIcon;
         forge.Events.OnCraftProgress -= UpdateProgress;
     }
 
