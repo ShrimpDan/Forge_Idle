@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 7199352319057860205}
   - component: {fileID: -3529334226172970726}
   - component: {fileID: 7065984283765838967}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: NuisanceCustomerTanker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -128,14 +128,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8abe1ee89d15e748b28f2f9f625bb81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  movePoint: []
   buyPoint: {fileID: 0}
+  stayMaxTime: 3
+  stayMinTime: 1
   data:
     Key: customer_nuisance_tanker
     job: 5
     type: 2
     moveSpeed: 0
+    WeaponKeys: []
   moveWayPoint: []
   gold: 0
+  spriteResolver: {fileID: 0}
+  spriteLibrary: {fileID: 0}
+  spriteRenderer: {fileID: 0}
+  goldText: {fileID: 0}
   waitTime: 3
   penaltyGold: 0
   InteractIcon: {fileID: 7921828885711947236}
@@ -217,7 +225,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5399651349618944517}
   - component: {fileID: 3343962518849417533}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Circle
   m_TagString: Untagged
   m_Icon: {fileID: 0}

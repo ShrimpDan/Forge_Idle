@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8035016414402726451}
   - component: {fileID: 5322700433541985013}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Circle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -95,7 +95,7 @@ GameObject:
   - component: {fileID: 568250277131998604}
   - component: {fileID: 5986038806033551509}
   - component: {fileID: 3747609096892926375}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Renderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -202,7 +202,7 @@ GameObject:
   - component: {fileID: 6643504064022325661}
   - component: {fileID: 534553442090061945}
   - component: {fileID: 3638222327237177085}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -316,7 +316,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2663390807440485302}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Firearm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -353,7 +353,7 @@ GameObject:
   - component: {fileID: 842627916342657262}
   - component: {fileID: -6756761946454791428}
   - component: {fileID: 6550215985062712734}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Legendary
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -402,6 +402,7 @@ MonoBehaviour:
     job: 0
     type: 1
     moveSpeed: 0
+    WeaponKeys: []
   moveWayPoint:
   - {fileID: 7599354342047509208, guid: 5ee67ca923afb80428b5c61afda36939, type: 3}
   - {fileID: 430231704407215936, guid: 712630db6271ee2408d526e960add339, type: 3}
@@ -409,6 +410,7 @@ MonoBehaviour:
   spriteResolver: {fileID: 0}
   spriteLibrary: {fileID: 0}
   spriteRenderer: {fileID: 0}
+  goldText: {fileID: 0}
   InteractObject: {fileID: 912466913645199007}
   WaitTime: 2
   CollectData:
@@ -520,7 +522,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6773053002020017080}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: FireMuzzle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
