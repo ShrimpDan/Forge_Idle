@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -80,7 +81,7 @@ public class AssistantController : MonoBehaviour
     /// <summary>
     /// 외부에서 강제로 카드를 뒤집게 하며 완료 콜백 제공
     /// </summary>
-    public void ForceFlipWithCallback(System.Action onComplete)
+    public void ForceFlipWithCallback(Action onComplete, bool playSound = true)
     {
         if (isFlipped || isFlipping)
         {
@@ -91,7 +92,9 @@ public class AssistantController : MonoBehaviour
         isFlipping = true;
         cardUI?.UpdateUI(data);
 
-        SoundManager.Instance.Play("SFX_CardFlipFront");
+        if (playSound)
+            SoundManager.Instance.Play("SFX_CardFlipFront");
+
 
         cardAnimator?.PlayTieredFlip(() =>
         {
@@ -150,8 +153,6 @@ public class AssistantController : MonoBehaviour
 
         isFlipping = true;
         cardUI?.UpdateUI(data);
-
-        SoundManager.Instance.Play("SFX_CardFlipFront");
 
         cardAnimator?.PlayTieredFlip(() =>
         {

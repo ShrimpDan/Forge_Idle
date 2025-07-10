@@ -129,8 +129,6 @@ public class AssistantDrawController : MonoBehaviour
 
         if (isFlippingCards)
         {
-            SoundManager.Instance.Play("SFX_CardFlipFront");
-
             foreach (var card in spawnedCards)
             {
                 var controller = card?.GetComponent<AssistantController>();
@@ -149,6 +147,8 @@ public class AssistantDrawController : MonoBehaviour
     {
         isFlippingCards = true;
         isCardInteractionLocked = true;
+
+        SoundManager.Instance.Play("SFX_CardFlipFront");
 
         foreach (var card in spawnedCards)
         {
