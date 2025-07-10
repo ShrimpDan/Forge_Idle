@@ -49,6 +49,9 @@ public class InventoryManager
             case ItemType.Resource:
                 AddOrMergeItem(ResourceList, item, amount);
                 break;
+            case ItemType.Ingot:          
+                AddOrMergeItem(ResourceList, item, amount);
+                break;
         }
 
         OnItemAdded?.Invoke();
@@ -100,6 +103,11 @@ public class InventoryManager
             case ItemType.Resource:
                 ResourceList.Remove(item);
                 break;
+            case ItemType.Ingot:
+                ResourceList.Remove(item);
+                break;
+
+
         }
     }
 
