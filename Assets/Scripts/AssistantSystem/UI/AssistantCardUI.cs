@@ -9,7 +9,7 @@ public class AssistantCardUI : MonoBehaviour
     [SerializeField] private Image specializationIcon;
 
     [Header("아이콘 스프라이트")]
-    [SerializeField] private Sprite[] tierSprites; // 성격 티어 1~5 (인덱스 0~4)
+    [SerializeField] private Sprite[] tierSprites; // 제자 티어 SSR~L (인덱스 0~4)
     [SerializeField] private Sprite craftingIcon;
     [SerializeField] private Sprite enhancingIcon;
     [SerializeField] private Sprite sellingIcon;

@@ -28,15 +28,13 @@ public class FusionAnimator : MonoBehaviour
             return;
         }
 
-        Vector3 center = fusionCenterPoint.position;
+        Vector3 localCenter = fusionCenterPoint.localPosition + new Vector3(0, -300f, 0);
 
         for (int i = 0; i < slotViews.Count; i++)
         {
             var slot = slotViews[i];
             var rect = slot.transform as RectTransform;
             if (rect == null) continue;
-
-            Vector3 startPos = rect.position;
 
             int points = 30;
             Vector3[] path = new Vector3[points];
@@ -46,16 +44,16 @@ public class FusionAnimator : MonoBehaviour
                 float angle = Mathf.Lerp(0, spiralTurns * 360f, t) * Mathf.Deg2Rad;
                 float r = Mathf.Lerp(radius, 0, t);
                 Vector3 offset = new Vector3(Mathf.Cos(angle), Mathf.Sin(angle), 0) * r;
-                path[j] = center + offset;
+                path[j] = localCenter + offset;
             }
 
-            rect.DOPath(path, mergeDuration, PathType.CatmullRom)
+            rect.DOLocalPath(path, mergeDuration, PathType.CatmullRom)
                 .SetEase(Ease.InOutSine);
 
-            rect.localScale = Vector3.one * 1.0f;
-            rect.DOScale(2f, mergeDuration).SetEase(Ease.OutBack);
+            rect.localScale = Vector3.one * 0.6f;
+            rect.DOScale(1.3f, mergeDuration).SetEase(Ease.OutBack);
 
-            rect.DORotate(new Vector3(0, 0, -360f * spiralTurns), mergeDuration, RotateMode.FastBeyond360)
+            rect.DOLocalRotate(new Vector3(0, 0, -360f * spiralTurns), mergeDuration, RotateMode.FastBeyond360)
                 .SetEase(Ease.Linear);
         }
 
