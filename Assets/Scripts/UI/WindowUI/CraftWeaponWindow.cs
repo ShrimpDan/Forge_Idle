@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.EventSystems;
 
 public class CraftWeaponWindow : BaseUI
 {
@@ -15,17 +16,33 @@ public class CraftWeaponWindow : BaseUI
     [SerializeField] private Transform recipeListRoot;
     [SerializeField] private GameObject recipeSlotPrefab;
     [SerializeField] private Transform tabsRoot;
+    [SerializeField] private ScrollRect tabsScrollRect;
 
     private List<InputSlotContext> inputSlots = new();
     private List<Button> tabButtons = new();
-
+    private List<CustomerJob> tabJobTypes = new();
+    private int selectedTabIndex = -1;
     private int slotCount = 6;
-    private int selectedSlotIndex = -1;
+
+    private bool isDraggingTabs = false;
+    private float lastTabDragEndTime = -100f;
+    private float tabClickCooldown = 0.25f;
 
     private GameManager gameManager;
     private UIManager uIManager;
     private ItemDataLoader itemLoader;
     private CraftingDataLoader craftingLoader;
+
+    private Dictionary<CustomerJob, List<string>> jobToWeaponKeyList = new()
+    {
+        { CustomerJob.Woodcutter, new List<string> { "weapon_axe_crude", "weapon_axe_normal", "weapon_axe_fine", "weapon_axe_excellent", "weapon_axe_perfect" } },
+        { CustomerJob.Farmer,     new List<string> { "weapon_hoe_crude", "weapon_hoe_normal", "weapon_hoe_fine", "weapon_hoe_excellent", "weapon_hoe_perfect" } },
+        { CustomerJob.Miner,      new List<string> { "weapon_pickaxe_crude", "weapon_pickaxe_normal", "weapon_pickaxe_fine", "weapon_pickaxe_excellent", "weapon_pickaxe_perfect" } },
+        { CustomerJob.Warrior,    new List<string> { "weapon_sword_crude", "weapon_sword_normal", "weapon_sword_fine", "weapon_sword_excellent", "weapon_sword_perfect" } },
+        { CustomerJob.Archer,     new List<string> { "weapon_bow_crude", "weapon_bow_normal", "weapon_bow_fine", "weapon_bow_excellent", "weapon_bow_perfect" } },
+        { CustomerJob.Tanker,     new List<string> { "weapon_shield_crude", "weapon_shield_normal", "weapon_shield_fine", "weapon_shield_excellent", "weapon_shield_perfect" } },
+        { CustomerJob.Assassin,   new List<string> { "weapon_dagger_crude", "weapon_dagger_normal", "weapon_dagger_fine", "weapon_dagger_excellent", "weapon_dagger_perfect" } },
+    };
 
     private class InputSlotContext
     {
@@ -35,6 +52,43 @@ public class CraftWeaponWindow : BaseUI
         public TMP_Text TimeText;
         public Button ReceiveBtn;
         public int TaskIndex;
+    }
+
+    private void Awake()
+    {
+        if (tabsScrollRect != null)
+        {
+            tabsScrollRect.onValueChanged.AddListener(OnTabsScroll);
+        }
+    }
+
+    private void OnEnable()
+    {
+        if (tabsScrollRect != null)
+        {
+            EventTrigger trigger = tabsScrollRect.GetComponent<EventTrigger>();
+            if (trigger == null) trigger = tabsScrollRect.gameObject.AddComponent<EventTrigger>();
+
+            trigger.triggers.Clear();
+
+            // Begin Drag
+            EventTrigger.Entry begin = new EventTrigger.Entry { eventID = EventTriggerType.BeginDrag };
+            begin.callback.AddListener((data) => { isDraggingTabs = true; });
+            trigger.triggers.Add(begin);
+
+            // End Drag
+            EventTrigger.Entry end = new EventTrigger.Entry { eventID = EventTriggerType.EndDrag };
+            end.callback.AddListener((data) => {
+                isDraggingTabs = false;
+                lastTabDragEndTime = Time.unscaledTime;
+            });
+            trigger.triggers.Add(end);
+        }
+    }
+
+    private void OnTabsScroll(Vector2 pos)
+    {
+        // 드래그 중이면 아무것도 하지 않는다.
     }
 
     public override void Init(GameManager gm, UIManager ui)
@@ -48,18 +102,28 @@ public class CraftWeaponWindow : BaseUI
         exitBtn.onClick.RemoveAllListeners();
         exitBtn.onClick.AddListener(() => uIManager.CloseUI(UIName.CraftWeaponWindow));
 
-        // 탭 버튼 세팅
         tabButtons.Clear();
+        tabJobTypes.Clear();
         foreach (Transform t in tabsRoot)
         {
             var btn = t.GetComponent<Button>();
-            int jobIdx = tabButtons.Count;
-            btn.onClick.RemoveAllListeners();
-            btn.onClick.AddListener(() => ShowRecipeListByJob(jobIdx));
             tabButtons.Add(btn);
         }
+        tabJobTypes.Add(CustomerJob.Woodcutter);
+        tabJobTypes.Add(CustomerJob.Farmer);
+        tabJobTypes.Add(CustomerJob.Miner);
+        tabJobTypes.Add(CustomerJob.Warrior);
+        tabJobTypes.Add(CustomerJob.Archer);
+        tabJobTypes.Add(CustomerJob.Tanker);
+        tabJobTypes.Add(CustomerJob.Assassin);
 
-        // 인풋 슬롯 세팅
+        for (int i = 0; i < tabButtons.Count; i++)
+        {
+            int idx = i;
+            tabButtons[i].onClick.RemoveAllListeners();
+            tabButtons[i].onClick.AddListener(() => OnTabClicked(idx));
+        }
+
         foreach (Transform child in inputWeaponSlots)
             Destroy(child.gameObject);
         inputSlots.Clear();
@@ -77,7 +141,7 @@ public class CraftWeaponWindow : BaseUI
 
             int idx = i;
             ctx.Btn.onClick.RemoveAllListeners();
-            ctx.Btn.onClick.AddListener(() => OnClickInputWeaponSlot(idx));
+            ctx.Btn.interactable = false;
             if (ctx.ReceiveBtn)
             {
                 ctx.ReceiveBtn.onClick.RemoveAllListeners();
@@ -92,17 +156,33 @@ public class CraftWeaponWindow : BaseUI
             inputSlots.Add(ctx);
         }
 
-        // 첫 탭 선택(기본)
-        ShowRecipeListByJob(0);
+        OnTabClicked(0);
     }
 
-    void ShowRecipeListByJob(int jobTypeIdx)
+    private void OnTabClicked(int tabIdx)
+    {
+        // 드래그 끝난지 얼마 안됐으면 CenterTab 호출하지 않는다.
+        if (Time.unscaledTime - lastTabDragEndTime < tabClickCooldown)
+            return;
+
+        selectedTabIndex = tabIdx;
+        for (int i = 0; i < tabButtons.Count; i++)
+            tabButtons[i].interactable = (i != tabIdx);
+
+        ShowRecipeListByJob(tabJobTypes[tabIdx]);
+        CenterTab(tabIdx);
+    }
+
+    private void ShowRecipeListByJob(CustomerJob jobType)
     {
         foreach (Transform child in recipeListRoot)
             Destroy(child.gameObject);
 
+        List<string> validKeys = jobToWeaponKeyList.TryGetValue(jobType, out var keys) ? keys : null;
+        if (validKeys == null) return;
+
         var recipes = craftingLoader.CraftingList
-            .Where(x => (int)x.jobType == jobTypeIdx)
+            .Where(x => validKeys.Contains(x.ItemKey))
             .ToList();
 
         foreach (var data in recipes)
@@ -114,42 +194,47 @@ public class CraftWeaponWindow : BaseUI
                 itemLoader,
                 gameManager.Forge,
                 gameManager.Inventory,
-                () => OnRecipeSelected(data));
+                () => OnRecipeSelected(data)
+            );
         }
     }
 
-    void OnClickInputWeaponSlot(int index)
+    private void CenterTab(int tabIdx)
     {
-        if (gameManager.CraftingManager.GetCraftTask(index)?.isCrafting == true) return;
-        selectedSlotIndex = index;
-        // 레시피 팝업 띄우는 부분 (선택 콜백은 OnRecipeSelected)
-        var popup = uIManager.OpenUI<Forge_Recipe_Popup>(UIName.Forge_Recipe_Popup);
-        popup.Init(gameManager.DataManager, uIManager);
-        popup.SetRecipeSelectCallback((itemData, craftingData) => OnRecipeSelected(craftingData));
-        popup.SetForgeAndInventory(gameManager.Forge, gameManager.Inventory);
+        if (tabsScrollRect == null || tabIdx < 0 || tabIdx >= tabButtons.Count) return;
+        var tabRect = tabButtons[tabIdx].GetComponent<RectTransform>();
+        var contentRect = tabsRoot.GetComponent<RectTransform>();
+        var scrollRect = tabsScrollRect.GetComponent<RectTransform>();
+
+        float contentWidth = contentRect.rect.width;
+        float scrollWidth = scrollRect.rect.width;
+
+        float tabPos = tabRect.anchoredPosition.x + (tabRect.rect.width / 2f);
+        float normalized = Mathf.Clamp01((tabPos - scrollWidth / 2f) / (contentWidth - scrollWidth));
+        tabsScrollRect.horizontalNormalizedPosition = normalized;
     }
+
+    void OnClickInputWeaponSlot(int index) { }
 
     void OnRecipeSelected(CraftingData craftingData)
     {
-        if (selectedSlotIndex < 0 || selectedSlotIndex >= slotCount)
-            return;
+        int idx = inputSlots.FindIndex(slot =>
+            gameManager.CraftingManager.GetCraftTask(slot.TaskIndex)?.isCrafting == false);
+        if (idx < 0) return;
 
         var inventory = gameManager.Inventory;
         var forge = gameManager.Forge;
         if (inventory == null || forge == null)
             return;
 
-        // 필요 재료
         var required = craftingData.RequiredResources
             .Select(r => (r.ResourceKey, r.Amount)).ToList();
         int goldNeed = (int)craftingData.craftCost;
 
-        // 금액/재료 동시 소모 시도 (둘 다 성공해야 제작)
         if (!forge.UseGold(goldNeed))
             return;
         if (!inventory.UseCraftingMaterials(required))
         {
-            // 골드 롤백
             forge.AddGold(goldNeed);
             return;
         }
@@ -157,11 +242,11 @@ public class CraftWeaponWindow : BaseUI
         var itemData = gameManager.DataManager.ItemLoader.GetItemByKey(craftingData.ItemKey);
         Sprite iconSprite = IconLoader.GetIcon(itemData.IconPath);
 
-        var slot = inputSlots[selectedSlotIndex];
+        var slot = inputSlots[idx];
         slot.Icon.sprite = iconSprite;
         slot.Icon.enabled = (iconSprite != null);
 
-        gameManager.CraftingManager.StartCrafting(selectedSlotIndex, craftingData, itemData);
+        gameManager.CraftingManager.StartCrafting(idx, craftingData, itemData);
         slot.Btn.interactable = false;
     }
 
@@ -184,14 +269,13 @@ public class CraftWeaponWindow : BaseUI
                 slot.TimeText.text = $"{prog.timeLeft:0.0}s";
 
                 slot.Btn.interactable = false;
-                slot.ReceiveBtn.gameObject.SetActive(false); // 진행 중일 때 비활성
+                slot.ReceiveBtn.gameObject.SetActive(false);
             }
             else
             {
                 slot.ProgressBar?.gameObject.SetActive(false);
                 slot.TimeText?.gameObject.SetActive(false);
 
-                // 제작 완료 & 보상 미수령이면 ReceiveBtn 활성화
                 if (prog.rewardGiven && prog.itemData != null)
                 {
                     slot.ReceiveBtn.gameObject.SetActive(true);
@@ -200,7 +284,7 @@ public class CraftWeaponWindow : BaseUI
                 else
                 {
                     slot.ReceiveBtn.gameObject.SetActive(false);
-                    slot.Btn.interactable = true;
+                    slot.Btn.interactable = false;
                     slot.Icon.sprite = null;
                     slot.Icon.enabled = false;
                 }
@@ -208,24 +292,22 @@ public class CraftWeaponWindow : BaseUI
         }
     }
 
-    // 수령 버튼 클릭 처리 (보상 지급은 CraftingManager에서 이미 처리됨, UI만 리셋)
     void OnClickReceive(int index)
     {
         var prog = gameManager.CraftingManager.GetCraftTask(index);
         if (!prog.rewardGiven || prog.itemData == null) return;
 
-        prog.Reset(); // CraftingManager.CraftTask.Reset() 호출로 상태 초기화
+        prog.Reset();
         var slot = inputSlots[index];
         slot.Icon.sprite = null;
         slot.Icon.enabled = false;
-        slot.Btn.interactable = true;
+        slot.Btn.interactable = false;
         slot.ReceiveBtn.gameObject.SetActive(false);
     }
-
 
     public override void Open()
     {
         base.Open();
-        selectedSlotIndex = -1;
+        selectedTabIndex = -1;
     }
 }
