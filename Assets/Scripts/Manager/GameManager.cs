@@ -15,9 +15,12 @@ public class GameManager : MonoSingleton<GameManager>
 
     public GameSaveManager SaveManager { get; private set; }
 
+    public PoolManager PoolManager { get; private set; }
+
     protected override void Awake()
     {
         base.Awake();
+        PoolManager = new PoolManager();
         Inventory = new InventoryManager(this);
         DataManager = new DataManager();
         AssistantManager = FindObjectOfType<AssistantManager>();
