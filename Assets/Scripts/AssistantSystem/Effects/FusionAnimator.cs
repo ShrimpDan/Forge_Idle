@@ -9,9 +9,9 @@ public class FusionAnimator : MonoBehaviour
     [SerializeField] private RectTransform fusionCenterPoint;
 
     [Header("연출 설정")]
-    public float mergeDuration = 1.0f;
-    public float radius = 150f;
-    public int spiralTurns = 2;
+    public float mergeDuration = 2f;
+    public float radius = 200f;
+    public int spiralTurns = 5;
 
     public void PlayMergeAnimation(List<FusionSlotView> slotViews, Action onComplete = null)
     {
@@ -27,6 +27,8 @@ public class FusionAnimator : MonoBehaviour
             onComplete?.Invoke();
             return;
         }
+
+        SoundManager.Instance.Play("SFX_CardFusionSpin");
 
         Vector3 localCenter = fusionCenterPoint.localPosition + new Vector3(0, -300f, 0);
 

@@ -57,6 +57,8 @@ public class TraineeButtonHandler : MonoBehaviour
         }
         else
         {
+            SoundManager.Instance.Play("SFX_CardAllFusionFail");
+
             fusionAnimator.PlayEmphasizeEmptySlots(slots);
             fusionUIController.SetButtonsInteractable(true);
         }
