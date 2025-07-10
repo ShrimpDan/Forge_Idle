@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public enum CustomerType
-{ 
+{
     Normal,
     Regular,
     Nuisance
 }
-
 
 public enum CustomerJob
 {
@@ -19,9 +18,7 @@ public enum CustomerJob
     Archer,
     Tanker,
     Assassin
-
 }
-
 
 [System.Serializable]
 public class CustomerData
@@ -46,6 +43,8 @@ public class CustomerData
     /// </summary>
     public float moveSpeed;
 
+    // ==== [추가] 해당 손님이 선호/착용 가능한 무기(RecipeKey) 리스트 ====
+    public List<string> WeaponKeys;
 }
 
 public class CustomerDataLoader
@@ -80,6 +79,3 @@ public class CustomerDataLoader
         return null;
     }
 }
-
-
-
