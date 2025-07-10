@@ -13,15 +13,12 @@ public class ForgeTab : BaseTab
     {
         base.Init(gameManager, uIManager);
         forge = gameManager.Forge;
-
-        forgeMap.SetActive(false);
     }
 
     public override void OpenTab()
     {
         base.OpenTab();
 
-        forgeMap.SetActive(true);
         forge.Events.OnCraftStarted += SetWeaponIcon;
         forge.Events.OnCraftProgress += UpdateProgress;
     }
@@ -30,7 +27,6 @@ public class ForgeTab : BaseTab
     {
         base.CloseTab();
 
-        forgeMap.SetActive(false);
         forge.Events.OnCraftStarted -= SetWeaponIcon;
         forge.Events.OnCraftProgress -= UpdateProgress;
     }
