@@ -5,7 +5,6 @@ public class ForgeTab : BaseTab
 {
     private Forge forge;
 
-    [SerializeField] GameObject forgeMap;
     [SerializeField] Image weaponIcon;
     [SerializeField] Image progressFill;
 
@@ -13,13 +12,15 @@ public class ForgeTab : BaseTab
     {
         base.Init(gameManager, uIManager);
         forge = gameManager.Forge;
+
+        forge.Events.OnCraftStarted += SetWeaponIcon;
     }
 
     public override void OpenTab()
     {
         base.OpenTab();
 
-        forge.Events.OnCraftStarted += SetWeaponIcon;
+        forge.OpenForgeTab();
         forge.Events.OnCraftProgress += UpdateProgress;
     }
 
@@ -27,7 +28,7 @@ public class ForgeTab : BaseTab
     {
         base.CloseTab();
 
-        forge.Events.OnCraftStarted -= SetWeaponIcon;
+        forge.CloseForgeTab();
         forge.Events.OnCraftProgress -= UpdateProgress;
     }
 
