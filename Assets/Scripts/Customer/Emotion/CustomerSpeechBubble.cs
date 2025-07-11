@@ -14,10 +14,10 @@ public class CustomerSpeechBubble : MonoBehaviour
 
 
 
-    public void Show(CustomerEmotion emotion)
+    public void Show(string aniName)
     {
         gameObject.SetActive(true);
-        animator.SetInteger("MoodState", (int)emotion);
+        animator.Play(aniName);
     }
 
     public void Hide()

@@ -16,13 +16,7 @@ public enum CustomerState
     Exiting =5
 }
 
-public enum CustomerEmotion
-{ 
-    None = 0,
-    Happy,
-    Thinking,
-    Angry
-}
+
 
 public abstract class Customer : MonoBehaviour
 {
@@ -67,6 +61,10 @@ public abstract class Customer : MonoBehaviour
     private Coroutine moveRoutine; //큐에서 사용
     private Coroutine customerFlowCoroutine;
 
+    private Coroutine StopTime;
+    public bool IsAngry { get; private set; }
+
+
     private float timer;
 
     //풀링
@@ -78,6 +76,7 @@ public abstract class Customer : MonoBehaviour
         data = _customerData;
         buyPoint = _buyPoint;
         isCrafted = false;
+        IsAngry = false;
     }
 
 
@@ -186,31 +185,47 @@ public abstract class Customer : MonoBehaviour
         state = CustomerState.InQueue;
 
         buyPoint.CustomerIn(this);
-
+        
         customerManager.CustomerEvent?.RaiseCustomerArrived(this); //이벤트 연결
         yield return null;
 
     }
 
+    private IEnumerator AngryTime()
+    {
+        while (timer < 3)
+        {
+            timer += Time.deltaTime;
+            yield return null;
+        }
+        speech.Show("Angry");
+        IsAngry = true;
+        yield return MoveToExit();
+    }
+
+
 
     private IEnumerator WaitMyTurn()
     {
         state = CustomerState.WaitintTurn;
-
-        speech.Show(CustomerEmotion.Thinking);
-        
+        speech.Show("ThinkAnimation");
+        if (StopTime != null)
+        {
+            StopCoroutine(StopTime);
+            StopTime = null;
+        }
+        StopTime = StartCoroutine(AngryTime());
 
         yield return new WaitUntil(() => buyPoint.IsCustomFirst(this));
-
         yield return new WaitUntil(() => isCrafted);
-        speech.Show(CustomerEmotion.None);
+        speech.Show("Idle");
     }
 
     protected virtual IEnumerator PerformPurChase()
     {
         state = CustomerState.Purchasing;
         
-        speech.Show(CustomerEmotion.Happy);
+        speech.Show("Happy");
         Interact();
         yield return WaitForSecondsCache.Wait(1f);
         speech.Hide();
@@ -281,6 +296,8 @@ public abstract class Customer : MonoBehaviour
     public void NotifiedCraftWeapon()
     {
         isCrafted = true;
+        StopCoroutine(StopTime);
+        StopTime = null;
     }
 
     public void ChangeSpriteLibrary(SpriteLibraryAsset asset)
