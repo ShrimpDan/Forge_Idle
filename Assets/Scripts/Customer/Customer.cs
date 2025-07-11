@@ -102,7 +102,7 @@ public abstract class Customer : MonoBehaviour
             StopCoroutine(customerFlowCoroutine);
         }
         customerFlowCoroutine = StartCoroutine(CustomerFlow());
-
+      
     }
 
 
@@ -112,6 +112,8 @@ public abstract class Customer : MonoBehaviour
         customerFlowCoroutine = null;
         moveRoutine = null;
         speech.Hide();
+        timer = 0;
+
     }
 
     protected virtual void Update()
