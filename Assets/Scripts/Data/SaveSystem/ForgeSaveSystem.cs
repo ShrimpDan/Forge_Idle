@@ -54,7 +54,7 @@ public static class ForgeSaveSystem
         if (File.Exists(SavePath))
         {
             File.Delete(SavePath);
-            forge.ClearAllAssiPrefab();
+            forge.ClearForge();
             var newData = GetDefaultData();
             forge.LoadData(newData);
 
