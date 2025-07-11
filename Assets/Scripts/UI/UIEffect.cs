@@ -16,7 +16,7 @@ public static class UIEffect
     }
 
 
-    /// 팝업이 open효과
+    /// 팝업 open 효과
     /// UIEffect.PopupOpenEffect(Panel, 효과 시간 );
     
     public static void PopupOpenEffect(RectTransform panel, float duration)
@@ -26,7 +26,7 @@ public static class UIEffect
         panel.DOScale(1f, duration).SetEase(Ease.OutBack);
     }
 
-    /// 팝업이 close 효과
+    /// 팝업 close 효과
     /// 사용예시: UIEffect.PopupCloseEffect(Panel, 효과 시간 );
     public static void PopupCloseEffect(RectTransform panel, float duration)
     {
