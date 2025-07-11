@@ -22,7 +22,7 @@ public class CustomerManager : MonoSingleton<CustomerManager>
 
     [Header("SpawnSetting")]
     [SerializeField] private Transform spawnPoint;
-    [SerializeField] private float spawnDelay;
+    [SerializeField] private BuyPoint mainBuyPoint;
     [SerializeField] private List<SpriteLibraryAsset> normalSpriteAssets;
 
 
@@ -105,6 +105,27 @@ public class CustomerManager : MonoSingleton<CustomerManager>
             }
         
         }
+        var uniquePrefabs = new HashSet<GameObject>();
+        foreach (var prefab in normalDic.Values)
+        {
+            if (prefab != null)
+            {
+                uniquePrefabs.Add(prefab.gameObject);
+            }
+
+        }
+        foreach (var prefab in regDic.Values)
+        {
+            if (prefab != null)
+            {
+                uniquePrefabs.Add(prefab.gameObject); 
+            }
+        }
+        foreach (var prefab in uniquePrefabs)
+        {
+            // 각 프리팹 당 최대 손님 수(maxCount)만큼 미리 생성해 둡니다.
+            PoolManager.Instance.CreatePool(prefab, Customer.maxCount);
+        }
 
         foreach (CustomerJob job in Enum.GetValues(typeof(CustomerJob)))
         {
@@ -119,8 +140,8 @@ public class CustomerManager : MonoSingleton<CustomerManager>
             }
         }
 
-        customerLoader = new CustomerLoader(GameManager.Instance.DataManager.CustomerDataLoader, normalDic, spawnPoint);
-        regularLoader = new RegularCustomerLoader(GameManager.Instance.DataManager.RegularDataLoader, regDic, spawnPoint, rarityProbabilities);
+        customerLoader = new CustomerLoader(GameManager.Instance.DataManager.CustomerDataLoader, normalDic, spawnPoint,mainBuyPoint);
+        regularLoader = new RegularCustomerLoader(GameManager.Instance.DataManager.RegularDataLoader, regDic, spawnPoint, rarityProbabilities , mainBuyPoint);
 
         
 
@@ -137,7 +158,7 @@ public class CustomerManager : MonoSingleton<CustomerManager>
         while (true)
         {
             
-            yield return WaitForSecondsCache.Wait(GameManager.Instance.Forge.FinalCustomerSpawnRate * spawnDelay);
+            yield return WaitForSecondsCache.Wait(GameManager.Instance.Forge.FinalCustomerSpawnRate);
             SpawnNormalCustomer();
         }
 

@@ -86,6 +86,12 @@ public class UIManager : MonoBehaviour
             return null;
 
         ui.Init(gameManager, this);
+        // dotween 효과 넣기 
+        if ((ui.UIType == UIType.Popup || ui.UIType == UIType.Window) && ui.RootPanel != null)
+        {
+            UIEffect.PopupOpenEffect(ui.RootPanel, 0.25f);
+        }
+
         ui.Open();
         activeUIs[uiName] = ui;
 
@@ -102,13 +108,19 @@ public class UIManager : MonoBehaviour
         if (!activeUIs.TryGetValue(uiName, out var ui) || ui == null)
             return;
 
-        ui.Close();
-
-        if (ui.UIType != UIType.Fixed)
+        // Popup/Window: 애니메이션
+        if ((ui.UIType == UIType.Popup || ui.UIType == UIType.Window) && ui.RootPanel != null)
         {
-            Destroy(ui.gameObject);
-            activeUIs.Remove(uiName);
+            UIEffect.PopupCloseEffect(ui.RootPanel, 0.18f);
+            Destroy(ui.gameObject, 0.19f); 
         }
+        else
+        {
+            ui.Close();
+            Destroy(ui.gameObject);
+        }
+
+        activeUIs.Remove(uiName);
 
         if (ui.UIType == UIType.Popup && popupBlockRay != null)
         {
@@ -121,6 +133,7 @@ public class UIManager : MonoBehaviour
             windowBlockRay.enabled = anyWindow;
         }
     }
+
 
     private GameObject LoadPrefab(string uiName)
     {

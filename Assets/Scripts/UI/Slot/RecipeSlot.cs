@@ -2,10 +2,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
-using System.Linq;
 
 public class RecipeSlot : MonoBehaviour
 {
+    [Header("UI Reference")]
     [SerializeField] private Image itemIcon;
     [SerializeField] private TMP_Text itemName;
     [SerializeField] private TMP_Text craftTimeText;
@@ -15,11 +15,12 @@ public class RecipeSlot : MonoBehaviour
     [SerializeField] private GameObject resourceSlotPrefab;
     [SerializeField] private Button selectButton;
 
-    private CraftingData myCraftingData;
-    private ItemDataLoader myItemLoader;
-    private Forge myForge;
-    private InventoryManager myInventory;
+    private CraftingData craftingData;
+    private ItemDataLoader itemLoader;
+    private Forge forge;
+    private InventoryManager inventory;
     private Action onSelectCallback;
+
 
     public void Setup(
         CraftingData data,
@@ -28,12 +29,13 @@ public class RecipeSlot : MonoBehaviour
         InventoryManager inventory,
         Action onSelect)
     {
-        myCraftingData = data;
-        myItemLoader = itemLoader;
-        myForge = forge;
-        myInventory = inventory;
-        onSelectCallback = onSelect;
+        craftingData = data;
+        this.itemLoader = itemLoader;
+        this.forge = forge;
+        this.inventory = inventory;
+        this.onSelectCallback = onSelect;
 
+        // 아이템 정보 표시
         var myItemData = itemLoader?.GetItemByKey(data.ItemKey);
         itemIcon.sprite = myItemData != null ? IconLoader.GetIcon(myItemData.IconPath) : null;
         itemIcon.enabled = myItemData != null && itemIcon.sprite != null;
@@ -63,14 +65,28 @@ public class RecipeSlot : MonoBehaviour
             }
             var resItem = itemLoader?.GetItemByKey(req.ResourceKey);
             Sprite iconSprite = resItem != null ? IconLoader.GetIcon(resItem.IconPath) : null;
-            int owned = myInventory?.ResourceList?.Where(x => x.ItemKey == req.ResourceKey).Sum(x => x.Quantity) ?? 0;
+            int owned = inventory?.ResourceList?.Find(x => x.ItemKey == req.ResourceKey)?.Quantity ?? 0;
             slot.Set(iconSprite, owned, req.Amount);
             if (owned < req.Amount) canCraft = false;
         }
 
-        bool enoughGold = myForge != null && myForge.Gold >= myCraftingData.craftCost;
+        // 골드 체크
+        bool enoughGold = forge != null && forge.Gold >= craftingData.craftCost;
+
         selectButton.interactable = canCraft && enoughGold;
         selectButton.onClick.RemoveAllListeners();
-        selectButton.onClick.AddListener(() => onSelectCallback?.Invoke());
+        selectButton.onClick.AddListener(OnSelectButtonClicked);
+    }
+
+    private void OnSelectButtonClicked()
+    {
+        Debug.Log($"[RecipeSlot] RecipeButton 클릭됨! {name}");
+        onSelectCallback?.Invoke();
+    }
+
+    // 인스펙터에서 미할당시 에러 방지
+    private void Reset()
+    {
+        if (!selectButton) selectButton = GetComponent<Button>();
     }
 }

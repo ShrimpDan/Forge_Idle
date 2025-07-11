@@ -13,7 +13,7 @@ public class NuisanceCustomer : Customer
     [SerializeField] private Transform exitPoint;
 
 
-    private bool clicked = false;
+    private bool isClicked = false;
 
     
 
@@ -30,9 +30,35 @@ public class NuisanceCustomer : Customer
             InteractIcon.SetActive(true);
         }
 
-        StartCoroutine(NuisanceFlow());
+      //  StartCoroutine(NuisanceFlow());
       
     }
+    protected override void OnEnable()
+    {
+        
+        isClicked = false;
+        if (InteractIcon != null)
+        {
+            InteractIcon.SetActive(true);
+        }
+        base.OnEnable();
+    }
+
+    protected override IEnumerator CustomerFlow()
+    {
+        yield return MoveRandomPlace();
+
+        float timer = 0f;
+        while (timer < waitTime && !isClicked)
+        {
+            timer += Time.deltaTime;
+            yield return null;
+        }
+               
+        yield return ExitFlow();
+    }
+
+
 
     protected override void Update()
     {
@@ -67,11 +93,11 @@ public class NuisanceCustomer : Customer
     }
     public override void Interact()
     {
-        if (clicked)
+        if (isClicked)
         {
             return;
         }
-        clicked = true;
+        isClicked = true;
         if (InteractIcon != null)
         {
             Debug.Log("InteractIcon 비활성화 시도");
@@ -103,14 +129,14 @@ public class NuisanceCustomer : Customer
     {
       
         float time = 0f;
-        clicked = false;
+        isClicked = false;
 
         while (time < waitTime)
         {
             if (Input.GetMouseButtonDown(0))
             {
-               // Interact();
-                clicked = true;
+                // Interact();
+                isClicked = true;
                 break;
             }
 
@@ -122,20 +148,25 @@ public class NuisanceCustomer : Customer
     private IEnumerator ExitFlow()       
     {
         state = CustomerState.Exiting;
-        if (exitPoint != null)
-        { 
-        yield return StartCoroutine(MoveingWayPoint(exitPoint.position));
+                
+        if (moveWayPoint != null && moveWayPoint.Length > 0 && moveWayPoint[0] != null)
+        {
+            yield return MoveingWayPoint(moveWayPoint[0].position);
         }
-      
-
-        if (!clicked)
-        { 
+        else
+        {
+            Debug.LogError($"[NuisanceCustomer] 퇴장 경로(moveWayPoint)가 설정되지 않았습니다!", this.gameObject);
+        }
+        
+        if (!isClicked)
+        {
             PenaltyGold();
         }
-
+              
         CustomerExit();
     }
   
+
     //private 
 
     private BuyPoint GetRandomBuyPoint() //수정해야될듯

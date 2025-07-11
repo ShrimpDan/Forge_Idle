@@ -6,15 +6,17 @@ public class RegularCustomerLoader
     private readonly RegularDataLoader dataLoader;
     private readonly Dictionary<(CustomerJob, CustomerRarity), Customer> prefabs;
     private readonly Transform spawnPoint;
+    private readonly BuyPoint mainBuyPoint;
     private readonly Dictionary<CustomerRarity, float> rarityPrefabs;
 
 
-    public RegularCustomerLoader(RegularDataLoader _dataLoader, Dictionary<(CustomerJob, CustomerRarity), Customer> _prefabs, Transform _spawnPoint, Dictionary<CustomerRarity, float> _rarityPrefabs)
+    public RegularCustomerLoader(RegularDataLoader _dataLoader, Dictionary<(CustomerJob, CustomerRarity), Customer> _prefabs, Transform _spawnPoint, Dictionary<CustomerRarity, float> _rarityPrefabs , BuyPoint buyPoint)
     {
         dataLoader = _dataLoader;
         prefabs = _prefabs;
         spawnPoint = _spawnPoint;
         rarityPrefabs = _rarityPrefabs;
+        mainBuyPoint = buyPoint;
     }
 
 
@@ -70,7 +72,7 @@ public class RegularCustomerLoader
         GameObject regularObj = GameManager.Instance.PoolManager.Get(prefab.gameObject, spawnPoint.position, Quaternion.identity);
         var obj = regularObj.GetComponent<Customer>();
 
-        obj.Init(baseCustomerData);
+        obj.Init(baseCustomerData,mainBuyPoint);
 
         if (obj is RegualrCustomer rc)
         {

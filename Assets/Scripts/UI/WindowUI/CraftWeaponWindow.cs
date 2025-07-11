@@ -297,6 +297,9 @@ public class CraftWeaponWindow : BaseUI
         var prog = gameManager.CraftingManager.GetCraftTask(index);
         if (!prog.rewardGiven || prog.itemData == null) return;
 
+        // RewardPopup 연동
+        ShowCraftReward(prog.itemData);
+
         prog.Reset();
         var slot = inputSlots[index];
         slot.Icon.sprite = null;
@@ -309,5 +312,20 @@ public class CraftWeaponWindow : BaseUI
     {
         base.Open();
         selectedTabIndex = -1;
+    }
+
+    private void ShowCraftReward(ItemData itemData)
+    {
+        if (itemData == null || uIManager == null || itemLoader == null)
+            return;
+
+        // 리워드 정보 생성 (여러개면 리스트)
+        var rewardList = new List<(string itemKey, int count)>()
+    {
+        (itemData.ItemKey, 1)
+    };
+
+        var rewardPopup = uIManager.OpenUI<RewardPopup>(UIName.RewardPopup);
+        rewardPopup.Show(rewardList, itemLoader, "");
     }
 }

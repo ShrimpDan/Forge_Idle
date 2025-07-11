@@ -6,12 +6,17 @@ public abstract class BaseUI : MonoBehaviour
     protected UIManager uIManager;
     protected GameManager gameManager;
 
+    [Header("애니메이션 타겟 RootPanel")]
+    public RectTransform RootPanel;
+
     public virtual void Init(GameManager gameManager, UIManager uIManager)
     {
         if(this.uIManager == null)
             this.uIManager = uIManager;
         if(this.gameManager == null)
             this.gameManager = gameManager;
+        // 자동 할당 
+        if (RootPanel == null) RootPanel = transform as RectTransform;
     }
 
     public virtual void Open() => gameObject.SetActive(true);

@@ -20,13 +20,14 @@ public class GameManager : MonoSingleton<GameManager>
     protected override void Awake()
     {
         base.Awake();
-        PoolManager = new PoolManager();
+       
         Inventory = new InventoryManager(this);
         DataManager = new DataManager();
         AssistantManager = FindObjectOfType<AssistantManager>();
         UIManager = FindObjectOfType<UIManager>();
         Forge = FindObjectOfType<Forge>();
         DungeonSystem = new DungeonSystem(this);
+        PoolManager = PoolManager.Instance;
 
         CollectionBookManager.Instance.Initialize();
         if (UIManager)
