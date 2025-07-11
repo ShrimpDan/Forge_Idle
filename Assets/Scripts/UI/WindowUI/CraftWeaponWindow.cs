@@ -326,6 +326,6 @@ public class CraftWeaponWindow : BaseUI
     };
 
         var rewardPopup = uIManager.OpenUI<RewardPopup>(UIName.RewardPopup);
-        rewardPopup.Show(rewardList, itemLoader, "장비 제작 성공!");
+        rewardPopup.Show(rewardList, itemLoader, "");
     }
 }
