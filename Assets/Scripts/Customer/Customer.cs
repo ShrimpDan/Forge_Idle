@@ -32,9 +32,9 @@ public abstract class Customer : MonoBehaviour
 
     [Header("손님 움직이는 지점 설정")]
     [SerializeField] protected List<Vector2> movePoint = new();
-    [SerializeField] protected BuyPoint buyPoint;
     [SerializeField] private float stayMaxTime = 3f;
     [SerializeField] private float stayMinTime = 1f;
+    protected BuyPoint buyPoint;
 
     [Header("Customerinfo")]
     [SerializeField] CustomerData data;
@@ -46,26 +46,36 @@ public abstract class Customer : MonoBehaviour
     protected Animator animator;
     protected bool IsMoving = true;
     protected Rigidbody2D rigid2D;
-    [SerializeField] SpriteResolver spriteResolver;
+    
     [SerializeField] SpriteLibrary spriteLibrary;
     [SerializeField] SpriteRenderer spriteRenderer;
 
     [Header("PurchaseEffect")]
     [SerializeField] TextMeshPro goldText;
 
-    private Coroutine moveRoutine; //큐에서 사용
 
+    private Coroutine moveRoutine; //큐에서 사용
+    private Coroutine customerFlowCoroutine;
 
     private float timer;
 
     //풀링
     private GameObject sourcePrefab;
 
+    public void Init(CustomerData _customerData, BuyPoint _buyPoint)
+    {
+        customerManager = CustomerManager.Instance;
+        data = _customerData;
+        buyPoint = _buyPoint;
+        isCrafted = false;
+    }
+
+
     protected virtual void Awake()
     {
         rigid2D = GetComponent<Rigidbody2D>();
         animator = GetComponentInChildren<Animator>();
-        spriteResolver = GetComponentInChildren<SpriteResolver>();
+       
         spriteLibrary = GetComponentInChildren<SpriteLibrary>();
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
 
@@ -74,7 +84,24 @@ public abstract class Customer : MonoBehaviour
 
     protected virtual void Start()
     {
-        StartCoroutine(CustomerFlow());
+       
+    }
+    protected virtual void OnEnable()
+    {
+       
+        if (customerFlowCoroutine != null)
+        {
+            StopCoroutine(customerFlowCoroutine);
+        }
+        customerFlowCoroutine = StartCoroutine(CustomerFlow());
+    }
+
+
+    protected virtual void OnDisable()
+    {
+        StopAllCoroutines();
+        customerFlowCoroutine = null;
+        moveRoutine = null;
     }
 
     protected virtual void Update()
@@ -99,7 +126,7 @@ public abstract class Customer : MonoBehaviour
         this.sourcePrefab = prefab; 
     }
 
-    private IEnumerator CustomerFlow()
+    protected virtual IEnumerator CustomerFlow()
     {
 
         yield return MoveRandomPlace();
@@ -107,7 +134,8 @@ public abstract class Customer : MonoBehaviour
         yield return JoinQueue();
         yield return WaitMyTurn();
         yield return PerformPurChase();
-        yield return MoveToExit();
+        //yield return MoveToExit();
+
     }
 
     protected IEnumerator MoveRandomPlace()
@@ -166,7 +194,7 @@ public abstract class Customer : MonoBehaviour
         state = CustomerState.Purchasing;
         Interact();
         buyPoint.CustomerOut();
-        yield return null;
+        yield return MoveToExit();
 
     }
 
@@ -174,7 +202,14 @@ public abstract class Customer : MonoBehaviour
     {
         state = CustomerState.Exiting;
 
-        yield return MoveingWayPoint(moveWayPoint[1].position); //이거 고정시키는거 좋은 방법 없을까
+        if (moveWayPoint != null && moveWayPoint.Length > 1 && moveWayPoint[1] != null)
+        {
+            yield return MoveingWayPoint(moveWayPoint[1].position);
+        }
+        else
+        {
+            Debug.LogWarning($"[Customer] 퇴장 경로(moveWayPoint)가 제대로 설정되지 않았습니다. 오브젝트: {this.gameObject.name}", this.gameObject);
+        }
 
         CustomerExit();
     }

@@ -76,8 +76,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8abe1ee89d15e748b28f2f9f625bb81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movePoint: []
-  buyPoint: {fileID: 0}
+  movePoint:
+  - {x: 2.86, y: -5.23}
+  - {x: -3.06, y: -4.74}
+  - {x: -2.75, y: -3.35}
+  - {x: 2.2, y: -3.18}
   stayMaxTime: 3
   stayMinTime: 1
   data:
@@ -86,9 +89,9 @@ MonoBehaviour:
     type: 2
     moveSpeed: 0
     WeaponKeys: []
-  moveWayPoint: []
+  moveWayPoint:
+  - {fileID: 430231704407215936, guid: 712630db6271ee2408d526e960add339, type: 3}
   gold: 0
-  spriteResolver: {fileID: 0}
   spriteLibrary: {fileID: 0}
   spriteRenderer: {fileID: 0}
   goldText: {fileID: 0}
