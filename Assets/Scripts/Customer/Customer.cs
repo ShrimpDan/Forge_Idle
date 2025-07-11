@@ -17,6 +17,7 @@ public enum CustomerState
 }
 
 
+
 public abstract class Customer : MonoBehaviour
 {
 
@@ -46,16 +47,23 @@ public abstract class Customer : MonoBehaviour
     protected Animator animator;
     protected bool IsMoving = true;
     protected Rigidbody2D rigid2D;
-    
+    //말풍선
+    protected CustomerSpeechBubble speech;
+
     [SerializeField] SpriteLibrary spriteLibrary;
     [SerializeField] SpriteRenderer spriteRenderer;
 
     [Header("PurchaseEffect")]
     [SerializeField] TextMeshPro goldText;
 
+    
 
     private Coroutine moveRoutine; //큐에서 사용
     private Coroutine customerFlowCoroutine;
+
+    private Coroutine StopTime;
+    public bool IsAngry { get; private set; }
+
 
     private float timer;
 
@@ -68,6 +76,7 @@ public abstract class Customer : MonoBehaviour
         data = _customerData;
         buyPoint = _buyPoint;
         isCrafted = false;
+        IsAngry = false;
     }
 
 
@@ -78,7 +87,7 @@ public abstract class Customer : MonoBehaviour
        
         spriteLibrary = GetComponentInChildren<SpriteLibrary>();
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
-
+        speech = GetComponentInChildren<CustomerSpeechBubble>();
 
     }
 
@@ -88,7 +97,9 @@ public abstract class Customer : MonoBehaviour
     }
     protected virtual void OnEnable()
     {
-       
+
+        
+
         if (customerFlowCoroutine != null)
         {
             StopCoroutine(customerFlowCoroutine);
@@ -174,25 +185,50 @@ public abstract class Customer : MonoBehaviour
         state = CustomerState.InQueue;
 
         buyPoint.CustomerIn(this);
-
+        
         customerManager.CustomerEvent?.RaiseCustomerArrived(this); //이벤트 연결
         yield return null;
 
     }
 
+    private IEnumerator AngryTime()
+    {
+        while (timer < 3)
+        {
+            timer += Time.deltaTime;
+            yield return null;
+        }
+        speech.Show("Angry");
+        IsAngry = true;
+        yield return MoveToExit();
+    }
+
+
 
     private IEnumerator WaitMyTurn()
     {
         state = CustomerState.WaitintTurn;
-        yield return new WaitUntil(() => buyPoint.IsCustomFirst(this));
+        speech.Show("ThinkAnimation");
+        if (StopTime != null)
+        {
+            StopCoroutine(StopTime);
+            StopTime = null;
+        }
+        StopTime = StartCoroutine(AngryTime());
 
+        yield return new WaitUntil(() => buyPoint.IsCustomFirst(this));
         yield return new WaitUntil(() => isCrafted);
+        speech.Show("Idle");
     }
 
     protected virtual IEnumerator PerformPurChase()
     {
         state = CustomerState.Purchasing;
+        
+        speech.Show("Happy");
         Interact();
+        yield return WaitForSecondsCache.Wait(1f);
+        speech.Hide();
         buyPoint.CustomerOut();
         yield return MoveToExit();
 
@@ -260,6 +296,8 @@ public abstract class Customer : MonoBehaviour
     public void NotifiedCraftWeapon()
     {
         isCrafted = true;
+        StopCoroutine(StopTime);
+        StopTime = null;
     }
 
     public void ChangeSpriteLibrary(SpriteLibraryAsset asset)
