@@ -357,13 +357,11 @@ public class Forge : MonoBehaviour
     public void OpenForgeTab()
     {
         forgeMap.SetActive(true);
-        blackSmith.gameObject.SetActive(true);
     }
 
     public void CloseForgeTab()
     {
         forgeMap.SetActive(false);
-        blackSmith.gameObject.SetActive(false);
     }
 
     public void ClearForge()
