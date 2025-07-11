@@ -96,15 +96,13 @@ public abstract class Customer : MonoBehaviour
        
     }
     protected virtual void OnEnable()
-    {
-
-        
-
+    {       
         if (customerFlowCoroutine != null)
         {
             StopCoroutine(customerFlowCoroutine);
         }
         customerFlowCoroutine = StartCoroutine(CustomerFlow());
+
     }
 
 
@@ -113,6 +111,7 @@ public abstract class Customer : MonoBehaviour
         StopAllCoroutines();
         customerFlowCoroutine = null;
         moveRoutine = null;
+        speech.Hide();
     }
 
     protected virtual void Update()
@@ -200,6 +199,7 @@ public abstract class Customer : MonoBehaviour
         }
         speech.Show("Angry");
         IsAngry = true;
+        buyPoint.CustomerOut();
         yield return MoveToExit();
     }
 
@@ -208,7 +208,10 @@ public abstract class Customer : MonoBehaviour
     private IEnumerator WaitMyTurn()
     {
         state = CustomerState.WaitintTurn;
+        if (RandomChance() == true)
+        { 
         speech.Show("ThinkAnimation");
+        }
         if (StopTime != null)
         {
             StopCoroutine(StopTime);
@@ -324,5 +327,16 @@ public abstract class Customer : MonoBehaviour
         }
     }
 
+    private bool RandomChance()
+    {
+        int dice = Random.Range(0,10);
+        if (dice > 5)
+        {
+            return true;
+        }
+
+        return false;
+
+    }
   
 }
