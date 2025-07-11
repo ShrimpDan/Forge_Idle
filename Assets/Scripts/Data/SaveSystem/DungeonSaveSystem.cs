@@ -35,6 +35,16 @@ public class DungeonSaveSystem
 
         Debug.Log("[저장 시스템] 던전시스템 로드 완료.");
     }
+
+    public static void Delete(DungeonSystem dungeonSystem)
+    {
+        if (File.Exists(SavePath))
+        {
+            File.Delete(SavePath);
+            dungeonSystem.ClearUnlockDungeon();
+            Debug.Log("DungeonSaveData 삭제");
+        }
+    }
 }
 
 public class DungeonSaveHandler : ISaveHandler
@@ -50,11 +60,14 @@ public class DungeonSaveHandler : ISaveHandler
     {
         DungeonSaveSystem.SaveDungeonSystem(dungeonSystem);
     }
-    
+
     public void Load()
     {
         DungeonSaveSystem.LoadDungeonSystem(dungeonSystem);
     }
 
-    
+    public void Delete()
+    {
+        DungeonSaveSystem.Delete(dungeonSystem);
+    }
 }

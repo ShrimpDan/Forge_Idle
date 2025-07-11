@@ -108,6 +108,16 @@ public class AssistantSaveSystem
         Debug.Log("[저장 시스템] 제자 데이터 불러오기 완료");
     }
 
+    public static void Delete(AssistantInventory inventory)
+    {
+        if (File.Exists(SavePath))
+        {
+            File.Delete(SavePath);
+            inventory.Clear();
+            Debug.Log("Assistant 삭제");
+        }
+    }
+
 }
 
 public class AssistantSaveHandler : ISaveHandler
@@ -129,5 +139,10 @@ public class AssistantSaveHandler : ISaveHandler
     public void Load()
     {
         AssistantSaveSystem.LoadAssistants(assistantManager.AssistantInventory, personalityLoader);
+    }
+
+    public void Delete()
+    {
+        AssistantSaveSystem.Delete(assistantManager.AssistantInventory);
     }
 }

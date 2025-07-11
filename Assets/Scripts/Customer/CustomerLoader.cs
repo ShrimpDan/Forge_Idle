@@ -7,14 +7,15 @@ public class CustomerLoader
     private readonly CustomerDataLoader dataLoader;
     private readonly Dictionary<(CustomerJob, CustomerType), Customer> prefabsByJob;
     private readonly Transform spawnPoint;
+    private readonly BuyPoint mainBuyPoint;
 
 
-    public CustomerLoader(CustomerDataLoader _dataLoader, Dictionary<(CustomerJob,CustomerType), Customer> _prefabsByJob, Transform _spawnPoint)
+    public CustomerLoader(CustomerDataLoader _dataLoader, Dictionary<(CustomerJob,CustomerType), Customer> _prefabsByJob, Transform _spawnPoint , BuyPoint buyPoint)
     {
         dataLoader = _dataLoader;
         prefabsByJob = _prefabsByJob;
         spawnPoint = _spawnPoint;
-    
+        mainBuyPoint = buyPoint;
     }
 
 
@@ -36,7 +37,7 @@ public class CustomerLoader
         var customer = customerobj.GetComponent<Customer>();
         customer.SetSourcePrefab(prefab.gameObject);
 
-        customer.Init(data);
+        customer.Init(data,mainBuyPoint);
         return customer; //반환
 
     }

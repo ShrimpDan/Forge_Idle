@@ -357,13 +357,36 @@ public class Forge : MonoBehaviour
     public void OpenForgeTab()
     {
         forgeMap.SetActive(true);
-        blackSmith.gameObject.SetActive(true);    
     }
 
     public void CloseForgeTab()
     {
         forgeMap.SetActive(false);
-        blackSmith.gameObject.SetActive(false);    
     }
 
+    public void ClearForge()
+    {
+        foreach (Transform child in craftingSpawnRoot)
+        {
+            Destroy(child.gameObject);
+        }
+
+        foreach (Transform child in enhanceSpawnRoot)
+        {
+            Destroy(child.gameObject);
+        }
+
+        foreach (Transform child in sellingSpawnRoot)
+        {
+            Destroy(child.gameObject);
+        }
+
+        bonusCraftSpeedMultiplier = 1f;
+        bonusRareItemChance = 0f;
+        bonusEnhanceSuccessRate = 0f;
+        bonusBreakChanceReduction = 0f;
+        bonusEnhanceCostMultiplier = 1f;
+        bonusSellPriceMultiplier = 1f;
+        bonusCustomerSpawnRate = 0f;
+    }
 }

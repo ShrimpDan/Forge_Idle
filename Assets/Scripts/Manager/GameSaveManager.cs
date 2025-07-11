@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 public class GameSaveManager
 {
@@ -29,5 +30,13 @@ public class GameSaveManager
         }
 
         Debug.Log("[저장 시스템] 게임 불러오기 완료.");
+    }
+
+    public void DeleteAll()
+    {
+        foreach (var handler in saveHandlers)
+        {
+            handler.Delete();
+        }
     }
 }

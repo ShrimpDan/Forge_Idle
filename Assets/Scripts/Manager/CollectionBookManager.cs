@@ -118,7 +118,7 @@ public class CollectionBookManager : MonoSingleton<CollectionBookManager>
         {
             data.discoveredKeys.Add(discover.Key);
         }
-        
+
         return data;
     }
 
@@ -128,5 +128,11 @@ public class CollectionBookManager : MonoSingleton<CollectionBookManager>
         {
             discovered.Add(dataManager.RegularDataLoader.GetByKey(key));
         }
+    }
+
+    public void ClearCollectionBook()
+    {
+        discovered.Clear();
+        regularDic.Clear();
     }
 }

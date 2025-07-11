@@ -68,10 +68,16 @@ public class DungeonSystem
             UnlockDungeonKeys.Add(dungeonLoader.DungeonLists[0].Key);
             return;
         }
-        
+
         foreach (var key in saveData.dungeonKeys)
         {
             UnlockDungeonKeys.Add(key);
         }
+    }
+
+    public void ClearUnlockDungeon()
+    {
+        UnlockDungeonKeys.Clear();
+        UnlockDungeonKeys.Add(dungeonLoader.DungeonLists[0].Key);
     }
 }

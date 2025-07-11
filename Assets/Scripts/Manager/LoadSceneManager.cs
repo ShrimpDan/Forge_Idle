@@ -44,7 +44,7 @@ public class LoadSceneManager : MonoSingleton<LoadSceneManager>
     /// </summary>
     /// <param name="type">Scene 타입</param>
     /// <param name="isAdditve">Additeve 모드 로딩 여부</param>
-    public void LoadSceneAsync(SceneType type, bool isAdditve)
+    public void LoadSceneAsync(SceneType type, bool isAdditve = false)
     {
         StartCoroutine(LoadSceneCoroutine(SceneName.GetSceneByType(type), isAdditve));
     }

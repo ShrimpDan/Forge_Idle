@@ -36,7 +36,7 @@ public class WeaponSellingSystem : MonoBehaviour
         customerManager.CustomerEvent.OnCustomerArrived -= CraftItem;
     }
 
-    private void InitDictionary()
+    public void InitDictionary()
     {
         CraftingWeapon = new Dictionary<CustomerJob, CraftingData>();
 

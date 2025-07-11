@@ -33,6 +33,16 @@ public class WeaponSellingSaveSystem
         system.LoadFromSaveData(saveData);
         Debug.Log("[저장 시스템] 무기 판매정보 로드 완료.");
     }
+
+    public static void Delete(WeaponSellingSystem system)
+    {
+        if (File.Exists(SavePath))
+        {
+            File.Delete(SavePath);
+            system.InitDictionary();
+            Debug.Log("WeaponSellSaveData 삭제");
+        }
+    }
 }
 
 public class WeaponSellingSaveHandler : ISaveHandler
@@ -52,5 +62,10 @@ public class WeaponSellingSaveHandler : ISaveHandler
     public void Save()
     {
         WeaponSellingSaveSystem.Save(sellingSystem);
+    }
+
+    public void Delete()
+    {
+        WeaponSellingSaveSystem.Delete(sellingSystem);
     }
 }

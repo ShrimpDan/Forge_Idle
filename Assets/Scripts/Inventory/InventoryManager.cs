@@ -281,7 +281,7 @@ public class InventoryManager
             };
 
             item.GemSockets = new List<ItemInstance> { null, null, null };
-            for(int i = 0; i < item.GemSockets.Count;  i++)
+            for (int i = 0; i < item.GemSockets.Count; i++)
             {
                 string id = data.GemSocketIDs[i];
                 if (id != string.Empty)
@@ -315,6 +315,19 @@ public class InventoryManager
         }
 
         OnItemAdded?.Invoke();
+    }
+
+    public void ClearInventory()
+    {
+        ResourceList.Clear();
+        WeaponList.Clear();
+        GemList.Clear();
+        EquippedWeaponDict.Clear();
+
+        for (int i = 0; i < 10; i++)
+        {
+            EquippedWeaponDict[i] = null;
+        }
     }
     #endregion
 }
