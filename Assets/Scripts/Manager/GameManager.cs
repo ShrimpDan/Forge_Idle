@@ -110,6 +110,13 @@ public class GameManager : MonoSingleton<GameManager>
         Debug.Log($"<color=cyan>[GameManager] 리소스 아이템 {addedTypes}종 20개씩 지급 완료!</color>");
     }
 
+    [ContextMenu("Delete All SaveData")]
+    public void DeleteSaveData()
+    {
+        SaveManager.DeleteAll();
+        SaveManager.LoadAll();
+    }
+
     private void OnApplicationQuit()
     {
         SaveManager.SaveAll();

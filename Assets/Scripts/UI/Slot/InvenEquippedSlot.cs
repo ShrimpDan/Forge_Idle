@@ -12,8 +12,12 @@ public class InvenEquippedSlot : MonoBehaviour
 
     public void Init(UIManager uIManager, ItemInstance item)
     {
-        if (item == null) return;
-        
+        if (item == null)
+        {
+            UnEquipItem();
+            return;
+        }
+
         if (this.uIManager == null)
             this.uIManager = uIManager;
 
@@ -25,7 +29,7 @@ public class InvenEquippedSlot : MonoBehaviour
         slotBtn.onClick.RemoveAllListeners();
         slotBtn.onClick.AddListener(OnClickSlot);
     }
-    
+
     private void OnClickSlot()
     {
         if (EquippedItem == null) return;

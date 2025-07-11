@@ -39,6 +39,7 @@ public class InventorySaveSystem
         if (!File.Exists(SavePath))
         {
             Debug.LogWarning("[저장 시스템] 세이브 파일이 존재하지않습니다.");
+            inventoryManager.ClearInventory();
             return;
         }
 
@@ -46,6 +47,15 @@ public class InventorySaveSystem
         var saveData = JsonUtility.FromJson<InventorySaveData>(json);
         inventoryManager.LoadFromSaveData(saveData);
         Debug.Log("[저장 시스템] 인벤토리 로드 완료.");
+    }
+
+    public static void Delete()
+    {
+        if (File.Exists(SavePath))
+        {
+            File.Delete(SavePath);
+            Debug.Log("InventorySaveData 삭제");
+        }
     }
 }
 
@@ -66,5 +76,10 @@ public class InventorySaveHandler : ISaveHandler
     public void Load()
     {
         InventorySaveSystem.LoadInventory(inventoryManager);
+    }
+
+    public void Delete()
+    {
+        InventorySaveSystem.Delete();
     }
 }

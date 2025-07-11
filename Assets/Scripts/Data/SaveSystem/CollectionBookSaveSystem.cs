@@ -32,6 +32,16 @@ public class CollectionBookSaveSystem
         manager.LoadFromSaveData(saveData);
         Debug.Log("[저장 시스템] 컬렉션 북 로드 완료.");
     }
+
+    public static void Delete(CollectionBookManager manager)
+    {
+        if (File.Exists(SavePath))
+        {
+            File.Delete(SavePath);
+            manager.ClearCollectionBook();
+            Debug.Log("CollectionBookSaveData 삭제");
+        }
+    }
 }
 
 public class CollectionBookSaveHandler : ISaveHandler
@@ -51,5 +61,10 @@ public class CollectionBookSaveHandler : ISaveHandler
     public void Load()
     {
         CollectionBookSaveSystem.LoadCollection(collectionBookManager);
+    }
+
+    public void Delete()
+    {
+        CollectionBookSaveSystem.Delete(collectionBookManager);
     }
 }

@@ -49,11 +49,15 @@ public static class ForgeSaveSystem
         forge.LoadData(data);
     }
 
-    public static void Delete()
+    public static void Delete(Forge forge)
     {
         if (File.Exists(SavePath))
         {
             File.Delete(SavePath);
+            forge.ClearAllAssiPrefab();
+            var newData = GetDefaultData();
+            forge.LoadData(newData);
+
             Debug.Log("ForgeData 삭제");
         }
     }
@@ -98,5 +102,10 @@ public class ForgeSaveHandeler : ISaveHandler
     public void Load()
     {
         ForgeSaveSystem.LoadForge(forge);
+    }
+
+    public void Delete()
+    {
+        ForgeSaveSystem.Delete(forge);
     }
 }
