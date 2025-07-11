@@ -5,18 +5,18 @@ public class InteractionObjectHandler : MonoBehaviour, IPointerClickHandler, IPo
 {
     private UIManager uIManager;
     [SerializeField] ButtonType type;
-
-    private SpriteRenderer spriteRenderer;
+    [SerializeField] private SpriteRenderer spriteRenderer;
     private Color originalColor;
 
     void Start()
     {
         uIManager = GameManager.Instance.UIManager;
 
-        spriteRenderer = GetComponent<SpriteRenderer>();
+        if (spriteRenderer == null)
+            spriteRenderer = GetComponent<SpriteRenderer>();
 
         if (spriteRenderer != null)
-            originalColor = spriteRenderer.color;
+                originalColor = spriteRenderer.color;
     }
 
     public void OnPointerClick(PointerEventData eventData)
