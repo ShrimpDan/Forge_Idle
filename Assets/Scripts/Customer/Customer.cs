@@ -16,6 +16,13 @@ public enum CustomerState
     Exiting =5
 }
 
+public enum CustomerEmotion
+{ 
+    None = 0,
+    Happy,
+    Thinking,
+    Angry
+}
 
 public abstract class Customer : MonoBehaviour
 {
@@ -46,13 +53,16 @@ public abstract class Customer : MonoBehaviour
     protected Animator animator;
     protected bool IsMoving = true;
     protected Rigidbody2D rigid2D;
-    
+    //말풍선
+    protected CustomerSpeechBubble speech;
+
     [SerializeField] SpriteLibrary spriteLibrary;
     [SerializeField] SpriteRenderer spriteRenderer;
 
     [Header("PurchaseEffect")]
     [SerializeField] TextMeshPro goldText;
 
+    
 
     private Coroutine moveRoutine; //큐에서 사용
     private Coroutine customerFlowCoroutine;
@@ -78,7 +88,7 @@ public abstract class Customer : MonoBehaviour
        
         spriteLibrary = GetComponentInChildren<SpriteLibrary>();
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
-
+        speech = GetComponentInChildren<CustomerSpeechBubble>();
 
     }
 
@@ -88,7 +98,9 @@ public abstract class Customer : MonoBehaviour
     }
     protected virtual void OnEnable()
     {
-       
+
+        
+
         if (customerFlowCoroutine != null)
         {
             StopCoroutine(customerFlowCoroutine);
@@ -184,15 +196,24 @@ public abstract class Customer : MonoBehaviour
     private IEnumerator WaitMyTurn()
     {
         state = CustomerState.WaitintTurn;
+
+        speech.Show(CustomerEmotion.Thinking);
+        
+
         yield return new WaitUntil(() => buyPoint.IsCustomFirst(this));
 
         yield return new WaitUntil(() => isCrafted);
+        speech.Show(CustomerEmotion.None);
     }
 
     protected virtual IEnumerator PerformPurChase()
     {
         state = CustomerState.Purchasing;
+        
+        speech.Show(CustomerEmotion.Happy);
         Interact();
+        yield return WaitForSecondsCache.Wait(1f);
+        speech.Hide();
         buyPoint.CustomerOut();
         yield return MoveToExit();
 
