@@ -37,6 +37,32 @@ public class PoolManager : MonoSingleton<PoolManager>
         }
     }
 
+    public void CreatePool(GameObject prefab, int initialSize)
+    {
+        if (prefab == null)
+        {
+            Debug.LogError("[PoolManager] Prefab is null. Cannot create a pool.");
+            return;
+        }
+        if (poolDictionary.ContainsKey(prefab))
+        {
+            Debug.LogWarning($"[PoolManager] Pool for {prefab.name} already exists.");
+            return;
+        }
+
+        var objectQueue = new Queue<GameObject>();
+        for (int i = 0; i < initialSize; i++)
+        {
+            GameObject obj = Instantiate(prefab, transform);
+            obj.SetActive(false);
+            objectQueue.Enqueue(obj);
+        }
+        poolDictionary.Add(prefab, objectQueue);
+        Debug.Log($"[PoolManager] Created pool for {prefab.name} with {initialSize} objects.");
+
+    }
+
+
     public GameObject Get(GameObject prefabs, Vector3 position, Quaternion rotation)
     {
         if (!poolDictionary.ContainsKey(prefabs))
@@ -77,6 +103,7 @@ public class PoolManager : MonoSingleton<PoolManager>
         if (poolDictionary.ContainsKey(sourcePrefabs))
         {
             obj.SetActive(false);
+            obj.transform.SetParent(transform);
             poolDictionary[sourcePrefabs].Enqueue(obj);
 
         }

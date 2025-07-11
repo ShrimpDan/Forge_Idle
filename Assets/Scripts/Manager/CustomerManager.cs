@@ -105,6 +105,27 @@ public class CustomerManager : MonoSingleton<CustomerManager>
             }
         
         }
+        var uniquePrefabs = new HashSet<GameObject>();
+        foreach (var prefab in normalDic.Values)
+        {
+            if (prefab != null)
+            {
+                uniquePrefabs.Add(prefab.gameObject);
+            }
+
+        }
+        foreach (var prefab in regDic.Values)
+        {
+            if (prefab != null)
+            {
+                uniquePrefabs.Add(prefab.gameObject); 
+            }
+        }
+        foreach (var prefab in uniquePrefabs)
+        {
+            // 각 프리팹 당 최대 손님 수(maxCount)만큼 미리 생성해 둡니다.
+            PoolManager.Instance.CreatePool(prefab, Customer.maxCount);
+        }
 
         foreach (CustomerJob job in Enum.GetValues(typeof(CustomerJob)))
         {

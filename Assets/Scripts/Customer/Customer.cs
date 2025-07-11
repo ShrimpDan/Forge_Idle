@@ -53,8 +53,9 @@ public abstract class Customer : MonoBehaviour
     [Header("PurchaseEffect")]
     [SerializeField] TextMeshPro goldText;
 
-    private Coroutine moveRoutine; //큐에서 사용
 
+    private Coroutine moveRoutine; //큐에서 사용
+    private Coroutine customerFlowCoroutine;
 
     private float timer;
 
@@ -83,7 +84,24 @@ public abstract class Customer : MonoBehaviour
 
     protected virtual void Start()
     {
-        StartCoroutine(CustomerFlow());
+       
+    }
+    protected virtual void OnEnable()
+    {
+       
+        if (customerFlowCoroutine != null)
+        {
+            StopCoroutine(customerFlowCoroutine);
+        }
+        customerFlowCoroutine = StartCoroutine(CustomerFlow());
+    }
+
+
+    protected virtual void OnDisable()
+    {
+        StopAllCoroutines();
+        customerFlowCoroutine = null;
+        moveRoutine = null;
     }
 
     protected virtual void Update()
@@ -108,7 +126,7 @@ public abstract class Customer : MonoBehaviour
         this.sourcePrefab = prefab; 
     }
 
-    private IEnumerator CustomerFlow()
+    protected virtual IEnumerator CustomerFlow()
     {
 
         yield return MoveRandomPlace();
@@ -116,7 +134,8 @@ public abstract class Customer : MonoBehaviour
         yield return JoinQueue();
         yield return WaitMyTurn();
         yield return PerformPurChase();
-        yield return MoveToExit();
+        //yield return MoveToExit();
+
     }
 
     protected IEnumerator MoveRandomPlace()
@@ -175,7 +194,7 @@ public abstract class Customer : MonoBehaviour
         state = CustomerState.Purchasing;
         Interact();
         buyPoint.CustomerOut();
-        yield return null;
+        yield return MoveToExit();
 
     }
 
@@ -183,7 +202,14 @@ public abstract class Customer : MonoBehaviour
     {
         state = CustomerState.Exiting;
 
-        yield return MoveingWayPoint(moveWayPoint[1].position); //이거 고정시키는거 좋은 방법 없을까
+        if (moveWayPoint != null && moveWayPoint.Length > 1 && moveWayPoint[1] != null)
+        {
+            yield return MoveingWayPoint(moveWayPoint[1].position);
+        }
+        else
+        {
+            Debug.LogWarning($"[Customer] 퇴장 경로(moveWayPoint)가 제대로 설정되지 않았습니다. 오브젝트: {this.gameObject.name}", this.gameObject);
+        }
 
         CustomerExit();
     }
