@@ -59,6 +59,7 @@ public class Forge : MonoBehaviour
 
     public BlackSmith BlackSmith { get => blackSmith; }
     public WeaponSellingSystem SellingSystem { get; private set; }
+    public WeaponRecipeSystem RecipeSystem { get; private set; }
 
     // 이벤트 핸들러
     public ForgeEventHandler Events { get; private set; } = new ForgeEventHandler();
@@ -68,6 +69,7 @@ public class Forge : MonoBehaviour
         this.gameManager = gameManager;
 
         SellingSystem = GetComponent<WeaponSellingSystem>();
+        RecipeSystem = new WeaponRecipeSystem(this, gameManager.DataManager.CraftingLoader);
 
         if (SellingSystem)
             SellingSystem.Init(this, gameManager.DataManager);
@@ -80,11 +82,12 @@ public class Forge : MonoBehaviour
 
     private void InitAssistant()
     {
-        EquippedAssistant = new Dictionary<SpecializationType, AssistantInstance>();
-
-        EquippedAssistant[SpecializationType.Crafting] = null;
-        EquippedAssistant[SpecializationType.Enhancing] = null;
-        EquippedAssistant[SpecializationType.Selling] = null;
+        EquippedAssistant = new Dictionary<SpecializationType, AssistantInstance>()
+        {
+            { SpecializationType.Crafting, null },
+            { SpecializationType.Enhancing, null },
+            { SpecializationType.Selling, null },
+        };
     }
 
     private void RaiseAllEvents()
@@ -191,7 +194,7 @@ public class Forge : MonoBehaviour
     }
 
     public bool UseDia(int amount)
-    {
+    { 
         if (Dia >= amount)
         {
             Dia -= amount;
