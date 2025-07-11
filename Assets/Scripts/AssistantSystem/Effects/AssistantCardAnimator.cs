@@ -63,7 +63,7 @@ public class TraineeCardAnimator : MonoBehaviour
 
     private void FlipWithShake(System.Action onFlipped)
     {
-        SoundManager.Instance.Play("SFX_CardFlipReveal_SSR");
+        SoundManager.Instance.Play("SFX_CardFlipRevealSSR");
 
         backRect.DOShakeRotation(0.77f, new Vector3(0, 0, 20f), 20, 90)
             .OnComplete(() => FlipCard(onFlipped));
@@ -71,7 +71,7 @@ public class TraineeCardAnimator : MonoBehaviour
 
     private void FlipWithShakeAndPop(System.Action onFlipped)
     {
-        SoundManager.Instance.Play("SFX_CardFlipReveal_UR");
+        SoundManager.Instance.Play("SFX_CardFlipRevealUR");
 
         Sequence seq = DOTween.Sequence();
         seq.Append(backRect.DOShakeRotation(0.77f, new Vector3(0, 0, 20f), 20, 90));

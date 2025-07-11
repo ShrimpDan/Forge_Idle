@@ -176,7 +176,7 @@ public class FusionUIController : MonoBehaviour
 
         if (didFusion)
         {
-            SoundManager.Instance.Play("SFX_CardAllFusionSuccess");
+            SoundManager.Instance.Play("SFX_CardFusionSuccess");
 
             fullTraineeList = new List<AssistantInstance>(inventory.GetAll());
             ShowAllIcons(fullTraineeList);
@@ -185,7 +185,7 @@ public class FusionUIController : MonoBehaviour
         }
         else
         {
-            SoundManager.Instance.Play("SFX_CardAllFusionFail");
+            SoundManager.Instance.Play("SFX_CardFusionFail");
 
             Debug.Log("[FusionUIController] 전체 합성 실패: 인벤토리에 합성 가능한 제자가 부족합니다.");
         }
