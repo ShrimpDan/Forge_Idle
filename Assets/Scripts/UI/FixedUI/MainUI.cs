@@ -43,8 +43,11 @@ public class MainUI : BaseUI
         for (int i = 0; i < tabButtons.Length; i++)
         {
             int index = i;
-            tabButtons[i].onClick.AddListener(() => SwitchTab(index));
-
+            tabButtons[i].onClick.AddListener(() =>
+            {
+                SoundManager.Instance.Play("SFX_SystemClick");
+                SwitchTab(index);
+            });
         }
 
         SwitchTab(2);

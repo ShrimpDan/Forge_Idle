@@ -79,11 +79,13 @@ public class WeaponSellingSystem : MonoBehaviour
             CraftingData weapon = craftingQueue.Dequeue();
             float duration = weapon.craftTime * forge.FinalCraftSpeedMultiplier;
 
+            Customer customer = customerQueue.Dequeue();
+
             // 어떤 무기를 만드는지 아이콘 이벤트 호출
             string iconPath = itemLoader.GetItemByKey(weapon.ItemKey).IconPath;
             forge.Events.RaiseCraftStarted(IconLoader.GetIcon(iconPath));
 
-            while (time < duration)
+            while (time < duration && !customer.IsAngry)
             {
                 time += 0.1f;
                 forge.Events.RaiseCraftProgress(time, duration);
@@ -91,8 +93,10 @@ public class WeaponSellingSystem : MonoBehaviour
                 yield return WaitForSecondsCache.Wait(0.1f);
             }
 
+            if (customer.IsAngry)
+                continue;
+            
             // 손님에게 알림
-            var customer = customerQueue.Dequeue();
             customer.NotifiedCraftWeapon();
 
             // 골드 지급

@@ -27,6 +27,7 @@ public class BlackSmith : MonoBehaviour
 
     public void PlayBuyEffect(int cost, Vector3 pos)
     {
+        SoundManager.Instance.Play("SFX_CoinGain");
         cashAnim.SetTrigger(buyHash);
         TextMeshPro goldText = Instantiate(goldTextPrefab, pos, Quaternion.identity);
         goldText.text = $"+{cost}G";

@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class WindowButton : MonoBehaviour
@@ -14,6 +14,7 @@ public class WindowButton : MonoBehaviour
 
     private void OpenWindowUI()
     {
+        SoundManager.Instance.Play("SFX_SystemClick");
         GameManager.Instance.UIManager.OpenUI<BaseUI>(UIName.GetUINameByType(type));
     }
 }
