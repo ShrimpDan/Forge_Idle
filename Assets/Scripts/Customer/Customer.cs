@@ -41,6 +41,8 @@ public abstract class Customer : MonoBehaviour
     [SerializeField] CustomerData data;
     [SerializeField] protected Transform[] moveWayPoint;
     [SerializeField] protected int gold;
+
+    [SerializeField] private float waitAngryTime = 10f;
     protected CustomerState state;
 
     //애니메이션
@@ -170,7 +172,7 @@ public abstract class Customer : MonoBehaviour
 
 
 
-    private IEnumerator MoveToBuyZone()
+    protected IEnumerator MoveToBuyZone()
     {
 
         state = CustomerState.MovingToBuyZone;
@@ -181,7 +183,7 @@ public abstract class Customer : MonoBehaviour
 
 
 
-    private IEnumerator JoinQueue()
+    protected IEnumerator JoinQueue()
     {
         state = CustomerState.InQueue;
 
@@ -192,9 +194,9 @@ public abstract class Customer : MonoBehaviour
 
     }
 
-    private IEnumerator AngryTime()
+    protected IEnumerator AngryTime()
     {
-        while (timer < 3)
+        while (timer < 10)
         {
             timer += Time.deltaTime;
             yield return null;
@@ -207,7 +209,7 @@ public abstract class Customer : MonoBehaviour
 
 
 
-    private IEnumerator WaitMyTurn()
+    protected IEnumerator WaitMyTurn()
     {
         state = CustomerState.WaitintTurn;
         if (RandomChance() == true)
@@ -239,7 +241,7 @@ public abstract class Customer : MonoBehaviour
 
     }
 
-    private IEnumerator MoveToExit()
+    protected IEnumerator MoveToExit()
     {
         state = CustomerState.Exiting;
 
@@ -301,8 +303,12 @@ public abstract class Customer : MonoBehaviour
     public void NotifiedCraftWeapon()
     {
         isCrafted = true;
-        StopCoroutine(StopTime);
-        StopTime = null;
+        if (StopTime != null)
+        {
+            StopCoroutine(StopTime);
+            StopTime = null;
+        }
+        
     }
 
     public void ChangeSpriteLibrary(SpriteLibraryAsset asset)
@@ -329,7 +335,7 @@ public abstract class Customer : MonoBehaviour
         }
     }
 
-    private bool RandomChance()
+    private bool RandomChance() //랜덤으로 값 뽑아낼때 사용
     {
         int dice = Random.Range(0,10);
         if (dice > 5)
