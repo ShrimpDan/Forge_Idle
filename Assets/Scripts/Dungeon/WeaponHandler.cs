@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
@@ -95,6 +95,9 @@ public class WeaponHandler : MonoBehaviour
         if (monster != null)
         {
             animator.Play(attackHash);
+
+            SoundManager.Instance.Play("SFX_BattleThrow");
+
             SpawnProjectile(slot, monster);
         }
     }
