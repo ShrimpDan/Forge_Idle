@@ -1567,6 +1567,7 @@ GameObject:
   - component: {fileID: 198572937795974708}
   - component: {fileID: 7535485544311726994}
   - component: {fileID: 1101837620094726321}
+  - component: {fileID: 7911188466571291112}
   m_Layer: 5
   m_Name: Mine_Button
   m_TagString: Untagged
@@ -1618,7 +1619,7 @@ MonoBehaviour:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
+  m_Maskable: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -1675,7 +1676,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 198572937795974708}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7911188466571291112}
+        m_TargetAssemblyTypeName: MineWindow, Assembly-CSharp
+        m_MethodName: OnClickEnterMine
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1101837620094726321
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1689,6 +1702,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 4
+--- !u!114 &7911188466571291112
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 473051681015066317}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 643ad52a068c9624a8feae1bfcd3eef5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &509936055758457436
 GameObject:
   m_ObjectHideFlags: 0

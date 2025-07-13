@@ -6,13 +6,15 @@ public enum SceneType
 {
     Main,
     Dungeon,
-    MiniGame
+    MiniGame,
+    MineScene
 }
 public static class SceneName
 {
     public const string MainScene = "MainScene";
     public const string DungeonScene = "DungeonScene";
     public const string MiniGame = "MiniGame";
+    public const string MineScene = "MineScene";
 
     public static string GetSceneByType(SceneType type)
     {
@@ -21,6 +23,7 @@ public static class SceneName
            SceneType.Main => MainScene,
            SceneType.Dungeon => DungeonScene,
            SceneType.MiniGame => MiniGame,
+            SceneType.MineScene => MineScene,
             _ => string.Empty
         };
     }
