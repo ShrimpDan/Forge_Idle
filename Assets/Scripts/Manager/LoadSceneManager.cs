@@ -52,18 +52,24 @@ public class LoadSceneManager : MonoSingleton<LoadSceneManager>
         StartCoroutine(LoadSceneCoroutine(SceneName.GetSceneByType(type), isAdditve));
     }
 
-    IEnumerator LoadSceneCoroutine(string sceneName, bool isAdditve)
+    IEnumerator LoadSceneCoroutine(string sceneName, bool isAdditive)
     {
-        // 로딩 스크린 페이드 아웃
         yield return StartCoroutine(FadeRoutine(fadeOutCurve, true));
 
-        // 비동기 씬 로딩
-        AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(sceneName, isAdditve ? LoadSceneMode.Additive : LoadSceneMode.Single);
+        AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(sceneName, isAdditive ? LoadSceneMode.Additive : LoadSceneMode.Single);
         yield return new WaitUntil(() => asyncOperation.isDone);
 
-        // 로딩 스크린 페이드 인
+        // 씬 최상위로
+        if (isAdditive)
+        {
+            Scene loadedScene = SceneManager.GetSceneByName(sceneName);
+            if (loadedScene.IsValid())
+                SceneManager.SetActiveScene(loadedScene);
+        }
+
         yield return StartCoroutine(FadeRoutine(fadeInCurve, false));
     }
+
 
     public void UnLoadScene(SceneType type)
     {
