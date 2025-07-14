@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
 
 public class MineAssistantManager
 {
@@ -22,8 +22,7 @@ public class MineAssistantManager
         {
             if (slot.IsAssigned)
             {
-                // **등급 타입 명확히 string으로!**
-                string grade = slot.AssignedAssistant.grade;
+                string grade = slot.AssignedAssistant.grade; 
                 float multiplier = GetGradeMultiplier(grade);
                 mined += Mine.CollectRatePerHour * multiplier * hours;
             }

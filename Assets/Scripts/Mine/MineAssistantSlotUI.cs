@@ -22,7 +22,6 @@ public class MineAssistantSlotUI : MonoBehaviour
         UpdateUI();
     }
 
-    // ***** 여기를 AssistantInstance로 변경! *****
     public void AssignAssistant(AssistantInstance assistant)
     {
         slot.Assign(assistant);

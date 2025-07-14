@@ -8,8 +8,8 @@ public struct CameraLimit
 
 public class CameraTouchDrag : MonoBehaviour
 {
-    public float dragSpeed = 0.6f;        
-    public float smoothTime = 0.14f;   
+    public float dragSpeed = 0.6f;
+    public float smoothTime = 0.14f;
 
     [Header("카메라 이동 리밋")]
     public float minX, maxX, minY, maxY;
@@ -69,9 +69,33 @@ public class CameraTouchDrag : MonoBehaviour
         }
     }
 
+    void HandleTouchDrag()
+    {
+        if (Input.touchCount == 1)
+        {
+            Touch touch = Input.GetTouch(0);
+            if (touch.phase == TouchPhase.Began)
+            {
+                lastWorldPos = GetWorld(touch.position);
+                isDragging = true;
+            }
+            else if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
+            {
+                isDragging = false;
+            }
+            else if (isDragging && touch.phase == TouchPhase.Moved)
+            {
+                Vector3 curWorldPos = GetWorld(touch.position);
+                Vector3 delta = lastWorldPos - curWorldPos;
+                delta.z = 0;
+                MoveCamera(delta);
+                lastWorldPos = curWorldPos;
+            }
+        }
+    }
+
     Vector3 GetWorld(Vector3 screenPos)
     {
-
         Vector3 camPos = Camera.main.transform.position;
         screenPos.z = -camPos.z;
         return Camera.main.ScreenToWorldPoint(screenPos);
