@@ -130,13 +130,31 @@ public class MineSceneManager : MonoBehaviour
 
     void OnSlotClicked(int mineIdx, MineAssistantSlotUI slotUI)
     {
-        UIManager ui = FindObjectOfType<UIManager>();
-        ui.OpenUI<AssistantSelectPopup>("AssistantSelectPopup").OpenForSelection(selected =>
+        var prefab = Resources.Load<GameObject>("UI/Popup/AssistantSelectPopup");
+        if (prefab == null)
+        {
+            Debug.LogError("[MineSceneManager] AssistantSelectPopup 프리팹 경로 오류!");
+            return;
+        }
+        var popupRoot = GameObject.Find("Canvas/PopupRoot")?.transform;
+        var go = Instantiate(prefab, popupRoot);
+
+        var popup = go.GetComponent<AssistantSelectPopup>();
+        if (popup == null)
+        {
+            Debug.LogError("[MineSceneManager] 프리팹에 AssistantSelectPopup 컴포넌트 없음!");
+            Destroy(go);
+            return;
+        }
+
+        popup.OpenForSelection(selected =>
         {
             slotUI.AssignAssistant(selected);
             UpdateMinedAmountUI(mineIdx);
         }, true);
     }
+
+
 
     void OnCollectButton()
     {
