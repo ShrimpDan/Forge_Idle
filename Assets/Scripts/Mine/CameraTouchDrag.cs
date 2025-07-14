@@ -69,30 +69,6 @@ public class CameraTouchDrag : MonoBehaviour
         }
     }
 
-    void HandleTouchDrag()
-    {
-        if (Input.touchCount == 1)
-        {
-            Touch touch = Input.GetTouch(0);
-            Vector3 touchWorldPos = GetWorld(touch.position);
-            if (touch.phase == TouchPhase.Began)
-            {
-                lastWorldPos = touchWorldPos;
-                isDragging = true;
-            }
-            if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
-                isDragging = false;
-
-            if (isDragging && touch.phase == TouchPhase.Moved)
-            {
-                Vector3 delta = lastWorldPos - touchWorldPos;
-                delta.z = 0;
-                MoveCamera(delta);
-                lastWorldPos = touchWorldPos;
-            }
-        }
-    }
-
     Vector3 GetWorld(Vector3 screenPos)
     {
 

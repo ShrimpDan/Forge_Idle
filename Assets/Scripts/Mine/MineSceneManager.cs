@@ -1,91 +1,85 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
+using System;
+using System.Collections.Generic;
+using TMPro;
+
+[Serializable]
+public class MineGroup
+{
+    public string mineKey; // 예: "CopperBronzeMine", "IronSilverMine" 등
+    public List<MineAssistantSlotUI> slotUIs;
+    public Button collectButton;
+    public TMP_Text minedAmountText;
+
+    [NonSerialized] public MineAssistantManager mineManager;
+    [NonSerialized] public DateTime lastCollectTime;
+}
 
 public class MineSceneManager : MonoBehaviour
 {
-    [Header("메인 오브젝트 (상세맵)")]
-    public GameObject mineDetailMap;
+    [Header("마인별 그룹(Inspector에서 4개 mineKey, 슬롯, 버튼, 텍스트 연결)")]
+    public List<MineGroup> mineGroups; // 각 그룹을 드래그로 세팅
 
-    [Header("마인 프리팹들 (순서 맞게)")]
-    public GameObject[] minePrefabs; // 0=Copper, 1=Iron, 2=Gold, 3=Gem
-
-    [Header("카메라 리밋 (0=디테일맵, 1~4=각 마인)")]
-    public CameraLimit[] cameraLimits; // [0]=DetailMap, [1]=Copper, [2]=Iron, [3]=Gold, [4]=Gem
-
-    [Header("카메라 이동 컴포넌트")]
-    public CameraTouchDrag cameraTouchDrag;
-
-    private int currentMineIdx = 0;
-
-    private GameObject mainSceneCam;
-    private GameObject mineSceneCam;
+    private MineLoader mineLoader;
 
     private void Start()
     {
-        ShowMineDetailMap();
-    }
+        mineLoader = new MineLoader(); // json 데이터 로드
 
-    private void OnEnable()
-    {
-        mainSceneCam = GameObject.Find("MainCamera");
-        if (mainSceneCam != null) mainSceneCam.SetActive(false);
-
-        mineSceneCam = GameObject.Find("MapCamera");
-        if (mineSceneCam != null) mineSceneCam.SetActive(true);
-    }
-
-    private void OnDisable()
-    {
-        if (mainSceneCam != null) mainSceneCam.SetActive(true);
-        if (mineSceneCam != null) mineSceneCam.SetActive(false);
-    }
-
-    // 모든 맵, 마인 프리팹 비활성화
-    private void SetAllInactive()
-    {
-        if (mineDetailMap != null)
-            mineDetailMap.SetActive(false);
-
-        if (minePrefabs != null)
+        foreach (var group in mineGroups)
         {
-            foreach (var prefab in minePrefabs)
-                if (prefab != null)
-                    prefab.SetActive(false);
+            var mineData = mineLoader.GetByKey(group.mineKey);
+            if (mineData == null)
+            {
+                Debug.LogError($"MineData not found for key: {group.mineKey}");
+                continue;
+            }
+            group.mineManager = new MineAssistantManager(mineData);
+            group.lastCollectTime = DateTime.Now;
+
+            for (int i = 0; i < group.slotUIs.Count; ++i)
+            {
+                group.slotUIs[i].SetSlot(group.mineManager.Slots[i]);
+                group.slotUIs[i].OnSlotClicked = (slotUI) => OnSlotClicked(group, slotUI);
+            }
+
+            if (group.collectButton != null)
+                group.collectButton.onClick.AddListener(() => OnCollectButton(group));
         }
     }
 
-    // 상세맵 보기 (마인 프리팹 전부 끔)
-    public void ShowMineDetailMap()
+    private void Update()
     {
-        SetAllInactive();
-        if (mineDetailMap != null)
-            mineDetailMap.SetActive(true);
-
-        if (cameraTouchDrag != null && cameraLimits.Length > 0)
-            cameraTouchDrag.SetCameraLimit(cameraLimits[0]);
-
-        currentMineIdx = 0;
+        foreach (var group in mineGroups)
+        {
+            UpdateMinedAmountUI(group);
+        }
     }
 
-    public void ShowMine(int mineIndex)
+    void OnSlotClicked(MineGroup group, MineAssistantSlotUI slotUI)
     {
-        SetAllInactive();
-        if (minePrefabs != null && mineIndex >= 0 && mineIndex < minePrefabs.Length)
-            minePrefabs[mineIndex].SetActive(true);
-
-        if (cameraTouchDrag != null && cameraLimits.Length > mineIndex + 1)
-            cameraTouchDrag.SetCameraLimit(cameraLimits[mineIndex + 1]);
-
-        currentMineIdx = mineIndex + 1;
+        UIManager ui = FindObjectOfType<UIManager>();
+        ui.OpenUI<AssistantSelectPopup>("AssistantSelectPopup").OpenForSelection(selected =>
+        {
+            slotUI.AssignAssistant(selected);
+            UpdateMinedAmountUI(group);
+        }, true);
     }
 
-    public void OnCopperBronzeMineBtn() => ShowMine(0);
-    public void OnIronSilveMineBtn() => ShowMine(1);
-    public void OnGoldmithrilMineBtn() => ShowMine(2);
-    public void OnGemMineBtn() => ShowMine(3);
-    public void OnBackToDetailMap() => ShowMineDetailMap();
-
-    public void OnGoToMainScene()
+    void OnCollectButton(MineGroup group)
     {
-        LoadSceneManager.Instance.UnLoadScene(SceneType.MineScene);
+        float amount = group.mineManager.CalcMinedAmount(group.lastCollectTime, DateTime.Now);
+        Debug.Log($"{group.mineKey} 채굴 수령: {amount:F0}개");
+        group.lastCollectTime = DateTime.Now;
+        UpdateMinedAmountUI(group);
+    }
+
+    void UpdateMinedAmountUI(MineGroup group)
+    {
+        if (group.mineManager == null) return;
+        float amount = group.mineManager.CalcMinedAmount(group.lastCollectTime, DateTime.Now);
+        if (group.minedAmountText != null)
+            group.minedAmountText.text = $"{amount:F0}개";
     }
 }

@@ -7,6 +7,7 @@ public static class IconLoader
 
     public static Sprite GetIcon(string path)
     {
+        if (string.IsNullOrEmpty(path)) return null;
         if (iconDict.TryGetValue(path, out Sprite icon))
             return icon;
 
@@ -27,5 +28,5 @@ public static class IconLoader
     public static void ClearDict()
     {
         iconDict.Clear();
-    }   
+    }
 }
