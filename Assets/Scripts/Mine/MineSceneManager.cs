@@ -131,18 +131,18 @@ public class MineSceneManager : MonoBehaviour
     void OnSlotClicked(int mineIdx, MineAssistantSlotUI slotUI)
     {
         var prefab = Resources.Load<GameObject>("UI/Popup/AssistantSelectPopup");
-        if (prefab == null)
+        var popupRoot = GameObject.Find("PopupRoot")?.transform;
+        if (popupRoot == null)
         {
-            Debug.LogError("[MineSceneManager] AssistantSelectPopup 프리팹 경로 오류!");
+            Debug.LogError("PopupRoot를 찾을 수 없습니다.");
             return;
         }
-        var popupRoot = GameObject.Find("Canvas/PopupRoot")?.transform;
         var go = Instantiate(prefab, popupRoot);
 
         var popup = go.GetComponent<AssistantSelectPopup>();
         if (popup == null)
         {
-            Debug.LogError("[MineSceneManager] 프리팹에 AssistantSelectPopup 컴포넌트 없음!");
+            Debug.LogError("AssistantSelectPopup 컴포넌트가 없습니다.");
             Destroy(go);
             return;
         }
@@ -153,6 +153,7 @@ public class MineSceneManager : MonoBehaviour
             UpdateMinedAmountUI(mineIdx);
         }, true);
     }
+
 
 
 

@@ -5,17 +5,17 @@ using System.Collections.Generic;
 
 public class AssistantSelectTab : MonoBehaviour
 {
-    [Header("�� ��ư")]
+    [Header("탭 버튼")]
     [SerializeField] private Button craftTabBtn;
     [SerializeField] private Button enhanceTabBtn;
     [SerializeField] private Button sellTabBtn;
 
-    [Header("�� Root")]
+    [Header("탭 Root")]
     [SerializeField] private Transform craftRoot;
     [SerializeField] private Transform enhanceRoot;
     [SerializeField] private Transform sellRoot;
 
-    [Header("���� ������")]
+    [Header("어시스턴트 슬롯 프리팹")]
     [SerializeField] private GameObject assistantSlotPrefab;
 
     private GameManager gameManager;
@@ -44,7 +44,7 @@ public class AssistantSelectTab : MonoBehaviour
         sellTabBtn.onClick.RemoveAllListeners();
         sellTabBtn.onClick.AddListener(() => SwitchTab(TabType.Sell));
 
-        SwitchTab(TabType.Craft); // �⺻��
+        SwitchTab(TabType.Craft); // 기본값
     }
 
     public void OpenForSelection(Action<AssistantInstance> callback, bool preventPopup = false)
@@ -54,8 +54,6 @@ public class AssistantSelectTab : MonoBehaviour
         RefreshAllTabs();
         SwitchTab(curTab);
     }
-
-
 
     private void SwitchTab(TabType tab)
     {
@@ -92,7 +90,7 @@ public class AssistantSelectTab : MonoBehaviour
                 pool.Add(slotObj);
             }
             var slot = slotObj.GetComponent<AssistantSlot>();
-            slot.Init(assistant, OnSelectAssistant, preventPopup); 
+            slot.Init(assistant, OnSelectAssistant, preventPopup);
             idx++;
         }
         for (int i = idx; i < pool.Count; i++)
