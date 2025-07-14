@@ -158,6 +158,11 @@ public class AssistantTab : BaseTab
         }
 
         ShowAssistantStat(assi, isActive);
+
+        if (isActive)
+            SoundManager.Instance.Play("SFX_UIEquip");
+        else
+            SoundManager.Instance.Play("SFX_UIUnequip");
     }
 
     private void ShowAssistantStat(AssistantInstance assi, bool isAcitve)
