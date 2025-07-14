@@ -125,6 +125,7 @@ public class InventoryManager
             {
                 EquippedWeaponDict[i] = item;
                 item.EquipItem();
+                SoundManager.Instance.Play("SFX_UIEquip");
                 OnItemEquipped?.Invoke(i, item);
                 return;
             }
@@ -142,6 +143,7 @@ public class InventoryManager
             {
                 EquippedWeaponDict[key] = null;
                 item.UnEquipItem();
+                SoundManager.Instance.Play("SFX_UIUnequip");
                 OnItemUnEquipped?.Invoke(key, item);
                 return;
             }

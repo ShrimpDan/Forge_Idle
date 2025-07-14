@@ -1,4 +1,4 @@
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -39,6 +39,8 @@ public class InventorySlot : MonoBehaviour
     private void OnClickSlot()
     {
         if (SlotItem == null) return;
+
+        SoundManager.Instance.Play("SFX_SystemClick");
 
         var ui = uIManager.OpenUI<InventoryPopup>(UIName.InventoryPopup);
         ui.SetItemInfo(SlotItem);

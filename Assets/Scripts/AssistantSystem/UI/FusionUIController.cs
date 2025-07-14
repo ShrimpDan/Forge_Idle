@@ -78,6 +78,7 @@ public class FusionUIController : MonoBehaviour
 
     public void CloseUI()
     {
+        SoundManager.Instance.Play("SFX_SystemClick");
         if (slotViews.Count > 0 && slotViews[0].Data != null)
         {
             ClearAllSlotsAndReset();

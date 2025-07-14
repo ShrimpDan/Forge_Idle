@@ -44,7 +44,11 @@ public class AssistantTab : BaseTab
         for (int i = 0; i < tabButtons.Length; i++)
         {
             int index = i;
-            tabButtons[i].onClick.AddListener(() => SwitchTab(index));
+            tabButtons[i].onClick.AddListener(() =>
+            {
+                SoundManager.Instance.Play("SFX_SystemClick");
+                SwitchTab(index);
+            });
         }
 
         SwitchTab(0);
@@ -158,6 +162,11 @@ public class AssistantTab : BaseTab
         }
 
         ShowAssistantStat(assi, isActive);
+
+        if (isActive)
+            SoundManager.Instance.Play("SFX_UIEquip");
+        else
+            SoundManager.Instance.Play("SFX_UIUnequip");
     }
 
     private void ShowAssistantStat(AssistantInstance assi, bool isAcitve)
