@@ -22,55 +22,62 @@ public class MineSceneManager : MonoBehaviour
     public GameObject mineDetailMap;
     public List<GameObject> minePrefabs;
     public CameraTouchDrag cameraTouchDrag;
-    public List<CameraLimit> cameraLimits; // 0=상세맵, 1~4=각 마인
+    public List<CameraLimit> cameraLimits;
 
     [Header("채굴 패널 (버튼/채굴량 UI 포함)")]
     public GameObject miningUIPanel;
     public Button collectButton;
     public TMP_Text minedAmountText;
 
+    // Inspector에서 연결 ❌. 반드시 코드로 할당
+    private AssistantInventory assistantInventory;
+
     private MineLoader mineLoader;
     private int currentMineIndex = 0;
 
     private void Start()
     {
+        // 반드시 GameManager에서 받아와야 함!
+        if (GameManager.Instance == null || GameManager.Instance.AssistantManager == null)
+        {
+            Debug.LogError("GameManager.Instance 또는 AssistantManager가 초기화되어 있지 않습니다!");
+            return;
+        }
+        assistantInventory = GameManager.Instance.AssistantManager.AssistantInventory;
+        if (assistantInventory == null)
+        {
+            Debug.LogError("MineSceneManager: AssistantInventory를 GameManager에서 받아오지 못했습니다!");
+            return;
+        }
+
         mineLoader = new MineLoader();
         for (int idx = 0; idx < mineGroups.Count; ++idx)
         {
             var group = mineGroups[idx];
             var mineData = mineLoader.GetByKey(group.mineKey);
-            if (mineData == null)
-            {
-                Debug.LogError($"MineData not found for key: {group.mineKey}");
-                continue;
-            }
+            if (mineData == null) continue;
             group.mineManager = new MineAssistantManager(mineData);
             group.lastCollectTime = DateTime.Now;
 
-            for (int i = 0; i < group.slotUIs.Count; ++i)
+            foreach (var slotUI in group.slotUIs)
             {
-                group.slotUIs[i].SetSlot(group.mineManager.Slots[i]);
+                slotUI.Init(assistantInventory); // 인벤토리 주입
                 int closureIdx = idx;
-                group.slotUIs[i].OnSlotClicked = (slotUI) => OnSlotClicked(closureIdx, slotUI);
+                slotUI.OnSlotClicked = (ui) => OnSlotClicked(closureIdx, ui);
             }
         }
 
         if (collectButton != null)
             collectButton.onClick.AddListener(OnCollectButton);
 
-        // 패널은 항상 ON(초기화 시 상세맵이니까)
         if (miningUIPanel != null)
             miningUIPanel.SetActive(true);
 
         ShowMineDetailMap();
     }
 
-    private void Update()
-    {
-        UpdateMinedAmountUI(currentMineIndex);
-    }
+    private void Update() => UpdateMinedAmountUI(currentMineIndex);
 
-    // 프리팹/지도만 끄고, 패널은 상황따라
     private void SetAllInactive()
     {
         if (mineDetailMap != null) mineDetailMap.SetActive(false);
@@ -89,11 +96,8 @@ public class MineSceneManager : MonoBehaviour
             cameraTouchDrag.SetCameraLimit(cameraLimits[0]);
             cameraTouchDrag.enabled = true;
         }
-
-        // 채굴 패널은 **상세맵에서만 ON**
         if (miningUIPanel != null) miningUIPanel.SetActive(true);
-
-        SetActiveMine(0); // 상세맵(0번 기준)
+        SetActiveMine(0);
     }
 
     public void ShowMine(int idx)
@@ -107,14 +111,11 @@ public class MineSceneManager : MonoBehaviour
             cameraTouchDrag.SetCameraLimit(cameraLimits[idx + 1]);
             cameraTouchDrag.enabled = true;
         }
-
-        // 채굴 패널은 **마인 진입시 OFF**
         if (miningUIPanel != null) miningUIPanel.SetActive(false);
 
         SetActiveMine(idx);
     }
 
-    // 버튼용 함수 (Inspector에서 직접 연결)
     public void OnCopperBronzeMineBtn() => ShowMine(0);
     public void OnIronSilverMineBtn() => ShowMine(1);
     public void OnGoldmithrilMineBtn() => ShowMine(2);
@@ -128,6 +129,7 @@ public class MineSceneManager : MonoBehaviour
         UpdateMinedAmountUI(currentMineIndex);
     }
 
+    // 팝업에 인벤토리 반드시 전달
     void OnSlotClicked(int mineIdx, MineAssistantSlotUI slotUI)
     {
         var prefab = Resources.Load<GameObject>("UI/Popup/AssistantSelectPopup");
@@ -146,6 +148,7 @@ public class MineSceneManager : MonoBehaviour
             Destroy(go);
             return;
         }
+        popup.Init(assistantInventory);
 
         popup.OpenForSelection(selected =>
         {
@@ -155,13 +158,10 @@ public class MineSceneManager : MonoBehaviour
     }
 
 
-
-
     void OnCollectButton()
     {
         var group = mineGroups[currentMineIndex];
         float amount = group.mineManager.CalcMinedAmount(group.lastCollectTime, DateTime.Now);
-        Debug.Log($"{group.mineKey} 채굴 수령: {amount:F0}개");
         group.lastCollectTime = DateTime.Now;
         UpdateMinedAmountUI(currentMineIndex);
     }

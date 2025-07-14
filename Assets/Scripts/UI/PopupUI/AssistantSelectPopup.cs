@@ -6,8 +6,14 @@ public class AssistantSelectPopup : MonoBehaviour
 {
     [SerializeField] private Button exitBtn;
     [SerializeField] private AssistantSelectTab tabRoot;
-
+    private AssistantInventory assistantInventory;
     private Action<AssistantInstance> onSelectCallback;
+
+    public void Init(AssistantInventory inventory)
+    {
+        assistantInventory = inventory;
+        tabRoot.Init(assistantInventory);
+    }
 
     private void Awake()
     {

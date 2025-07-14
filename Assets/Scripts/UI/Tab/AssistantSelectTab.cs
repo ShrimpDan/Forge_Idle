@@ -5,22 +5,15 @@ using System.Collections.Generic;
 
 public class AssistantSelectTab : MonoBehaviour
 {
-    [Header("탭 버튼")]
     [SerializeField] private Button craftTabBtn;
     [SerializeField] private Button enhanceTabBtn;
     [SerializeField] private Button sellTabBtn;
-
-    [Header("탭 Root")]
     [SerializeField] private Transform craftRoot;
     [SerializeField] private Transform enhanceRoot;
     [SerializeField] private Transform sellRoot;
+    [SerializeField] private GameObject assistantSlotPrefab; // ⭐ 반드시 MineAssistantSlotUI 프리팹이어야 함
 
-    [Header("어시스턴트 슬롯 프리팹")]
-    [SerializeField] private GameObject assistantSlotPrefab;
-
-    private GameManager gameManager;
-    private UIManager uiManager;
-
+    private AssistantInventory assistantInventory;
     private Action<AssistantInstance> selectCallback;
 
     private enum TabType { Craft, Enhance, Sell }
@@ -30,27 +23,21 @@ public class AssistantSelectTab : MonoBehaviour
     private List<GameObject> enhancePool = new();
     private List<GameObject> sellPool = new();
 
-    private bool preventPopup = false;
-
-    public void Init(GameManager gameManager, UIManager uiManager)
+    public void Init(AssistantInventory inventory)
     {
-        this.gameManager = gameManager;
-        this.uiManager = uiManager;
-
+        assistantInventory = inventory;
         craftTabBtn.onClick.RemoveAllListeners();
         craftTabBtn.onClick.AddListener(() => SwitchTab(TabType.Craft));
         enhanceTabBtn.onClick.RemoveAllListeners();
         enhanceTabBtn.onClick.AddListener(() => SwitchTab(TabType.Enhance));
         sellTabBtn.onClick.RemoveAllListeners();
         sellTabBtn.onClick.AddListener(() => SwitchTab(TabType.Sell));
-
-        SwitchTab(TabType.Craft); // 기본값
+        SwitchTab(TabType.Craft); // 기본탭
     }
 
     public void OpenForSelection(Action<AssistantInstance> callback, bool preventPopup = false)
     {
         selectCallback = callback;
-        this.preventPopup = preventPopup;
         RefreshAllTabs();
         SwitchTab(curTab);
     }
@@ -74,7 +61,7 @@ public class AssistantSelectTab : MonoBehaviour
     {
         foreach (var go in pool) go.SetActive(false);
 
-        var assistants = gameManager?.AssistantInventory?.GetBySpecialization(type) ?? new List<AssistantInstance>();
+        var assistants = assistantInventory?.GetBySpecialization(type) ?? new List<AssistantInstance>();
         int idx = 0;
         foreach (var assistant in assistants)
         {
@@ -89,18 +76,25 @@ public class AssistantSelectTab : MonoBehaviour
                 slotObj = Instantiate(assistantSlotPrefab, root);
                 pool.Add(slotObj);
             }
-            var slot = slotObj.GetComponent<AssistantSlot>();
-            slot.Init(assistant, OnSelectAssistant, preventPopup);
+
+            // ⭐⭐ 여기 반드시 MineAssistantSlotUI!
+            var slot = slotObj.GetComponent<MineAssistantSlotUI>();
+            if (slot == null)
+            {
+                Debug.LogError($"MineAssistantSlotUI 컴포넌트가 {slotObj.name} 프리팹에 없습니다.");
+                continue;
+            }
+            slot.Init(assistantInventory); // 인벤토리 전달(중요)
+            slot.SetTempAssistant(assistant, OnSelectAssistant); // 슬롯을 임시 미리보기 용으로 세팅
             idx++;
         }
         for (int i = idx; i < pool.Count; i++)
             pool[i].SetActive(false);
     }
 
+    // 호출시, 선택된 assistant가 전달됨
     private void OnSelectAssistant(AssistantInstance assistant)
     {
         selectCallback?.Invoke(assistant);
-        if (uiManager != null)
-            uiManager.CloseUI(UIName.AssistantSelectPopup);
     }
 }
