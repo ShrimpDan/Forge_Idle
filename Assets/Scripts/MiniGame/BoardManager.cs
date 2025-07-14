@@ -166,7 +166,9 @@ public class BoardManager : MonoBehaviour
         if (foundTreasureId.Add(data.id))
         {
             UpdateTreasureCountUI(); //해당 보물이 발굴되면 UI업데이트  
-            RewardGem(data);
+            Reward
+                
+                (data);
             resultUI.GetComponent<MiniGameResultUI>().AddIcon(data.rewardImage);
         }
 
