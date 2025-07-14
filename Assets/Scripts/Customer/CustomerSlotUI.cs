@@ -28,7 +28,7 @@ public class CustomerSlotUI : MonoBehaviour
 
         if (discovered)
         {
-            Debug.Log($"[RegularCustomerData] iconPath: {data.iconPath}");
+          
             image.sprite = IconLoader.GetIcon(data.iconPath);
             image.color = Color.white;
         }

@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
@@ -239,6 +239,8 @@ public class CraftWeaponWindow : BaseUI
             return;
         }
 
+        SoundManager.Instance.Play("SFX_ForgeCraft");
+
         var itemData = gameManager.DataManager.ItemLoader.GetItemByKey(craftingData.ItemKey);
         Sprite iconSprite = IconLoader.GetIcon(itemData.IconPath);
 
@@ -297,6 +299,7 @@ public class CraftWeaponWindow : BaseUI
         var prog = gameManager.CraftingManager.GetCraftTask(index);
         if (!prog.rewardGiven || prog.itemData == null) return;
 
+        SoundManager.Instance.Play("SFX_SystemReward");
         // RewardPopup 연동
         ShowCraftReward(prog.itemData);
 

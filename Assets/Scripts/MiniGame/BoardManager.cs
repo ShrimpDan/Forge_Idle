@@ -131,6 +131,8 @@ public class BoardManager : MonoBehaviour
         block.Reveal();
         if (block.TreasureId != -1)
         {
+            SoundManager.Instance.Play("SFX_MineMiniGameSuccess");
+            
             var set = treasureCoordinate[block.TreasureId];
             set.Add(block.Pos);
             
@@ -140,9 +142,14 @@ public class BoardManager : MonoBehaviour
                 OnTreasureCompleted(data);
             }
         }
+        else
+        {
+            SoundManager.Instance.Play("SFX_MineMiniGameMiss");
+        }
+
         if (digCount == 0)
         {
-            FairDig();    
+            FairDig();
         }
     }
 
@@ -209,6 +216,7 @@ public class BoardManager : MonoBehaviour
     private void ShowResult()
     {
         resultUI.SetActive(true);
+        SoundManager.Instance.Play("SFX_SystemReward");
     }
    
 

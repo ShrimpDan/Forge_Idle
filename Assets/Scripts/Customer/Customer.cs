@@ -146,7 +146,7 @@ public abstract class Customer : MonoBehaviour
         yield return JoinQueue();
         yield return WaitMyTurn();
         yield return PerformPurChase();
-        //yield return MoveToExit();
+        
 
     }
 

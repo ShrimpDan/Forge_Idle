@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 
 public class DungeonManager : MonoBehaviour
@@ -70,12 +70,20 @@ public class DungeonManager : MonoBehaviour
     public void DungeonClear(bool isClear)
     {
         IsRunning = false;
+
+        if (isClear)
+            SoundManager.Instance.Play("SFX_BattleStageClear01");
+        else
+            SoundManager.Instance.Play("SFX_BattleDungeonGiveUp02");
+
         DungeonUI.OpenClearPopup(isClear);
         GameManager.DungeonSystem.UnlockNextDungeon(DungeonData);
     }
 
     public void ExitDungeon()
     {
+        SoundManager.Instance.Play("SFX_BattleDungeonGiveUp01");
+
         RewardHandler.ApplyReward();
         GameManager.DungeonSystem.ExitDungeon();
         LoadSceneManager.Instance.UnLoadScene(SceneType.Dungeon);

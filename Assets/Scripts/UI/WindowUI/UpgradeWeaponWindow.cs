@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections;
@@ -338,6 +338,7 @@ public class UpgradeWeaponWindow : BaseUI
             }
             equippedGems[idx] = null;
             selectedGemWeapon.GemSockets[idx] = null;
+            SoundManager.Instance.Play("SFX_UIUnequip");
             RefreshGemSystemPanel();
 
             InventorySaveSystem.SaveInventory(GameManager.Instance.Inventory);
@@ -350,6 +351,7 @@ public class UpgradeWeaponWindow : BaseUI
         GameManager.Instance.Inventory.UseItem(gem);
         equippedGems[idx] = gem;
         selectedGemWeapon.GemSockets[idx] = gem;
+        SoundManager.Instance.Play("SFX_UIEquip");
         RefreshGemSystemPanel();
 
         InventorySaveSystem.SaveInventory(GameManager.Instance.Inventory);

@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class GatchaTab : BaseTab
@@ -43,6 +43,9 @@ public class GatchaTab : BaseTab
 
             tabButtons[i].image.color = isSelected ? selectedColor : defaultColor;
         }
+
+        SoundManager.Instance.Play("SFX_SystemClick");
+
     }
 }
 

@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.UI;
 using System;
 
@@ -36,9 +36,11 @@ public class AssistantSlot : MonoBehaviour
 
     private void OnClickSlot()
     {
+        SoundManager.Instance.Play("SFX_SystemClick");
+
         clickCallback?.Invoke(AssistantData);
 
-        // ´Ù¸¥°÷¿¡¼­ ¾ÈÅ´
+        // ë‹¤ë¥¸ê³³ì—ì„œ ì•ˆí‚´
         if (AssistantData == null || preventPopup) return;
 
         var ui = uIManager.OpenUI<AssistantPopup>(UIName.AssistantPopup);

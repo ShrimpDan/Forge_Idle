@@ -20,12 +20,15 @@ public class MineLoader
     public MineLoader(string path = "Data/mine_data")
     {
         string jsonData = Resources.Load<TextAsset>(path).text;
-        DataList = JsonUtility.FromJson<Wrapper>(jsonData).Items;
+        DataList = JsonUtility.FromJson<Wrapper>(jsonData).Mines; // <-- ÀÌ ºÎºÐ!!
         DataDict = new Dictionary<string, MineData>();
         foreach (var item in DataList)
             DataDict.Add(item.Key, item);
     }
+
     [System.Serializable]
-    private class Wrapper { public List<MineData> Items; }
+    private class Wrapper { public List<MineData> Mines; }
+
     public MineData GetByKey(string key) => DataDict.TryGetValue(key, out var data) ? data : null;
 }
+

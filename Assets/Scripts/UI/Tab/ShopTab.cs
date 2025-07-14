@@ -1,4 +1,4 @@
-using Unity.VisualScripting;
+﻿using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -52,6 +52,9 @@ public class ShopTab : BaseTab
 
             tabButtons[i].image.color = isSelected ? selectedColor : defaultColor;
         }
+
+        SoundManager.Instance.Play("SFX_SystemClick");
+
     }
 }
 

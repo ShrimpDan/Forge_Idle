@@ -15,6 +15,9 @@ public class BlackSmith : MonoBehaviour
     [SerializeField] private Animator cashAnim;
     [SerializeField] private TextMeshPro goldTextPrefab;
 
+    [Header("BlackSmith UI Reference")]
+    [SerializeField] private GameObject blackSmithUI;
+
     public void Init()
     {
         blackSmithAnim = GetComponent<Animator>();
@@ -27,6 +30,11 @@ public class BlackSmith : MonoBehaviour
 
     public void PlayBuyEffect(int cost, Vector3 pos)
     {
+        if (blackSmithUI != null && blackSmithUI.activeInHierarchy)
+        {
+            SoundManager.Instance.Play("SFX_CoinGain");
+        }
+
         cashAnim.SetTrigger(buyHash);
         TextMeshPro goldText = Instantiate(goldTextPrefab, pos, Quaternion.identity);
         goldText.text = $"+{cost}G";

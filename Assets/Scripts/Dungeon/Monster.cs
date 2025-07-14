@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -35,6 +35,8 @@ public class Monster : MonoBehaviour
     {
         animator.SetTrigger(hitHash);
 
+        SoundManager.Instance.Play("SFX_BattleMonsterHit");
+
         currentHp -= amount;
         SetHpBar();
 
@@ -53,6 +55,8 @@ public class Monster : MonoBehaviour
     IEnumerator DeathCoroutine()
     {
         animator.SetTrigger(deathHash);
+
+        SoundManager.Instance.Play("SFX_BattleMonsterDie");
 
         yield return WaitForSecondsCache.Wait(0.5f);
 
