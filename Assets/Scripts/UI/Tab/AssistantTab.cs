@@ -95,9 +95,7 @@ public class AssistantTab : BaseTab
 
         CreateSlots(craftingList, craftSlotRoot);
         CreateSlots(enhancingList, upgradeSlotRoot);
-        CreateSlots(sellingList, 
-            
-            SlotRoot);
+        CreateSlots(sellingList, gemSlotRoot);
 
         if (!isInit)
         {
