@@ -30,6 +30,7 @@ public class TraineeButtonHandler : MonoBehaviour
     // 합성 UI 열기
     public void OnClickOpenFusionUI()
     {
+        SoundManager.Instance.Play("SFX_SystemClick");
         var assistantList = assistantManager.AssistantInventory.GetAll();
         fusionUIController.OpenUI(assistantList);
     }
@@ -37,6 +38,7 @@ public class TraineeButtonHandler : MonoBehaviour
     // 합성 UI 닫기
     public void OnClickCloseFusionUI()
     {
+        SoundManager.Instance.Play("SFX_SystemClick");
         fusionUIController.CloseUI();
     }
 

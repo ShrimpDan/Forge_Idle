@@ -98,6 +98,9 @@ public class NuisanceCustomer : Customer
             return;
         }
         isClicked = true;
+
+        SoundManager.Instance.Play("SFX_GuestKickout01");
+
         if (InteractIcon != null)
         {
             Debug.Log("InteractIcon 비활성화 시도");

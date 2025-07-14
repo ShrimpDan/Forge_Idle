@@ -216,6 +216,7 @@ public class BoardManager : MonoBehaviour
     private void ShowResult()
     {
         resultUI.SetActive(true);
+        SoundManager.Instance.Play("SFX_SystemReward");
     }
    
 
