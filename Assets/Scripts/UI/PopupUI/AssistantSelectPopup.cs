@@ -2,38 +2,40 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 
-public class AssistantSelectPopup : BaseUI
+public class AssistantSelectPopup : MonoBehaviour
 {
-    public override UIType UIType => UIType.Popup;
-
     [SerializeField] private Button exitBtn;
     [SerializeField] private AssistantSelectTab tabRoot;
+    private AssistantInventory assistantInventory;
+    private Action<AssistantInstance> onSelectCallback;
 
-    private GameManager gameManager;
-    private UIManager uiManager;
-
-    public override void Init(GameManager gameManager, UIManager uiManager)
+    public void Init(AssistantInventory inventory)
     {
-        base.Init(gameManager, uiManager);
-        this.gameManager = gameManager;
-        this.uiManager = uiManager;
+        assistantInventory = inventory;
+        tabRoot.Init(assistantInventory);
+    }
 
-        exitBtn.onClick.RemoveAllListeners();
-        exitBtn.onClick.AddListener(ClosePopup);
-
-        if (tabRoot != null)
-            tabRoot.Init(gameManager, uiManager);
+    private void Awake()
+    {
+        if (exitBtn != null)
+            exitBtn.onClick.AddListener(ClosePopup);
     }
 
     public void OpenForSelection(Action<AssistantInstance> callback, bool isMineOrQuestAssign = false)
     {
+        onSelectCallback = callback;
         if (tabRoot != null)
-            tabRoot.OpenForSelection(callback, isMineOrQuestAssign);
+            tabRoot.OpenForSelection(OnSelect, isMineOrQuestAssign);
     }
 
-    private void ClosePopup()
+    private void OnSelect(AssistantInstance selected)
     {
-        if (uiManager != null)
-            uiManager.CloseUI(UIName.AssistantSelectPopup);
+        onSelectCallback?.Invoke(selected);
+        ClosePopup();
+    }
+
+    public void ClosePopup()
+    {
+        Destroy(gameObject);
     }
 }

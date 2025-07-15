@@ -1,130 +1,130 @@
-using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
-using System;
-using System.Collections.Generic;
+//using UnityEngine;
+//using UnityEngine.UI;
+//using TMPro;
+//using System;
+//using System.Collections.Generic;
 
-public class MineDetailWindow : BaseUI
-{
-    public override UIType UIType => UIType.Window;
+//public class MineDetailWindow : BaseUI
+//{
+//    public override UIType UIType => UIType.Window;
 
-    [SerializeField] private Button exitBtn;
-    [SerializeField] private Button collectAllBtn;
-    [SerializeField] private Transform mineralSlotParent;
-    [SerializeField] private GameObject mineralSlotPrefab;
+//    [SerializeField] private Button exitBtn;
+//    [SerializeField] private Button collectAllBtn;
+//    [SerializeField] private Transform mineralSlotParent;
+//    [SerializeField] private GameObject mineralSlotPrefab;
 
-    private List<MineralSlot> mineralSlots = new();
-    private MineData mineData;
-    private DataManager dataManager;
-    private GameManager gameManager;
-    private UIManager uIManager;
+//    private List<MineralSlot> mineralSlots = new();
+//    private MineData mineData;
+//    private DataManager dataManager;
+//    private GameManager gameManager;
+//    private UIManager uIManager;
 
-    private class MineralCollectionInfo
-    {
-        public AssistantInstance assignedTrainee;
-        public DateTime assignTime;
-        public float pendingReward;
-        public string mineralKey;
-    }
-    private List<MineralCollectionInfo> collectionInfos = new();
+//    private class MineralCollectionInfo
+//    {
+//        public AssistantInstance assignedTrainee;
+//        public DateTime assignTime;
+//        public float pendingReward;
+//        public string mineralKey;
+//    }
+//    private List<MineralCollectionInfo> collectionInfos = new();
 
-    public override void Init(GameManager gameManager, UIManager uIManager)
-    {
-        base.Init(gameManager, uIManager);
-        this.gameManager = gameManager;
-        this.uIManager = uIManager;
-        exitBtn.onClick.RemoveAllListeners();
-        exitBtn.onClick.AddListener(() => uIManager.CloseUI(UIName.MineDetailWindow));
-    }
+//    public override void Init(GameManager gameManager, UIManager uIManager)
+//    {
+//        base.Init(gameManager, uIManager);
+//        this.gameManager = gameManager;
+//        this.uIManager = uIManager;
+//        exitBtn.onClick.RemoveAllListeners();
+//        exitBtn.onClick.AddListener(() => uIManager.CloseUI(UIName.MineDetailWindow));
+//    }
 
-    public void SetupMine(MineData mineData, DataManager dataManager, GameManager gameManager, UIManager uIManager)
-    {
-        this.mineData = mineData;
-        this.dataManager = dataManager;
-        this.gameManager = gameManager;
-        this.uIManager = uIManager;
+//    public void SetupMine(MineData mineData, DataManager dataManager, GameManager gameManager, UIManager uIManager)
+//    {
+//        this.mineData = mineData;
+//        this.dataManager = dataManager;
+//        this.gameManager = gameManager;
+//        this.uIManager = uIManager;
 
-        foreach (Transform child in mineralSlotParent)
-            Destroy(child.gameObject);
-        mineralSlots.Clear();
-        collectionInfos.Clear();
+//        foreach (Transform child in mineralSlotParent)
+//            Destroy(child.gameObject);
+//        mineralSlots.Clear();
+//        collectionInfos.Clear();
 
-        var itemLoader = dataManager.ItemLoader;
+//        var itemLoader = dataManager.ItemLoader;
 
-        for (int i = 0; i < 5; i++)
-        {
-            string key = "resource_bronze"; 
-            ItemData resourceData = itemLoader?.GetItemByKey(key);
-            Sprite icon = resourceData != null ? IconLoader.GetIcon(resourceData.IconPath) : null;
-            string mineralName = resourceData != null ? resourceData.Name : $"광물{i + 1}";
-            GameObject go = Instantiate(mineralSlotPrefab, mineralSlotParent);
-            int idx = i;
-            var info = new MineralCollectionInfo { assignedTrainee = null, assignTime = DateTime.MinValue, pendingReward = 0, mineralKey = key };
-            collectionInfos.Add(info);
+//        for (int i = 0; i < 5; i++)
+//        {
+//            string key = "resource_bronze"; 
+//            ItemData resourceData = itemLoader?.GetItemByKey(key);
+//            Sprite icon = resourceData != null ? IconLoader.GetIcon(resourceData.IconPath) : null;
+//            string mineralName = resourceData != null ? resourceData.Name : $"광물{i + 1}";
+//            GameObject go = Instantiate(mineralSlotPrefab, mineralSlotParent);
+//            int idx = i;
+//            var info = new MineralCollectionInfo { assignedTrainee = null, assignTime = DateTime.MinValue, pendingReward = 0, mineralKey = key };
+//            collectionInfos.Add(info);
 
-            MineralSlot slot = go.GetComponent<MineralSlot>();
-            slot.Init(mineralName, icon, () => OnClickAssignTrainee(idx)); 
-            mineralSlots.Add(slot);
-        }
+//            MineralSlot slot = go.GetComponent<MineralSlot>();
+//            slot.Init(mineralName, icon, () => OnClickAssignTrainee(idx)); 
+//            mineralSlots.Add(slot);
+//        }
 
-        if (collectAllBtn != null)
-        {
-            collectAllBtn.onClick.RemoveAllListeners();
-            collectAllBtn.onClick.AddListener(CollectAllReward);
-        }
-    }
+//        if (collectAllBtn != null)
+//        {
+//            collectAllBtn.onClick.RemoveAllListeners();
+//            collectAllBtn.onClick.AddListener(CollectAllReward);
+//        }
+//    }
 
-    private void OnClickAssignTrainee(int idx)
-    {
-        var info = collectionInfos[idx];
-        var assistantInventory = gameManager.AssistantInventory;
+//    private void OnClickAssignTrainee(int idx)
+//    {
+//        var info = collectionInfos[idx];
+//        var assistantInventory = gameManager.AssistantInventory;
 
-        if (info.assignedTrainee != null)
-        {
-            assistantInventory.Add(info.assignedTrainee);
-            info.assignedTrainee = null;
-            info.assignTime = DateTime.MinValue;
-            info.pendingReward = 0;
-            mineralSlots[idx].SetAssistant(null);
-            return;
-        }
+//        if (info.assignedTrainee != null)
+//        {
+//            assistantInventory.Add(info.assignedTrainee);
+//            info.assignedTrainee = null;
+//            info.assignTime = DateTime.MinValue;
+//            info.pendingReward = 0;
+//            mineralSlots[idx].SetAssistant(null);
+//            return;
+//        }
 
-        var popup = uIManager.OpenUI<AssistantSelectPopup>(UIName.AssistantSelectPopup);
-        popup.Init(gameManager, uIManager);
+//        var popup = uIManager.OpenUI<AssistantSelectPopup>(UIName.AssistantSelectPopup);
+//        popup.Init(gameManager, uIManager);
 
-        popup.OpenForSelection((assistant) =>
-        {
-            if (assistant == null) return;
-            var assiPopup = uIManager.OpenUI<Mine_AssistantPopup>(UIName.Mine_AssistantPopup);
-            assiPopup.Init(gameManager, uIManager);
+//        popup.OpenForSelection((assistant) =>
+//        {
+//            if (assistant == null) return;
+//            var assiPopup = uIManager.OpenUI<Mine_AssistantPopup>(UIName.Mine_AssistantPopup);
+//            assiPopup.Init(gameManager, uIManager);
 
-            assiPopup.SetAssistant(assistant, false, (selected, isAssign) =>
-            {
-                if (isAssign)
-                {
-                    info.assignedTrainee = selected;
-                    info.assignTime = DateTime.Now;
-                    info.pendingReward = 0;
-                    assistantInventory.Remove(selected);
-                    mineralSlots[idx].SetAssistant(selected);
-                }
-                else
-                {
-                    if (info.assignedTrainee != null)
-                        assistantInventory.Add(info.assignedTrainee);
+//            assiPopup.SetAssistant(assistant, false, (selected, isAssign) =>
+//            {
+//                if (isAssign)
+//                {
+//                    info.assignedTrainee = selected;
+//                    info.assignTime = DateTime.Now;
+//                    info.pendingReward = 0;
+//                    assistantInventory.Remove(selected);
+//                    mineralSlots[idx].SetAssistant(selected);
+//                }
+//                else
+//                {
+//                    if (info.assignedTrainee != null)
+//                        assistantInventory.Add(info.assignedTrainee);
 
-                    info.assignedTrainee = null;
-                    info.assignTime = DateTime.MinValue;
-                    info.pendingReward = 0;
-                    mineralSlots[idx].SetAssistant(null);
-                }
-                uIManager.CloseUI(UIName.Mine_AssistantPopup);
-            });
-        }, true);
-    }
+//                    info.assignedTrainee = null;
+//                    info.assignTime = DateTime.MinValue;
+//                    info.pendingReward = 0;
+//                    mineralSlots[idx].SetAssistant(null);
+//                }
+//                uIManager.CloseUI(UIName.Mine_AssistantPopup);
+//            });
+//        }, true);
+//    }
 
-    private void CollectAllReward()
-    {
-        // 여기에 전체 보상 수령 로직 구현
-    }
-}
+//    private void CollectAllReward()
+//    {
+//        // 여기에 전체 보상 수령 로직 구현
+//    }
+//}

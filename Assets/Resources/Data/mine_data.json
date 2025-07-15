@@ -1,67 +1,48 @@
 {
-    "Items": [
+    "Mines": [
         {
-            "Key": "mine_bronze",
-            "MineName": "Bronze Mine",
+            "Key": "mine_copperbronze",
+            "MineName": "CopperBronzeMine",
             "CollectMin": 2,
             "CollectMax": 5,
             "CollectRatePerHour": 10,
             "RewardMineralKeys": [
-                "resource_bronze",
                 "resource_copper",
-                "resource_iron",
-                "resource_silver",
-                "resource_gold"
+                "resource_bronze"
             ]
         },
         {
-            "Key": "mine_silver",
-            "MineName": "Silver Mine",
+            "Key": "mine_ironsilver",
+            "MineName": "IronSilverMine",
             "CollectMin": 1,
             "CollectMax": 3,
             "CollectRatePerHour": 8,
             "RewardMineralKeys": [
-                "resource_silver",
-                "resource_gold",
-                "resource_iron",
-                "resource_mithril"
-            ]
-        },
-        {
-            "Key": "mine_crystal",
-            "MineName": "Crystal Mine",
-            "CollectMin": 1,
-            "CollectMax": 2,
-            "CollectRatePerHour": 6,
-            "RewardMineralKeys": [
-                "resource_amethyst",
-                "resource_sapphire",
                 "resource_iron",
                 "resource_silver"
             ]
         },
         {
-            "Key": "mine_ruby",
-            "MineName": "Ruby Mine",
+            "Key": "mine_goldmithril",
+            "MineName": "GoldmithrilMine",
+            "CollectMin": 1,
+            "CollectMax": 2,
+            "CollectRatePerHour": 6,
+            "RewardMineralKeys": [
+                "resource_gold",
+                "resource_mithril",
+                "resource_iron"
+            ]
+        },
+        {
+            "Key": "mine_gem",
+            "MineName": "GemMine",
             "CollectMin": 1,
             "CollectMax": 2,
             "CollectRatePerHour": 4,
             "RewardMineralKeys": [
                 "resource_ruby",
-                "resource_mithril",
-                "resource_gold",
-                "resource_silver"
-            ]
-        },
-        {
-            "Key": "mine_emerald",
-            "MineName": "Emerald Mine",
-            "CollectMin": 1,
-            "CollectMax": 2,
-            "CollectRatePerHour": 3,
-            "RewardMineralKeys": [
                 "resource_emerald",
-                "resource_gold",
                 "resource_amethyst",
                 "resource_sapphire"
             ]

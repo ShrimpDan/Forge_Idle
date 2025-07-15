@@ -12,6 +12,8 @@ public class AssistantInstance
     public PersonalityData Personality { get; private set; }
     public SpecializationType Specialization { get; private set; }
     public List<AbilityMultiplier> Multipliers { get; private set; }
+    public string grade { get; private set; }
+
 
     public bool IsEquipped { get; set; }
     public bool IsInUse { get; set; }
@@ -30,7 +32,8 @@ public class AssistantInstance
         string iconPath = null,
         int level = 1,
         bool isEquipped = false,
-        bool isInuse = false)
+        bool isInuse = false,
+        string grade = "N")
     {
         Key = key;
         Name = name;
@@ -41,6 +44,7 @@ public class AssistantInstance
         Level = level;
         IsEquipped = isEquipped;
         IsInUse = isInuse;
+        this.grade = grade;
     }
 
     [Serializable]
