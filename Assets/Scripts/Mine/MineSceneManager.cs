@@ -29,15 +29,35 @@ public class MineSceneManager : MonoBehaviour
     public Button collectButton;
     public TMP_Text minedAmountText;
 
-    // Inspector에서 연결 ❌. 반드시 코드로 할당
     private AssistantInventory assistantInventory;
 
     private MineLoader mineLoader;
     private int currentMineIndex = 0;
 
+
+    private void Awake()
+    {
+        Camera myCam = GetComponentInChildren<Camera>(true);
+
+        if (myCam != null)
+        {
+            myCam.gameObject.tag = "MainCamera";
+            myCam.gameObject.SetActive(true);
+        }
+
+        foreach (var cam in GameObject.FindGameObjectsWithTag("MainCamera"))
+        {
+            if (myCam == null || cam != myCam.gameObject)
+            {
+                Destroy(cam);
+            }
+        }
+    }
+
+
     private void Start()
     {
-        // 반드시 GameManager에서 받아와야 함!
+        
         if (GameManager.Instance == null || GameManager.Instance.AssistantManager == null)
         {
             Debug.LogError("GameManager.Instance 또는 AssistantManager가 초기화되어 있지 않습니다!");
@@ -91,14 +111,25 @@ public class MineSceneManager : MonoBehaviour
         if (mineDetailMap != null)
             mineDetailMap.SetActive(true);
 
-        if (cameraTouchDrag != null && cameraLimits.Count > 0)
+        if (cameraTouchDrag == null)
+        {
+            Debug.LogError("cameraTouchDrag가 연결되어 있지 않습니다!");
+        }
+        if (cameraLimits == null || cameraLimits.Count == 0)
+        {
+            Debug.LogError("cameraLimits가 비어있거나 0번 인덱스가 없습니다!");
+        }
+        else
         {
             cameraTouchDrag.SetCameraLimit(cameraLimits[0]);
             cameraTouchDrag.enabled = true;
         }
+
         if (miningUIPanel != null) miningUIPanel.SetActive(true);
         SetActiveMine(0);
     }
+
+
 
     public void ShowMine(int idx)
     {
