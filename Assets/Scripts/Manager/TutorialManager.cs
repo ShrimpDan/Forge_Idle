@@ -30,19 +30,23 @@ public class TutorialManager : MonoBehaviour
 
     [SerializeField] List<Transform> hightLightTargets = new List<Transform>();
 
-    public void Init(GameManager gm)
+    public void Init()
     {
-        gameManager = gm;
+
+
         if (PlayerPrefs.GetInt("TutorialDone", 0) == 1)
         {
-            isTurtorialMode = false; 
-            return; //이미 깸 
+            isTurtorialMode = false;
+            tutorialPanel.SetActive(false);
+            return;
         }
+
         isTurtorialMode = true;
         tutorialPanel.SetActive(true);
+        tutorialStep = 0;
+        HandleStep(); // 튜토리얼 바로 시작
 
 
-     
 
         StartTutorial();
        
