@@ -90,11 +90,11 @@ public class AssistantTab : BaseTab
         activeSlots.Clear();
 
         List<AssistantInstance> craftingList = assistantManager.GetAssistantByType(SpecializationType.Crafting);
-        List<AssistantInstance> enhancingList = assistantManager.GetAssistantByType(SpecializationType.Enhancing);
+        List<AssistantInstance> miningList = assistantManager.GetAssistantByType(SpecializationType.Mining);
         List<AssistantInstance> sellingList = assistantManager.GetAssistantByType(SpecializationType.Selling);
 
         CreateSlots(craftingList, craftSlotRoot);
-        CreateSlots(enhancingList, upgradeSlotRoot);
+        CreateSlots(miningList, upgradeSlotRoot);
         CreateSlots(sellingList, gemSlotRoot);
 
         if (!isInit)
@@ -152,7 +152,7 @@ public class AssistantTab : BaseTab
                 craftAssi.SetAssistant(assi, isActive);
                 break;
 
-            case SpecializationType.Enhancing:
+            case SpecializationType.Mining:
                 enhanceAssi.SetAssistant(assi, isActive);
                 break;
 
@@ -185,7 +185,7 @@ public class AssistantTab : BaseTab
                 parent = craftStatRoot;
                 break;
 
-            case SpecializationType.Enhancing:
+            case SpecializationType.Mining:
                 parent = enhanceStatRoot;
                 break;
 
@@ -217,7 +217,7 @@ public class AssistantTab : BaseTab
                 parent = craftStatRoot;
                 break;
 
-            case SpecializationType.Enhancing:
+            case SpecializationType.Mining:
                 parent = enhanceStatRoot;
                 break;
 

@@ -71,7 +71,7 @@ public class PersonalityAssigner
     }
 
     /// <summary>
-    /// 특화 타입을 무작위로 반환합니다 (Crafting / Enhancing / Selling)
+    /// 특화 타입을 무작위로 반환합니다 (Crafting / Mining / Selling)
     /// </summary>
     private SpecializationType GetRandomSpecialization()
     {
@@ -120,8 +120,8 @@ public class PersonalityAssigner
             case SpecializationType.Crafting:
                 m = personality.craftingMultiplier;
                 break;
-            case SpecializationType.Enhancing:
-                m = personality.enhancingMultiplier;
+            case SpecializationType.Mining:
+                m = personality.miningMultiplier;
                 break;
             case SpecializationType.Selling:
                 m = personality.sellingMultiplier;

@@ -10,27 +10,25 @@ public class Forge : MonoBehaviour
     // 스탯
     private float craftSpeedMultiplier;
     private float rareItemChance;
-    private float enhanceSuccessRate;
-    private float breakChanceReduction;
-    private float enhanceCostMultiplier;
+    private float miningYieldPerMinute;
+    private float maxMiningCapacity;
     private float sellPriceMultiplier;
     private float customerSpawnRate;
+
 
     // 보너스 스탯
     private float bonusCraftSpeedMultiplier = 1f;
     private float bonusRareItemChance = 0f;
-    private float bonusEnhanceSuccessRate = 0f;
-    private float bonusBreakChanceReduction = 0f;
-    private float bonusEnhanceCostMultiplier = 1f;
+    private float bonusMiningYieldPerMinute = 0f;
+    private float bonusMaxMiningCapacity = 0f;
     private float bonusSellPriceMultiplier = 1f;
     private float bonusCustomerSpawnRate = 0f;
 
     // 최종 스탯
     public float FinalCraftSpeedMultiplier => craftSpeedMultiplier * bonusCraftSpeedMultiplier;
     public float FinalRareItemChance => rareItemChance + bonusRareItemChance;
-    public float FinalEnhanceSuccessRate => enhanceSuccessRate + bonusEnhanceSuccessRate;
-    public float FinalBreakChanceReduction => breakChanceReduction + bonusBreakChanceReduction;
-    public float FinalEnhanceCostMultiplier => enhanceCostMultiplier * bonusEnhanceCostMultiplier;
+    public float FinalMiningYieldPerMinute => miningYieldPerMinute + bonusMiningYieldPerMinute;
+    public float FinalMaxMiningCapacity => maxMiningCapacity + bonusMaxMiningCapacity;
     public float FinalSellPriceMultiplier => sellPriceMultiplier * bonusSellPriceMultiplier;
     public float FinalCustomerSpawnRate => customerSpawnRate + bonusCustomerSpawnRate;
 
@@ -54,7 +52,7 @@ public class Forge : MonoBehaviour
     [Header("Assitant Roots")]
     [SerializeField] AssistantPrefabSO assistantPrefabSO;
     [SerializeField] Transform craftingSpawnRoot;
-    [SerializeField] Transform enhanceSpawnRoot;
+    [SerializeField] Transform miningSpawnRoot;
     [SerializeField] Transform sellingSpawnRoot;
 
     public BlackSmith BlackSmith { get => blackSmith; }
@@ -85,7 +83,7 @@ public class Forge : MonoBehaviour
         EquippedAssistant = new Dictionary<SpecializationType, AssistantInstance>()
         {
             { SpecializationType.Crafting, null },
-            { SpecializationType.Enhancing, null },
+            { SpecializationType.Mining, null },
             { SpecializationType.Selling, null },
         };
     }
@@ -104,16 +102,19 @@ public class Forge : MonoBehaviour
     {
         ForgeData data = new ForgeData
         {
+            // 제작 관련 스탯
             CraftSpeedMultiplier = craftSpeedMultiplier,
             RareItemChance = rareItemChance,
 
-            EnhanceSuccessRate = enhanceSuccessRate,
-            BreakChanceReduction = breakChanceReduction,
-            EnhanceCostMultiplier = enhanceCostMultiplier,
+            // 채광 관련 스탯
+            MiningYieldPerMinute = miningYieldPerMinute,
+            MaxMiningCapacity = maxMiningCapacity,
 
+            // 판매 관련 스탯
             SellPriceMultiplier = sellPriceMultiplier,
             CustomerSpawnRate = customerSpawnRate,
 
+            // 일반 정보
             Level = Level,
             MaxFame = MaxFame,
             CurrentFame = CurrentFame,
@@ -125,26 +126,26 @@ public class Forge : MonoBehaviour
         return data;
     }
 
+
     public void LoadData(ForgeData data)
     {
         // 제작 관련 스탯
         craftSpeedMultiplier = data.CraftSpeedMultiplier;
         rareItemChance = data.RareItemChance;
 
-        // 강화 관련 스탯
-        enhanceSuccessRate = data.EnhanceSuccessRate;
-        breakChanceReduction = data.BreakChanceReduction;
-        enhanceCostMultiplier = data.EnhanceCostMultiplier;
+        // 채광 관련 스탯
+        miningYieldPerMinute = data.MiningYieldPerMinute;
+        maxMiningCapacity = data.MaxMiningCapacity;
 
         // 판매 관련 스탯
         sellPriceMultiplier = data.SellPriceMultiplier;
         customerSpawnRate = data.CustomerSpawnRate;
 
+        // 일반 정보
         Level = data.Level;
         CurrentFame = data.CurrentFame;
         MaxFame = data.MaxFame;
         TotalFame = data.TotalFame;
-
         Gold = data.Gold;
         Dia = data.Dia;
 
@@ -246,16 +247,12 @@ public class Forge : MonoBehaviour
                     bonusRareItemChance += stat.Multiplier;
                     break;
 
-                case AssistantStatNames.IncreaseEnhanceChance:
-                    bonusEnhanceSuccessRate += stat.Multiplier;
+                case AssistantStatNames.IncreaseMiningYieldPerMinute:
+                    bonusMiningYieldPerMinute += stat.Multiplier;
                     break;
 
-                case AssistantStatNames.DecreaseBreakChance:
-                    bonusBreakChanceReduction += stat.Multiplier;
-                    break;
-
-                case AssistantStatNames.DecreaseEnhanceCost:
-                    bonusEnhanceCostMultiplier += stat.Multiplier;
+                case AssistantStatNames.IncreaseMaxMiningCapacity:
+                    bonusMaxMiningCapacity += stat.Multiplier;
                     break;
 
                 case AssistantStatNames.IncreaseSellPrice:
@@ -283,16 +280,12 @@ public class Forge : MonoBehaviour
                     bonusRareItemChance -= stat.Multiplier;
                     break;
 
-                case AssistantStatNames.IncreaseEnhanceChance:
-                    bonusEnhanceSuccessRate -= stat.Multiplier;
+                case AssistantStatNames.IncreaseMiningYieldPerMinute:
+                    bonusMiningYieldPerMinute -= stat.Multiplier;
                     break;
 
-                case AssistantStatNames.DecreaseBreakChance:
-                    bonusBreakChanceReduction -= stat.Multiplier;
-                    break;
-
-                case AssistantStatNames.DecreaseEnhanceCost:
-                    bonusEnhanceCostMultiplier -= stat.Multiplier;
+                case AssistantStatNames.IncreaseMaxMiningCapacity:
+                    bonusMaxMiningCapacity -= stat.Multiplier;
                     break;
 
                 case AssistantStatNames.IncreaseSellPrice:
@@ -306,6 +299,7 @@ public class Forge : MonoBehaviour
         }
     }
 
+
     private void SpawnAssistantPrefab(AssistantInstance assi)
     {
         Transform spawnRoot = null;
@@ -316,8 +310,8 @@ public class Forge : MonoBehaviour
                 spawnRoot = craftingSpawnRoot;
                 break;
 
-            case SpecializationType.Enhancing:
-                spawnRoot = enhanceSpawnRoot;
+            case SpecializationType.Mining:
+                spawnRoot = miningSpawnRoot;
                 break;
 
             case SpecializationType.Selling:
@@ -339,8 +333,8 @@ public class Forge : MonoBehaviour
                 spawnRoot = craftingSpawnRoot;
                 break;
 
-            case SpecializationType.Enhancing:
-                spawnRoot = enhanceSpawnRoot;
+            case SpecializationType.Mining:
+                spawnRoot = miningSpawnRoot;
                 break;
 
             case SpecializationType.Selling:
@@ -374,7 +368,7 @@ public class Forge : MonoBehaviour
             Destroy(child.gameObject);
         }
 
-        foreach (Transform child in enhanceSpawnRoot)
+        foreach (Transform child in miningSpawnRoot)
         {
             Destroy(child.gameObject);
         }
@@ -386,9 +380,8 @@ public class Forge : MonoBehaviour
 
         bonusCraftSpeedMultiplier = 1f;
         bonusRareItemChance = 0f;
-        bonusEnhanceSuccessRate = 0f;
-        bonusBreakChanceReduction = 0f;
-        bonusEnhanceCostMultiplier = 1f;
+        bonusMiningYieldPerMinute = 0f;
+        bonusMaxMiningCapacity = 0f;
         bonusSellPriceMultiplier = 1f;
         bonusCustomerSpawnRate = 0f;
     }

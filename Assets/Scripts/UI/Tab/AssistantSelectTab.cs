@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using System;
 using System.Collections.Generic;
@@ -6,21 +6,21 @@ using System.Collections.Generic;
 public class AssistantSelectTab : MonoBehaviour
 {
     [SerializeField] private Button craftTabBtn;
-    [SerializeField] private Button enhanceTabBtn;
+    [SerializeField] private Button miningTabBtn;
     [SerializeField] private Button sellTabBtn;
     [SerializeField] private Transform craftRoot;
-    [SerializeField] private Transform enhanceRoot;
+    [SerializeField] private Transform miningRoot;
     [SerializeField] private Transform sellRoot;
     [SerializeField] private GameObject assistantSlotPrefab; // ⭐ 반드시 MineAssistantSlotUI 프리팹이어야 함
 
     private AssistantInventory assistantInventory;
     private Action<AssistantInstance> selectCallback;
 
-    private enum TabType { Craft, Enhance, Sell }
+    private enum TabType { Craft, Mine, Sell }
     private TabType curTab = TabType.Craft;
 
     private List<GameObject> craftPool = new();
-    private List<GameObject> enhancePool = new();
+    private List<GameObject> miningPool = new();
     private List<GameObject> sellPool = new();
 
     public void Init(AssistantInventory inventory)
@@ -28,8 +28,8 @@ public class AssistantSelectTab : MonoBehaviour
         assistantInventory = inventory;
         craftTabBtn.onClick.RemoveAllListeners();
         craftTabBtn.onClick.AddListener(() => SwitchTab(TabType.Craft));
-        enhanceTabBtn.onClick.RemoveAllListeners();
-        enhanceTabBtn.onClick.AddListener(() => SwitchTab(TabType.Enhance));
+        miningTabBtn.onClick.RemoveAllListeners();
+        miningTabBtn.onClick.AddListener(() => SwitchTab(TabType.Mine));
         sellTabBtn.onClick.RemoveAllListeners();
         sellTabBtn.onClick.AddListener(() => SwitchTab(TabType.Sell));
         SwitchTab(TabType.Craft); // 기본탭
@@ -46,14 +46,14 @@ public class AssistantSelectTab : MonoBehaviour
     {
         curTab = tab;
         craftRoot.gameObject.SetActive(tab == TabType.Craft);
-        enhanceRoot.gameObject.SetActive(tab == TabType.Enhance);
+        miningRoot.gameObject.SetActive(tab == TabType.Mine);
         sellRoot.gameObject.SetActive(tab == TabType.Sell);
     }
 
     private void RefreshAllTabs()
     {
         RefreshTab(SpecializationType.Crafting, craftRoot, craftPool);
-        RefreshTab(SpecializationType.Enhancing, enhanceRoot, enhancePool);
+        RefreshTab(SpecializationType.Mining, miningRoot, miningPool);
         RefreshTab(SpecializationType.Selling, sellRoot, sellPool);
     }
 

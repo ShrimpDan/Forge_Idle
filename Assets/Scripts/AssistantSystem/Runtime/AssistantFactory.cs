@@ -73,7 +73,7 @@ public class AssistantFactory
         switch (specializationData.specializationType)
         {
             case SpecializationType.Crafting: m = personalityData.craftingMultiplier; break;
-            case SpecializationType.Enhancing: m = personalityData.enhancingMultiplier; break;
+            case SpecializationType.Mining: m = personalityData.miningMultiplier; break;
             case SpecializationType.Selling: m = personalityData.sellingMultiplier; break;
         }
 

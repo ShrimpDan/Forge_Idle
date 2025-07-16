@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
@@ -25,9 +25,9 @@ public class PersonalityData
     public float craftingMultiplier;
 
     /// <summary>
-    /// 강화 능력치 배율
+    /// 채광 능력치 배율
     /// </summary>
-    public float enhancingMultiplier;
+    public float miningMultiplier;
 
     /// <summary>
     /// 판매 능력치 배율

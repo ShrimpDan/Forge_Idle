@@ -11,7 +11,7 @@ public class AssistantCardUI : MonoBehaviour
     [Header("아이콘 스프라이트")]
     [SerializeField] private Sprite[] tierSprites; // 제자 티어 SSR~L (인덱스 0~4)
     [SerializeField] private Sprite craftingIcon;
-    [SerializeField] private Sprite enhancingIcon;
+    [SerializeField] private Sprite miningIcon;
     [SerializeField] private Sprite sellingIcon;
 
     public void UpdateUI(AssistantInstance data)
@@ -27,7 +27,7 @@ public class AssistantCardUI : MonoBehaviour
         specializationIcon.sprite = data.Specialization switch
         {
             SpecializationType.Crafting => craftingIcon,
-            SpecializationType.Enhancing => enhancingIcon,
+            SpecializationType.Mining => miningIcon,
             SpecializationType.Selling => sellingIcon,
             _ => null
         };

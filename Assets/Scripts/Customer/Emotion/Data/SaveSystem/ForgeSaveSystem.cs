@@ -1,22 +1,28 @@
-using System.IO;
+﻿using System.IO;
 using UnityEngine;
 
 [System.Serializable]
 public class ForgeData
 {
+    // 제작 관련 스탯
     public float CraftSpeedMultiplier;
     public float RareItemChance;
-    public float EnhanceSuccessRate;
-    public float BreakChanceReduction;
-    public float EnhanceCostMultiplier;
+
+    // 광산 관련 스탯
+    public float MiningYieldPerMinute;
+    public float MaxMiningCapacity;
+
+    // 판매 관련 스탯
     public float SellPriceMultiplier;
     public float CustomerSpawnRate;
 
+    // 레벨 및 명성치
     public int Level;
     public int CurrentFame;
     public int MaxFame;
     public int TotalFame;
 
+    // 재화
     public int Gold;
     public int Dia;
 }
@@ -66,19 +72,25 @@ public static class ForgeSaveSystem
     {
         return new ForgeData
         {
+            // 제작 기본 스탯
             CraftSpeedMultiplier = 1f,
             RareItemChance = 0.1f,
-            EnhanceSuccessRate = 0.0f,
-            BreakChanceReduction = 0.0f,
-            EnhanceCostMultiplier = 1.0f,
+
+            // 광산 기본 스탯
+            MiningYieldPerMinute = 0.0f,
+            MaxMiningCapacity = 0.0f,
+
+            // 판매 기본 스탯
             SellPriceMultiplier = 1.0f,
             CustomerSpawnRate = 30.0f,
 
+            // 레벨 및 명성치 기본값
             Level = 1,
             CurrentFame = 0,
             MaxFame = 100,
             TotalFame = 0,
 
+            // 재화 기본값
             Gold = 0,
             Dia = 0
         };
