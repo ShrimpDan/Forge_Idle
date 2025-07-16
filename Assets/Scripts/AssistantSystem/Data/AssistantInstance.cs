@@ -11,6 +11,7 @@ public class AssistantInstance
     public int Level { get; private set; }
     public PersonalityData Personality { get; private set; }
     public SpecializationType Specialization { get; private set; }
+    public string CostKey { get; set; }
     public List<AbilityMultiplier> Multipliers { get; private set; }
     public string grade { get; private set; }
 
@@ -29,6 +30,7 @@ public class AssistantInstance
         PersonalityData personality,
         SpecializationType specialization,
         List<AbilityMultiplier> multipliers,
+        string costKey = null,
         string iconPath = null,
         int level = 1,
         bool isEquipped = false,
@@ -39,6 +41,7 @@ public class AssistantInstance
         Name = name;
         Personality = personality;
         Specialization = specialization;
+        CostKey = costKey;
         Multipliers = multipliers ?? new List<AbilityMultiplier>();
         IconPath = iconPath;
         Level = level;
@@ -82,5 +85,16 @@ public class AssistantInstance
     public void SetMultipliers(List<AbilityMultiplier> newMultipliers)
     {
         Multipliers = newMultipliers;
+    }
+
+    public WageData WageData
+    {
+        get
+        {
+            if (string.IsNullOrEmpty(CostKey) || WageDataManager.Instance == null)
+                return null;
+
+            return WageDataManager.Instance.GetByKey(CostKey);
+        }
     }
 }

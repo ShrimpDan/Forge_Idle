@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Globalization;
 
 /// <summary>
-/// PersonalityAssigner 클래스는 제자 생성을 위한 성격, 특화, 능력 배율을 자동으로 할당하는 클래스입니다.
+/// PersonalityAssigner 클래스는 제자 생성을 위한 성격, 특화, 능력 배율, 지출 금액을 자동으로 할당하는 클래스입니다.
 /// </summary>
 public class PersonalityAssigner
 {
@@ -20,6 +21,7 @@ public class PersonalityAssigner
         var personality = GetRandomPersonality();
         var specialization = GetRandomSpecialization();
         var multipliers = GenerateMultipliers(personality, specialization);
+        string costKey = $"wage_t{personality.tier}";
         string name = $"제자{assistantCount++}_{specialization}";
         string key = "What The Fuck";
         
@@ -29,6 +31,7 @@ public class PersonalityAssigner
             personality,
             specialization,
             multipliers,
+            costKey,
             level: 1,
             isEquipped: false,
             isInuse: false
@@ -88,6 +91,7 @@ public class PersonalityAssigner
 
         var personality = personalityDatas[Random.Range(0, personalityDatas.Count)];
         var multipliers = GenerateMultipliers(personality, fixedType);
+        string costKey = $"wage_t{personality.tier}";
         string name = $"제자{assistantCount++}_{fixedType}";
         string key = "What The Fuck";
 
@@ -97,6 +101,7 @@ public class PersonalityAssigner
             personality,
             fixedType,
             multipliers,
+            costKey,
             level: 1,
             isEquipped: false,
             isInuse: false
@@ -141,6 +146,7 @@ public class PersonalityAssigner
             return null;
 
         var multipliers = GenerateMultipliers(personality, fixedType);
+        string costKey = $"wage_t{personality.tier}";
         string name = $"제자{assistantCount++}_{fixedType}";
         string key = "What The Fuck";
 
@@ -150,6 +156,7 @@ public class PersonalityAssigner
             personality,
             fixedType,
             multipliers,
+            costKey,
             level: 1,
             isEquipped: false,
             isInuse: false

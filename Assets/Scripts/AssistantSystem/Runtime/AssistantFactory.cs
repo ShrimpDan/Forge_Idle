@@ -85,6 +85,10 @@ public class AssistantFactory
                 multiplier: specializationData.statValues[i] * m));
         }
 
+        string costKey = string.IsNullOrEmpty(assistant.costKey)
+            ? $"wage_t{tier}"
+            : assistant.costKey;
+
         // 핵심: iconPath 반영
         AssistantInstance assistantData = new AssistantInstance(
             key: assistant.Key,
@@ -92,6 +96,7 @@ public class AssistantFactory
             personality: personalityData,
             specialization: specializationData.specializationType,
             multipliers: multipliers,
+            costKey: costKey,
             iconPath: assistant.iconPath // 중요
         );
 
