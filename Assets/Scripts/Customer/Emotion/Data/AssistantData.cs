@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -24,6 +24,11 @@ public class AssistantData
     /// 제자 성격 키값
     /// </summary>
     public string personalityKey;
+
+    /// <summary>
+    /// 비용 데이터 키값
+    /// </summary>
+    public string costKey;
 
     /// <summary>
     /// 제자 설명
