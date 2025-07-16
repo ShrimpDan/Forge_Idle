@@ -3,6 +3,7 @@ using Assets.PixelFantasy.PixelHeroes.Common.Scripts.UI;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Experimental.GlobalIllumination;
 
 public class TutorialManager : MonoBehaviour
 {
@@ -22,9 +23,10 @@ public class TutorialManager : MonoBehaviour
 
     private bool isWaitingForClick = false;
 
+    [Header("조명 이펙트")]
+    [SerializeField] private HighLighttEffectController effect;
 
-    
-    
+
 
     [SerializeField] List<Transform> hightLightTargets = new List<Transform>();
 
@@ -79,6 +81,7 @@ public class TutorialManager : MonoBehaviour
                 tutorialText.text = "제작대를 클릭해서 무기를 만들어 볼까요??";
                 arrowIcon.SetActive(true);
                 MoveArrowToTarget(hightLightTargets[0]);
+                
                 break;
 
 
@@ -150,6 +153,13 @@ public class TutorialManager : MonoBehaviour
             Vector3 screenPos = uiCam.WorldToScreenPoint(target.position);
             screenPos.y += 120f;
             arrowIcon.transform.position = screenPos;
+            HighlightTarget(target);
         }
     }
+
+    public void HighlightTarget(Transform target)
+    {
+        effect.SetHighLightTarget(target);
+    }
+    
 }
