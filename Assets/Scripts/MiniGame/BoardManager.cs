@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -32,7 +30,8 @@ public class BoardManager : MonoBehaviour
 
 
     [Header("Treasure")]
-    [SerializeField] private TreasureData[] treasures ;
+    [SerializeField] private TreasureData[] allTreasures;
+    private TreasureData[] treasures ;
 
     [Header("BlockPrefabs")]
     [SerializeField] private Block blockPrefab;
@@ -51,7 +50,9 @@ public class BoardManager : MonoBehaviour
 
     private void Start()
     {
-       
+        treasures = allTreasures.OrderBy(x => UnityEngine.Random.value).Take(5).ToArray(); //가지고 있는 보물 갯수중에 랜덤 5개만 
+        resultUI.GetComponent<MiniGameResultUI>().InitSlotCount(treasures.Length); //여기서 결과창 갯수 초기화
+
         SettingBorad();
         SettingTreasuresRandom();
         foundTreasureId.Clear();//초기화
@@ -61,9 +62,7 @@ public class BoardManager : MonoBehaviour
         OnDigCountChange += UpdateCountUI;
         OnDigCountChange?.Invoke(digCount, maxDigCount);
 
-
-        resultUI.GetComponent<MiniGameResultUI>().InitSlotCount(treasures.Length);
-       
+     
     }
 
     private void SettingBorad()
@@ -87,6 +86,7 @@ public class BoardManager : MonoBehaviour
 
     private void SettingTreasuresRandom()
     {
+       
         foreach (var treasure in treasures)
         {
             bool placed = false;
@@ -116,6 +116,8 @@ public class BoardManager : MonoBehaviour
             
             }
         }
+
+       
     }
 
 
@@ -182,15 +184,17 @@ public class BoardManager : MonoBehaviour
     private void RewardGem(TreasureData data)
     {
         Debug.Log("들어감");
-        GameManager.Instance.Inventory.AddItem(GameManager.Instance.DataManager.ItemLoader.GetItemByKey(data.Name));
+        if (data.gemType == GemType.Gem)
+        {
+            GameManager.Instance.Inventory.AddItem(GameManager.Instance.DataManager.ItemLoader.GetItemByKey(data.Name));
+        }
+        else
+        {
+            GameManager.Instance.Forge.AddDia(50); //나중에 다이아 수치 따로 빼둘예정
+        }
     }
 
-    private Block GetBlock(Vector2Int pos)
-    {
-        int index = pos.y * width + pos.x; // GetChild 인덱스 계산 수정 (x -> pos.x)
-        return boardRoot.GetChild(index).GetComponent<Block>();
-        //나중에 효과 연결할때 사용할까? 
-    }
+  
 
     private bool InsideCheck(Vector2Int pos)
     {
@@ -218,9 +222,6 @@ public class BoardManager : MonoBehaviour
         resultUI.SetActive(true);
         SoundManager.Instance.Play("SFX_SystemReward");
     }
-   
-
-   
 }
 
 
@@ -231,4 +232,5 @@ public class BoardManager : MonoBehaviour
   클릭하면 발굴
   보물 완성 채크
   클릭 횟수
+  보석 갯수중에 5개만 
    */
