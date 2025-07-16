@@ -3,6 +3,7 @@ using System.Collections.Generic;
 public class WeaponRecipeSystem
 {
     private Forge forge;
+    private ForgeManager forgeManager;
     private CraftingDataLoader craftingLoader;
 
     public Dictionary<CustomerJob, List<string>> UnlockedRecipeDict { get; private set; }
@@ -14,6 +15,7 @@ public class WeaponRecipeSystem
     public WeaponRecipeSystem(Forge forge, CraftingDataLoader dataLoader)
     {
         this.forge = forge;
+        forgeManager = forge.ForgeManager;
         craftingLoader = dataLoader;
 
         UnlockedRecipeDict = new Dictionary<CustomerJob, List<string>>
@@ -54,7 +56,7 @@ public class WeaponRecipeSystem
 
     public void ResetPoint()
     {
-        if (forge.UseGold(resetGold * UsedPoint))
+        if (forgeManager.UseGold(resetGold * UsedPoint))
         {
             CurRecipePoint = TotalRecipePoint;
 

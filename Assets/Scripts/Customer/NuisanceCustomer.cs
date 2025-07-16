@@ -185,7 +185,7 @@ public class NuisanceCustomer : Customer
 
     private void PenaltyGold()
     {
-        GameManager.Instance.Forge.AddGold(-1000);
+        GameManager.Instance.ForgeManager.AddGold(-1000);
         Debug.Log("골드 차감");
     }
 }

@@ -71,7 +71,7 @@ public class RecipeSlot : MonoBehaviour
         }
 
         // 골드 체크
-        bool enoughGold = forge != null && forge.Gold >= craftingData.craftCost;
+        bool enoughGold = forge != null && forge.ForgeManager.Gold >= craftingData.craftCost;
 
         selectButton.interactable = canCraft && enoughGold;
         selectButton.onClick.RemoveAllListeners();

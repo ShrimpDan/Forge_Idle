@@ -3,33 +3,40 @@ using UnityEngine.UI;
 
 public class ForgeTab : BaseTab
 {
-    private Forge forge;
-
+    private ForgeManager forgeManager;
     [SerializeField] Image weaponIcon;
     [SerializeField] Image progressFill;
 
     public override void Init(GameManager gameManager, UIManager uIManager)
     {
         base.Init(gameManager, uIManager);
-        forge = gameManager.Forge;
 
-        forge.Events.OnCraftStarted += SetWeaponIcon;
+        forgeManager = gameManager.ForgeManager;
+
+        if (forgeManager != null)
+            forgeManager.Events.OnCraftStarted += SetWeaponIcon;
     }
 
     public override void OpenTab()
     {
         base.OpenTab();
 
-        forge.OpenForgeTab();
-        forge.Events.OnCraftProgress += UpdateProgress;
+        if (forgeManager.CurrentForge != null)
+        {
+            forgeManager.CurrentForge.SetForgeMap(true);
+            forgeManager.Events.OnCraftProgress += UpdateProgress;
+        }
     }
 
     public override void CloseTab()
     {
         base.CloseTab();
 
-        forge.CloseForgeTab();
-        forge.Events.OnCraftProgress -= UpdateProgress;
+        if (forgeManager.CurrentForge != null)
+        {
+            forgeManager.CurrentForge.SetForgeMap(false);
+            forgeManager.Events.OnCraftProgress -= UpdateProgress;
+        }
     }
 
     public void SetWeaponIcon(Sprite icon)

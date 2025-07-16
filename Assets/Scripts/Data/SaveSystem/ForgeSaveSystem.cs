@@ -13,7 +13,7 @@ public class ForgeCommonData
     public int Gold;
     public int Dia;
 
-    public ForgeType CurrentForgeType;
+    public SceneType CurrentForgeScene;
 }
 
 public static class ForgeSaveSystem
@@ -70,7 +70,7 @@ public static class ForgeSaveSystem
             Gold = 0,
             Dia = 0,
 
-            CurrentForgeType = ForgeType.Weapon
+            CurrentForgeScene = SceneType.Forge_Weapon
         };
     }
 }

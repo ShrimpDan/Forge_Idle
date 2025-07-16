@@ -64,7 +64,9 @@ public class AssistantTab : BaseTab
     public override void OpenTab()
     {
         base.OpenTab();
-        gameManager.Forge.Events.OnAssistantChanged += SetAssistant;
+
+        if (gameManager.Forge != null)
+            gameManager.Forge.Events.OnAssistantChanged += SetAssistant;
 
         RefreshSlots();
     }
@@ -72,7 +74,9 @@ public class AssistantTab : BaseTab
     public override void CloseTab()
     {
         base.CloseTab();
-        gameManager.Forge.Events.OnAssistantChanged -= SetAssistant;
+
+        if (gameManager.Forge != null)
+            gameManager.Forge.Events.OnAssistantChanged -= SetAssistant;
     }
 
     private void RefreshSlots()
@@ -195,7 +199,7 @@ public class AssistantTab : BaseTab
         }
 
         ClearStat(assi.Specialization);
-        
+
         foreach (var stat in assi.Multipliers)
         {
             GameObject obj = Instantiate(bonusStatPrefab, parent);

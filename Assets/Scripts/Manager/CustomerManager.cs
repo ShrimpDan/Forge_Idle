@@ -43,7 +43,7 @@ public class CustomerManager : MonoSingleton<CustomerManager>
     //단골손님
     private Dictionary<(CustomerJob,CustomerRarity), Customer> regularPrefabDic = new();
     //Forge
-    private Forge forge;
+    private ForgeManager forgeManager;
 
 
     private readonly Dictionary<CustomerRarity, float> rarityProbabilities = new()
@@ -70,7 +70,7 @@ public class CustomerManager : MonoSingleton<CustomerManager>
 
     private void Start()
     {
-        forge = GameManager.Instance.Forge;
+        forgeManager = GameManager.Instance.ForgeManager;
         //프리팹 자동로더
         prefabLoader = new CustomerPrefabLoader();
         prefabLoader.LoadAll();
@@ -142,23 +142,28 @@ public class CustomerManager : MonoSingleton<CustomerManager>
 
         customerLoader = new CustomerLoader(GameManager.Instance.DataManager.CustomerDataLoader, normalDic, spawnPoint,mainBuyPoint);
         regularLoader = new RegularCustomerLoader(GameManager.Instance.DataManager.RegularDataLoader, regDic, spawnPoint, rarityProbabilities , mainBuyPoint);
-
-        
-
-        StartCoroutine(SpawnNormalLoop());
-        StartCoroutine(SpawnNuisanceLoop());
-
     }
 
+    public void StartSpawnCustomer()
+    {
+        StartCoroutine(SpawnNormalLoop());
+        StartCoroutine(SpawnNuisanceLoop());
+    }
+
+    public void StopSpawnCustomer()
+    {
+        StopCoroutine(SpawnNormalLoop());
+        StopCoroutine(SpawnNuisanceLoop());
+    }
 
     private IEnumerator SpawnNormalLoop()
     {
-    
+
 
         while (true)
         {
-            
-            yield return WaitForSecondsCache.Wait(GameManager.Instance.Forge.StatHandler.FinalCustomerSpawnInterval);
+
+            yield return WaitForSecondsCache.Wait(forgeManager.CurrentForge.StatHandler.FinalCustomerSpawnInterval);
             SpawnNormalCustomer();
         }
 

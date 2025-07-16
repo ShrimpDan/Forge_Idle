@@ -5,11 +5,14 @@ public class Forge : MonoBehaviour
     private GameManager gameManager;
     public ForgeManager ForgeManager { get; private set; }
 
+    [Header("Forge Settings")]
     [SerializeField] private ForgeType forgeType;
+    [SerializeField] private SceneType sceneType;
     [SerializeField] private GameObject forgeMap;
     [SerializeField] private BlackSmith blackSmith;
 
     public ForgeType ForgeType { get => forgeType; }
+    public SceneType SceneType { get => sceneType; }
     public BlackSmith BlackSmith { get => blackSmith; }
     public ForgeStatHandler StatHandler { get; private set; }
     public ForgeAssistantHandler AssistantHandler { get; private set; }
@@ -20,9 +23,12 @@ public class Forge : MonoBehaviour
     // 이벤트 핸들러
     public ForgeEventHandler Events { get; private set; } = new ForgeEventHandler();
 
-    public void Init(GameManager gameManager, ForgeManager forgeManager)
+    private void Awake()
     {
-        ForgeManager = forgeManager;
+        gameManager = GameManager.Instance;
+        ForgeManager = gameManager.ForgeManager;
+        
+        ForgeManager.SetCurrentForge(this);
 
         VisualHandler = GetComponent<ForgeVisualHandler>();
         SellingSystem = GetComponent<WeaponSellingSystem>();
@@ -35,6 +41,8 @@ public class Forge : MonoBehaviour
 
         if (blackSmith != null)
             blackSmith.Init();
+
+        CustomerManager.Instance.StartSpawnCustomer();
     }
 
     private void RaiseAllEvents()
@@ -66,9 +74,9 @@ public class Forge : MonoBehaviour
         RaiseAllEvents();
     }
 
-    public void OpenForgeTab()
+    public void SetForgeMap(bool isAcitve)
     {
-        forgeMap.SetActive(true);
+        forgeMap.SetActive(isAcitve);
     }
 
     public void CloseForgeTab()
@@ -81,5 +89,11 @@ public class Forge : MonoBehaviour
         VisualHandler.ClearAllSpawnRoot();
 
         // 제자 스탯도 초기화
+    }
+
+    public void ExitForge()
+    {
+        CustomerManager.Instance.StopSpawnCustomer();
+        LoadSceneManager.Instance.UnLoadScene(SceneType);
     }
 }

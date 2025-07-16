@@ -38,6 +38,7 @@ public static class UIName
     public const string MineDetailWindow = "MineDetailWindow";
     public const string CollectionWindow = "CollectionWindow";
     public const string SettingWindow = "SettingWindow";
+    public const string ForgeWindow = "ForgeWindow";
   
 
     // Popup UI

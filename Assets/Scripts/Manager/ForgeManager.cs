@@ -1,5 +1,4 @@
-using System.Collections.Generic;
-using System.Linq;
+using UnityEngine;
 
 public class ForgeManager
 {
@@ -15,7 +14,7 @@ public class ForgeManager
     public int Gold { get; private set; }
     public int Dia { get; private set; }
 
-    public ForgeType CurrentForgeType { get; private set; }
+    public Forge CurrentForge { get; private set; }
 
     private ForgeTypeSaveSystem forgeTypeSaveSystem = new ForgeTypeSaveSystem();
     public ForgeEventHandler Events { get; private set; } = new ForgeEventHandler();
@@ -37,7 +36,7 @@ public class ForgeManager
             Gold = Gold,
             Dia = Dia,
 
-            CurrentForgeType = CurrentForgeType
+            CurrentForgeScene = CurrentForge.SceneType
         };
 
         return data;
@@ -53,12 +52,28 @@ public class ForgeManager
         Gold = data.Gold;
         Dia = data.Dia;
 
-        CurrentForgeType = CurrentForgeType;
+        LoadSceneManager.Instance.LoadSceneAsync(data.CurrentForgeScene, true);
+        RaiseAllEvents();
     }
 
-    public void SetCurrentForge(ForgeType type)
+    private void RaiseAllEvents()
     {
-        CurrentForgeType = type;
+        Events.RaiseGoldChanged(Gold);
+        Events.RaiseDiaChanged(Dia);
+        Events.RaiseFameChanged(CurrentFame, MaxFame);
+        Events.RaiseLevelChanged(Level);
+        Events.RasieTotalFameChanged(TotalFame);
+    }
+
+    public void SetCurrentForge(Forge forge)
+    {
+        if (CurrentForge != null)
+        {
+            CurrentForge.ExitForge();
+        }
+
+        CurrentForge = forge;
+        gameManager.UIManager.OpenForgeTab();
     }
 
     public void AddFame(int amount)

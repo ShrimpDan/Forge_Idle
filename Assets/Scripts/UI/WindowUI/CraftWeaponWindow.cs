@@ -231,11 +231,11 @@ public class CraftWeaponWindow : BaseUI
             .Select(r => (r.ResourceKey, r.Amount)).ToList();
         int goldNeed = (int)craftingData.craftCost;
 
-        if (!forge.UseGold(goldNeed))
+        if (!forge.ForgeManager.UseGold(goldNeed))
             return;
         if (!inventory.UseCraftingMaterials(required))
         {
-            forge.AddGold(goldNeed);
+            forge.ForgeManager.AddGold(goldNeed);
             return;
         }
 
