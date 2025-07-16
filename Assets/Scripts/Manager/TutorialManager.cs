@@ -52,6 +52,10 @@ public class TutorialManager : MonoBehaviour
        
     }
 
+    private void Start()
+    {
+        Init();
+    }
 
     public void StartTutorial()
     {
