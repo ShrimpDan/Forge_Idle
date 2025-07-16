@@ -194,7 +194,7 @@ public abstract class Customer : MonoBehaviour
 
     private IEnumerator AngryTime()
     {
-        while (timer < 3)
+        while (timer < 30)
         {
             timer += Time.deltaTime;
             yield return null;

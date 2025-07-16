@@ -16,3 +16,19 @@ public enum WeaponType
     Shield = 5,
     Accessories = 6
 }
+
+public enum ForgeType
+{
+    Weapon = 0,
+    Armor = 1,
+    Magic = 2
+}
+
+public enum ForgeUpgradeType
+{
+    IncreaseSellPrice = 0,
+    IncreaseHighGradeRecipeChance = 1,
+    ReduceCustomerSpawnDelay = 2,
+    ReduceAutoCraftingTime = 3,
+    IncreasePerfectCraftChance = 4
+}

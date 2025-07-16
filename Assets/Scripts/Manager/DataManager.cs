@@ -1,5 +1,10 @@
-﻿public class DataManager
+﻿using Unity.VisualScripting;
+
+public class DataManager
 {
+    // 대장간 관련 데이터 로더
+    public ForgeUpgradeDataLoader UpgradeDataLoader { get; private set; }
+
     // 아이템 관련 데이터 로더
     public ItemDataLoader ItemLoader { get; private set; }
     public CraftingDataLoader CraftingLoader { get; private set; }
@@ -23,6 +28,9 @@
 
     public DataManager()
     {
+        // 대장간 업그레이드 스텟 관련 데이터
+        UpgradeDataLoader = new ForgeUpgradeDataLoader();
+
         // 아이템 관련 데이터
         ItemLoader = new ItemDataLoader();
         CraftingLoader = new CraftingDataLoader();

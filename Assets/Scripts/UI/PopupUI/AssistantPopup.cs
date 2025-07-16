@@ -68,13 +68,13 @@ public class AssistantPopup : BaseUI
 
     private void ApplyAssistant()
     {
-        forge.ActiveAssistant(assiData);
+        forge.AssistantHandler.ActiveAssistant(assiData);
         SetApplyButton(true);
     }
 
     private void DeApplyAssistant()
     {
-        forge.DeActiveAssistant(assiData);
+        forge.AssistantHandler.DeActiveAssistant(assiData);
         SetApplyButton(false);
     }
 

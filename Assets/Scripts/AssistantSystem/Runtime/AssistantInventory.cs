@@ -27,7 +27,7 @@ public class AssistantInventory
 
         if (data.IsEquipped)
         {
-            forge.ActiveAssistant(data);
+            forge.AssistantHandler.ActiveAssistant(data);
         }
         
         assistantList.Add(data);

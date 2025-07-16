@@ -158,7 +158,7 @@ public class CustomerManager : MonoSingleton<CustomerManager>
         while (true)
         {
             
-            yield return WaitForSecondsCache.Wait(GameManager.Instance.Forge.FinalCustomerSpawnRate);
+            yield return WaitForSecondsCache.Wait(GameManager.Instance.Forge.StatHandler.FinalCustomerSpawnInterval);
             SpawnNormalCustomer();
         }
 

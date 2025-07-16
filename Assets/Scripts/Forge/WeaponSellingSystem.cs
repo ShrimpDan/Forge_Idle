@@ -5,6 +5,7 @@ using UnityEngine;
 public class WeaponSellingSystem : MonoBehaviour
 {
     private Forge forge;
+    private ForgeManager forgeManager;
     private CraftingDataLoader craftingLoader;
     private ItemDataLoader itemLoader;
     private CustomerManager customerManager;
@@ -19,10 +20,12 @@ public class WeaponSellingSystem : MonoBehaviour
     public void Init(Forge forge, DataManager dataManager)
     {
         this.forge = forge;
+        forgeManager = forge.ForgeManager;
+        blackSmith = forge.BlackSmith;
+
         craftingLoader = dataManager.CraftingLoader;
         itemLoader = dataManager.ItemLoader;
         customerManager = CustomerManager.Instance;
-        blackSmith = forge.BlackSmith;
 
         InitDictionary();
         craftingQueue = new Queue<CraftingData>();
@@ -77,7 +80,7 @@ public class WeaponSellingSystem : MonoBehaviour
             float time = 0f;
 
             CraftingData weapon = craftingQueue.Dequeue();
-            float duration = weapon.craftTime * forge.FinalCraftSpeedMultiplier;
+            float duration = weapon.craftTime * forge.StatHandler.FinalAutoCraftingTimeReduction;
 
             Customer customer = customerQueue.Dequeue();
 
@@ -100,9 +103,9 @@ public class WeaponSellingSystem : MonoBehaviour
             customer.NotifiedCraftWeapon();
 
             // 골드 지급
-            int price = (int)(weapon.sellCost * forge.FinalSellPriceMultiplier);
-            forge.AddGold(price);
-            forge.AddFame(5);
+            int price = (int)(weapon.sellCost * forge.StatHandler.FinalSellPriceBonus);
+            forgeManager.AddGold(price);
+            forgeManager.AddFame(5);
             blackSmith.PlayBuyEffect(price, customer.transform.position);
 
             Debug.Log($"[무기 판매 시스템] {weapon.jobType} 무기 제작 완료!");
