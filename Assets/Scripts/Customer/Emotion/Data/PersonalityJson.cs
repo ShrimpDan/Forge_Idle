@@ -15,6 +15,11 @@ public class PersonalityData
     public string personalityName;
 
     /// <summary>
+    /// 제자의 이름
+    /// </summary>
+    public string Name;
+
+    /// <summary>
     /// 성격의 티어
     /// </summary>
     public int tier;

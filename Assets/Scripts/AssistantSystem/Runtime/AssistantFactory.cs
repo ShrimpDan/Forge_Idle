@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 public class AssistantFactory
 {
@@ -89,7 +90,25 @@ public class AssistantFactory
             ? $"wage_t{tier}"
             : assistant.costKey;
 
-        // 핵심: iconPath 반영
+        WageData wageData = WageDataManager.Instance.GetByKey(costKey);
+
+        int recruitCost = 0;
+        int wage = 0;
+
+        if (wageData != null)
+        {
+            int minRecruit = Mathf.FloorToInt(wageData.minRecruitCost / 10f) * 10;
+            int maxRecruit = Mathf.FloorToInt(wageData.maxRecruitCost / 10f) * 10;
+            int minWage = Mathf.FloorToInt(wageData.minWage / 10f) * 10;
+            int maxWage = Mathf.FloorToInt(wageData.maxWage / 10f) * 10;
+
+            if (maxRecruit <= minRecruit) maxRecruit = minRecruit + 10;
+            if (maxWage <= minWage) maxWage = minWage + 10;
+
+            recruitCost = Mathf.FloorToInt(UnityEngine.Random.Range(minRecruit, maxRecruit + 1) / 10f) * 10;
+            wage = Mathf.FloorToInt(UnityEngine.Random.Range(minWage, maxWage + 1) / 10f) * 10;
+        }
+
         AssistantInstance assistantData = new AssistantInstance(
             key: assistant.Key,
             name: assistant.Name,
@@ -97,12 +116,20 @@ public class AssistantFactory
             specialization: specializationData.specializationType,
             multipliers: multipliers,
             costKey: costKey,
-            iconPath: assistant.iconPath // 중요
+            iconPath: assistant.iconPath,
+            customerInfo: assistant.customerInfo,
+            recruitCost: recruitCost,
+            wage: wage,
+            grade: assistant.grade
         );
 
+        Debug.Log($"costKey: {costKey}, recruitCost: {recruitCost}, wage: {wage}");
         AssignInfo(assistantData);
         return assistantData;
     }
+
+
+
 
     public AssistantInstance CreateFromSpecAndPersonality(SpecializationType spec, string personalityKey, int minTier = 1)
     {
