@@ -162,7 +162,6 @@ public class CustomerManager : MonoSingleton<CustomerManager>
 
         while (true)
         {
-
             yield return WaitForSecondsCache.Wait(forgeManager.CurrentForge.StatHandler.FinalCustomerSpawnInterval);
             SpawnNormalCustomer();
         }
@@ -191,7 +190,7 @@ public class CustomerManager : MonoSingleton<CustomerManager>
 
         foreach (var pair in normalcustomerCounter)
         {
-            if (pair.Value < Customer.maxCount && GameManager.Instance.Forge.SellingSystem.CraftingWeapon[pair.Key] != null)
+            if (pair.Value < Customer.maxCount && forgeManager.CurrentForge != null)
             {
                 availableJobs.Add(pair.Key);
             }

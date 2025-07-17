@@ -200,6 +200,24 @@ public class InventoryManager
         return itemDatas;
     }
 
+    public List<ItemInstance> GetWeaponInstancesByType(CustomerJob type)
+    {
+        List<ItemInstance> itemInstances = new List<ItemInstance>();
+
+        foreach (var weapon in WeaponList)
+        {
+            if (weapon.CraftingData.jobType == type)
+            {
+                itemInstances.Add(weapon);
+            }
+        }
+
+        if (itemInstances.Count > 0)
+            return itemInstances;
+
+        return null;
+    }
+
     #region  데이터 세이브/로드
     public InventorySaveData ToSaveData()
     {

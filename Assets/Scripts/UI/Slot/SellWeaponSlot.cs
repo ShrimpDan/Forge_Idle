@@ -28,10 +28,10 @@ public class SellWeaponSlot : MonoBehaviour
         slotBtn.onClick.RemoveAllListeners();
         slotBtn.onClick.AddListener(OnClickButton);
 
-        string key = gameManager.Forge.SellingSystem.CraftingWeapon[slotType]?.ItemKey;
+        // string key = gameManager.Forge.SellingSystem.CraftingWeapon[slotType]?.ItemKey;
 
-        if(key != null)
-            SetItem(key);
+        // if(key != null)
+        //     SetItem(key);
     }
 
     public void SetItem(string key)

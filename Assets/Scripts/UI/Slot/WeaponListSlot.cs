@@ -44,7 +44,7 @@ public class WeaponListSlot : MonoBehaviour
 
     private void OnClickApplyBtn(SellWeaponSlot slot)
     {
-        forge.SellingSystem.SetCraftingItem(craftingData);
+        //forge.SellingSystem.SetCraftingItem(craftingData);
         slot.SetItem(itemData.ItemKey);
 
         uIManager.CloseUI(UIName.SellWeaponPopup);

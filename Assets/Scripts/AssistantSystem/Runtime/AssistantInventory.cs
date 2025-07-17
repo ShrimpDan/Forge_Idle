@@ -6,12 +6,12 @@ using UnityEngine;
 /// </summary>
 public class AssistantInventory
 {
-    private Forge forge;
+    private ForgeManager forgeManager;
     private List<AssistantInstance> assistantList = new();
 
-    public AssistantInventory(Forge forge)
+    public AssistantInventory(ForgeManager forgeManager)
     {
-        this.forge = forge;
+        this.forgeManager = forgeManager;
     }
 
     /// <summary>
@@ -23,11 +23,6 @@ public class AssistantInventory
         {
             Debug.LogWarning("[AssistantInventory] Null 데이터를 추가하려고 시도했습니다.");
             return;
-        }
-
-        if (data.IsEquipped)
-        {
-            forge.AssistantHandler.ActiveAssistant(data);
         }
         
         assistantList.Add(data);

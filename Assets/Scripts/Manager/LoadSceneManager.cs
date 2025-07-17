@@ -116,4 +116,5 @@ public class LoadSceneManager : MonoSingleton<LoadSceneManager>
         loadingCanvas.alpha = curve.Evaluate(1f);
         loadingCanvas.blocksRaycasts = blockRaycasts;
     }
+
 }

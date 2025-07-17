@@ -14,7 +14,8 @@ public enum WeaponType
     Plate = 3,
     Helmet = 4,
     Shield = 5,
-    Accessories = 6
+    Staff = 6,
+    Accessories = 7
 }
 
 public enum ForgeType

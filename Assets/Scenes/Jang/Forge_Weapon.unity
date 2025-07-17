@@ -2224,8 +2224,8 @@ MonoBehaviour:
   m_ShadowVolumeIntensityEnabled: 0
   m_ShadowVolumeIntensity: 0.75
   m_LocalBounds:
-    m_Center: {x: -0.00044998527, y: 0.00024999678, z: 0}
-    m_Extent: {x: 0.50045, y: 0.25024998, z: 0}
+    m_Center: {x: 0, y: 0.00020000339, z: 0}
+    m_Extent: {x: 0.5, y: 0.2502, z: 0}
   m_PointLightInnerAngle: 360
   m_PointLightOuterAngle: 360
   m_PointLightInnerRadius: 0
@@ -2821,7 +2821,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.02200985, y: 1.2861279}
+  m_Offset: {x: 0.04364562, y: 1.2861279}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0}
@@ -2832,7 +2832,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 3.3521576, y: 2.6602952}
+  m_Size: {x: 5.269304, y: 2.6602952}
   m_EdgeRadius: 0
 --- !u!212 &972476058
 SpriteRenderer:
@@ -3362,6 +3362,14 @@ PrefabInstance:
       propertyPath: blackSmith
       value: 
       objectReference: {fileID: 1255545676}
+    - target: {fileID: 1819278606938086166, guid: d3e6dbc78dc050a4daef9c432d365852, type: 3}
+      propertyPath: m_SortingLayer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1819278606938086166, guid: d3e6dbc78dc050a4daef9c432d365852, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -1654695933
+      objectReference: {fileID: 0}
     - target: {fileID: 8246856234726238468, guid: d3e6dbc78dc050a4daef9c432d365852, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -3405,6 +3413,14 @@ PrefabInstance:
     - target: {fileID: 8621247247578418116, guid: d3e6dbc78dc050a4daef9c432d365852, type: 3}
       propertyPath: m_Name
       value: Forge_Weapon
+      objectReference: {fileID: 0}
+    - target: {fileID: 8898933448243820853, guid: d3e6dbc78dc050a4daef9c432d365852, type: 3}
+      propertyPath: m_SortingLayer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8898933448243820853, guid: d3e6dbc78dc050a4daef9c432d365852, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -1654695933
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -8091,7 +8107,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.27352834, y: 1.7684278}
+  m_Offset: {x: 0.4355533, y: -0.083063126}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0}
@@ -8102,7 +8118,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 4.3250566, y: 4.1799126}
+  m_Size: {x: 2.9068933, y: 3.6284046}
   m_EdgeRadius: 0
 --- !u!212 &2127121606
 SpriteRenderer:

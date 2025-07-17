@@ -1,74 +1,78 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class WeaponSellingSystem : MonoBehaviour
 {
     private Forge forge;
     private ForgeManager forgeManager;
-    private CraftingDataLoader craftingLoader;
+    private InventoryManager inventory;
     private ItemDataLoader itemLoader;
     private CustomerManager customerManager;
     private BlackSmith blackSmith;
 
-    public Dictionary<CustomerJob, CraftingData> CraftingWeapon { get; private set; }
     private Queue<CraftingData> craftingQueue;
     private Queue<Customer> customerQueue;
 
     private Coroutine craftingCoroutine;
 
-    public void Init(Forge forge, DataManager dataManager)
+    public void Init(Forge forge, DataManager dataManager, InventoryManager inventory)
     {
         this.forge = forge;
+        this.inventory = inventory;
         forgeManager = forge.ForgeManager;
         blackSmith = forge.BlackSmith;
 
-        craftingLoader = dataManager.CraftingLoader;
         itemLoader = dataManager.ItemLoader;
         customerManager = CustomerManager.Instance;
 
-        InitDictionary();
         craftingQueue = new Queue<CraftingData>();
         customerQueue = new Queue<Customer>();
 
-        customerManager.CustomerEvent.OnCustomerArrived += CraftItem;
+        customerManager.CustomerEvent.OnCustomerArrived += OrderItem;
     }
 
     private void OnDisable()
     {
-        customerManager.CustomerEvent.OnCustomerArrived -= CraftItem;
+        customerManager.CustomerEvent.OnCustomerArrived -= OrderItem;
     }
 
-    public void InitDictionary()
-    {
-        CraftingWeapon = new Dictionary<CustomerJob, CraftingData>();
-
-        CraftingWeapon[CustomerJob.Woodcutter] = null;
-        CraftingWeapon[CustomerJob.Farmer] = null;
-        CraftingWeapon[CustomerJob.Miner] = null;
-        CraftingWeapon[CustomerJob.Warrior] = null;
-        CraftingWeapon[CustomerJob.Archer] = null;
-        CraftingWeapon[CustomerJob.Tanker] = null;
-        CraftingWeapon[CustomerJob.Assassin] = null;
-    }
-
-    public void SetCraftingItem(CraftingData data)
-    {
-        CraftingWeapon[data.jobType] = data;
-    }
-
-    private void CraftItem(Customer customer)
+    private void OrderItem(Customer customer)
     {
         customerQueue.Enqueue(customer);
 
-        if (CraftingWeapon[customer.Job] != null)
-            craftingQueue.Enqueue(CraftingWeapon[customer.Job]);
+        var craftingData = SelectWeaponByType(customer.Job);
+        craftingQueue.Enqueue(craftingData);
 
         if (craftingCoroutine == null)
         {
             Debug.Log($"[무기 판매 시스템] 무기 제작 시작!!");
             craftingCoroutine = StartCoroutine(CraftingWeaponCoroutine());
         }
+    }
+
+    private CraftingData SelectWeaponByType(CustomerJob type)
+    {
+        var weaponList = inventory.GetWeaponInstancesByType(type);
+        int chance = Random.Range(0, 101);
+
+        if (chance <= forge.StatHandler.FinalHighGradeWeaponSellChance)
+        {
+            CraftingData data = weaponList[0].CraftingData;
+
+            foreach (var weapon in weaponList)
+            {
+                if (weapon.CraftingData.sellCost > data.sellCost)
+                {
+                    data = weapon.CraftingData;
+                }
+            }
+
+            return data;
+        }
+
+        return weaponList[Random.Range(0, weaponList.Count)].CraftingData;
     }
 
     IEnumerator CraftingWeaponCoroutine()
@@ -80,18 +84,18 @@ public class WeaponSellingSystem : MonoBehaviour
             float time = 0f;
 
             CraftingData weapon = craftingQueue.Dequeue();
-            float duration = weapon.craftTime * forge.StatHandler.FinalAutoCraftingTimeReduction;
+            float duration = weapon.craftTime - forge.StatHandler.FinalAutoCraftingTimeReduction;
 
             Customer customer = customerQueue.Dequeue();
 
             // 어떤 무기를 만드는지 아이콘 이벤트 호출
             string iconPath = itemLoader.GetItemByKey(weapon.ItemKey).IconPath;
-            forge.Events.RaiseCraftStarted(IconLoader.GetIcon(iconPath));
+            forgeManager.Events.RaiseCraftStarted(IconLoader.GetIcon(iconPath));
 
             while (time < duration && !customer.IsAngry)
             {
                 time += 0.1f;
-                forge.Events.RaiseCraftProgress(time, duration);
+                forgeManager.Events.RaiseCraftProgress(time, duration);
 
                 yield return WaitForSecondsCache.Wait(0.1f);
             }
@@ -114,44 +118,7 @@ public class WeaponSellingSystem : MonoBehaviour
         blackSmith.SetCraftingAnimation(false);
         craftingCoroutine = null;
         
-        forge.Events.RaiseCraftStarted(null);
-        forge.Events.RaiseCraftProgress(0, 1);
-    }
-
-    public WeaponSellingSaveData SaveToData()
-    {
-        var data = new WeaponSellingSaveData();
-
-        data.CraftingKeys = new List<string>();
-
-        foreach (var craftingKey in CraftingWeapon.Values)
-        {
-            if (craftingKey != null)
-            {
-                data.CraftingKeys.Add(craftingKey.ItemKey);
-                continue;
-            }
-
-            data.CraftingKeys.Add(null);
-        }
-
-        return data;
-    }
-
-    public void LoadFromSaveData(WeaponSellingSaveData data)
-    {
-        CraftingWeapon = new Dictionary<CustomerJob, CraftingData>();
-
-        for (int i = 0; i < data.CraftingKeys.Count; i++)
-        {
-            if (data.CraftingKeys[i] != null)
-            {
-                var craftData = craftingLoader.GetDataByKey(data.CraftingKeys[i]);
-                CraftingWeapon[(CustomerJob)i] = craftData;
-                continue;
-            }
-
-            CraftingWeapon[(CustomerJob)i] = null;
-        }
+        forgeManager.Events.RaiseCraftStarted(null);
+        forgeManager.Events.RaiseCraftProgress(0, 1);
     }
 }

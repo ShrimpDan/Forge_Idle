@@ -61,14 +61,15 @@ public class ForgeAssistantHandler
 
         foreach (var assi in EquippedAssistant.Values)
         {
-            keys.Add(assi.Key);
+            if(assi != null)
+                keys.Add(assi.Key);
         }
 
         return keys;
     }
 
-    internal void LoadFromData(List<string> equippedAssistantKeys)
+    public void LoadFromData(List<string> equippedAssistantKeys)
     {
-        throw new NotImplementedException();
+        //throw new NotImplementedException();
     }
 }

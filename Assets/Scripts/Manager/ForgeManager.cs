@@ -16,7 +16,7 @@ public class ForgeManager
 
     public Forge CurrentForge { get; private set; }
 
-    private ForgeTypeSaveSystem forgeTypeSaveSystem = new ForgeTypeSaveSystem();
+    public ForgeTypeSaveSystem ForgeTypeSaveSystem { get; private set; } = new ForgeTypeSaveSystem();
     public ForgeEventHandler Events { get; private set; } = new ForgeEventHandler();
 
     public ForgeManager(GameManager gameManager)
@@ -39,6 +39,8 @@ public class ForgeManager
             CurrentForgeScene = CurrentForge.SceneType
         };
 
+        ForgeTypeSaveSystem.SaveForgeType(CurrentForge);
+        
         return data;
     }
 

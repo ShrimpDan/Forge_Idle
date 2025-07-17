@@ -42,7 +42,7 @@ public class ForgeStatHandler
 
     // 최종 스탯 프로퍼티
     public float FinalSellPriceBonus => 1 + upgradeSellPriceBonus + assistantSellPriceBonus + skillSellPriceBonus;
-    public float FinalAutoCraftingTimeReduction => assistantAutoCraftingTimeReduction + upgradeAutoCraftingTimeReduction + skillAutoCraftingTimeReduction;
+    public float FinalAutoCraftingTimeReduction => upgradeAutoCraftingTimeReduction + assistantAutoCraftingTimeReduction + skillAutoCraftingTimeReduction;
     public float FinalPerfectCraftingChance => upgradePerfectCraftingChance + assistantPerfectCraftingChance + skillPerfectCraftingChance;
     public float FinalCustomerSpawnInterval => upgradeCustomerSpawnInterval + assistantCustomerSpawnIntervalReduction + skillCustomerSpawnIntervalReduction;
     public float FinalHighGradeWeaponSellChance => upgradeHighGradeWeaponSellChance + skillHighGradeWeaponSellChance;

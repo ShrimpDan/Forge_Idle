@@ -27,7 +27,7 @@ public class Forge : MonoBehaviour
     {
         gameManager = GameManager.Instance;
         ForgeManager = gameManager.ForgeManager;
-        
+
         ForgeManager.SetCurrentForge(this);
 
         VisualHandler = GetComponent<ForgeVisualHandler>();
@@ -37,11 +37,12 @@ public class Forge : MonoBehaviour
         AssistantHandler = new ForgeAssistantHandler(this, VisualHandler, StatHandler);
 
         if (SellingSystem)
-            SellingSystem.Init(this, gameManager.DataManager);
+            SellingSystem.Init(this, gameManager.DataManager, gameManager.Inventory);
 
         if (blackSmith != null)
             blackSmith.Init();
 
+        ForgeManager.ForgeTypeSaveSystem.LoadForge(this);
         CustomerManager.Instance.StartSpawnCustomer();
     }
 
@@ -93,6 +94,7 @@ public class Forge : MonoBehaviour
 
     public void ExitForge()
     {
+        ForgeManager.ForgeTypeSaveSystem.SaveForgeType(this);
         CustomerManager.Instance.StopSpawnCustomer();
         LoadSceneManager.Instance.UnLoadScene(SceneType);
     }
