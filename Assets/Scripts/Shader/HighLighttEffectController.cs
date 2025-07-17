@@ -27,15 +27,15 @@ public class HighLightEffectController : MonoBehaviour
         HideHighlight();
     }
 
- 
+
     public void ShowHighlight(Transform target, Camera camera)
     {
         if (highLightMaterial == null || highlightImage == null || camera == null)
-        { 
-        return;
-        } 
+        {
+            return;
+        }
 
-      
+
         Vector3 screenPos = camera.WorldToScreenPoint(target.position);
 
         Vector2 normalizedPos = new Vector2(screenPos.x / Screen.width, screenPos.y / Screen.height);
@@ -52,8 +52,29 @@ public class HighLightEffectController : MonoBehaviour
         }
         Vector2 normalizedPos = new Vector2(pos.x / Screen.width, pos.y / Screen.height);
 
-        highLightMaterial.SetVector("_Center",normalizedPos);
+        highLightMaterial.SetVector("_Center", normalizedPos);
 
+    }
+    public void ShowHighlight(Vector2 pos, float highlightWidth) //넓이 조절가능
+    {
+        if (highLightMaterial == null || highlightImage == null)
+        {
+            return;
+        }
+        Vector2 normalizedPos = new Vector2(pos.x / Screen.width, pos.y / Screen.height);
+        highLightMaterial.SetVector("_Center", normalizedPos);
+        highLightMaterial.SetFloat("_HighlightWidth", highlightWidth);
+    
+    }
+
+    
+     public void ResetHighlightSize()
+    {
+        if (highLightMaterial != null)
+        {
+            // 크기 값만 기본인 (1, 1)로 되돌립니다.
+            highLightMaterial.SetVector("_HighlightSize", Vector2.one); // Vector2.one은 new Vector2(1, 1)과 같습니다.
+        }
     }
 
     public void HideHighlight()
@@ -63,4 +84,6 @@ public class HighLightEffectController : MonoBehaviour
             highlightImage.enabled = false;
         }
     }
+    
+
 }

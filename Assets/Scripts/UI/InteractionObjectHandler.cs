@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -8,6 +9,11 @@ public class InteractionObjectHandler : MonoBehaviour, IPointerClickHandler, IPo
     [SerializeField] private SpriteRenderer spriteRenderer;
     private Color originalColor;
 
+
+    public ButtonType Type => type;
+    public static event Action<GameObject> OnPointerClicked;
+
+
     void Start()
     {
         uIManager = GameManager.Instance.UIManager;
@@ -16,7 +22,7 @@ public class InteractionObjectHandler : MonoBehaviour, IPointerClickHandler, IPo
             spriteRenderer = GetComponent<SpriteRenderer>();
 
         if (spriteRenderer != null)
-                originalColor = spriteRenderer.color;
+            originalColor = spriteRenderer.color;
     }
 
     public void OnPointerClick(PointerEventData eventData)
@@ -25,6 +31,7 @@ public class InteractionObjectHandler : MonoBehaviour, IPointerClickHandler, IPo
         {
             case ButtonType.Sell:
                 uIManager.OpenUI<SellWeaponWindow>(UIName.GetUINameByType(type));
+
                 break;
 
             case ButtonType.Craft:
@@ -39,6 +46,7 @@ public class InteractionObjectHandler : MonoBehaviour, IPointerClickHandler, IPo
                 uIManager.OpenUI<RefineSystemWindow>(UIName.GetUINameByType(type));
                 break;
         }
+        OnPointerClicked?.Invoke(this.gameObject); //전달
     }
 
     public void OnPointerDown(PointerEventData eventData)
@@ -50,4 +58,5 @@ public class InteractionObjectHandler : MonoBehaviour, IPointerClickHandler, IPo
     {
         spriteRenderer.color = originalColor;
     }
+    
 }
