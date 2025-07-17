@@ -31,7 +31,7 @@ public class WageDataManager : MonoBehaviour
     {
         wageDataDict = new Dictionary<string, WageData>();
 
-        TextAsset json = Resources.Load<TextAsset>("wage_data"); // Assets/Resources/wage_data.json
+        TextAsset json = Resources.Load<TextAsset>("Data/wage_data"); // Assets/Resources/Data/wage_data.json
 
         if (json == null)
         {
