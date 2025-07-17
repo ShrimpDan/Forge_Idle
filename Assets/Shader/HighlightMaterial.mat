@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: HighLigtMaterial
-  m_Shader: {fileID: -6465566751694194690, guid: e5330ea9d6594b74fbf3bb549486c297, type: 3}
+  m_Name: HighlightMaterial
+  m_Shader: {fileID: 4800000, guid: 58bbfa01285c0cf4fa52523e5fce9aa6, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -23,24 +23,32 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - unity_Lightmaps:
+    - _AlphaTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - unity_LightmapsInd:
+    - _MainTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - unity_ShadowMasks:
+    - _MaskTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Radius: 0.2
-    - _Softness: 0.05
+    - _EnableExternalAlpha: 0
+    - _Radius: 0.13
+    - _Softness: 0.02
     m_Colors:
     - _Center: {r: 0.5, g: 0.5, b: 0, a: 0}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _DimColor: {r: 0, g: 0, b: 0, a: 0.7}
+    - _Flip: {r: 1, g: 1, b: 1, a: 1}
     - _HighlightColor: {r: 0, g: 0, b: 0, a: 0}
+    - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
