@@ -1,21 +1,18 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 public class TutorialManager : MonoBehaviour
 {
     public bool IsTurtorialMode => isTurtorialMode;
 
-
-//모든 이벤트 모음
-    public Action OnBlockClick { get; private set; }
-
-
+    //대사 출력확인
+    private bool isTyping = false;
+    private Coroutine typingRoutine;
+    private string fullText = "";
 
     private GameManager gameManager;
     private int tutorialStep = 0; //
@@ -41,6 +38,8 @@ public class TutorialManager : MonoBehaviour
     [Header("클릭방지용")]
     [SerializeField] private GameObject clickBlocker;
     private Coroutine waitClickRoutine;
+
+    
 
     private GameObject curInteractObject;
 
@@ -105,7 +104,7 @@ public class TutorialManager : MonoBehaviour
         {
             case 0:
                 tutorialPanel.SetActive(true);
-                tutorialText.text = "어서오세요!! 대장간은 처음 방문하시는군요!!\n 만나서 반갑습니다 간단한 운영법을 알려드릴께요!!";
+                ShowTextWithTyping("어서오세요!! 대장간은 처음 방문하시는군요!!\n 만나서 반갑습니다 간단한 운영법을 알려드릴께요!!");
                 isWaitingForClick = true;
                 isEventDone = true; //이벤트가 없으니
                 // ClickBlockerOn();
@@ -115,13 +114,13 @@ public class TutorialManager : MonoBehaviour
                 MoveArrowToTarget(hightLightTargets[0]);
                 interactObjects[0].GetComponent<Collider2D>().enabled = true; //클릭 방지
                 waitClickRoutine = StartCoroutine(WaitForClick());
-                tutorialText.text = "제작대를 클릭해서 무기를 만들어 볼까요??";
+                ShowTextWithTyping("제작대를 클릭해서 무기를 만들어 볼까요??");
                 break;
             case 2:
                 HideArrow();
                 effect.HideHighlight();
-                ClickBlockerOn(); //대화를 해야하니까
-                tutorialText.text = "화면에 보시면 가장먼저 도끼를 생산할꺼에요!! 도끼를 만들기위해 제작에 필요한 재료를 드릴께요!! ";
+                ClickBlockerOn();//대화를 해야하니까
+                ShowTextWithTyping("화면에 보시면 가장먼저 도끼를 생산할꺼에요!! 도끼를 만들기위해 제작에 필요한 재료를 드릴께요!! ");
                 Vector2 centerScreen = new Vector2(Screen.width / 2 +40, Screen.height / 2);
                 StartCoroutine(WaitForClick());
                 effect.ShowHighlight(centerScreen); //중앙에 하이라이트 
@@ -133,20 +132,20 @@ public class TutorialManager : MonoBehaviour
                 effect.ResetHighlightSize();
                 effect.HideHighlight();
                 tutorialPanel.SetActive(true);
-                tutorialText.text = "이제 도끼를 클릭해서 제작해볼까요??";
+                ShowTextWithTyping("이제 도끼를 클릭해서 제작해볼까요??");
                 //여기 다음 스텝을 해당 도끼가 제작이 끝나면 진행하는걸로 변경 근데 지금 다른곳을 클릭하면 다음단계로 넘어간다.
                 break;
             case 4:
-                tutorialText.text = "도끼가 제작되었어요!! 축하해요!! 자동으로 판매대에 등록될꺼에요!! \n 이제 손님이 방문할꺼에요!!";
+                ShowTextWithTyping("도끼가 제작되었어요!! 축하해요!! 자동으로 판매대에 등록될꺼에요!! \n 이제 손님이 방문할꺼에요!!");
                 break;
             case 5:
-                tutorialText.text = "자 이제 세공을 해볼꺼에요!! 세공";
+                ShowTextWithTyping( "자 이제 세공을 해볼꺼에요!! 세공");
                 MoveArrowToTarget(hightLightTargets[1]);
                 break;
             case 6:
                 HideArrow();
                 effect.HideHighlight();
-                tutorialText.text = "이제 손님들이 방문할꺼에요!! 대장간을 한번 잘 운영해봐요!!";
+                ShowTextWithTyping( "이제 손님들이 방문할꺼에요!! 대장간을 한번 잘 운영해봐요!!");
                 break;
             case 7:
                 EndTutorial();
@@ -160,15 +159,7 @@ public class TutorialManager : MonoBehaviour
     }
 
 
-    private IEnumerator WaitForClick()
-    {
-        yield return WaitForSecondsCache.Wait(0.3f);
-        yield return new WaitUntil(() => Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject());
-        
-        isWaitingForClick = false;
-        waitClickRoutine = null;
-        OnStepClear();
-    }
+  
 
     private void EndTutorial()
     {
@@ -262,6 +253,57 @@ public class TutorialManager : MonoBehaviour
             item.GetComponent<Collider2D>().enabled = true;
         }
 
+    }
+
+
+    private void HandleClickBlock()
+    {
+        if (!isTurtorialMode)
+        {
+            return;
+        }
+
+        if (isTyping)
+        {
+            if (typingRoutine != null)
+            {
+                StopCoroutine(typingRoutine);
+                tutorialText.text = fullText;
+                typingRoutine = null;
+                isTyping = false;
+            }
+        }
+        else if (isWaitingForClick && isEventDone)
+        {
+            // 클릭 대기 중이면 다음 스텝
+            OnStepClear();
+        }
+    }
+    private void ShowTextWithTyping(string text)
+    {
+        if (typingRoutine != null) StopCoroutine(typingRoutine);
+        fullText = text;
+        typingRoutine = StartCoroutine(TypeText(text));
+    }
+    private IEnumerator TypeText(string text)
+    {
+        isTyping = true;
+        tutorialText.text = "";
+        foreach (char c in text)
+        {
+            tutorialText.text += c;
+            yield return new WaitForSeconds(0.03f); // 속도 조절 가능
+        }
+        isTyping = false;
+    }
+    private IEnumerator WaitForClick()
+    {
+        yield return WaitForSecondsCache.Wait(0.3f);
+        yield return new WaitUntil(() => Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject());
+
+        isWaitingForClick = false;
+        waitClickRoutine = null;
+        OnStepClear();
     }
 
     public void AllObjectInteractOff()
