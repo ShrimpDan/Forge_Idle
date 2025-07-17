@@ -38,14 +38,22 @@ public class HighLightEffectController : MonoBehaviour
       
         Vector3 screenPos = camera.WorldToScreenPoint(target.position);
 
-        // Canvas가 Screen Space - Overlay 모드일 경우, target의 월드 좌표가 아닌 RectTransform의 위치를 사용해야 합니다.
-        // 만약 Overlay 모드를 사용하신다면 아래 주석처리된 코드를 대신 사용해보세요.
-        // Vector3 screenPos = target.position;
-
         Vector2 normalizedPos = new Vector2(screenPos.x / Screen.width, screenPos.y / Screen.height);
         highLightMaterial.SetVector("_Center", normalizedPos);
 
         highlightImage.enabled = true;
+    }
+
+    public void ShowHighlight(Vector2 pos) //위치로만 하이라이트를 주는것이 가능하게 
+    {
+        if (highLightMaterial == null || highlightImage == null)
+        {
+            return;
+        }
+        Vector2 normalizedPos = new Vector2(pos.x / Screen.width, pos.y / Screen.height);
+
+        highLightMaterial.SetVector("_Center",normalizedPos);
+
     }
 
     public void HideHighlight()

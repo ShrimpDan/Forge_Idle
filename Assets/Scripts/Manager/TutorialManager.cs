@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using Assets.PixelFantasy.PixelHeroes.Common.Scripts.UI;
 using DG.Tweening;
+using Microsoft.Unity.VisualStudio.Editor;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Experimental.GlobalIllumination;
@@ -18,6 +20,7 @@ public class TutorialManager : MonoBehaviour
     [SerializeField] private GameObject tutorialPanel;
     [SerializeField] private TextMeshProUGUI tutorialText;
     [SerializeField] private GameObject arrowIcon;
+    [SerializeField] private List<GameObject> interactObjects = new List<GameObject>();
     //스킵은 나중에
 
     [Header("카메라")]
@@ -30,7 +33,10 @@ public class TutorialManager : MonoBehaviour
     [SerializeField] List<Transform> hightLightTargets = new List<Transform>();
 
 
+    [Header("클릭방지용")]
+    [SerializeField] private GameObject clickBlocker;
     private Coroutine waitClickRoutine;
+
 
 
     public void Init(GameManager gm)
@@ -43,19 +49,27 @@ public class TutorialManager : MonoBehaviour
             return;
         }
 
+
+        PlayerPrefs.SetInt("TutorialDone", 0); // Test
+
         isTurtorialMode = true;
         tutorialPanel.SetActive(true);
-
+        AllObjectInteractOff();
         StartTutorial();
-       
+
     }
 
- 
+
 
     public void StartTutorial()
     {
         tutorialStep = 0;
         HandleStep();
+    }
+
+    private void Start()
+    {
+        PlayerPrefs.SetInt("TutorialDone", 0); // Test       
     }
 
     private void Update()
@@ -71,22 +85,29 @@ public class TutorialManager : MonoBehaviour
             waitClickRoutine = null;
         }
 
-      
+
         switch (tutorialStep)
         {
             case 0:
                 tutorialPanel.SetActive(true);
                 tutorialText.text = "어서오세요!! 대장간은 처음 방문하시는군요!!\n 만나서 반갑습니다 간단한 운영법을 알려드릴께요!!";
+                isWaitingForClick = true;
+               // ClickBlockerOn();
                 break;
             case 1:
                 arrowIcon.SetActive(true);
                 MoveArrowToTarget(hightLightTargets[0]);
+                interactObjects[0].GetComponent<Collider2D>().enabled = true; //클릭 방지
+                waitClickRoutine = StartCoroutine(WaitForClick());
                 tutorialText.text = "제작대를 클릭해서 무기를 만들어 볼까요??";
-              
                 break;
             case 2:
+                HideArrow();
+                ClickBlockerOn(); //대화를 해야하니까
+
                 tutorialText.text = "화면에 보시면 가장먼저 도끼를 생산할꺼에요!! 도끼를 클릭하기전 제작에 필요한 재료를 드릴께요!! ";
-               // GameManager.Instance.Inventory.AddItem() 아이템 넣어줄꺼임
+                GameManager.Instance.Inventory.AddItem(GameManager.Instance.DataManager.ItemLoader.GetItemByKey("resource_copper"),2);
+                GameManager.Instance.Inventory.AddItem(GameManager.Instance.DataManager.ItemLoader.GetItemByKey("resource_bronze"),1);
                 break;
             case 3:
                 tutorialPanel.SetActive(true);
@@ -99,21 +120,22 @@ public class TutorialManager : MonoBehaviour
                 tutorialText.text = "이제 손님들이 방문할꺼에요!! 대장간을 한번 잘 운영해봐요!!";
                 break;
             case 6:
-                    EndTutorial();
-                    break;
+                EndTutorial();
+                break;
 
-            }
+        }
 
         waitClickRoutine = StartCoroutine(WaitForClick());
 
 
     }
 
- 
+
     private IEnumerator WaitForClick()
     {
         yield return WaitForSecondsCache.Wait(0.3f);
         yield return new WaitUntil(() => Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject());
+
         isWaitingForClick = true;
         waitClickRoutine = null;
         OnStepClear();
@@ -125,6 +147,8 @@ public class TutorialManager : MonoBehaviour
         PlayerPrefs.SetInt("TutorialDone", 1);
         tutorialPanel.SetActive(false);
         HideArrow();
+        AllObjectInteractOn();
+
     }
 
     public void OnStepClear()
@@ -133,7 +157,8 @@ public class TutorialManager : MonoBehaviour
         {
             return;
         }
-       // isWaitingForClick = false;
+
+
         tutorialStep++;
         HandleStep();
     }
@@ -144,7 +169,7 @@ public class TutorialManager : MonoBehaviour
         PlayerPrefs.SetInt("TutorialDone", 1);
         tutorialPanel.SetActive(false);
     }
-    
+
     private void HideArrow()
     {
         arrowIcon.SetActive(false);
@@ -155,7 +180,7 @@ public class TutorialManager : MonoBehaviour
         if (target != null)
         {
             Vector3 screenPos = uiCam.WorldToScreenPoint(target.position);
-            screenPos.y += 120f;
+            screenPos.y += 200f;
             arrowIcon.transform.position = screenPos;
             HighlightTarget(target); //강조
         }
@@ -165,5 +190,35 @@ public class TutorialManager : MonoBehaviour
     {
         effect.ShowHighlight(target, uiCam);
     }
+
+    public void ClickBlockerOn()
+    {
+        if (clickBlocker != null && clickBlocker.activeSelf == false)
+        {
+            clickBlocker.SetActive(true);
+        }
+    }
+    public void ClickBlockerOff()
+    {
+        if (clickBlocker != null && clickBlocker.activeSelf == true)
+        {
+            clickBlocker.SetActive(false);
+        }
+    }
+    public void AllObjectInteractOn()
+    {
+        foreach (var item in interactObjects)
+        {
+            item.GetComponent<Collider2D>().enabled = true;
+        }
+
+    }
     
+    public void AllObjectInteractOff()
+    {
+        foreach (var item in interactObjects)
+        {
+            item.GetComponent<Collider2D>().enabled = false;
+        }
+    }
 }
