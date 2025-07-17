@@ -38,6 +38,16 @@ public class WeaponSellingSystem : MonoBehaviour
         customerManager.CustomerEvent.OnCustomerArrived -= OrderItem;
     }
 
+    public bool CanOrder(CustomerJob type)
+    {
+        var weaponList = inventory.GetWeaponInstancesByType(type);
+
+        if (weaponList != null)
+            return true;
+
+        return false;
+    }
+
     private void OrderItem(Customer customer)
     {
         customerQueue.Enqueue(customer);

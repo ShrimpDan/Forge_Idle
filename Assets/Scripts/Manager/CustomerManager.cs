@@ -190,7 +190,7 @@ public class CustomerManager : MonoSingleton<CustomerManager>
 
         foreach (var pair in normalcustomerCounter)
         {
-            if (pair.Value < Customer.maxCount && forgeManager.CurrentForge != null)
+            if (pair.Value < Customer.maxCount && forgeManager.CurrentForge.SellingSystem.CanOrder(pair.Key))
             {
                 availableJobs.Add(pair.Key);
             }
