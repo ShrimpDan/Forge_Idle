@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class WeaponSellingSystem : MonoBehaviour
@@ -23,14 +22,17 @@ public class WeaponSellingSystem : MonoBehaviour
         this.inventory = inventory;
         forgeManager = forge.ForgeManager;
         blackSmith = forge.BlackSmith;
+        customerManager = forge.CustomerManager;
 
         itemLoader = dataManager.ItemLoader;
-        customerManager = CustomerManager.Instance;
 
         craftingQueue = new Queue<CraftingData>();
         customerQueue = new Queue<Customer>();
 
         customerManager.CustomerEvent.OnCustomerArrived += OrderItem;
+
+        forgeManager.Events.RaiseCraftStarted(null);
+        forgeManager.Events.RaiseCraftProgress(0, 1);
     }
 
     private void OnDisable()
@@ -67,7 +69,7 @@ public class WeaponSellingSystem : MonoBehaviour
         var weaponList = inventory.GetWeaponInstancesByType(type);
         int chance = Random.Range(0, 101);
 
-        if (chance <= forge.StatHandler.FinalHighGradeWeaponSellChance)
+        if (chance <= forge.StatHandler.FinalExpensiveWeaponSellChance)
         {
             CraftingData data = weaponList[0].CraftingData;
 
@@ -94,7 +96,7 @@ public class WeaponSellingSystem : MonoBehaviour
             float time = 0f;
 
             CraftingData weapon = craftingQueue.Dequeue();
-            float duration = weapon.craftTime - forge.StatHandler.FinalAutoCraftingTimeReduction;
+            float duration = weapon.craftTime * (1 - forge.StatHandler.FinalAutoCraftingTimeReduction);
 
             Customer customer = customerQueue.Dequeue();
 
@@ -112,7 +114,7 @@ public class WeaponSellingSystem : MonoBehaviour
 
             if (customer.IsAngry)
                 continue;
-            
+
             // 손님에게 알림
             customer.NotifiedCraftWeapon();
 
@@ -127,7 +129,7 @@ public class WeaponSellingSystem : MonoBehaviour
 
         blackSmith.SetCraftingAnimation(false);
         craftingCoroutine = null;
-        
+
         forgeManager.Events.RaiseCraftStarted(null);
         forgeManager.Events.RaiseCraftProgress(0, 1);
     }

@@ -28,7 +28,7 @@ public enum ForgeType
 public enum ForgeUpgradeType
 {
     IncreaseSellPrice = 0,
-    IncreaseHighGradeRecipeChance = 1,
+    IncreaseExpensiveRecipeChance = 1,
     ReduceCustomerSpawnDelay = 2,
     ReduceAutoCraftingTime = 3,
     IncreasePerfectCraftChance = 4

@@ -174,7 +174,7 @@ public class NuisanceCustomer : Customer
 
     private BuyPoint GetRandomBuyPoint() //수정해야될듯
     {
-        var points = CustomerManager.Instance.allBuyPoints; //넣어줄 예정
+        var points = customerManager.allBuyPoints; //넣어줄 예정
         if (points == null || points.Count == 0)
         {
             return null;

@@ -1,17 +1,18 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class CustomerLoader
 {
+    private CustomerManager customerManager;
     private readonly CustomerDataLoader dataLoader;
     private readonly Dictionary<(CustomerJob, CustomerType), Customer> prefabsByJob;
     private readonly Transform spawnPoint;
     private readonly BuyPoint mainBuyPoint;
 
 
-    public CustomerLoader(CustomerDataLoader _dataLoader, Dictionary<(CustomerJob,CustomerType), Customer> _prefabsByJob, Transform _spawnPoint , BuyPoint buyPoint)
+    public CustomerLoader(CustomerManager customerManager, CustomerDataLoader _dataLoader, Dictionary<(CustomerJob,CustomerType), Customer> _prefabsByJob, Transform _spawnPoint , BuyPoint buyPoint)
     {
+        this.customerManager = customerManager;
         dataLoader = _dataLoader;
         prefabsByJob = _prefabsByJob;
         spawnPoint = _spawnPoint;
@@ -33,11 +34,11 @@ public class CustomerLoader
         }
 
         //var customer = Object.Instantiate(prefab, spawnPoint.position, Quaternion.identity); ->오브젝트 풀링함
-        GameObject customerobj = GameManager.Instance.PoolManager.Get(prefab.gameObject, spawnPoint.position, Quaternion.identity);
+        GameObject customerobj = customerManager.PoolManager.Get(prefab.gameObject, spawnPoint.position, Quaternion.identity);
         var customer = customerobj.GetComponent<Customer>();
         customer.SetSourcePrefab(prefab.gameObject);
 
-        customer.Init(data,mainBuyPoint);
+        customer.Init(customerManager, data,mainBuyPoint);
         return customer; //반환
 
     }

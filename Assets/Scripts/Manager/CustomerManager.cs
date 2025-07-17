@@ -4,12 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.U2D.Animation;
 
-public class CustomerManager : MonoSingleton<CustomerManager>
+public class CustomerManager : MonoBehaviour
 {
-
-    //Test
-    public int Reputation = 0;
-
     //스폰 담당을 해야할듯
     [System.Serializable]
     public struct CustomerSpawnData
@@ -21,6 +17,7 @@ public class CustomerManager : MonoSingleton<CustomerManager>
     }
 
     [Header("SpawnSetting")]
+    [SerializeField] private PoolManager poolManager;
     [SerializeField] private Transform spawnPoint;
     [SerializeField] private BuyPoint mainBuyPoint;
     [SerializeField] private List<SpriteLibraryAsset> normalSpriteAssets;
@@ -36,15 +33,15 @@ public class CustomerManager : MonoSingleton<CustomerManager>
 
     public List<BuyPoint> allBuyPoints;
 
-
     private Dictionary<CustomerJob, int> normalcustomerCounter = new Dictionary<CustomerJob, int>(); //현재 수
     private Dictionary<CustomerJob, int> normalVisitedCounter = new Dictionary<CustomerJob, int>();
 
     //단골손님
     private Dictionary<(CustomerJob,CustomerRarity), Customer> regularPrefabDic = new();
     //Forge
-    private ForgeManager forgeManager;
+    private Forge forge;
 
+    public PoolManager PoolManager { get => poolManager; }
 
     private readonly Dictionary<CustomerRarity, float> rarityProbabilities = new()
     {
@@ -59,18 +56,10 @@ public class CustomerManager : MonoSingleton<CustomerManager>
     private CustomerLoader customerLoader;
     private RegularCustomerLoader regularLoader;
     private CustomerPrefabLoader prefabLoader;
-    public CustomerEventHandler CustomerEvent { get; private set; }
-
-    protected override void Awake()
-    {
-        base.Awake();
-
-        CustomerEvent = new CustomerEventHandler();
-    }
+    public CustomerEventHandler CustomerEvent { get; private set; } = new CustomerEventHandler();
 
     private void Start()
     {
-        forgeManager = GameManager.Instance.ForgeManager;
         //프리팹 자동로더
         prefabLoader = new CustomerPrefabLoader();
         prefabLoader.LoadAll();
@@ -124,7 +113,7 @@ public class CustomerManager : MonoSingleton<CustomerManager>
         foreach (var prefab in uniquePrefabs)
         {
             // 각 프리팹 당 최대 손님 수(maxCount)만큼 미리 생성해 둡니다.
-            PoolManager.Instance.CreatePool(prefab, Customer.maxCount);
+            poolManager.CreatePool(prefab, Customer.maxCount);
         }
 
         foreach (CustomerJob job in Enum.GetValues(typeof(CustomerJob)))
@@ -140,12 +129,14 @@ public class CustomerManager : MonoSingleton<CustomerManager>
             }
         }
 
-        customerLoader = new CustomerLoader(GameManager.Instance.DataManager.CustomerDataLoader, normalDic, spawnPoint,mainBuyPoint);
-        regularLoader = new RegularCustomerLoader(GameManager.Instance.DataManager.RegularDataLoader, regDic, spawnPoint, rarityProbabilities , mainBuyPoint);
+        customerLoader = new CustomerLoader(this, GameManager.Instance.DataManager.CustomerDataLoader, normalDic, spawnPoint,mainBuyPoint);
+        regularLoader = new RegularCustomerLoader(this, GameManager.Instance.DataManager.RegularDataLoader, regDic, spawnPoint, rarityProbabilities , mainBuyPoint);
     }
 
-    public void StartSpawnCustomer()
+    public void StartSpawnCustomer(Forge forge)
     {
+        this.forge = forge;
+
         StartCoroutine(SpawnNormalLoop());
         StartCoroutine(SpawnNuisanceLoop());
     }
@@ -162,7 +153,7 @@ public class CustomerManager : MonoSingleton<CustomerManager>
 
         while (true)
         {
-            yield return WaitForSecondsCache.Wait(forgeManager.CurrentForge.StatHandler.FinalCustomerSpawnInterval);
+            yield return WaitForSecondsCache.Wait(forge.StatHandler.FinalCustomerSpawnInterval);
             SpawnNormalCustomer();
         }
 
@@ -190,7 +181,7 @@ public class CustomerManager : MonoSingleton<CustomerManager>
 
         foreach (var pair in normalcustomerCounter)
         {
-            if (pair.Value < Customer.maxCount && forgeManager.CurrentForge.SellingSystem.CanOrder(pair.Key))
+            if (pair.Value < Customer.maxCount && forge.SellingSystem.CanOrder(pair.Key))
             {
                 availableJobs.Add(pair.Key);
             }

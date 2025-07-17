@@ -10,14 +10,9 @@ public class GameManager : MonoSingleton<GameManager>
     public Forge Forge { get => ForgeManager.CurrentForge; }
 
     public UIManager UIManager { get; private set; }
-
     public DungeonSystem DungeonSystem{ get; private set; }
-
     public CraftingManager CraftingManager { get; private set; }
-
     public GameSaveManager SaveManager { get; private set; }
-
-    public PoolManager PoolManager { get; private set; }
 
     protected override void Awake()
     {
@@ -30,7 +25,6 @@ public class GameManager : MonoSingleton<GameManager>
         AssistantManager = FindObjectOfType<AssistantManager>();
         UIManager = FindObjectOfType<UIManager>();
         DungeonSystem = new DungeonSystem(this);
-        PoolManager = PoolManager.Instance;
 
         CollectionBookManager.Instance.Initialize();
         if (UIManager)

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 public class ForgeStatHandler
 {
@@ -30,8 +31,8 @@ public class ForgeStatHandler
     private float skillCustomerSpawnIntervalReduction;
 
     // 상위 무기 판매 확률 증가
-    private float upgradeHighGradeWeaponSellChance;
-    private float skillHighGradeWeaponSellChance;
+    private float upgradeExpensiveWeaponSellChance;
+    private float skillExpensiveWeaponSellChance;
 
     private float assistantBadCustomerAutoKickChance; // 진상 손님 자동 내쫓기 확률
     private float assistantReduceWeaponCraftingTime; // 무기 제작 시간 감소 (던전용 무기) 
@@ -40,12 +41,14 @@ public class ForgeStatHandler
     private float assistantResourcePerMinuteBonus; // 분당 자원 획득량 증가 (광산)
     private float assistantMaxResourceCapacityBonus; // 최대 자원 수집량 증가 (광산)
 
+    private const float MaxAutoCraftingTimeReduction = 0.99f;
+
     // 최종 스탯 프로퍼티
     public float FinalSellPriceBonus => 1 + upgradeSellPriceBonus + assistantSellPriceBonus + skillSellPriceBonus;
-    public float FinalAutoCraftingTimeReduction => upgradeAutoCraftingTimeReduction + assistantAutoCraftingTimeReduction + skillAutoCraftingTimeReduction;
-    public float FinalPerfectCraftingChance => upgradePerfectCraftingChance + assistantPerfectCraftingChance + skillPerfectCraftingChance;
+    public float FinalExpensiveWeaponSellChance => upgradeExpensiveWeaponSellChance + skillExpensiveWeaponSellChance;
     public float FinalCustomerSpawnInterval => upgradeCustomerSpawnInterval + assistantCustomerSpawnIntervalReduction + skillCustomerSpawnIntervalReduction;
-    public float FinalHighGradeWeaponSellChance => upgradeHighGradeWeaponSellChance + skillHighGradeWeaponSellChance;
+    public float FinalAutoCraftingTimeReduction => Mathf.Min(upgradeAutoCraftingTimeReduction + assistantAutoCraftingTimeReduction + skillAutoCraftingTimeReduction, MaxAutoCraftingTimeReduction);
+    public float FinalPerfectCr3aftingChance => upgradePerfectCraftingChance + assistantPerfectCraftingChance + skillPerfectCraftingChance;
     public float FinalBadCustomerAutoKickChance => assistantBadCustomerAutoKickChance;
     public float FinalReduceWeaponCraftingTime => assistantReduceWeaponCraftingTime;
     public float FinalRareCraftChance => assistantRareCraftChance;
@@ -63,7 +66,7 @@ public class ForgeStatHandler
     private void ApplyUpgradeStats()
     {
         upgradeSellPriceBonus = upgradeDataLoader.GetValue(forge.ForgeType, ForgeUpgradeType.IncreaseSellPrice, upgradeLevels[ForgeUpgradeType.IncreaseSellPrice]);
-        upgradeHighGradeWeaponSellChance = upgradeDataLoader.GetValue(forge.ForgeType, ForgeUpgradeType.IncreaseHighGradeRecipeChance, upgradeLevels[ForgeUpgradeType.IncreaseHighGradeRecipeChance]);
+        upgradeExpensiveWeaponSellChance = upgradeDataLoader.GetValue(forge.ForgeType, ForgeUpgradeType.IncreaseExpensiveRecipeChance, upgradeLevels[ForgeUpgradeType.IncreaseExpensiveRecipeChance]);
         upgradePerfectCraftingChance = upgradeDataLoader.GetValue(forge.ForgeType, ForgeUpgradeType.IncreasePerfectCraftChance, upgradeLevels[ForgeUpgradeType.IncreasePerfectCraftChance]);
         upgradeAutoCraftingTimeReduction = upgradeDataLoader.GetValue(forge.ForgeType, ForgeUpgradeType.ReduceAutoCraftingTime, upgradeLevels[ForgeUpgradeType.ReduceAutoCraftingTime]);
         upgradeCustomerSpawnInterval = upgradeDataLoader.GetValue(forge.ForgeType, ForgeUpgradeType.ReduceCustomerSpawnDelay, upgradeLevels[ForgeUpgradeType.ReduceCustomerSpawnDelay]);
@@ -157,7 +160,7 @@ public class ForgeStatHandler
         {
             upgradeLevels = new Dictionary<ForgeUpgradeType, int>()
             {
-                { ForgeUpgradeType.IncreaseHighGradeRecipeChance, 1 },
+                { ForgeUpgradeType.IncreaseExpensiveRecipeChance, 1 },
                 { ForgeUpgradeType.IncreasePerfectCraftChance, 1 },
                 { ForgeUpgradeType.IncreaseSellPrice, 1 },
                 { ForgeUpgradeType.ReduceAutoCraftingTime, 1 },

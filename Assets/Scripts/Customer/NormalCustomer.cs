@@ -15,7 +15,7 @@ public class NormalCustomer : Customer
    
     public override void Interact()
     {
-        CustomerManager.Instance.NotifyNormalCustomerPurchased(Job);
+        customerManager.NotifyNormalCustomerPurchased(Job);
     }
 
     //Make Prefabs

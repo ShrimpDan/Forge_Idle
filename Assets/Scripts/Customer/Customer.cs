@@ -22,7 +22,7 @@ public abstract class Customer : MonoBehaviour
 {
 
 
-    private CustomerManager customerManager;
+    protected CustomerManager customerManager;
 
     public static readonly int maxCount = 5; //5명 이상은 존재 안할꺼다
 
@@ -70,9 +70,9 @@ public abstract class Customer : MonoBehaviour
     //풀링
     private GameObject sourcePrefab;
 
-    public void Init(CustomerData _customerData, BuyPoint _buyPoint)
+    public void Init(CustomerManager customerManager, CustomerData _customerData, BuyPoint _buyPoint)
     {
-        customerManager = CustomerManager.Instance;
+        this.customerManager = customerManager;
         data = _customerData;
         buyPoint = _buyPoint;
         isCrafted = false;
@@ -93,16 +93,17 @@ public abstract class Customer : MonoBehaviour
 
     protected virtual void Start()
     {
-       
+        
     }
+
     protected virtual void OnEnable()
-    {       
+    {
         if (customerFlowCoroutine != null)
         {
             StopCoroutine(customerFlowCoroutine);
         }
         customerFlowCoroutine = StartCoroutine(CustomerFlow());
-      
+
     }
 
 
@@ -118,21 +119,14 @@ public abstract class Customer : MonoBehaviour
 
     protected virtual void Update()
     {
-    }
 
+    }
 
     protected virtual void FixedUpdate()
     {
         animator.SetBool("IsMove", IsMoving);
     }
 
-    public void Init(CustomerData customerData)
-    {
-        customerManager = CustomerManager.Instance;
-        data = customerData;
-
-        isCrafted = false;
-    }
     public void SetSourcePrefab(GameObject prefab)
     {
         this.sourcePrefab = prefab; 
@@ -294,8 +288,8 @@ public abstract class Customer : MonoBehaviour
     protected virtual void CustomerExit() //큐에서 나가는 메서드
     {
         Debug.Log("손님나감 호출");
-        CustomerManager.Instance.CustomerExit(this);
-        PoolManager.Instance.Return(this.gameObject, this.sourcePrefab);
+        customerManager.CustomerExit(this);
+        customerManager.PoolManager.Return(this.gameObject, this.sourcePrefab);
     }
     public abstract void Interact();
     public void NotifiedCraftWeapon()

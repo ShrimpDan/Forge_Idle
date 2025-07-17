@@ -11,9 +11,13 @@ public class Forge : MonoBehaviour
     [SerializeField] private GameObject forgeMap;
     [SerializeField] private BlackSmith blackSmith;
 
+    [Header("Customer Spawn")]
+    [SerializeField] private CustomerManager customerManager;
+
     public ForgeType ForgeType { get => forgeType; }
     public SceneType SceneType { get => sceneType; }
     public BlackSmith BlackSmith { get => blackSmith; }
+    public CustomerManager CustomerManager { get => customerManager; }
     public ForgeStatHandler StatHandler { get; private set; }
     public ForgeAssistantHandler AssistantHandler { get; private set; }
     public ForgeVisualHandler VisualHandler { get; private set; }
@@ -43,7 +47,7 @@ public class Forge : MonoBehaviour
             blackSmith.Init();
 
         ForgeManager.ForgeTypeSaveSystem.LoadForge(this);
-        CustomerManager.Instance.StartSpawnCustomer();
+        CustomerManager.StartSpawnCustomer(this);
     }
 
     private void RaiseAllEvents()
@@ -95,7 +99,7 @@ public class Forge : MonoBehaviour
     public void ExitForge()
     {
         ForgeManager.ForgeTypeSaveSystem.SaveForgeType(this);
-        CustomerManager.Instance.StopSpawnCustomer();
+        CustomerManager.StopSpawnCustomer();
         LoadSceneManager.Instance.UnLoadScene(SceneType);
     }
 }
