@@ -72,7 +72,7 @@ public class ForgeTypeSaveSystem
         List<ForgeUpgradeType> upgradeTypes = new List<ForgeUpgradeType>
         {
             ForgeUpgradeType.IncreaseSellPrice,
-            ForgeUpgradeType.IncreaseHighGradeRecipeChance,
+            ForgeUpgradeType.IncreaseExpensiveRecipeChance,
             ForgeUpgradeType.ReduceCustomerSpawnDelay,
             ForgeUpgradeType.ReduceAutoCraftingTime,
             ForgeUpgradeType.IncreasePerfectCraftChance

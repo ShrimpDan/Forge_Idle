@@ -18,7 +18,8 @@ public enum ButtonType
     MineDetail, // 추가
     MineMiniGame, //Add
     Collection,
-    Setting
+    Setting,
+    ForgeUpgrade
 }
 
 public static class UIName
@@ -38,8 +39,7 @@ public static class UIName
     public const string MineDetailWindow = "MineDetailWindow";
     public const string CollectionWindow = "CollectionWindow";
     public const string SettingWindow = "SettingWindow";
-    public const string ForgeWindow = "ForgeWindow";
-  
+    public const string ForgeUpgradeWindow = "ForgeUpgrade_Window";    
 
     // Popup UI
     public const string InventoryPopup = "InventoryPopup";
@@ -70,6 +70,7 @@ public static class UIName
             ButtonType.MineDetail => MineDetailWindow,
             ButtonType.Collection => CollectionWindow,
             ButtonType.Setting => SettingWindow,
+            ButtonType.ForgeUpgrade => ForgeUpgradeWindow,
             _ => string.Empty
         };
     }

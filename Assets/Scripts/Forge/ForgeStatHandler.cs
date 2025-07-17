@@ -8,7 +8,7 @@ public class ForgeStatHandler
     private ForgeUpgradeDataLoader upgradeDataLoader;
 
     // 업그레이드 레벨
-    private Dictionary<ForgeUpgradeType, int> upgradeLevels;
+    public Dictionary<ForgeUpgradeType, int> UpgradeLevels { get; private set; }
 
     // 판매 가격 증가
     private float upgradeSellPriceBonus;
@@ -65,25 +65,25 @@ public class ForgeStatHandler
 
     private void ApplyUpgradeStats()
     {
-        upgradeSellPriceBonus = upgradeDataLoader.GetValue(forge.ForgeType, ForgeUpgradeType.IncreaseSellPrice, upgradeLevels[ForgeUpgradeType.IncreaseSellPrice]);
-        upgradeExpensiveWeaponSellChance = upgradeDataLoader.GetValue(forge.ForgeType, ForgeUpgradeType.IncreaseExpensiveRecipeChance, upgradeLevels[ForgeUpgradeType.IncreaseExpensiveRecipeChance]);
-        upgradePerfectCraftingChance = upgradeDataLoader.GetValue(forge.ForgeType, ForgeUpgradeType.IncreasePerfectCraftChance, upgradeLevels[ForgeUpgradeType.IncreasePerfectCraftChance]);
-        upgradeAutoCraftingTimeReduction = upgradeDataLoader.GetValue(forge.ForgeType, ForgeUpgradeType.ReduceAutoCraftingTime, upgradeLevels[ForgeUpgradeType.ReduceAutoCraftingTime]);
-        upgradeCustomerSpawnInterval = upgradeDataLoader.GetValue(forge.ForgeType, ForgeUpgradeType.ReduceCustomerSpawnDelay, upgradeLevels[ForgeUpgradeType.ReduceCustomerSpawnDelay]);
+        upgradeSellPriceBonus = upgradeDataLoader.GetValue(forge.ForgeType, ForgeUpgradeType.IncreaseSellPrice, UpgradeLevels[ForgeUpgradeType.IncreaseSellPrice]);
+        upgradeExpensiveWeaponSellChance = upgradeDataLoader.GetValue(forge.ForgeType, ForgeUpgradeType.IncreaseExpensiveRecipeChance, UpgradeLevels[ForgeUpgradeType.IncreaseExpensiveRecipeChance]);
+        upgradePerfectCraftingChance = upgradeDataLoader.GetValue(forge.ForgeType, ForgeUpgradeType.IncreasePerfectCraftChance, UpgradeLevels[ForgeUpgradeType.IncreasePerfectCraftChance]);
+        upgradeAutoCraftingTimeReduction = upgradeDataLoader.GetValue(forge.ForgeType, ForgeUpgradeType.ReduceAutoCraftingTime, UpgradeLevels[ForgeUpgradeType.ReduceAutoCraftingTime]);
+        upgradeCustomerSpawnInterval = upgradeDataLoader.GetValue(forge.ForgeType, ForgeUpgradeType.ReduceCustomerSpawnDelay, UpgradeLevels[ForgeUpgradeType.ReduceCustomerSpawnDelay]);
     }
 
     public int GetUpgradeCost(ForgeUpgradeType type)
     {
-        if (!upgradeLevels.ContainsKey(type)) return -1;
+        if (!UpgradeLevels.ContainsKey(type)) return -1;
 
-        return upgradeDataLoader.GetCost(forge.ForgeType, type, upgradeLevels[type]);
+        return upgradeDataLoader.GetCost(forge.ForgeType, type, UpgradeLevels[type]);
     }
 
     public bool CanUpgrade(ForgeUpgradeType type)
     {
-        if (!upgradeLevels.ContainsKey(type)) return false;
+        if (!UpgradeLevels.ContainsKey(type)) return false;
 
-        int curLevel = upgradeLevels[type];
+        int curLevel = UpgradeLevels[type];
         int maxLevel = upgradeDataLoader.GetMaxLevel(forge.ForgeType, type);
 
         return curLevel < maxLevel;
@@ -96,7 +96,7 @@ public class ForgeStatHandler
         int cost = GetUpgradeCost(type);
         if (!forgeManager.UseGold(cost)) return false;
 
-        upgradeLevels[type]++;
+        UpgradeLevels[type]++;
         ApplyUpgradeStats(); // 업그레이드 후 스탯 재계산
         return true;
     }
@@ -140,12 +140,12 @@ public class ForgeStatHandler
     {
         var dataList = new List<ForgeUpgradeSaveData>();
 
-        foreach (var key in upgradeLevels.Keys)
+        foreach (var key in UpgradeLevels.Keys)
         {
             var saveData = new ForgeUpgradeSaveData()
             {
                 UpgradeType = key,
-                Level = upgradeLevels[key]
+                Level = UpgradeLevels[key]
             };
 
             dataList.Add(saveData);
@@ -158,7 +158,7 @@ public class ForgeStatHandler
     {
         if (datas == null)
         {
-            upgradeLevels = new Dictionary<ForgeUpgradeType, int>()
+            UpgradeLevels = new Dictionary<ForgeUpgradeType, int>()
             {
                 { ForgeUpgradeType.IncreaseExpensiveRecipeChance, 1 },
                 { ForgeUpgradeType.IncreasePerfectCraftChance, 1 },
@@ -170,10 +170,10 @@ public class ForgeStatHandler
 
         else
         {
-            upgradeLevels = new Dictionary<ForgeUpgradeType, int>();
+            UpgradeLevels = new Dictionary<ForgeUpgradeType, int>();
             foreach (var data in datas)
             {
-                upgradeLevels[data.UpgradeType] = data.Level;
+                UpgradeLevels[data.UpgradeType] = data.Level;
             }
         }
 

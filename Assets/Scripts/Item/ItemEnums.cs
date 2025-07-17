@@ -8,14 +8,25 @@ public enum ItemType
 
 public enum WeaponType
 {
-    Sword = 0,
-    Mace = 1,
-    Bow = 2,
-    Plate = 3,
-    Helmet = 4,
-    Shield = 5,
-    Staff = 6,
-    Accessories = 7
+    OneHanded_Sword = 0,
+    TwoHanded_Sword,
+    Hammer,
+    Mace,
+    Axe,
+    Long_Bow,
+    Short_Bow,
+    Gun,
+    Light_Plate,
+    Heavy_Plate,
+    Chain_Plate,
+    Light_Helmet,
+    Heavy_Helmet,
+    Small_Shield,
+    Big_Shield,
+    Wand,
+    Staff,
+    Ring,
+    Necklace
 }
 
 public enum ForgeType
