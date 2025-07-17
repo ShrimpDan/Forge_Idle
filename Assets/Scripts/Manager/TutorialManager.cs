@@ -26,7 +26,7 @@ public class TutorialManager : MonoBehaviour
     private bool isWaitingForClick = false;
 
     [Header("조명 이펙트")]
-    [SerializeField] private HighLighttEffectController effect;
+    [SerializeField] private HighLightEffectController effect;
     [SerializeField] List<Transform> hightLightTargets = new List<Transform>();
 
 
@@ -163,7 +163,7 @@ public class TutorialManager : MonoBehaviour
 
     public void HighlightTarget(Transform target)
     {
-        effect.SetHighLightTarget(target);
+        effect.ShowHighlight(target, uiCam);
     }
     
 }
