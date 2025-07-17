@@ -23,17 +23,17 @@ public class TutorialManager : MonoBehaviour
 
     private bool isWaitingForClick = false;
 
+
     [Header("조명 이펙트")]
     [SerializeField] private HighLighttEffectController effect;
-
-
-
     [SerializeField] List<Transform> hightLightTargets = new List<Transform>();
 
-    public void Init()
+
+
+
+    public void Init(GameManager gm)
     {
-
-
+        gameManager = gm;
         if (PlayerPrefs.GetInt("TutorialDone", 0) == 1)
         {
             isTurtorialMode = false;
@@ -52,10 +52,7 @@ public class TutorialManager : MonoBehaviour
        
     }
 
-    private void Start()
-    {
-        Init();
-    }
+ 
 
     public void StartTutorial()
     {
