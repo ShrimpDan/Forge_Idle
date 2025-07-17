@@ -107,7 +107,7 @@ public class TutorialManager : MonoBehaviour
                 tutorialPanel.SetActive(true);
                 tutorialText.text = "어서오세요!! 대장간은 처음 방문하시는군요!!\n 만나서 반갑습니다 간단한 운영법을 알려드릴께요!!";
                 isWaitingForClick = true;
-                isEventDone = true;
+                isEventDone = true; //이벤트가 없으니
                 // ClickBlockerOn();
                 break;
             case 1:
@@ -119,10 +119,12 @@ public class TutorialManager : MonoBehaviour
                 break;
             case 2:
                 HideArrow();
+                effect.HideHighlight();
                 ClickBlockerOn(); //대화를 해야하니까
-                Vector2 centerScreen = new Vector2(Screen.width / 2 +40, Screen.height / 2);
-                effect.ShowHighlight(centerScreen); //중앙에 하이라이트 
                 tutorialText.text = "화면에 보시면 가장먼저 도끼를 생산할꺼에요!! 도끼를 만들기위해 제작에 필요한 재료를 드릴께요!! ";
+                Vector2 centerScreen = new Vector2(Screen.width / 2 +40, Screen.height / 2);
+                StartCoroutine(WaitForClick());
+                effect.ShowHighlight(centerScreen); //중앙에 하이라이트 
                 GameManager.Instance.Inventory.AddItem(GameManager.Instance.DataManager.ItemLoader.GetItemByKey("resource_copper"), 2);
                 GameManager.Instance.Inventory.AddItem(GameManager.Instance.DataManager.ItemLoader.GetItemByKey("resource_bronze"), 1);
 
