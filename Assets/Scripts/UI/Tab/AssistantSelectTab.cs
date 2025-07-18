@@ -83,10 +83,8 @@ public class AssistantSelectTab : MonoBehaviour
                 continue;
             }
             slot.Init(assistantInventory);
-            // ⭐⭐⭐ 절대 SetSlot 호출 금지! (임시)
             slot.SetTempAssistant(assistant, assistantInstance =>
             {
-                // 팝업 슬롯에서 selectCallback만 호출(씬 슬롯에 전달됨)
                 selectCallback?.Invoke(assistantInstance);
             });
             idx++;

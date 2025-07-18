@@ -9,13 +9,16 @@ public class MineGroup
 {
     public string mineKey;
     public List<MineAssistantSlotUI> slotUIs;
-    public List<MineAssistantSlot> slots;    
+    public List<MineAssistantSlot> slots;
     [NonSerialized] public MineAssistantManager mineManager;
     [NonSerialized] public DateTime lastCollectTime;
 }
 
 public class MineSceneManager : MonoBehaviour
 {
+    [Header("마인 어시스턴트 프리팹")]
+    public GameObject mineAssistantPrefab;
+
     [Header("마인별 그룹(Inspector에서 세팅)")]
     public List<MineGroup> mineGroups;
 
@@ -34,8 +37,9 @@ public class MineSceneManager : MonoBehaviour
     public Camera mineCamera;
 
     [Header("팝업 루트 (Inspector에서 연결하세요)")]
-    public Transform popupRoot; // Inspector에서 PopupRoot 연결
+    public Transform popupRoot;
 
+    private List<List<GameObject>> spawnedAssistants;
     private AssistantInventory assistantInventory;
     private MineLoader mineLoader;
     private int currentMineIndex = 0;
@@ -47,7 +51,6 @@ public class MineSceneManager : MonoBehaviour
         var mainCamObj = GameObject.FindWithTag("MainCamera");
         if (mainCamObj != null) mainCamObj.SetActive(false);
         if (mineCamera != null) mineCamera.gameObject.SetActive(true);
-        else Debug.LogError("MineSceneManager: mineCamera 연결 안 됨!");
     }
 
     private void OnDestroy()
@@ -61,23 +64,16 @@ public class MineSceneManager : MonoBehaviour
 
     private void Start()
     {
-        if (GameManager.Instance == null || GameManager.Instance.AssistantManager == null)
-        {
-            Debug.LogError("GameManager.Instance 또는 AssistantManager가 초기화되어 있지 않습니다!");
-            return;
-        }
+        if (GameManager.Instance == null || GameManager.Instance.AssistantManager == null) return;
         assistantInventory = GameManager.Instance.AssistantManager.AssistantInventory;
-        if (assistantInventory == null)
-        {
-            Debug.LogError("MineSceneManager: AssistantInventory를 GameManager에서 받아오지 못했습니다!");
-            return;
-        }
+        if (assistantInventory == null) return;
 
         mineLoader = new MineLoader();
 
- 
+        spawnedAssistants = new List<List<GameObject>>();
         for (int idx = 0; idx < mineGroups.Count; ++idx)
         {
+            spawnedAssistants.Add(new List<GameObject>());
             var group = mineGroups[idx];
             var mineData = mineLoader.GetByKey(group.mineKey);
             if (mineData == null) continue;
@@ -92,10 +88,6 @@ public class MineSceneManager : MonoBehaviour
                 if (group.slots.Count > slotIdx)
                 {
                     slotUI.SetSlot(group.slots[slotIdx]);
-                }
-                else
-                {
-                    Debug.LogError($"MineSceneManager: MineGroup[{idx}]의 슬롯 데이터 개수 불일치!");
                 }
 
                 int closureIdx = idx;
@@ -127,15 +119,7 @@ public class MineSceneManager : MonoBehaviour
         if (mineDetailMap != null)
             mineDetailMap.SetActive(true);
 
-        if (cameraTouchDrag == null)
-        {
-            Debug.LogError("cameraTouchDrag가 연결되어 있지 않습니다!");
-        }
-        if (cameraLimits == null || cameraLimits.Count == 0)
-        {
-            Debug.LogError("cameraLimits가 비어있거나 0번 인덱스가 없습니다!");
-        }
-        else
+        if (cameraTouchDrag != null && cameraLimits != null && cameraLimits.Count > 0)
         {
             cameraTouchDrag.SetCameraLimit(cameraLimits[0]);
             cameraTouchDrag.enabled = true;
@@ -176,26 +160,13 @@ public class MineSceneManager : MonoBehaviour
 
     void OnSlotClicked(int mineIdx, MineAssistantSlotUI slotUI)
     {
-        Debug.Log("OnSlotClicked called!");
-
         var prefab = Resources.Load<GameObject>("UI/Popup/AssistantSelectPopup");
-        if (prefab == null)
-        {
-            Debug.LogError("AssistantSelectPopup prefab 로드 실패!");
-            return;
-        }
-        if (popupRoot == null)
-        {
-            Debug.LogError("MineSceneManager: popupRoot 연결 안 됨! (Inspector에서 연결해야 함)");
-            return;
-        }
+        if (prefab == null || popupRoot == null) return;
 
         var go = Instantiate(prefab, popupRoot);
-
         var popup = go.GetComponent<AssistantSelectPopup>();
         if (popup == null)
         {
-            Debug.LogError("AssistantSelectPopup 컴포넌트가 없습니다.");
             Destroy(go);
             return;
         }
@@ -207,10 +178,8 @@ public class MineSceneManager : MonoBehaviour
             {
                 slotUI.AssignAssistant(selected);
                 UpdateMinedAmountUI(mineIdx);
-            }
-            else
-            {
-                Debug.LogError("AssignAssistant 시도: slotUI가 씬 슬롯이 아님!");
+                ClearSlotAssistant(mineIdx, slotUI);
+                SpawnAssistantInMine(mineIdx, slotUI, selected);
             }
         }, true);
     }
@@ -230,5 +199,30 @@ public class MineSceneManager : MonoBehaviour
         float amount = group.mineManager.CalcMinedAmount(group.lastCollectTime, DateTime.Now);
         if (minedAmountText != null)
             minedAmountText.text = $"{amount:F0}개";
+    }
+
+    void SpawnAssistantInMine(int mineIdx, MineAssistantSlotUI slotUI, AssistantInstance assistant)
+    {
+        var mineRoot = minePrefabs[mineIdx];
+        var group = mineGroups[mineIdx];
+        Transform spawn = mineRoot.transform.Find("Spawnpoint") ?? mineRoot.transform;
+        GameObject go = Instantiate(mineAssistantPrefab, spawn.position, Quaternion.identity, mineRoot.transform);
+        go.name = $"MineAssistant_{mineIdx}_{assistant.Key}";
+        var fsm = go.GetComponent<MineAssistantFSM>();
+        if (fsm != null)
+            fsm.Init(assistant, mineIdx, mineRoot, this);
+        slotUI.gameObject.GetComponent<MineAssistantSlotUIObjectRef>()?.SetAssistant(go);
+        spawnedAssistants[mineIdx].Add(go);
+    }
+
+    void ClearSlotAssistant(int mineIdx, MineAssistantSlotUI slotUI)
+    {
+        var objRef = slotUI.GetComponent<MineAssistantSlotUIObjectRef>();
+        if (objRef != null && objRef.spawnedObject != null)
+        {
+            Destroy(objRef.spawnedObject);
+            spawnedAssistants[mineIdx].Remove(objRef.spawnedObject);
+            objRef.spawnedObject = null;
+        }
     }
 }
