@@ -6,7 +6,7 @@ public class WeaponRecipeSystem
     private ForgeManager forgeManager;
     private CraftingDataLoader craftingLoader;
 
-    public Dictionary<WeaponType, List<string>> UnlockedRecipeDict { get; private set; }
+    public Dictionary<WeaponType, List<string>> UnlockedRecipeDict { get; private set; } // 이거 무기타입별 해금된 제작법
     public int CurRecipePoint { get; private set; }
     public int TotalRecipePoint { get; private set; }
     private int UsedPoint => TotalRecipePoint - CurRecipePoint;
