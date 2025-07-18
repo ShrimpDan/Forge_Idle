@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class GameManager : MonoSingleton<GameManager>
 {
@@ -8,6 +9,7 @@ public class GameManager : MonoSingleton<GameManager>
     public AssistantInventory AssistantInventory => AssistantManager != null ? AssistantManager.AssistantInventory : null;
     public Forge Forge { get; private set; }
     public UIManager UIManager { get; private set; }
+    public List<AssistantInstance> HeldCandidates { get; private set; } = new();
 
     public DungeonSystem DungeonSystem{ get; private set; }
 
