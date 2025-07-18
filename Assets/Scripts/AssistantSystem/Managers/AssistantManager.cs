@@ -42,7 +42,7 @@ public class AssistantManager : MonoBehaviour
     {
         this.gameManager = gameManager;
         
-        inventory = new AssistantInventory(gameManager.Forge);
+        inventory = new AssistantInventory(gameManager.ForgeManager);
         factory = new AssistantFactory(gameManager.DataManager);
         spawner = new AssistantCardSpawner(
             largeTraineeCardPrefab,

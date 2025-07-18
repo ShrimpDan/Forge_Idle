@@ -46,7 +46,7 @@ namespace Assets.PixelFantasy.PixelHeroes.Common.Scripts.EditorScripts
 
                     if (layer.CanBeEmpty) layer.Controls.Dropdown.options.Add(new Dropdown.OptionData("Empty", EmptyIcon));
 
-                    layer.Controls.Dropdown.options.AddRange(layer.Content.Textures.Select(i => new Dropdown.OptionData(GetDisplayName(i.name), Sprite.Create(layer.Content.GetIcon(i), new Rect(0, 0, 32, 32), Vector2.one / 2, 100))));
+                    layer.Controls.Dropdown.options.AddRange(layer.Content.Textures.Select(i => new Dropdown.OptionData(GetDisplayName(i.name), Sprite.Create(layer.Content.GetIconByPath(i), new Rect(0, 0, 32, 32), Vector2.one / 2, 100))));
                     layer.Controls.Dropdown.value = -1;
                     layer.Controls.Dropdown.value = layer.Index + (layer.CanBeEmpty ? 1 : 0);
                     layer.Controls.Dropdown.onValueChanged.AddListener(value => SetIndex(layer, value));

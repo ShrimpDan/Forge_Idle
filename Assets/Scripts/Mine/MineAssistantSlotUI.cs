@@ -18,7 +18,7 @@ public class MineAssistantSlotUI : MonoBehaviour
             slotButton.onClick.AddListener(() => OnSlotClicked?.Invoke(this));
     }
 
-    // ÀÎº¥Åä¸® ¿¬µ¿¿ë (Start µî¿¡¼­ ¹Ýµå½Ã È£Ãâ)
+    // ï¿½Îºï¿½ï¿½ä¸® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (Start ï¿½î¿¡ï¿½ï¿½ ï¿½Ýµï¿½ï¿½ È£ï¿½ï¿½)
     public void Init(AssistantInventory inv)
     {
         assistantInventory = inv;
@@ -30,16 +30,16 @@ public class MineAssistantSlotUI : MonoBehaviour
         UpdateUI();
     }
 
-    // ¾î½Ã½ºÅÏÆ® ÇÒ´ç 
+    // ï¿½ï¿½Ã½ï¿½ï¿½ï¿½Æ® ï¿½Ò´ï¿½ 
     public void AssignAssistant(AssistantInstance assistant)
     {
-        // ÀÌÀü ÇÒ´çµÈ ¾î½Ã½ºÅÏÆ®´Â ÀÎº¥Åä¸®¿¡ ¹ÝÈ¯
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½Ò´ï¿½ï¿½ ï¿½ï¿½Ã½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Îºï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½È¯
         if (slot != null && slot.IsAssigned && slot.AssignedAssistant != null)
         {
             assistantInventory.Add(slot.AssignedAssistant);
         }
 
-        // »õ ¾î½Ã½ºÅÏÆ®´Â ÀÎº¥Åä¸®¿¡¼­ Á¦°Å
+        // ï¿½ï¿½ ï¿½ï¿½Ã½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Îºï¿½ï¿½ä¸®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         if (assistant != null)
             assistantInventory.Remove(assistant);
 
@@ -47,7 +47,7 @@ public class MineAssistantSlotUI : MonoBehaviour
         UpdateUI();
     }
 
-    // ½½·Ô ÇØÁ¦ (UI¿¡¼­ º°µµ ¹öÆ° ¿¬°á½Ã »ç¿ë)
+    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (UIï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ° ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½)
     public void UnassignAssistant()
     {
         if (slot != null && slot.IsAssigned && slot.AssignedAssistant != null)
@@ -62,7 +62,7 @@ public class MineAssistantSlotUI : MonoBehaviour
     {
         if (slot != null && slot.IsAssigned && iconImage != null && slot.AssignedAssistant != null)
         {
-            var icon = IconLoader.GetIcon(slot.AssignedAssistant.IconPath);
+            var icon = IconLoader.GetIconByPath(slot.AssignedAssistant.IconPath);
             iconImage.sprite = icon;
             iconImage.enabled = true;
         }
@@ -77,7 +77,7 @@ public class MineAssistantSlotUI : MonoBehaviour
     {
         if (iconImage != null && assistant != null)
         {
-            var icon = IconLoader.GetIcon(assistant.IconPath);
+            var icon = IconLoader.GetIconByPath(assistant.IconPath);
             iconImage.sprite = icon;
             iconImage.enabled = true;
         }

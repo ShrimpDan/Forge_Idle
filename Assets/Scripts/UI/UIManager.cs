@@ -94,10 +94,6 @@ public class UIManager : MonoBehaviour
             return number.ToString($"N{decimalPoint}");
     }
 
-
-
-
-
     public void Init(GameManager gameManager)
     {
         this.gameManager = gameManager;
@@ -169,7 +165,7 @@ public class UIManager : MonoBehaviour
         if ((ui.UIType == UIType.Popup || ui.UIType == UIType.Window) && ui.RootPanel != null)
         {
             UIEffect.PopupCloseEffect(ui.RootPanel, 0.18f);
-            Destroy(ui.gameObject, 0.19f); 
+            Destroy(ui.gameObject, 0.19f);
         }
         else
         {
@@ -241,6 +237,15 @@ public class UIManager : MonoBehaviour
             return;
 
         ui.Init(gameManager, this);
+    }
+
+    public void OpenForgeTab()
+    {
+        var mainUI = fixedRoot.GetComponentInChildren<MainUI>(true);
+        if (mainUI != null)
+        {
+            mainUI.Open();
+        }
     }
 }
 
