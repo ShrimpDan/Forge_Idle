@@ -145,7 +145,7 @@ public class AssistantInventory
     /// </summary>
     public List<AssistantInstance> GetActiveTrainees()
     {
-        return assistantList.FindAll(t => t.IsEquipped && !t.IsFired);
+        return assistantList.FindAll(t => !t.IsFired);
     }
 
     /// <summary>
