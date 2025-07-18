@@ -19,5 +19,7 @@ public class SerializableAssistantInstance
     public string CustomerInfo;
     public int RecruitCost;
     public int Wage;
+    public bool IsFired;
+    public int RehireCost;
     public List<AssistantInstance.AbilityMultiplier> Multipliers;
 }

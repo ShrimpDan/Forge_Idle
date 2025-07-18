@@ -16,9 +16,12 @@ public class AssistantInstance
     public string grade { get; private set; }
     public int RecruitCost { get; private set; }
     public int Wage { get; private set; }
+    public int RehireCost { get; private set; }
 
     public bool IsEquipped { get; set; }
     public bool IsInUse { get; set; }
+
+    public bool IsFired { get; set; } = false;
 
     public int SpecializationIndex { get; set; }
 
@@ -41,7 +44,8 @@ public class AssistantInstance
         string grade = "N",
         string customerInfo = "",
         int recruitCost = 0,
-        int wage = 0
+        int wage = 0,
+        int rehireCost = 0
     )
     {
         Key = key;
@@ -58,6 +62,7 @@ public class AssistantInstance
         CustomerInfo = customerInfo;
         RecruitCost = recruitCost;
         Wage = wage;
+        RehireCost = rehireCost;
     }
 
     [Serializable]

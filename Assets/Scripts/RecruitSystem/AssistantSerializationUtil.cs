@@ -22,7 +22,10 @@ public static class AssistantSerializationUtil
             CustomerInfo = instance.CustomerInfo,
             RecruitCost = instance.RecruitCost,
             Wage = instance.Wage,
-            Multipliers = instance.Multipliers
+            Multipliers = instance.Multipliers,
+
+            IsFired = instance.IsFired,
+            RehireCost = instance.RehireCost
         };
     }
 
@@ -38,7 +41,7 @@ public static class AssistantSerializationUtil
             sellingMultiplier = data.SellingMultiplier
         };
 
-        return new AssistantInstance(
+        var instance = new AssistantInstance(
             key: data.Key,
             name: data.Name,
             personality: personality,
@@ -50,7 +53,12 @@ public static class AssistantSerializationUtil
             grade: data.Grade,
             customerInfo: data.CustomerInfo,
             recruitCost: data.RecruitCost,
-            wage: data.Wage
+            wage: data.Wage,
+            rehireCost: data.RehireCost
         );
+
+        instance.IsFired = data.IsFired;
+
+        return instance;
     }
 }

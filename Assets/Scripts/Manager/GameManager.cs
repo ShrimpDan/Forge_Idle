@@ -68,9 +68,60 @@ public class GameManager : MonoSingleton<GameManager>
 
 
         SaveManager.LoadAll();
-      
+
+        InvokeRepeating(nameof(ProcessHourlyWage), 600f, 600f);
     }
 
+    /// <summary>
+    /// 장착 중이며 해고되지 않은 제자에게 시급을 지급.
+    /// 지급 실패 시 해고 처리.
+    /// 전체 지급 총합을 출력.
+    /// </summary>
+    public void ProcessHourlyWage()
+    {
+        if (AssistantInventory == null)
+        {
+            Debug.LogWarning("[시급] AssistantInventory가 null입니다.");
+            return;
+        }
+
+        var activeTrainees = AssistantInventory.GetActiveTrainees();
+        if (activeTrainees.Count == 0)
+        {
+            Debug.Log("<color=gray>[시급] 지급 대상이 없습니다.</color>");
+            return;
+        }
+
+        int totalPaid = 0;
+
+        foreach (var assi in activeTrainees)
+        {
+            if (Forge.UseGold(assi.Wage))
+            {
+                totalPaid += assi.Wage;
+                Debug.Log($"[시급] {assi.Name}에게 {assi.Wage}G 지급 완료");
+            }
+            else
+            {
+                assi.IsFired = true;
+                Debug.LogWarning($"[시급] {assi.Name}에게 {assi.Wage}G 지급 실패 → 해고 처리됨");
+            }
+        }
+
+        if (totalPaid > 0)
+        {
+            Debug.Log($"<color=yellow>[시급 처리 완료] 총 {totalPaid}G 지출</color>");
+        }
+
+        SaveManager.SaveAll();
+    }
+
+
+    [ContextMenu("강제 시급 차감 실행")]
+    public void DebugWageTick()
+    {
+        ProcessHourlyWage();
+    }
 
     [ContextMenu("Get Random Item")]
     public void GetRandomItem()

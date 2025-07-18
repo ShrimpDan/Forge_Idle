@@ -139,4 +139,20 @@ public class AssistantInventory
             ReindexSpecialization(type);
         }
     }
+
+    /// <summary>
+    /// 사용 가능한 제자만 반환
+    /// </summary>
+    public List<AssistantInstance> GetActiveTrainees()
+    {
+        return assistantList.FindAll(t => t.IsEquipped && !t.IsFired);
+    }
+
+    /// <summary>
+    /// 시급을 지불하지 못해 사용 못하는 제자만 반환
+    /// </summary>
+    public List<AssistantInstance> GetFiredTrainees()
+    {
+        return assistantList.FindAll(t => t.IsFired);
+    }
 }

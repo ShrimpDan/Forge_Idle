@@ -98,7 +98,6 @@ public class AssistantFactory
         return results;
     }
 
-
     public void ResetRecruitLock() => canRecruit = true;
 
     private AssistantInstance CreateAssistantFromData(AssistantData assistant)
@@ -131,6 +130,7 @@ public class AssistantFactory
 
         int recruitCost = 0;
         int wage = 0;
+        int rehireCost = 0;
 
         if (wageData != null)
         {
@@ -138,12 +138,16 @@ public class AssistantFactory
             int maxRecruit = Mathf.FloorToInt(wageData.maxRecruitCost / 10f) * 10;
             int minWage = Mathf.FloorToInt(wageData.minWage / 10f) * 10;
             int maxWage = Mathf.FloorToInt(wageData.maxWage / 10f) * 10;
+            int minRehire = Mathf.FloorToInt(wageData.minRehireCost / 10f) * 10;
+            int maxRehire = Mathf.FloorToInt(wageData.maxRehireCost / 10f) * 10;
 
             if (maxRecruit <= minRecruit) maxRecruit = minRecruit + 10;
             if (maxWage <= minWage) maxWage = minWage + 10;
+            if (maxRehire <= minRehire) maxRehire = minRehire + 10;
 
             recruitCost = Mathf.FloorToInt(UnityEngine.Random.Range(minRecruit, maxRecruit + 1) / 10f) * 10;
             wage = Mathf.FloorToInt(UnityEngine.Random.Range(minWage, maxWage + 1) / 10f) * 10;
+            rehireCost = Mathf.FloorToInt(UnityEngine.Random.Range(minRehire, maxRehire + 1) / 10f) * 10;
         }
 
         AssistantInstance assistantData = new AssistantInstance(
@@ -157,13 +161,15 @@ public class AssistantFactory
             customerInfo: assistant.customerInfo,
             recruitCost: recruitCost,
             wage: wage,
+            rehireCost: rehireCost,
             grade: assistant.grade
         );
 
-        Debug.Log($"costKey: {costKey}, recruitCost: {recruitCost}, wage: {wage}");
+        Debug.Log($"costKey: {costKey}, recruitCost: {recruitCost}, wage: {wage}, rehireCost: {rehireCost}");
         AssignInfo(assistantData);
         return assistantData;
     }
+
 
     public AssistantInstance CreateFromSpecAndPersonality(SpecializationType spec, string personalityKey, int minTier = 1)
     {
