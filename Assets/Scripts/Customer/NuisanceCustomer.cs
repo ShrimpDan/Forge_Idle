@@ -13,14 +13,16 @@ public class NuisanceCustomer : Customer
     [SerializeField] private Transform exitPoint;
 
 
+
+    private static bool blockClickCheck = false; // 마인씬 체크용 상태변수 추가
     private bool isClicked = false;
 
-    
+
 
 
     protected override void Start()
     {
-        
+
         if (buyPoint == null)
         {
             buyPoint = GetRandomBuyPoint();
@@ -30,12 +32,12 @@ public class NuisanceCustomer : Customer
             InteractIcon.SetActive(true);
         }
 
-      //  StartCoroutine(NuisanceFlow());
-      
+        //  StartCoroutine(NuisanceFlow());
+
     }
     protected override void OnEnable()
     {
-        
+
         isClicked = false;
         if (InteractIcon != null)
         {
@@ -54,7 +56,7 @@ public class NuisanceCustomer : Customer
             timer += Time.deltaTime;
             yield return null;
         }
-               
+
         yield return ExitFlow();
     }
 
@@ -63,6 +65,8 @@ public class NuisanceCustomer : Customer
     protected override void Update()
     {
         base.Update();
+        if (blockClickCheck) return; // 마인씬에서 클릭 방지
+
 #if UNITY_EDITOR || UNITY_STANDALONE
         if (Input.GetMouseButtonDown(0))
         {
@@ -88,7 +92,7 @@ public class NuisanceCustomer : Customer
         if (hit != null && hit.transform == transform)
         {
             Interact();
-           
+
         }
     }
     public override void Interact()
@@ -113,10 +117,10 @@ public class NuisanceCustomer : Customer
 
     }
 
-    private IEnumerator ExitFlow()       
+    private IEnumerator ExitFlow()
     {
         state = CustomerState.Exiting;
-                
+
         if (moveWayPoint != null && moveWayPoint.Length > 0 && moveWayPoint[0] != null)
         {
             yield return MoveingWayPoint(moveWayPoint[0].position);
@@ -125,15 +129,15 @@ public class NuisanceCustomer : Customer
         {
             Debug.LogError($"[NuisanceCustomer] 퇴장 경로(moveWayPoint)가 설정되지 않았습니다!", this.gameObject);
         }
-        
+
         if (!isClicked)
         {
             PenaltyGold();
         }
-              
+
         CustomerExit();
     }
-  
+
 
     //private 
 
@@ -152,5 +156,11 @@ public class NuisanceCustomer : Customer
     {
         GameManager.Instance.Forge.AddGold(-1000);
         Debug.Log("골드 차감");
+    }
+
+    // 마인씬용 매서드
+    public static void SetBlockClick(bool block)
+    {
+        blockClickCheck = block;
     }
 }

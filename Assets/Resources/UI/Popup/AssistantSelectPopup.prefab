@@ -456,7 +456,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4385679149110319458}
   m_HandleRect: {fileID: 7883317104908571537}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -558,7 +558,7 @@ MonoBehaviour:
   craftRoot: {fileID: 4231694420281951693}
   miningRoot: {fileID: 6415196377848124999}
   sellRoot: {fileID: 7901688836899389504}
-  assistantSlotPrefab: {fileID: 1019528226878010427, guid: d206daf4a27641a4fa0beef2704b9b3d, type: 3}
+  assistantSlotPrefab: {fileID: 1019528226878010427, guid: 233ee91224ca7ce4fb154e58199bba37, type: 3}
 --- !u!1 &2760469623043763146
 GameObject:
   m_ObjectHideFlags: 0
@@ -2059,11 +2059,11 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 7962545404288248957}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.00006866455, y: 0}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 210, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &2324225993559997544
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2291,7 +2291,7 @@ RectTransform:
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &8748646258740293044
 CanvasRenderer:
   m_ObjectHideFlags: 0

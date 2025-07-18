@@ -8,8 +8,8 @@ using TMPro;
 public class MineGroup
 {
     public string mineKey;
-    public List<MineAssistantSlotUI> slotUIs; // 씬에 배치된 슬롯UI들 (Inspector 연결)
-    public List<MineAssistantSlot> slots;     // 실제 데이터 슬롯 (동일 개수로 Inspector 연결 or 코드에서 동적생성)
+    public List<MineAssistantSlotUI> slotUIs;
+    public List<MineAssistantSlot> slots;    
     [NonSerialized] public MineAssistantManager mineManager;
     [NonSerialized] public DateTime lastCollectTime;
 }
@@ -42,6 +42,8 @@ public class MineSceneManager : MonoBehaviour
 
     private void Awake()
     {
+        NuisanceCustomer.SetBlockClick(true);
+
         var mainCamObj = GameObject.FindWithTag("MainCamera");
         if (mainCamObj != null) mainCamObj.SetActive(false);
         if (mineCamera != null) mineCamera.gameObject.SetActive(true);
@@ -50,6 +52,8 @@ public class MineSceneManager : MonoBehaviour
 
     private void OnDestroy()
     {
+        NuisanceCustomer.SetBlockClick(false);
+
         var mainCamObj = GameObject.FindWithTag("MainCamera");
         if (mainCamObj != null) mainCamObj.SetActive(true);
         if (mineCamera != null) mineCamera.gameObject.SetActive(false);
@@ -71,7 +75,7 @@ public class MineSceneManager : MonoBehaviour
 
         mineLoader = new MineLoader();
 
-        // 반드시 slotUIs, slots 개수가 동일해야 함!
+ 
         for (int idx = 0; idx < mineGroups.Count; ++idx)
         {
             var group = mineGroups[idx];
@@ -80,13 +84,11 @@ public class MineSceneManager : MonoBehaviour
             group.mineManager = new MineAssistantManager(mineData);
             group.lastCollectTime = DateTime.Now;
 
-            // 씬 슬롯 UI와 데이터 슬롯을 1:1로 연결
             for (int slotIdx = 0; slotIdx < group.slotUIs.Count; ++slotIdx)
             {
                 var slotUI = group.slotUIs[slotIdx];
                 slotUI.Init(assistantInventory);
 
-                // 여기 반드시 slot 세팅!
                 if (group.slots.Count > slotIdx)
                 {
                     slotUI.SetSlot(group.slots[slotIdx]);
