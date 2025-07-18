@@ -66,6 +66,9 @@ public class RecruitPreviewManager : MonoBehaviour
 
     public void TryRecruitCandidate()
     {
+        GameManager.Instance.HeldCandidates.Clear();
+        GameManager.Instance.SaveManager.SaveAll();
+
         foreach (var paper in activePapers)
         {
             if (paper != null)
@@ -90,6 +93,7 @@ public class RecruitPreviewManager : MonoBehaviour
 
         ShowCurrentCandidate();
     }
+
 
     private void ShowCurrentCandidate()
     {
@@ -154,10 +158,21 @@ public class RecruitPreviewManager : MonoBehaviour
 
         SetButtonsInteractable(false);
 
+        var gm = GameManager.Instance;
+
         if (isFromHeldList)
         {
-            GameManager.Instance.AssistantInventory.Add(currentHeldInstance);
-            GameManager.Instance.HeldCandidates.Remove(currentHeldInstance);
+            int cost = currentHeldInstance.RecruitCost;
+            if (!gm.Forge.UseGold(cost))
+            {
+                Debug.LogWarning("[Recruit] 골드가 부족하여 영입할 수 없습니다.");
+                SetButtonsInteractable(true);
+                return;
+            }
+
+            gm.AssistantInventory.Add(currentHeldInstance);
+            gm.HeldCandidates.Remove(currentHeldInstance);
+            gm.SaveManager.SaveAll();
 
             isFromHeldList = false;
             currentHeldInstance = null;
@@ -167,11 +182,22 @@ public class RecruitPreviewManager : MonoBehaviour
         }
 
         var approved = candidatePool[currentIndex];
-        GameManager.Instance.AssistantInventory.Add(approved);
+        int recruitCost = approved.RecruitCost;
+
+        if (!gm.Forge.UseGold(recruitCost))
+        {
+            Debug.LogWarning("[Recruit] 골드가 부족하여 영입할 수 없습니다.");
+            SetButtonsInteractable(true);
+            return;
+        }
+
+        gm.AssistantInventory.Add(approved);
+        gm.SaveManager.SaveAll();
 
         currentIndex++;
         ShowCurrentCandidate();
     }
+
 
     public void RejectCandidate()
     {
@@ -182,6 +208,8 @@ public class RecruitPreviewManager : MonoBehaviour
         if (isFromHeldList)
         {
             GameManager.Instance.HeldCandidates.Remove(currentHeldInstance);
+
+            GameManager.Instance.SaveManager.SaveAll();
 
             isFromHeldList = false;
             currentHeldInstance = null;
@@ -211,6 +239,8 @@ public class RecruitPreviewManager : MonoBehaviour
 
         var held = candidatePool[currentIndex];
         GameManager.Instance.HeldCandidates.Add(held);
+
+        GameManager.Instance.SaveManager.SaveAll();
 
         currentIndex++;
         ShowCurrentCandidate();

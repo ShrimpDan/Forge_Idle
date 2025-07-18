@@ -9,7 +9,7 @@ public class GameManager : MonoSingleton<GameManager>
     public AssistantInventory AssistantInventory => AssistantManager != null ? AssistantManager.AssistantInventory : null;
     public Forge Forge { get; private set; }
     public UIManager UIManager { get; private set; }
-    public List<AssistantInstance> HeldCandidates { get; private set; } = new();
+    public List<AssistantInstance> HeldCandidates { get; internal set; } = new();
 
     public DungeonSystem DungeonSystem{ get; private set; }
 
@@ -64,8 +64,9 @@ public class GameManager : MonoSingleton<GameManager>
         SaveManager.RegisterSaveHandler(new WeaponSellingSaveHandler(Forge.SellingSystem));
         SaveManager.RegisterSaveHandler(new CollectionBookSaveHandler(CollectionBookManager.Instance));
         SaveManager.RegisterSaveHandler(new DungeonSaveHandler(DungeonSystem));
-        
-        
+        SaveManager.RegisterSaveHandler(new HeldCandidateSaveHandler(this));
+
+
         SaveManager.LoadAll();
       
     }
