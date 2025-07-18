@@ -113,41 +113,6 @@ public class NuisanceCustomer : Customer
 
     }
 
-
-    private IEnumerator NuisanceFlow()
-    {
-     
-        yield return MoveRandomPlace();
-
-               
-        yield return StartCoroutine(WaitForInteraction());
-
-      
-        yield return StartCoroutine(ExitFlow());
-
-    }
-
-
-    private IEnumerator WaitForInteraction()
-    {
-      
-        float time = 0f;
-        isClicked = false;
-
-        while (time < waitTime)
-        {
-            if (Input.GetMouseButtonDown(0))
-            {
-                // Interact();
-                isClicked = true;
-                break;
-            }
-
-            time += Time.deltaTime;
-            yield return null;
-        }
-    }
-
     private IEnumerator ExitFlow()       
     {
         state = CustomerState.Exiting;

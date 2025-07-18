@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,7 +7,7 @@ using UnityEngine;
 public class CraftingManager : MonoBehaviour
 {
     public const int CraftSlotCount = 6;
-
+    
     public class CraftTask
     {
         public bool isCrafting = false;
@@ -30,6 +31,7 @@ public class CraftingManager : MonoBehaviour
     private List<CraftTask> craftTasks = new List<CraftTask>();
     private List<Coroutine> coroutines = new List<Coroutine>();
 
+    public event Action isCrafingDone;
  
     private InventoryManager inventory;
     private Forge forge;
@@ -81,7 +83,9 @@ public class CraftingManager : MonoBehaviour
         {
             inventory.AddItem(task.itemData, 1);
             task.rewardGiven = true;
+            isCrafingDone?.Invoke(); //여기서 이벤트 발생
         }
+        
     }
 
     public CraftTask GetCraftTask(int idx)

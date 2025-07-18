@@ -70,7 +70,7 @@ public class FusionSlotView : MonoBehaviour
         return type switch
         {
             SpecializationType.Crafting => "제작 특화",
-            SpecializationType.Enhancing => "강화 특화",
+            SpecializationType.Mining => "채광 특화",
             SpecializationType.Selling => "판매 특화",
             _ => "알 수 없음"
         };

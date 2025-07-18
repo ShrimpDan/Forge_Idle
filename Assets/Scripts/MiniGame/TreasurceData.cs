@@ -2,6 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum GemType
+{ 
+    Gem,
+    Dia
+}
 
 [CreateAssetMenu(fileName = "TreasurceData", menuName ="Data/Treasurse")]
 public class TreasureData : ScriptableObject
@@ -11,5 +16,6 @@ public class TreasureData : ScriptableObject
     public Vector2Int[] Shape;
     public Sprite[] pratSprite;
     public Sprite rewardImage;
+    public GemType gemType;
     
 }

@@ -55,7 +55,7 @@ public class FusionUIController : MonoBehaviour
     private static readonly Dictionary<SpecializationType, int> SpecializationOrder = new()
     {
         { SpecializationType.Crafting, 0 },
-        { SpecializationType.Enhancing, 1 },
+        { SpecializationType.Mining, 1 },
         { SpecializationType.Selling, 2 }
     };
 
@@ -447,7 +447,7 @@ public class FusionUIController : MonoBehaviour
         return type switch
         {
             SpecializationType.Crafting => "제작 특화",
-            SpecializationType.Enhancing => "강화 특화",
+            SpecializationType.Mining => "강화 특화",
             SpecializationType.Selling => "판매 특화",
             _ => "알 수 없음"
         };

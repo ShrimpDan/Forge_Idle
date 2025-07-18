@@ -13,17 +13,20 @@ public class GameManager : MonoSingleton<GameManager>
     public DungeonSystem DungeonSystem{ get; private set; }
     public CraftingManager CraftingManager { get; private set; }
     public GameSaveManager SaveManager { get; private set; }
-
+    public TutorialManager TutorialManager { get; private set; }
+    
     protected override void Awake()
     {
         base.Awake();
-       
+
         Inventory = new InventoryManager(this);
         DataManager = new DataManager();
 
         ForgeManager = new ForgeManager(this);
         AssistantManager = FindObjectOfType<AssistantManager>();
         UIManager = FindObjectOfType<UIManager>();
+
+        TutorialManager = FindObjectOfType<TutorialManager>();
         DungeonSystem = new DungeonSystem(this);
 
         CollectionBookManager.Instance.Initialize();
@@ -32,6 +35,8 @@ public class GameManager : MonoSingleton<GameManager>
 
         if (AssistantManager)
             AssistantManager.Init(this);
+        if (TutorialManager)
+            TutorialManager.Init(this);
 
         // CraftingManager 동적 생성 및 초기화
         var cmObj = new GameObject("CraftingManager");
@@ -115,6 +120,8 @@ public class GameManager : MonoSingleton<GameManager>
 
     private void OnApplicationQuit()
     {
-        SaveManager.SaveAll();
+       
+            SaveManager.SaveAll();
+       
     }
 }

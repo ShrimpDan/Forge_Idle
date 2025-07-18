@@ -18,13 +18,13 @@ public class TraineeButtonHandler : MonoBehaviour
     // 단일 모집
     public void OnClickRandom() => assistantManager.RecruitSingle();
     public void OnClickCrafting() => assistantManager.RecruitSingle(SpecializationType.Crafting);
-    public void OnClickEnhancing() => assistantManager.RecruitSingle(SpecializationType.Enhancing);
+    public void OnClickMining() => assistantManager.RecruitSingle(SpecializationType.Mining);
     public void OnClickSelling() => assistantManager.RecruitSingle(SpecializationType.Selling);
 
     // 10연차 모집
     public void OnClickTenRandom() => assistantManager.RecruitMultiple(10);
     public void OnClickTenCrafting() => assistantManager.RecruitMultiple(10, SpecializationType.Crafting);
-    public void OnClickTenEnhancing() => assistantManager.RecruitMultiple(10, SpecializationType.Enhancing);
+    public void OnClickTenMining() => assistantManager.RecruitMultiple(10, SpecializationType.Mining);
     public void OnClickTenSelling() => assistantManager.RecruitMultiple(10, SpecializationType.Selling);
 
     // 합성 UI 열기
