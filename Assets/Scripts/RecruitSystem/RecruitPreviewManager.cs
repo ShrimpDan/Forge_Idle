@@ -163,7 +163,7 @@ public class RecruitPreviewManager : MonoBehaviour
         if (isFromHeldList)
         {
             int cost = currentHeldInstance.RecruitCost;
-            if (!gm.Forge.UseGold(cost))
+            if (!gm.ForgeManager.UseGold(cost))
             {
                 Debug.LogWarning("[Recruit] 골드가 부족하여 영입할 수 없습니다.");
                 SetButtonsInteractable(true);

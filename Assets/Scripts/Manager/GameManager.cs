@@ -54,14 +54,73 @@ public class GameManager : MonoSingleton<GameManager>
     {
         SaveManager = new GameSaveManager();
 
-        // 세이브 핸들러 등록
         SaveManager.RegisterSaveHandler(new ForgeSaveHandeler(ForgeManager));
         SaveManager.RegisterSaveHandler(new InventorySaveHandler(Inventory));
         SaveManager.RegisterSaveHandler(new AssistantSaveHandler(AssistantManager, DataManager.PersonalityLoader));
         SaveManager.RegisterSaveHandler(new CollectionBookSaveHandler(CollectionBookManager.Instance));
         SaveManager.RegisterSaveHandler(new DungeonSaveHandler(DungeonSystem));
 
+        SaveManager.RegisterSaveHandler(new HeldCandidateSaveHandler(this));
+
         SaveManager.LoadAll();
+
+        InvokeRepeating(nameof(ProcessHourlyWage), 600f, 600f);
+    }
+
+    /// <summary>
+    /// 해고되지 않은 모든 제자에게 시급을 지급.
+    /// 지급 실패 시 IsFired = true 처리.
+    /// 전체 지급 총합을 디버그 로그에 출력.
+    /// </summary>
+    public void ProcessHourlyWage()
+    {
+        if (AssistantInventory == null)
+        {
+            Debug.LogWarning("[시급] AssistantInventory가 null입니다.");
+            return;
+        }
+
+        var allTrainees = AssistantInventory.GetAll();
+        int totalPaid = 0;
+        int activeCount = 0;
+
+        foreach (var assi in allTrainees)
+        {
+            if (assi.IsFired) continue;
+
+            activeCount++;
+
+            if (ForgeManager.UseGold(assi.Wage))
+            {
+                totalPaid += assi.Wage;
+                Debug.Log($"[시급] {assi.Name}에게 {assi.Wage}G 지급 완료");
+            }
+            else
+            {
+                assi.IsFired = true;
+                Debug.LogWarning($"[시급] {assi.Name} 시급 {assi.Wage}G 지급 실패 → 해고 처리됨");
+            }
+        }
+
+        if (activeCount == 0)
+        {
+            Debug.Log("<color=gray>[시급] 지급 대상 제자가 없습니다.</color>");
+        }
+        else if (totalPaid > 0)
+        {
+            Debug.Log($"<color=yellow>[시급 처리 완료] 총 {totalPaid}G 지출</color>");
+        }
+
+        SaveManager.SaveAll();
+    }
+
+    /// <summary>
+    /// 강제로 시급 차감을 즉시 실행합니다.
+    /// </summary>
+    [ContextMenu("강제 시급 차감 실행")]
+    public void DebugWageTick()
+    {
+        ProcessHourlyWage();
     }
 
 
