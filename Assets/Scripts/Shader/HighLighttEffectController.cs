@@ -56,20 +56,21 @@ public class HighLightEffectController : MonoBehaviour
         highLightMaterial.SetVector("_Center", normalizedPos);
 
     }
-    public void ShowHighlight(Vector2 pos, float highlightWidth) //넓이 조절가능
+    public void ShowHighlight(Vector2 screenPos)
     {
         if (highLightMaterial == null || highlightImage == null)
-        {
+        { 
             return;
         }
-        Vector2 normalizedPos = new Vector2(pos.x / Screen.width, pos.y / Screen.height);
+
+        Vector2 normalizedPos = new Vector2(screenPos.x / Screen.width, screenPos.y / Screen.height);
+
         highLightMaterial.SetVector("_Center", normalizedPos);
-        highLightMaterial.SetFloat("_HighlightWidth", highlightWidth);
-    
+        highlightImage.enabled = true;
     }
 
-    
-     public void ResetHighlightSize()
+
+    public void ResetHighlightSize()
     {
         if (highLightMaterial != null)
         {
@@ -86,6 +87,24 @@ public class HighLightEffectController : MonoBehaviour
         }
     }
 
+    public void ShowHighlightWithOffset(Transform target, Camera cam, Vector2 pixelOffset, float width = -1f) //위치 좌표로 움직이기 
+    {
+        if (highLightMaterial == null || highlightImage == null || cam == null)
+        {
+            return;
+        }
 
+        Vector3 screenPos = cam.WorldToScreenPoint(target.position);
+        screenPos += (Vector3)pixelOffset;
 
+        Vector2 normalizedPos = new Vector2(screenPos.x / Screen.width, screenPos.y / Screen.height);
+        highLightMaterial.SetVector("_Center", normalizedPos);
+
+        if (width > 0f)
+        {
+            highLightMaterial.SetFloat("_HighlightWidth", width);
+        }
+
+        highlightImage.enabled = true;
+    }
 }

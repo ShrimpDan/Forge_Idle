@@ -176,14 +176,34 @@ public class TutorialManager : MonoBehaviour
                 isEvent = true; //이걸 해야 다른걸 눌렀을때 상호작용이 막힘
                 break;
             case 9:
-                ShowTextWithTyping("강화는 일반강화, 고급강화로 나눠져 있어요!! 창을 클릭해서 무기를 올려볼까요?");
+                ClickBlockerOn();
+                HighlightPos(-180, 500);
+                ShowTextWithTyping("강화는 일반강화, 고급강화로 나눠져 있어요!! 가운데 창을 클릭해서 무기를 올려볼까요?");
                 break;
-
+                             
             case 10:
+                HighlightPos(0, 300);
+                effect.HideHighlight();
+                ClickBlockerOn();
+                ShowTextWithTyping("강화는 일반강화, 고급강화로 나눠져 있어요!! 가운데 창을 클릭해서 강화하고 싶은 무기를 올릴수 있어요!!");
+                break;
+            case 11:
+                ClickBlockerOn();
+                HighlightPos(-200, -900);
+                effect.HideHighlight();
+                ShowTextWithTyping("일반강화는 골드를 사용해서 확률을 통해서 강화 할수있어요!! ");
+                break;
+            case 12:
+                ClickBlockerOn();
+                HighlightPos(200, -900);
+                effect.HideHighlight();
+                ShowTextWithTyping("고급강화는 재화를 사용해서 좀더 확률이 높게 강화가 가능해요!! ");
+                break;
+            case 15:
                 AllEffectOff();
                 ShowTextWithTyping("이제 손님들이 방문할꺼에요!! 대장간을 한번 잘 운영해봐요!!");
                 break;
-            case 11:
+            case 20:
                 EndTutorial();
                 break;
 
@@ -274,6 +294,12 @@ public class TutorialManager : MonoBehaviour
         }
     }
 
+    private void MoveArrowToPos(Vector2 pos)
+    {
+
+        arrowIcon.transform.position = new Vector2(pos.x, pos.y + 150);
+    }
+
     public void HighlightTarget(Transform target) //조명 비추기
     {
         if (!effect.gameObject.activeInHierarchy)
@@ -282,6 +308,15 @@ public class TutorialManager : MonoBehaviour
         }
 
         effect.ShowHighlight(target, uiCam);
+    }
+
+    public void HighlightPos(float x, float y)
+    {
+        Vector2 centerScreen = new Vector2((uiCam.pixelWidth / 2f +x), (uiCam.pixelHeight / 2f +y));
+        effect.ShowHighlight(centerScreen);
+        MoveArrowToPos(centerScreen);
+
+       
     }
 
     public void ClickBlockerOn() //클릭버튼 블록
