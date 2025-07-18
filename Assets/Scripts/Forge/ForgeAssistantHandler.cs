@@ -23,7 +23,6 @@ public class ForgeAssistantHandler
         EquippedAssistant = new Dictionary<SpecializationType, AssistantInstance>()
         {
             { SpecializationType.Crafting, null },
-            { SpecializationType.Enhancing, null },
             { SpecializationType.Selling, null },
         };
     }
