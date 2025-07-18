@@ -13,12 +13,12 @@ public class RewardPopup_Slot : MonoBehaviour
     public void Init(ItemData itemData, int count)
     {
         itemKey = itemData.ItemKey;
-        icon.sprite = IconLoader.GetIcon(itemData.IconPath);
+        icon.sprite = IconLoader.GetIconByPath(itemData.IconPath);
         quantity = count;
         quantityText.text = quantity.ToString();
     }
 
-    // ¸¸¾à ¿©·¯ ¹ø AddÇÏ´Â ½ÄÀÌ¸é »ç¿ë
+    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ Addï¿½Ï´ï¿½ ï¿½ï¿½ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½
     public void Add(int count)
     {
         quantity += count;

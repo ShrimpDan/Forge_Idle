@@ -242,7 +242,7 @@ public class CraftWeaponWindow : BaseUI
         SoundManager.Instance.Play("SFX_ForgeCraft");
 
         var itemData = gameManager.DataManager.ItemLoader.GetItemByKey(craftingData.ItemKey);
-        Sprite iconSprite = IconLoader.GetIcon(itemData.IconPath);
+        Sprite iconSprite = IconLoader.GetIconByPath(itemData.IconPath);
 
         var slot = inputSlots[idx];
         slot.Icon.sprite = iconSprite;
@@ -261,7 +261,7 @@ public class CraftWeaponWindow : BaseUI
 
             if (prog.isCrafting && prog.data != null)
             {
-                Sprite sp = IconLoader.GetIcon(prog.itemData.IconPath);
+                Sprite sp = IconLoader.GetIconByPath(prog.itemData.IconPath);
                 slot.Icon.sprite = sp;
                 slot.Icon.enabled = (sp != null);
 

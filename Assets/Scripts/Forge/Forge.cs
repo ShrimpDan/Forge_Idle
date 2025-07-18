@@ -102,4 +102,15 @@ public class Forge : MonoBehaviour
         CustomerManager.StopSpawnCustomer();
         LoadSceneManager.Instance.UnLoadScene(SceneType);
     }
+
+    public WeaponType GetRandomWeaponType()
+    {
+        if (ForgeWeaponTypeMapping.ForgeWeaponTypeDict.TryGetValue(ForgeType, out var weaponTypes))
+        {
+            if (weaponTypes.Length > 0)
+                return weaponTypes[Random.Range(0, weaponTypes.Length)];
+        }
+
+        return default;
+    }
 }

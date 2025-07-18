@@ -43,7 +43,7 @@
 //        if (dataManager.ItemLoader != null && questData.RewardItemKeys != null && questData.RewardItemKeys.Count > 0)
 //        {
 //            var itemData = dataManager.ItemLoader.GetItemByKey(questData.RewardItemKeys[0]);
-//            rewardIcon.sprite = itemData != null ? IconLoader.GetIcon(itemData.IconPath) : null;
+//            rewardIcon.sprite = itemData != null ? IconLoader.GetIconByPath(itemData.IconPath) : null;
 //        }
 //        rewardAmountText.text = $"{questData.RewardMin}~{questData.RewardMax}";
 //        questNameText.text = questData.QuestName;
@@ -148,7 +148,7 @@
 //            if (assistant != null)
 //            {
 //                string iconPath = assistant?.IconPath;
-//                icon.sprite = !string.IsNullOrEmpty(iconPath) ? IconLoader.GetIcon(iconPath) : null;
+//                icon.sprite = !string.IsNullOrEmpty(iconPath) ? IconLoader.GetIconByPath(iconPath) : null;
 //                icon.enabled = icon.sprite != null;
 //            }
 //            else

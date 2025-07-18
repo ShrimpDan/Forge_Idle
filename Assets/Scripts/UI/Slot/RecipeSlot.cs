@@ -37,7 +37,7 @@ public class RecipeSlot : MonoBehaviour
 
         // 아이템 정보 표시
         var myItemData = itemLoader?.GetItemByKey(data.ItemKey);
-        itemIcon.sprite = myItemData != null ? IconLoader.GetIcon(myItemData.IconPath) : null;
+        itemIcon.sprite = myItemData != null ? IconLoader.GetIconByPath(myItemData.IconPath) : null;
         itemIcon.enabled = myItemData != null && itemIcon.sprite != null;
         itemName.text = myItemData != null ? myItemData.Name : "";
         craftTimeText.text = $"제작시간: {data.craftTime}초";
@@ -64,7 +64,7 @@ public class RecipeSlot : MonoBehaviour
                 continue;
             }
             var resItem = itemLoader?.GetItemByKey(req.ResourceKey);
-            Sprite iconSprite = resItem != null ? IconLoader.GetIcon(resItem.IconPath) : null;
+            Sprite iconSprite = resItem != null ? IconLoader.GetIconByPath(resItem.IconPath) : null;
             int owned = inventory?.ResourceList?.Find(x => x.ItemKey == req.ResourceKey)?.Quantity ?? 0;
             slot.Set(iconSprite, owned, req.Amount);
             if (owned < req.Amount) canCraft = false;

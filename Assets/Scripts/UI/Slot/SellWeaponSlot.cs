@@ -38,7 +38,7 @@ public class SellWeaponSlot : MonoBehaviour
     {
         SlotItem = dataManager.ItemLoader.GetItemByKey(key);
         craftingData = dataManager.CraftingLoader.GetDataByKey(key);
-        icon.sprite = IconLoader.GetIcon(SlotItem.IconPath);
+        icon.sprite = IconLoader.GetIconByPath(SlotItem.IconPath);
         priceText.text = craftingData.sellCost.ToString();
     }
 
@@ -47,6 +47,6 @@ public class SellWeaponSlot : MonoBehaviour
         var ui = uIManager.OpenUI<SellWeaponPopup>(UIName.SellWeaponPopup);
         ui.Init(gameManager, uIManager);
 
-        ui.SetPopup(this, gameManager.Inventory.GetWeaponListByType(slotType));
+        //ui.SetPopup(this, gameManager.Inventory.GetWeaponListByType(slotType));
     }   
 }

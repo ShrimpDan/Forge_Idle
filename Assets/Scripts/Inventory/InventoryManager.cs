@@ -185,13 +185,13 @@ public class InventoryManager
         return true;
     }
 
-    public List<ItemData> GetWeaponListByType(CustomerJob jobType)
+    public List<ItemData> GetWeaponListByType(WeaponType type)
     {
         List<ItemData> itemDatas = new List<ItemData>();
 
         foreach (var weapon in WeaponList)
         {
-            if (weapon.CraftingData.jobType == jobType)
+            if (weapon.CraftingData.weaponType == type)
             {
                 itemDatas.Add(weapon.Data);
             }
@@ -200,13 +200,13 @@ public class InventoryManager
         return itemDatas;
     }
 
-    public List<ItemInstance> GetWeaponInstancesByType(CustomerJob type)
+    public List<ItemInstance> GetWeaponInstancesByType(WeaponType type)
     {
         List<ItemInstance> itemInstances = new List<ItemInstance>();
 
         foreach (var weapon in WeaponList)
         {
-            if (weapon.CraftingData.jobType == type)
+            if (weapon.CraftingData.weaponType == type)
             {
                 itemInstances.Add(weapon);
             }

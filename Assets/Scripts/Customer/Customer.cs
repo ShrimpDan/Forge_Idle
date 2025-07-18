@@ -28,6 +28,7 @@ public abstract class Customer : MonoBehaviour
 
     public CustomerType Type => data.type;
     public CustomerJob Job => data.job;
+    public WeaponType WeaponType { get; private set; }
 
     private bool isCrafted;
 
@@ -316,6 +317,12 @@ public abstract class Customer : MonoBehaviour
             Debug.Log("스프라이트 라이브러리 문제 발생");
         }
     }
+
+    public void SetWeaponType(WeaponType type)
+    {
+        WeaponType = type;
+    }
+
     private void OnDrawGizmosSelected() // 움직이는 포인트 시각화
     {
         Gizmos.color = Color.green;

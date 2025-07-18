@@ -44,7 +44,7 @@ public class AssistantPopup : BaseUI
         assiData = data;
         // 캐릭터 아이콘 & 타입별 아이콘 설정
 
-        icon.sprite = IconLoader.GetIcon(data.IconPath);
+        icon.sprite = IconLoader.GetIconByPath(data.IconPath);
         assiName.text = data.Name;
         assiType.text = data.Specialization.ToString();
 

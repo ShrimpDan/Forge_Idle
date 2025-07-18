@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 
 public class RegularCustomerLoader
@@ -22,7 +23,7 @@ public class RegularCustomerLoader
     }
 
 
-    public Customer SpawnRandomByJob(CustomerJob job)
+    public Customer SpawnRandomByJob(CustomerJob job, WeaponType weaponType)
     {
         var list = new List<RegularCustomerData>();
 
@@ -79,6 +80,7 @@ public class RegularCustomerLoader
         if (obj is RegualrCustomer rc)
         {
             rc.SettingCollectData(choice);
+            rc.SetWeaponType(weaponType);
         }
 
         Debug.Log($"<color=lime>[Regular]</color> {choice.customerName} ({choice.rarity}) 등장!");

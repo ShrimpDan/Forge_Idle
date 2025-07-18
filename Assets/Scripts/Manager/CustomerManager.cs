@@ -37,7 +37,7 @@ public class CustomerManager : MonoBehaviour
     private Dictionary<CustomerJob, int> normalVisitedCounter = new Dictionary<CustomerJob, int>();
 
     //단골손님
-    private Dictionary<(CustomerJob,CustomerRarity), Customer> regularPrefabDic = new();
+    private Dictionary<(CustomerJob, CustomerRarity), Customer> regularPrefabDic = new();
     //Forge
     private Forge forge;
 
@@ -84,15 +84,15 @@ public class CustomerManager : MonoBehaviour
         {
             foreach (CustomerRarity rarity in Enum.GetValues(typeof(CustomerRarity)))
             {
-                var regPreb = prefabLoader.GetRegular(job,rarity);
+                var regPreb = prefabLoader.GetRegular(job, rarity);
                 if (regPreb)
                 {
                     regDic[(job, rarity)] = regPreb;
                 }
 
-                
+
             }
-        
+
         }
         var uniquePrefabs = new HashSet<GameObject>();
         foreach (var prefab in normalDic.Values)
@@ -107,7 +107,7 @@ public class CustomerManager : MonoBehaviour
         {
             if (prefab != null)
             {
-                uniquePrefabs.Add(prefab.gameObject); 
+                uniquePrefabs.Add(prefab.gameObject);
             }
         }
         foreach (var prefab in uniquePrefabs)
@@ -124,13 +124,13 @@ public class CustomerManager : MonoBehaviour
             }
 
             if (!normalVisitedCounter.ContainsKey(job))
-            { 
+            {
                 normalVisitedCounter[job] = 0;
             }
         }
 
-        customerLoader = new CustomerLoader(this, GameManager.Instance.DataManager.CustomerDataLoader, normalDic, spawnPoint,mainBuyPoint);
-        regularLoader = new RegularCustomerLoader(this, GameManager.Instance.DataManager.RegularDataLoader, regDic, spawnPoint, rarityProbabilities , mainBuyPoint);
+        customerLoader = new CustomerLoader(this, GameManager.Instance.DataManager.CustomerDataLoader, normalDic, spawnPoint, mainBuyPoint);
+        regularLoader = new RegularCustomerLoader(this, GameManager.Instance.DataManager.RegularDataLoader, regDic, spawnPoint, rarityProbabilities, mainBuyPoint);
     }
 
     public void StartSpawnCustomer(Forge forge)
@@ -181,7 +181,7 @@ public class CustomerManager : MonoBehaviour
 
         foreach (var pair in normalcustomerCounter)
         {
-            if (pair.Value < Customer.maxCount && forge.SellingSystem.CanOrder(pair.Key))
+            if (pair.Value < Customer.maxCount)
             {
                 availableJobs.Add(pair.Key);
             }
@@ -191,19 +191,27 @@ public class CustomerManager : MonoBehaviour
         {
             return;
         }
-        //랜덤소환
-        CustomerJob selected = availableJobs[UnityEngine.Random.Range(0, availableJobs.Count)];
-        Customer customer = customerLoader.SpawnNormal(selected);//만들고
-        if (customer != null)
-        {
-            normalcustomerCounter[selected]++; //카운트 증가
 
-            //랜덤 스프라이트 추가하기
-            if (normalSpriteAssets.Count > 0)
+        WeaponType weaponType = forge.GetRandomWeaponType();
+
+        if (forge.SellingSystem.CanOrder(weaponType))
+        {
+            //랜덤소환
+            CustomerJob selected = availableJobs[UnityEngine.Random.Range(0, availableJobs.Count)];
+            Customer customer = customerLoader.SpawnNormal(selected);//만들고
+
+            if (customer != null)
             {
-                var randomAsset = normalSpriteAssets[UnityEngine.Random.Range(0, normalSpriteAssets.Count)];
-                customer.ChangeSpriteLibrary(randomAsset);
-                
+                customer.SetWeaponType(weaponType);
+                normalcustomerCounter[selected]++; //카운트 증가
+
+                //랜덤 스프라이트 추가하기
+                if (normalSpriteAssets.Count > 0)
+                {
+                    var randomAsset = normalSpriteAssets[UnityEngine.Random.Range(0, normalSpriteAssets.Count)];
+                    customer.ChangeSpriteLibrary(randomAsset);
+
+                }
             }
         }
     }
@@ -223,7 +231,8 @@ public class CustomerManager : MonoBehaviour
 
     public void SpawnRegularCustomer(CustomerJob job)
     {
-        regularLoader.SpawnRandomByJob(job);
+        WeaponType weaponType = forge.GetRandomWeaponType();
+        regularLoader.SpawnRandomByJob(job, weaponType);
     }
 
     //퇴장
@@ -251,8 +260,11 @@ public class CustomerManager : MonoBehaviour
         if (normalVisitedCounter[job] >= RegularSpawnCount)
         {
             normalVisitedCounter[job] = 0;
-            regularLoader.SpawnRandomByJob(job);
-            Debug.Log( "단골 손님 소환");
+
+            WeaponType weaponType = forge.GetRandomWeaponType();
+            regularLoader.SpawnRandomByJob(job, weaponType);
+
+            Debug.Log("단골 손님 소환");
         }
     }
 }

@@ -106,7 +106,7 @@ public class WeaponHandler : MonoBehaviour
 
         if (go.TryGetComponent(out SpriteRenderer icon))
         {
-            icon.sprite = IconLoader.GetIcon(slot.WeaponData.Data.IconPath);
+            icon.sprite = IconLoader.GetIconByKey(slot.WeaponData.ItemKey);
         }
 
         go.transform.DOJump(endPos, Random.Range(minJumpPower, maxJumpPower), 1, duration)

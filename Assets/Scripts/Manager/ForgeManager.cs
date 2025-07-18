@@ -40,7 +40,7 @@ public class ForgeManager
         };
 
         ForgeTypeSaveSystem.SaveForgeType(CurrentForge);
-        
+
         return data;
     }
 

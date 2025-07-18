@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 public enum ItemType
 {
     Resource = 0,
@@ -43,4 +45,45 @@ public enum ForgeUpgradeType
     ReduceCustomerSpawnDelay = 2,
     ReduceAutoCraftingTime = 3,
     IncreasePerfectCraftChance = 4
+}
+
+public static class ForgeWeaponTypeMapping
+{
+    public static readonly Dictionary<ForgeType, WeaponType[]> ForgeWeaponTypeDict = new Dictionary<ForgeType, WeaponType[]>
+    {
+        {
+            ForgeType.Weapon, new WeaponType[]
+            {
+                WeaponType.OneHanded_Sword,
+                WeaponType.TwoHanded_Sword,
+                WeaponType.Hammer,
+                WeaponType.Mace,
+                WeaponType.Axe,
+                WeaponType.Long_Bow,
+                WeaponType.Short_Bow,
+                WeaponType.Gun
+            }
+        },
+        {
+            ForgeType.Armor, new WeaponType[]
+            {
+                WeaponType.Light_Plate,
+                WeaponType.Heavy_Plate,
+                WeaponType.Chain_Plate,
+                WeaponType.Light_Helmet,
+                WeaponType.Heavy_Helmet,
+                WeaponType.Small_Shield,
+                WeaponType.Big_Shield
+            }
+        },
+        {
+            ForgeType.Magic, new WeaponType[]
+            {
+                WeaponType.Wand,
+                WeaponType.Staff,
+                WeaponType.Ring,
+                WeaponType.Necklace
+            }
+        }
+    };
 }

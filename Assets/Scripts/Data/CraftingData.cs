@@ -7,7 +7,7 @@ public class CraftingData
     public string ItemKey;
     public float craftTime;
     public int craftCost;
-    public CustomerJob jobType;
+    public WeaponType weaponType;
     public List<RequiredResources> RequiredResources;
     public int sellCost;
 }
@@ -47,7 +47,7 @@ public class CraftingDataLoader
                 craftTime = flat.craftTime,
                 craftCost = flat.craftCost,
                 sellCost = flat.sellCost,
-                jobType = flat.jobType,
+                weaponType = flat.weaponType,
                 RequiredResources = new List<RequiredResources>()
             };
 
@@ -90,7 +90,7 @@ public class CraftingDataFlat
     public float craftTime;
     public int craftCost;
     public int sellCost;
-    public CustomerJob jobType;
+    public WeaponType weaponType;
     public List<string> resourceKey;  
     public List<int> amount;          
 }

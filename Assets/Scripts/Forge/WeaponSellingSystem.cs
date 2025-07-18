@@ -40,7 +40,7 @@ public class WeaponSellingSystem : MonoBehaviour
         customerManager.CustomerEvent.OnCustomerArrived -= OrderItem;
     }
 
-    public bool CanOrder(CustomerJob type)
+    public bool CanOrder(WeaponType type)
     {
         var weaponList = inventory.GetWeaponInstancesByType(type);
 
@@ -54,7 +54,7 @@ public class WeaponSellingSystem : MonoBehaviour
     {
         customerQueue.Enqueue(customer);
 
-        var craftingData = SelectWeaponByType(customer.Job);
+        var craftingData = SelectWeaponByType(customer.WeaponType);
         craftingQueue.Enqueue(craftingData);
 
         if (craftingCoroutine == null)
@@ -64,7 +64,7 @@ public class WeaponSellingSystem : MonoBehaviour
         }
     }
 
-    private CraftingData SelectWeaponByType(CustomerJob type)
+    private CraftingData SelectWeaponByType(WeaponType type)
     {
         var weaponList = inventory.GetWeaponInstancesByType(type);
         int chance = Random.Range(0, 101);
@@ -101,8 +101,7 @@ public class WeaponSellingSystem : MonoBehaviour
             Customer customer = customerQueue.Dequeue();
 
             // 어떤 무기를 만드는지 아이콘 이벤트 호출
-            string iconPath = itemLoader.GetItemByKey(weapon.ItemKey).IconPath;
-            forgeManager.Events.RaiseCraftStarted(IconLoader.GetIcon(iconPath));
+            forgeManager.Events.RaiseCraftStarted(IconLoader.GetIconByKey(weapon.ItemKey));
 
             while (time < duration && !customer.IsAngry)
             {
@@ -124,7 +123,7 @@ public class WeaponSellingSystem : MonoBehaviour
             forgeManager.AddFame(5);
             blackSmith.PlayBuyEffect(price, customer.transform.position);
 
-            Debug.Log($"[무기 판매 시스템] {weapon.jobType} 무기 제작 완료!");
+            Debug.Log($"[무기 판매 시스템] {weapon.weaponType} 무기 제작 완료!");
         }
 
         blackSmith.SetCraftingAnimation(false);
