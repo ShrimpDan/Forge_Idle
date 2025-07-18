@@ -32,11 +32,11 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 3468954986260505961}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.000034441327}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0, y: 1}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: 0.00006866455, y: 0}
+  m_SizeDelta: {x: 210, y: 0}
+  m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &5230187686253981515
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -57,8 +57,8 @@ MonoBehaviour:
   m_ChildAlignment: 0
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 150, y: 150}
-  m_Spacing: {x: 48, y: 80}
+  m_CellSize: {x: 40, y: 40}
+  m_Spacing: {x: 5, y: 5}
   m_Constraint: 0
   m_ConstraintCount: 2
 --- !u!114 &2196596986724473277
@@ -456,7 +456,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4385679149110319458}
   m_HandleRect: {fileID: 7883317104908571537}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -553,10 +553,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   craftTabBtn: {fileID: 5205700745088483438}
-  enhanceTabBtn: {fileID: 4096613844776466458}
+  miningTabBtn: {fileID: 4096613844776466458}
   sellTabBtn: {fileID: 4758022185973642555}
   craftRoot: {fileID: 4231694420281951693}
-  enhanceRoot: {fileID: 6415196377848124999}
+  miningRoot: {fileID: 6415196377848124999}
   sellRoot: {fileID: 7901688836899389504}
   assistantSlotPrefab: {fileID: 1019528226878010427, guid: d206daf4a27641a4fa0beef2704b9b3d, type: 3}
 --- !u!1 &2760469623043763146
@@ -843,11 +843,11 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1822697482917769133}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.000034441327}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0, y: 1}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: 0.00006866455, y: 0}
+  m_SizeDelta: {x: 210, y: 0}
+  m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &6199366930777285521
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -868,8 +868,8 @@ MonoBehaviour:
   m_ChildAlignment: 0
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 150, y: 150}
-  m_Spacing: {x: 20, y: 80}
+  m_CellSize: {x: 40, y: 40}
+  m_Spacing: {x: 5, y: 5}
   m_Constraint: 0
   m_ConstraintCount: 2
 --- !u!114 &1391583015677475720
@@ -951,9 +951,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Engance
-
-'
+  m_text: Mine
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1309,10 +1307,10 @@ RectTransform:
   - {fileID: 4200123171315423615}
   m_Father: {fileID: 4300358772351265370}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 226, y: 264.105}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7996502640316374833
 CanvasRenderer:
@@ -1634,10 +1632,10 @@ RectTransform:
   - {fileID: 2039464559119721509}
   m_Father: {fileID: 6100432517722352238}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 226, y: 264.105}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2580811402493352174
 CanvasRenderer:
@@ -1687,7 +1685,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6100432517722352238}
   m_Layer: 5
-  m_Name: enhanceTab
+  m_Name: MineTab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1801,7 +1799,7 @@ GameObject:
   - component: {fileID: 2430437329747081220}
   - component: {fileID: 4096613844776466458}
   m_Layer: 5
-  m_Name: enhanceTabButton
+  m_Name: MineTabButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2041,7 +2039,7 @@ GameObject:
   - component: {fileID: 2324225993559997544}
   - component: {fileID: 8098337160955232856}
   m_Layer: 5
-  m_Name: enhanceRoot
+  m_Name: MineRoot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2061,11 +2059,11 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 7962545404288248957}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.000034441327}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0.00006866455, y: 0}
+  m_SizeDelta: {x: 210, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2324225993559997544
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2086,8 +2084,8 @@ MonoBehaviour:
   m_ChildAlignment: 0
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 150, y: 150}
-  m_Spacing: {x: 20, y: 80}
+  m_CellSize: {x: 40, y: 40}
+  m_Spacing: {x: 5, y: 5}
   m_Constraint: 0
   m_ConstraintCount: 2
 --- !u!114 &8098337160955232856
@@ -2138,10 +2136,10 @@ RectTransform:
   - {fileID: 6915180681880877123}
   m_Father: {fileID: 6305026838713219553}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 226, y: 264.105}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &929497393052845538
 CanvasRenderer:
@@ -2227,7 +2225,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7308253123991396152}
   m_Layer: 5
-  m_Name: Tabs
+  m_Name: TabsDetail
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2293,7 +2291,7 @@ RectTransform:
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0, y: 1}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8748646258740293044
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2458,7 +2456,7 @@ RectTransform:
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0, y: 1}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6975877504507559823
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2818,7 +2816,7 @@ RectTransform:
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0, y: 1}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7595910484799859824
 CanvasRenderer:
   m_ObjectHideFlags: 0

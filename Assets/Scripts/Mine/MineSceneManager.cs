@@ -8,7 +8,8 @@ using TMPro;
 public class MineGroup
 {
     public string mineKey;
-    public List<MineAssistantSlotUI> slotUIs;
+    public List<MineAssistantSlotUI> slotUIs; // 씬에 배치된 슬롯UI들 (Inspector 연결)
+    public List<MineAssistantSlot> slots;     // 실제 데이터 슬롯 (동일 개수로 Inspector 연결 or 코드에서 동적생성)
     [NonSerialized] public MineAssistantManager mineManager;
     [NonSerialized] public DateTime lastCollectTime;
 }
@@ -29,35 +30,33 @@ public class MineSceneManager : MonoBehaviour
     public Button collectButton;
     public TMP_Text minedAmountText;
 
-    private AssistantInventory assistantInventory;
+    [Header("마인씬 카메라")]
+    public Camera mineCamera;
 
+    [Header("팝업 루트 (Inspector에서 연결하세요)")]
+    public Transform popupRoot; // Inspector에서 PopupRoot 연결
+
+    private AssistantInventory assistantInventory;
     private MineLoader mineLoader;
     private int currentMineIndex = 0;
 
-
     private void Awake()
     {
-        Camera myCam = GetComponentInChildren<Camera>(true);
-
-        if (myCam != null)
-        {
-            myCam.gameObject.tag = "MainCamera";
-            myCam.gameObject.SetActive(true);
-        }
-
-        foreach (var cam in GameObject.FindGameObjectsWithTag("MainCamera"))
-        {
-            if (myCam == null || cam != myCam.gameObject)
-            {
-                Destroy(cam);
-            }
-        }
+        var mainCamObj = GameObject.FindWithTag("MainCamera");
+        if (mainCamObj != null) mainCamObj.SetActive(false);
+        if (mineCamera != null) mineCamera.gameObject.SetActive(true);
+        else Debug.LogError("MineSceneManager: mineCamera 연결 안 됨!");
     }
 
+    private void OnDestroy()
+    {
+        var mainCamObj = GameObject.FindWithTag("MainCamera");
+        if (mainCamObj != null) mainCamObj.SetActive(true);
+        if (mineCamera != null) mineCamera.gameObject.SetActive(false);
+    }
 
     private void Start()
     {
-        
         if (GameManager.Instance == null || GameManager.Instance.AssistantManager == null)
         {
             Debug.LogError("GameManager.Instance 또는 AssistantManager가 초기화되어 있지 않습니다!");
@@ -71,6 +70,8 @@ public class MineSceneManager : MonoBehaviour
         }
 
         mineLoader = new MineLoader();
+
+        // 반드시 slotUIs, slots 개수가 동일해야 함!
         for (int idx = 0; idx < mineGroups.Count; ++idx)
         {
             var group = mineGroups[idx];
@@ -79,9 +80,22 @@ public class MineSceneManager : MonoBehaviour
             group.mineManager = new MineAssistantManager(mineData);
             group.lastCollectTime = DateTime.Now;
 
-            foreach (var slotUI in group.slotUIs)
+            // 씬 슬롯 UI와 데이터 슬롯을 1:1로 연결
+            for (int slotIdx = 0; slotIdx < group.slotUIs.Count; ++slotIdx)
             {
-                slotUI.Init(assistantInventory); // 인벤토리 주입
+                var slotUI = group.slotUIs[slotIdx];
+                slotUI.Init(assistantInventory);
+
+                // 여기 반드시 slot 세팅!
+                if (group.slots.Count > slotIdx)
+                {
+                    slotUI.SetSlot(group.slots[slotIdx]);
+                }
+                else
+                {
+                    Debug.LogError($"MineSceneManager: MineGroup[{idx}]의 슬롯 데이터 개수 불일치!");
+                }
+
                 int closureIdx = idx;
                 slotUI.OnSlotClicked = (ui) => OnSlotClicked(closureIdx, ui);
             }
@@ -129,8 +143,6 @@ public class MineSceneManager : MonoBehaviour
         SetActiveMine(0);
     }
 
-
-
     public void ShowMine(int idx)
     {
         SetAllInactive();
@@ -160,16 +172,22 @@ public class MineSceneManager : MonoBehaviour
         UpdateMinedAmountUI(currentMineIndex);
     }
 
-    // 팝업에 인벤토리 반드시 전달
     void OnSlotClicked(int mineIdx, MineAssistantSlotUI slotUI)
     {
+        Debug.Log("OnSlotClicked called!");
+
         var prefab = Resources.Load<GameObject>("UI/Popup/AssistantSelectPopup");
-        var popupRoot = GameObject.Find("PopupRoot")?.transform;
-        if (popupRoot == null)
+        if (prefab == null)
         {
-            Debug.LogError("PopupRoot를 찾을 수 없습니다.");
+            Debug.LogError("AssistantSelectPopup prefab 로드 실패!");
             return;
         }
+        if (popupRoot == null)
+        {
+            Debug.LogError("MineSceneManager: popupRoot 연결 안 됨! (Inspector에서 연결해야 함)");
+            return;
+        }
+
         var go = Instantiate(prefab, popupRoot);
 
         var popup = go.GetComponent<AssistantSelectPopup>();
@@ -183,11 +201,17 @@ public class MineSceneManager : MonoBehaviour
 
         popup.OpenForSelection(selected =>
         {
-            slotUI.AssignAssistant(selected);
-            UpdateMinedAmountUI(mineIdx);
+            if (slotUI != null && slotUI.IsSceneSlot())
+            {
+                slotUI.AssignAssistant(selected);
+                UpdateMinedAmountUI(mineIdx);
+            }
+            else
+            {
+                Debug.LogError("AssignAssistant 시도: slotUI가 씬 슬롯이 아님!");
+            }
         }, true);
     }
-
 
     void OnCollectButton()
     {

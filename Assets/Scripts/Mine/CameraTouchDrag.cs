@@ -19,9 +19,15 @@ public class CameraTouchDrag : MonoBehaviour
     private Vector3 velocity;
     private bool isDragging;
 
+    [Header("직접 연결")]
+    public Camera targetCamera; // Inspector에서 MineCamera 직접 연결
+
     private void Awake()
     {
-        targetPos = Camera.main.transform.position;
+        if (targetCamera == null)
+            Debug.LogError("CameraTouchDrag: targetCamera가 연결되어 있지 않습니다!");
+        else
+            targetPos = targetCamera.transform.position;
     }
 
     public void SetCameraLimit(CameraLimit limit)
@@ -31,15 +37,21 @@ public class CameraTouchDrag : MonoBehaviour
         minY = limit.MinY;
         maxY = limit.MaxY;
 
-        Vector3 now = Camera.main.transform.position;
+        if (targetCamera == null)
+        {
+            Debug.LogError("CameraTouchDrag: targetCamera가 연결되어 있지 않습니다!");
+            return;
+        }
+        Vector3 now = targetCamera.transform.position;
         now.x = Mathf.Clamp(now.x, minX, maxX);
         now.y = Mathf.Clamp(now.y, minY, maxY);
-        Camera.main.transform.position = now;
+        targetCamera.transform.position = now;
         targetPos = now;
     }
 
     void Update()
     {
+        if (targetCamera == null) return;
 #if UNITY_EDITOR || UNITY_STANDALONE
         HandleMouseDrag();
 #elif UNITY_ANDROID || UNITY_IOS
@@ -47,7 +59,15 @@ public class CameraTouchDrag : MonoBehaviour
 #else
         HandleMouseDrag();
 #endif
-        Camera.main.transform.position = Vector3.SmoothDamp(Camera.main.transform.position, targetPos, ref velocity, smoothTime);
+        targetCamera.transform.position = Vector3.SmoothDamp(targetCamera.transform.position, targetPos, ref velocity, smoothTime);
+    }
+
+    // 나머지 GetWorld 등 함수도 모두 targetCamera로 교체!
+    Vector3 GetWorld(Vector3 screenPos)
+    {
+        Vector3 camPos = targetCamera.transform.position;
+        screenPos.z = -camPos.z;
+        return targetCamera.ScreenToWorldPoint(screenPos);
     }
 
     void HandleMouseDrag()
@@ -94,19 +114,12 @@ public class CameraTouchDrag : MonoBehaviour
         }
     }
 
-    Vector3 GetWorld(Vector3 screenPos)
-    {
-        Vector3 camPos = Camera.main.transform.position;
-        screenPos.z = -camPos.z;
-        return Camera.main.ScreenToWorldPoint(screenPos);
-    }
-
     void MoveCamera(Vector3 delta)
     {
         Vector3 next = targetPos + delta * dragSpeed;
         next.x = Mathf.Clamp(next.x, minX, maxX);
         next.y = Mathf.Clamp(next.y, minY, maxY);
-        next.z = Camera.main.transform.position.z;
+        next.z = targetCamera.transform.position.z;
         targetPos = next;
     }
 }

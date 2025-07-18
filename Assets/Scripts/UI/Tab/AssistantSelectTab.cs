@@ -11,7 +11,7 @@ public class AssistantSelectTab : MonoBehaviour
     [SerializeField] private Transform craftRoot;
     [SerializeField] private Transform miningRoot;
     [SerializeField] private Transform sellRoot;
-    [SerializeField] private GameObject assistantSlotPrefab; // ⭐ 반드시 MineAssistantSlotUI 프리팹이어야 함
+    [SerializeField] private GameObject assistantSlotPrefab; // 팝업에 임시 슬롯용 프리팹
 
     private AssistantInventory assistantInventory;
     private Action<AssistantInstance> selectCallback;
@@ -76,25 +76,24 @@ public class AssistantSelectTab : MonoBehaviour
                 slotObj = Instantiate(assistantSlotPrefab, root);
                 pool.Add(slotObj);
             }
-
-            // ⭐⭐ 여기 반드시 MineAssistantSlotUI!
             var slot = slotObj.GetComponent<MineAssistantSlotUI>();
             if (slot == null)
             {
                 Debug.LogError($"MineAssistantSlotUI 컴포넌트가 {slotObj.name} 프리팹에 없습니다.");
                 continue;
             }
-            slot.Init(assistantInventory); // 인벤토리 전달(중요)
-            slot.SetTempAssistant(assistant, OnSelectAssistant); // 슬롯을 임시 미리보기 용으로 세팅
+            slot.Init(assistantInventory);
+            // ⭐⭐⭐ 절대 SetSlot 호출 금지! (임시)
+            slot.SetTempAssistant(assistant, assistantInstance =>
+            {
+                // 팝업 슬롯에서 selectCallback만 호출(씬 슬롯에 전달됨)
+                selectCallback?.Invoke(assistantInstance);
+            });
             idx++;
         }
         for (int i = idx; i < pool.Count; i++)
             pool[i].SetActive(false);
     }
 
-    // 호출시, 선택된 assistant가 전달됨
-    private void OnSelectAssistant(AssistantInstance assistant)
-    {
-        selectCallback?.Invoke(assistant);
-    }
+
 }

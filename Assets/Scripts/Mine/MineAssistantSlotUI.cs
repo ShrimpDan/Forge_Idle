@@ -4,13 +4,19 @@ using System;
 
 public class MineAssistantSlotUI : MonoBehaviour
 {
-    private MineAssistantSlot slot;
+    private MineAssistantSlot slot; // ★씬에 존재하는 슬롯만 데이터 할당
     private AssistantInventory assistantInventory;
 
     public Image iconImage;
     public Button slotButton;
 
     public Action<MineAssistantSlotUI> OnSlotClicked;
+    public bool IsSceneSlot() => slot != null;
+
+    public bool IsTemporarySlot()
+    {
+        return slot == null;
+    }
 
     private void Awake()
     {
@@ -18,28 +24,31 @@ public class MineAssistantSlotUI : MonoBehaviour
             slotButton.onClick.AddListener(() => OnSlotClicked?.Invoke(this));
     }
 
-    // 인벤토리 연동용 (Start 등에서 반드시 호출)
+    // 마인씬에서 Init 필수!
     public void Init(AssistantInventory inv)
     {
         assistantInventory = inv;
     }
 
+    // 슬롯 데이터 세팅 (씬 슬롯만! 팝업 슬롯은 호출 금지)
     public void SetSlot(MineAssistantSlot newSlot)
     {
         slot = newSlot;
         UpdateUI();
     }
 
-    // 어시스턴트 할당 
+    // 어시스턴트 할당 (씬 슬롯만 사용)
     public void AssignAssistant(AssistantInstance assistant)
     {
-        // 이전 할당된 어시스턴트는 인벤토리에 반환
-        if (slot != null && slot.IsAssigned && slot.AssignedAssistant != null)
+        if (slot == null)
+        {
+            Debug.LogError("MineAssistantSlotUI: slot is null! AssignAssistant는 실제 슬롯UI에서만 호출되어야 합니다.");
+            return;
+        }
+        if (slot.IsAssigned && slot.AssignedAssistant != null)
         {
             assistantInventory.Add(slot.AssignedAssistant);
         }
-
-        // 새 어시스턴트는 인벤토리에서 제거
         if (assistant != null)
             assistantInventory.Remove(assistant);
 
@@ -47,17 +56,7 @@ public class MineAssistantSlotUI : MonoBehaviour
         UpdateUI();
     }
 
-    // 슬롯 해제 (UI에서 별도 버튼 연결시 사용)
-    public void UnassignAssistant()
-    {
-        if (slot != null && slot.IsAssigned && slot.AssignedAssistant != null)
-        {
-            assistantInventory.Add(slot.AssignedAssistant);
-            slot.Assign(null);
-            UpdateUI();
-        }
-    }
-
+    // 아이콘 등 UI 갱신
     public void UpdateUI()
     {
         if (slot != null && slot.IsAssigned && iconImage != null && slot.AssignedAssistant != null)
@@ -73,6 +72,7 @@ public class MineAssistantSlotUI : MonoBehaviour
         }
     }
 
+    // 임시 슬롯 UI (팝업에서만 사용, slot 세팅 없이 사용)
     public void SetTempAssistant(AssistantInstance assistant, Action<AssistantInstance> onClick)
     {
         if (iconImage != null && assistant != null)
@@ -86,12 +86,10 @@ public class MineAssistantSlotUI : MonoBehaviour
             iconImage.sprite = null;
             iconImage.enabled = false;
         }
-
         if (slotButton != null)
         {
             slotButton.onClick.RemoveAllListeners();
             slotButton.onClick.AddListener(() => onClick?.Invoke(assistant));
         }
     }
-
 }
