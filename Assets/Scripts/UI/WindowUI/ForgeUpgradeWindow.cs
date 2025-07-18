@@ -31,11 +31,6 @@ public class ForgeUpgradeWindow : BaseUI
     public override void Open()
     {
         base.Open();
-        
-        foreach (var slot in upgradeSlotList)
-        {
-            SetUpgradeSlot(slot);
-        }
     }
 
     public override void Close()

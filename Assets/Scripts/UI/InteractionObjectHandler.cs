@@ -29,11 +29,6 @@ public class InteractionObjectHandler : MonoBehaviour, IPointerClickHandler, IPo
     {
         switch (type)
         {
-            case ButtonType.Sell:
-                uIManager.OpenUI<SellWeaponWindow>(UIName.GetUINameByType(type));
-
-                break;
-
             case ButtonType.Craft:
                 uIManager.OpenUI<CraftWeaponWindow>(UIName.GetUINameByType(type));
                 break;

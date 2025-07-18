@@ -72,12 +72,14 @@ public class DungeonManager : MonoBehaviour
         IsRunning = false;
 
         if (isClear)
+        {
             SoundManager.Instance.Play("SFX_BattleStageClear01");
+            GameManager.DungeonSystem.UnlockNextDungeon(DungeonData);
+        }
         else
             SoundManager.Instance.Play("SFX_BattleDungeonGiveUp02");
 
         DungeonUI.OpenClearPopup(isClear);
-        GameManager.DungeonSystem.UnlockNextDungeon(DungeonData);
     }
 
     public void ExitDungeon()

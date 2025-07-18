@@ -7,7 +7,6 @@
 
 public enum ButtonType
 {
-    Sell,
     Craft,
     Upgrade,
     Quest,
@@ -19,7 +18,7 @@ public enum ButtonType
     MineMiniGame, //Add
     Collection,
     Setting,
-    ForgeUpgrade
+    ForgeUpgrade,
 }
 
 public static class UIName
@@ -28,7 +27,6 @@ public static class UIName
     public const string MainUI = "MainUI";
 
     // Window UI
-    public const string SellWeaponWindow = "SellWeaponWindow";
     public const string CraftWeaponWindow = "CraftWeaponWindow";
     public const string UpgradeWeaponWindow = "UpgradeWeaponWindow";
     public const string QuestWindow = "QuestWindow";
@@ -39,7 +37,11 @@ public static class UIName
     public const string MineDetailWindow = "MineDetailWindow";
     public const string CollectionWindow = "CollectionWindow";
     public const string SettingWindow = "SettingWindow";
-    public const string ForgeUpgradeWindow = "ForgeUpgrade_Window";    
+    public const string ForgeUpgradeWindow = "ForgeUpgrade_Window";
+    public const string WeaponRecipeWindow = "WeaponRecipeWindow";
+    public const string ArmorRecipeWindow = "ArmorRecipeWindow";
+    public const string MagicRecipeWindow = "MagicRecipeWindow";
+
 
     // Popup UI
     public const string InventoryPopup = "InventoryPopup";
@@ -48,7 +50,7 @@ public static class UIName
     public const string Forge_AssistantPopup = "Forge_AssistantPopup";
     public const string Forge_Recipe_Popup = "Forge_Recipe_Popup";
     public const string DungeonPopup = "DungeonPopup";
-    public const string CollectionPopup = "CollectionPopup"; 
+    public const string CollectionPopup = "CollectionPopup";
     public const string SellWeaponPopup = "SellWeaponPopup";
     public const string AssistantSelectPopup = "AssistantSelectPopup";
     public const string Mine_AssistantPopup = "Mine_AssistantPopup";
@@ -59,7 +61,6 @@ public static class UIName
     {
         return type switch
         {
-            ButtonType.Sell => SellWeaponWindow,
             ButtonType.Craft => CraftWeaponWindow,
             ButtonType.Upgrade => UpgradeWeaponWindow,
             ButtonType.Quest => QuestWindow,
@@ -71,6 +72,17 @@ public static class UIName
             ButtonType.Collection => CollectionWindow,
             ButtonType.Setting => SettingWindow,
             ButtonType.ForgeUpgrade => ForgeUpgradeWindow,
+            _ => string.Empty
+        };
+    }
+
+    public static string GetRecipeWindowByType(ForgeType type)
+    {
+        return type switch
+        {
+            ForgeType.Weapon => WeaponRecipeWindow,
+            ForgeType.Armor => ArmorRecipeWindow,
+            ForgeType.Magic => MagicRecipeWindow,
             _ => string.Empty
         };
     }

@@ -6,7 +6,7 @@ public class WeaponRecipeSystem
     private ForgeManager forgeManager;
     private CraftingDataLoader craftingLoader;
 
-    public Dictionary<CustomerJob, List<string>> UnlockedRecipeDict { get; private set; }
+    public Dictionary<WeaponType, List<string>> UnlockedRecipeDict { get; private set; }
     public int CurRecipePoint  { get; private set; }
     public int TotalRecipePoint { get; private set; }
     private int UsedPoint => TotalRecipePoint - CurRecipePoint;
@@ -18,24 +18,15 @@ public class WeaponRecipeSystem
         forgeManager = forge.ForgeManager;
         craftingLoader = dataLoader;
 
-        UnlockedRecipeDict = new Dictionary<CustomerJob, List<string>>
+        UnlockedRecipeDict = new Dictionary<WeaponType, List<string>>();
+        WeaponType[] weaponTypes = ForgeWeaponTypeMapping.ForgeWeaponTypeDict[forge.ForgeType];
+
+        foreach (var type in weaponTypes)
         {
-            { CustomerJob.Woodcutter, new List<string>() },
-            { CustomerJob.Farmer, new List<string>() },
-            { CustomerJob.Miner, new List<string>() },
-            { CustomerJob.Warrior, new List<string>() },
-            { CustomerJob.Archer, new List<string>() },
-            { CustomerJob.Tanker, new List<string>() },
-            { CustomerJob.Assassin, new List<string>() },
-        };
-
-        AddBaseRecipe();
+            UnlockedRecipeDict[type] = new List<string>();
+        }
     }
 
-    private void AddBaseRecipe()
-    {
-        UnlockedRecipeDict[CustomerJob.Woodcutter].Add(craftingLoader.CraftingList[0].ItemKey);
-    }
 
     public void AddPoint(int amount)
     {
@@ -64,28 +55,26 @@ public class WeaponRecipeSystem
             {
                 UnlockedRecipeDict[key].Clear();
             }
-
-            AddBaseRecipe();
         }
     }
 
-    public void UnlockRecipe(CustomerJob job, string recipeKey)
+    public void UnlockRecipe(WeaponType type, string recipeKey)
     {
-        UnlockedRecipeDict[job].Add(recipeKey);
+        UnlockedRecipeDict[type].Add(recipeKey);
     }
 
-    public List<string> GetKeysByType(CustomerJob job)
+    public List<string> GetKeysByType(WeaponType type)
     {
-        return UnlockedRecipeDict[job];
+        return UnlockedRecipeDict[type];
     }
 
-    public List<CraftingData> GetDatasByType(CustomerJob job)
+    public List<CraftingData> GetDatasByType(WeaponType type)
     {
-        if (UnlockedRecipeDict[job].Count > 0)
+        if (UnlockedRecipeDict[type].Count > 0)
         {
             List<CraftingData> dataLists = new List<CraftingData>();
 
-            foreach (var key in UnlockedRecipeDict[job])
+            foreach (var key in UnlockedRecipeDict[type])
             {
                 dataLists.Add(craftingLoader.GetDataByKey(key));
             }
