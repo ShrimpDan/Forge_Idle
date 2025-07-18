@@ -7,10 +7,10 @@ public class WeaponRecipeSystem
     private CraftingDataLoader craftingLoader;
 
     public Dictionary<WeaponType, List<string>> UnlockedRecipeDict { get; private set; }
-    public int CurRecipePoint  { get; private set; }
+    public int CurRecipePoint { get; private set; }
     public int TotalRecipePoint { get; private set; }
     private int UsedPoint => TotalRecipePoint - CurRecipePoint;
-    private int resetGold; 
+    private int resetGold;
 
     public WeaponRecipeSystem(Forge forge, CraftingDataLoader dataLoader)
     {
@@ -58,9 +58,15 @@ public class WeaponRecipeSystem
         }
     }
 
-    public void UnlockRecipe(WeaponType type, string recipeKey)
+    public void UnlockRecipe(CraftingRecipeData recipeData)
     {
-        UnlockedRecipeDict[type].Add(recipeKey);
+        if (UsePoint(recipeData.NeedPoint))
+        {
+            UnlockedRecipeDict[recipeData.Type].Add(recipeData.Key);
+            return;
+        }
+
+        // 포인트 부족 알림
     }
 
     public List<string> GetKeysByType(WeaponType type)
@@ -81,7 +87,15 @@ public class WeaponRecipeSystem
 
             return dataLists;
         }
-        
+
         return null;
+    }
+
+    public bool CheckUnlock(CraftingRecipeData data)
+    {
+        if (UnlockedRecipeDict[data.Type].Contains(data.Key))
+            return true;
+
+        return false;
     }
 }

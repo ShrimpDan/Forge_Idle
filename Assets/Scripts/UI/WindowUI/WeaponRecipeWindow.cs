@@ -1,9 +1,14 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class WeaponRecipeWindow : BaseUI
 {
     public override UIType UIType => UIType.Window;
+
+    private Forge forge;
+    private WeaponRecipeSystem recipeSystem;
+    private DataManager dataManager;
 
     [Header("Tab Buttons")]
     [SerializeField] private Button[] tabButtons;
@@ -14,15 +19,24 @@ public class WeaponRecipeWindow : BaseUI
     [SerializeField] private GameObject[] tabPanels;
 
     [Header("UI Elements")]
-    [SerializeField] Button exitBtn;
+    [SerializeField] private Image icon;
+    [SerializeField] private TextMeshProUGUI nameText;
+    [SerializeField] private TextMeshProUGUI pointText;
+    [SerializeField] private Button unlockBtn;
+    [SerializeField] private Button exitBtn;
 
-    private Forge forge;
-    
+    [Header("RecipeSlots Root")]
+    [SerializeField] private WeaponRecipeSlot[] recipeSlots;
+
+    private CraftingRecipeData selectedRecipe;
+
     public override void Init(GameManager gameManager, UIManager uIManager)
     {
         base.Init(gameManager, uIManager);
 
         forge = gameManager.Forge;
+        recipeSystem = forge.RecipeSystem;
+        dataManager = gameManager.DataManager;
 
         for (int i = 0; i < tabButtons.Length; i++)
         {
@@ -34,8 +48,15 @@ public class WeaponRecipeWindow : BaseUI
             });
         }
 
+        foreach (var slot in recipeSlots)
+        {
+            slot.Init(recipeSystem, this);
+        }
         SwitchTab(0);
-        
+
+        unlockBtn.onClick.RemoveAllListeners();
+        unlockBtn.onClick.AddListener(ClickUnlockBtn);
+
         exitBtn.onClick.RemoveAllListeners();
         exitBtn.onClick.AddListener(() => uIManager.CloseUI(UIName.GetRecipeWindowByType(forge.ForgeType)));
     }
@@ -60,5 +81,26 @@ public class WeaponRecipeWindow : BaseUI
     public override void Close()
     {
         base.Close();
+    }
+
+    public void SetInfoUI(string key)
+    {
+        selectedRecipe = dataManager.RecipeLoader.GetDataByKey(key);
+        ItemData itemData = dataManager.ItemLoader.GetItemByKey(key);
+
+        icon.sprite = IconLoader.GetIconByKey(key);
+        nameText.text = itemData.Name;
+        pointText.text = selectedRecipe.NeedPoint.ToString();
+
+        if (recipeSystem.CheckUnlock(selectedRecipe))
+            unlockBtn.interactable = false;
+        else
+            unlockBtn.interactable = true;
+    }
+
+    private void ClickUnlockBtn()
+    {
+        recipeSystem.UnlockRecipe(selectedRecipe);
+        SetInfoUI(selectedRecipe.Key);
     }
 }
