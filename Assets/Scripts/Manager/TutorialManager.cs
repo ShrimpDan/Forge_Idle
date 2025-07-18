@@ -7,7 +7,8 @@ using UnityEngine.EventSystems;
 
 public class TutorialManager : MonoBehaviour
 {
-    public bool IsTurtorialMode => isTurtorialMode;
+ 
+    public bool IsEventDone => isEventDone;
 
     //대사 출력확인
     private bool isTyping = false;
@@ -37,6 +38,7 @@ public class TutorialManager : MonoBehaviour
 
     [Header("클릭방지용")]
     [SerializeField] private GameObject clickBlocker;
+    [SerializeField] private GameObject topHalfBlocker;
     private Coroutine waitClickRoutine;
 
     
@@ -74,14 +76,17 @@ public class TutorialManager : MonoBehaviour
     private void Start()
     {
         PlayerPrefs.SetInt("TutorialDone", 0); // Test       
-        ClickBlocker.OnBlockClick += OnStepClear;
+        ClickBlocker.OnBlockClick += HandleClickBlock;
         InteractionObjectHandler.OnPointerClicked += OnSettingObject; // 클릭 이벤트 등록
-        GameManager.Instance.CraftingManager.isCrafingDone += OnStepClear; // 제작 완료 이벤트 등록
+        GameManager.Instance.CraftingManager.isCrafingDone += OnEventDone; // 제작 완료 이벤트 등록
     }
 
     private void OnDestroy()
     {
-        ClickBlocker.OnBlockClick -= OnStepClear;
+        ClickBlocker.OnBlockClick -= HandleClickBlock;
+        InteractionObjectHandler.OnPointerClicked -= OnSettingObject;
+        GameManager.Instance.CraftingManager.isCrafingDone -= OnEventDone;
+
         if (waitClickRoutine != null)
         {
             StopCoroutine(waitClickRoutine);
@@ -107,7 +112,7 @@ public class TutorialManager : MonoBehaviour
                 ShowTextWithTyping("어서오세요!! 대장간은 처음 방문하시는군요!!\n 만나서 반갑습니다 간단한 운영법을 알려드릴께요!!");
                 isWaitingForClick = true;
                 isEventDone = true; //이벤트가 없으니
-                // ClickBlockerOn();
+              
                 break;
             case 1:
                 arrowIcon.SetActive(true);
@@ -115,6 +120,8 @@ public class TutorialManager : MonoBehaviour
                 interactObjects[0].GetComponent<Collider2D>().enabled = true; //클릭 방지
                 waitClickRoutine = StartCoroutine(WaitForClick());
                 ShowTextWithTyping("제작대를 클릭해서 무기를 만들어 볼까요??");
+                GameManager.Instance.Inventory.AddItem(GameManager.Instance.DataManager.ItemLoader.GetItemByKey("ingot_copper"), 2);
+                GameManager.Instance.Inventory.AddItem(GameManager.Instance.DataManager.ItemLoader.GetItemByKey("resource_bronze"), 1);
                 break;
             case 2:
                 HideArrow();
@@ -124,18 +131,18 @@ public class TutorialManager : MonoBehaviour
                 Vector2 centerScreen = new Vector2(Screen.width / 2 +40, Screen.height / 2);
                 StartCoroutine(WaitForClick());
                 effect.ShowHighlight(centerScreen); //중앙에 하이라이트 
-                GameManager.Instance.Inventory.AddItem(GameManager.Instance.DataManager.ItemLoader.GetItemByKey("resource_copper"), 2);
-                GameManager.Instance.Inventory.AddItem(GameManager.Instance.DataManager.ItemLoader.GetItemByKey("resource_bronze"), 1);
-
                 break;
             case 3:
                 effect.ResetHighlightSize();
                 effect.HideHighlight();
                 tutorialPanel.SetActive(true);
+                topHalfBlocker.SetActive(true);
                 ShowTextWithTyping("이제 도끼를 클릭해서 제작해볼까요??");
+                isEventDone = false;
                 //여기 다음 스텝을 해당 도끼가 제작이 끝나면 진행하는걸로 변경 근데 지금 다른곳을 클릭하면 다음단계로 넘어간다.
                 break;
             case 4:
+                topHalfBlocker.SetActive(false);
                 ShowTextWithTyping("도끼가 제작되었어요!! 축하해요!! 자동으로 판매대에 등록될꺼에요!! \n 이제 손님이 방문할꺼에요!!");
                 break;
             case 5:
@@ -186,6 +193,12 @@ public class TutorialManager : MonoBehaviour
         HandleStep();
     }
 
+    public void OnEventDone()
+    {
+        isEventDone = true;
+        OnStepClear();
+        
+    }
     
     private bool CompareObject(GameObject obj)
     {
@@ -292,12 +305,13 @@ public class TutorialManager : MonoBehaviour
         foreach (char c in text)
         {
             tutorialText.text += c;
-            yield return new WaitForSeconds(0.03f); // 속도 조절 가능
+            yield return WaitForSecondsCache.Wait(0.03f); // 속도 조절 가능
         }
         isTyping = false;
     }
     private IEnumerator WaitForClick()
     {
+     
         yield return WaitForSecondsCache.Wait(0.3f);
         yield return new WaitUntil(() => Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject());
 
