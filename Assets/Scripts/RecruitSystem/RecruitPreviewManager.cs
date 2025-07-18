@@ -1,12 +1,29 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class RecruitPreviewManager : MonoBehaviour
 {
+    [Header("UI")]
     [SerializeField] private RecruitPopup popup;
+    [SerializeField] private GameObject paperPrefab;
+    [SerializeField] private Transform paperRoot;
+    [SerializeField] private GameObject recruitUI;
+
+    [Header("Button")]
+    [SerializeField] private Button btnApprove;
+    [SerializeField] private Button btnReject;
+    [SerializeField] private Button btnHold;
 
     private AssistantFactory assistantFactory;
     private List<AssistantInstance> candidatePool = new();
+    private List<AssistantInstance> heldCandidates = new();
+    private List<GameObject> activePapers = new();
+    private GameObject currentPaperGO;
+
+    private bool isTransitioning = false;
+
     private int currentIndex = 0;
 
     private void Start()
@@ -20,13 +37,22 @@ public class RecruitPreviewManager : MonoBehaviour
         assistantFactory = new AssistantFactory(GameManager.Instance.DataManager);
     }
 
-    /// <summary>
-    /// 5명의 후보를 뽑고 첫 번째 제자 보여주기
-    /// </summary>
     public void TryRecruitCandidate()
     {
-        candidatePool = assistantFactory.CreateMultiple(5);
+        foreach (var paper in activePapers)
+        {
+            if (paper != null)
+                Destroy(paper);
+        }
+        activePapers.Clear();
+
         currentIndex = 0;
+        heldCandidates.Clear();
+        currentPaperGO = null;
+
+        recruitUI?.SetActive(true);
+
+        candidatePool = assistantFactory.CreateMultiple(5);
 
         if (candidatePool.Count == 0)
         {
@@ -38,23 +64,67 @@ public class RecruitPreviewManager : MonoBehaviour
         ShowCurrentCandidate();
     }
 
-    /// <summary>
-    /// 현재 제자 UI에 출력
-    /// </summary>
     private void ShowCurrentCandidate()
     {
         if (currentIndex >= candidatePool.Count)
         {
             popup.HidePopup();
+
+            foreach (var paper in activePapers)
+            {
+                if (paper != null)
+                    Destroy(paper);
+            }
+
+            activePapers.Clear();
+            currentPaperGO = null;
+            isTransitioning = false;
+            SetButtonsInteractable(false);
             return;
         }
 
-        var currentCandidate = candidatePool[currentIndex];
-        popup.ShowPopup(currentCandidate);
+        var candidate = candidatePool[currentIndex];
+        isTransitioning = true;
+        SetButtonsInteractable(false);
+
+        void OnPaperReady()
+        {
+            isTransitioning = false;
+            SetButtonsInteractable(true);
+        }
+
+        if (currentPaperGO != null)
+        {
+            var oldPaper = currentPaperGO.GetComponent<AssistantPaperAnimator>();
+            oldPaper?.AnimateExitToTopRight(onComplete: () =>
+            {
+                currentPaperGO = CreatePaper(candidate, OnPaperReady);
+            });
+        }
+        else
+        {
+            currentPaperGO = CreatePaper(candidate, OnPaperReady);
+        }
+    }
+
+
+    private GameObject CreatePaper(AssistantInstance data, Action onEnterComplete = null)
+    {
+        var paper = Instantiate(paperPrefab, paperRoot);
+        var animator = paper.GetComponent<AssistantPaperAnimator>();
+        var infoView = paper.GetComponent<AssistantInfoView>();
+
+        infoView.SetData(data);
+        animator?.AnimateEnterFromTopLeft(onComplete: onEnterComplete);
+
+        activePapers.Add(paper);
+        return paper;
     }
 
     public void ApproveCandidate()
     {
+        if (isTransitioning) return;
+
         var approved = candidatePool[currentIndex];
         GameManager.Instance.AssistantInventory.Add(approved);
 
@@ -64,15 +134,25 @@ public class RecruitPreviewManager : MonoBehaviour
 
     public void RejectCandidate()
     {
+        if (isTransitioning) return;
+
         currentIndex++;
         ShowCurrentCandidate();
     }
 
     public void HoldCandidate()
     {
-        // 보류 처리 시, 인벤토리에 넣지 않지만 현재 로직에선 딱히 저장 구조 없음
-        // 나중에 보류 리스트에 따로 저장해도 됨
+        if (isTransitioning) return;
+
+        heldCandidates.Add(candidatePool[currentIndex]);
         currentIndex++;
         ShowCurrentCandidate();
+    }
+
+    private void SetButtonsInteractable(bool interactable)
+    {
+        btnApprove.interactable = interactable;
+        btnReject.interactable = interactable;
+        btnHold.interactable = interactable;
     }
 }
