@@ -18,25 +18,80 @@ public class UIManager : MonoBehaviour
     private Dictionary<string, BaseUI> activeUIs = new();
     private Dictionary<string, GameObject> loadedPrefabs = new();
 
+    // 1000단위마다 k/m/b 접미사로 줄여서 숫자 포맷을 반환 (1.2k, 1.5m 등)
+    public static string FormatNumber(int number)
+    {
+        if (number >= 1_000_000_000)
+            return (number % 1_000_000_000 == 0)
+                ? (number / 1_000_000_000) + "b"
+                : (number / 1_000_000_000f).ToString("0.##") + "b";
+        else if (number >= 1_000_000)
+            return (number % 1_000_000 == 0)
+                ? (number / 1_000_000) + "m"
+                : (number / 1_000_000f).ToString("0.##") + "m";
+        else if (number >= 1_000)
+            return (number % 1_000 == 0)
+                ? (number / 1_000) + "k"
+                : (number / 1_000f).ToString("0.##") + "k";
+        else
+            return number.ToString();
+    }
 
     public static string FormatNumber(long number)
     {
-        return number.ToString("N0", CultureInfo.InvariantCulture);
+        if (number >= 1_000_000_000)
+            return (number % 1_000_000_000 == 0)
+                ? (number / 1_000_000_000) + "b"
+                : (number / 1_000_000_000d).ToString("0.##") + "b";
+        else if (number >= 1_000_000)
+            return (number % 1_000_000 == 0)
+                ? (number / 1_000_000) + "m"
+                : (number / 1_000_000d).ToString("0.##") + "m";
+        else if (number >= 1_000)
+            return (number % 1_000 == 0)
+                ? (number / 1_000) + "k"
+                : (number / 1_000d).ToString("0.##") + "k";
+        else
+            return number.ToString();
     }
-    public static string FormatNumber(int number)
-    {
-        return number.ToString("N0", CultureInfo.InvariantCulture);
-    }
+
     public static string FormatNumber(float number, int decimalPoint = 0)
     {
-        string fmt = decimalPoint > 0 ? $"N{decimalPoint}" : "N0";
-        return number.ToString(fmt, CultureInfo.InvariantCulture);
+        // 소수점 이하 두 자리까지 k/m/b 변환 (정밀 표기)
+        if (number >= 1_000_000_000)
+            return (number % 1_000_000_000 == 0)
+                ? ((long)number / 1_000_000_000) + "b"
+                : (number / 1_000_000_000f).ToString("0.##") + "b";
+        else if (number >= 1_000_000)
+            return (number % 1_000_000 == 0)
+                ? ((long)number / 1_000_000) + "m"
+                : (number / 1_000_000f).ToString("0.##") + "m";
+        else if (number >= 1_000)
+            return (number % 1_000 == 0)
+                ? ((long)number / 1_000) + "k"
+                : (number / 1_000f).ToString("0.##") + "k";
+        else
+            return number.ToString($"N{decimalPoint}");
     }
+
     public static string FormatNumber(double number, int decimalPoint = 0)
     {
-        string fmt = decimalPoint > 0 ? $"N{decimalPoint}" : "N0";
-        return number.ToString(fmt, CultureInfo.InvariantCulture);
+        if (number >= 1_000_000_000)
+            return (number % 1_000_000_000 == 0)
+                ? ((long)number / 1_000_000_000) + "b"
+                : (number / 1_000_000_000d).ToString("0.##") + "b";
+        else if (number >= 1_000_000)
+            return (number % 1_000_000 == 0)
+                ? ((long)number / 1_000_000) + "m"
+                : (number / 1_000_000d).ToString("0.##") + "m";
+        else if (number >= 1_000)
+            return (number % 1_000 == 0)
+                ? ((long)number / 1_000) + "k"
+                : (number / 1_000d).ToString("0.##") + "k";
+        else
+            return number.ToString($"N{decimalPoint}");
     }
+
 
 
 
