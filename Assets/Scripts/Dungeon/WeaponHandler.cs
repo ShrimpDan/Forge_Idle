@@ -76,10 +76,11 @@ public class WeaponHandler : MonoBehaviour
             yield return WaitForSecondsCache.Wait(attackDelay);
 
             var slot = attackQueue.Peek();
-            if (slot.IsReady)
+            Monster monster = monsterHandler.GetCurrentMonster();
+            if (slot.IsReady && monster != null)
             {
                 attackQueue.Dequeue();
-                Attack(slot);
+                Attack(slot, monster);
                 slot.StartCooldown();
                 StartCoroutine(WaitAndRequeue(slot));
             }
@@ -88,18 +89,11 @@ public class WeaponHandler : MonoBehaviour
         isAttack = false;
     }
 
-    private void Attack(EquippedWeaponSlot slot)
+    private void Attack(EquippedWeaponSlot slot, Monster monster)
     {
-        Monster monster = monsterHandler.GetCurrentMonster();
-
-        if (monster != null)
-        {
-            animator.Play(attackHash);
-
-            SoundManager.Instance.Play("SFX_BattleThrow");
-
-            SpawnProjectile(slot, monster);
-        }
+        animator.Play(attackHash);
+        SoundManager.Instance.Play("SFX_BattleThrow");
+        SpawnProjectile(slot, monster);
     }
 
     // 투사체 소환 및 효과 적용
@@ -112,7 +106,7 @@ public class WeaponHandler : MonoBehaviour
 
         if (go.TryGetComponent(out SpriteRenderer icon))
         {
-            icon.sprite = IconLoader.GetIcon(slot.WeaponData.Data.IconPath);
+            icon.sprite = IconLoader.GetIconByKey(slot.WeaponData.ItemKey);
         }
 
         go.transform.DOJump(endPos, Random.Range(minJumpPower, maxJumpPower), 1, duration)

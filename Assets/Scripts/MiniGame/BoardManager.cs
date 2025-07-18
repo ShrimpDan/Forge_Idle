@@ -190,7 +190,7 @@ public class BoardManager : MonoBehaviour
         }
         else
         {
-            GameManager.Instance.Forge.AddDia(50); //나중에 다이아 수치 따로 빼둘예정
+            GameManager.Instance.ForgeManager.AddDia(50); //나중에 다이아 수치 따로 빼둘예정
         }
     }
 

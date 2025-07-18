@@ -7,43 +7,40 @@ public class GameManager : MonoSingleton<GameManager>
     public DataManager DataManager { get; private set; }
     public AssistantManager AssistantManager { get; private set; }
     public AssistantInventory AssistantInventory => AssistantManager != null ? AssistantManager.AssistantInventory : null;
-    public Forge Forge { get; private set; }
+    public ForgeManager ForgeManager{ get; private set; }
+    public Forge Forge { get => ForgeManager.CurrentForge; }
+
     public UIManager UIManager { get; private set; }
     public List<AssistantInstance> HeldCandidates { get; private set; } = new();
 
     public DungeonSystem DungeonSystem{ get; private set; }
-
     public CraftingManager CraftingManager { get; private set; }
-
     public GameSaveManager SaveManager { get; private set; }
-
-    public PoolManager PoolManager { get; private set; }
-
     public TutorialManager TutorialManager { get; private set; }
     
     protected override void Awake()
     {
         base.Awake();
-       
+
         Inventory = new InventoryManager(this);
         DataManager = new DataManager();
+
+        ForgeManager = new ForgeManager(this);
         AssistantManager = FindObjectOfType<AssistantManager>();
         UIManager = FindObjectOfType<UIManager>();
-        Forge = FindObjectOfType<Forge>();
+
         TutorialManager = FindObjectOfType<TutorialManager>();
         DungeonSystem = new DungeonSystem(this);
-        PoolManager = PoolManager.Instance;
 
         CollectionBookManager.Instance.Initialize();
         if (UIManager)
             UIManager.Init(this);
-        if (Forge)
-            Forge.Init(this);
+
         if (AssistantManager)
             AssistantManager.Init(this);
         if (TutorialManager)
             TutorialManager.Init(this);
-      
+
         // CraftingManager 동적 생성 및 초기화
         var cmObj = new GameObject("CraftingManager");
         CraftingManager = cmObj.AddComponent<CraftingManager>();
@@ -58,16 +55,13 @@ public class GameManager : MonoSingleton<GameManager>
         SaveManager = new GameSaveManager();
 
         // 세이브 핸들러 등록
-        SaveManager.RegisterSaveHandler(new ForgeSaveHandeler(Forge));
+        SaveManager.RegisterSaveHandler(new ForgeSaveHandeler(ForgeManager));
         SaveManager.RegisterSaveHandler(new InventorySaveHandler(Inventory));
         SaveManager.RegisterSaveHandler(new AssistantSaveHandler(AssistantManager, DataManager.PersonalityLoader));
-        SaveManager.RegisterSaveHandler(new WeaponSellingSaveHandler(Forge.SellingSystem));
         SaveManager.RegisterSaveHandler(new CollectionBookSaveHandler(CollectionBookManager.Instance));
         SaveManager.RegisterSaveHandler(new DungeonSaveHandler(DungeonSystem));
-        
-        
+
         SaveManager.LoadAll();
-      
     }
 
 
@@ -94,9 +88,9 @@ public class GameManager : MonoSingleton<GameManager>
     [ContextMenu("Add Test Gold (5000)")]
     public void AddTestGold()
     {
-        if (Forge != null)
+        if (ForgeManager != null)
         {
-            Forge.AddGold(5000);
+            ForgeManager.AddGold(5000);
             Debug.Log("<color=yellow>[GameManager] 테스트 골드 5000 지급 완료!</color>");
         }
         else

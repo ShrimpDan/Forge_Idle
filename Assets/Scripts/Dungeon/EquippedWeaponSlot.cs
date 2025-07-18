@@ -15,7 +15,7 @@ public class EquippedWeaponSlot : MonoBehaviour
     {
         WeaponData = weapon;
 
-        icon.sprite = IconLoader.GetIcon(weapon.Data.IconPath);
+        icon.sprite = IconLoader.GetIconByKey(weapon.ItemKey);
         cooldownImage.fillAmount = 0f;
         timer = 0f;
     }

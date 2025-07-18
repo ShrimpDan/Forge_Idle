@@ -55,7 +55,7 @@
 //        {
 //            string key = "resource_bronze"; 
 //            ItemData resourceData = itemLoader?.GetItemByKey(key);
-//            Sprite icon = resourceData != null ? IconLoader.GetIcon(resourceData.IconPath) : null;
+//            Sprite icon = resourceData != null ? IconLoader.GetIconByPath(resourceData.IconPath) : null;
 //            string mineralName = resourceData != null ? resourceData.Name : $"광물{i + 1}";
 //            GameObject go = Instantiate(mineralSlotPrefab, mineralSlotParent);
 //            int idx = i;

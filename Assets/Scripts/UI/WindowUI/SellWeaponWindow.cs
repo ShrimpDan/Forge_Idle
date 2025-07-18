@@ -16,7 +16,7 @@ public class SellWeaponWindow : BaseUI
         base.Init(gameManager, uIManager);
 
         exitBtn.onClick.RemoveAllListeners();
-        exitBtn.onClick.AddListener(() => uIManager.CloseUI(UIName.SellWeaponWindow));
+        //exitBtn.onClick.AddListener(() => uIManager.CloseUI(UIName.SellWeaponWindow));
 
         weaponDict = new Dictionary<CustomerJob, SellWeaponSlot>();
         for (int i = 0; i < sellSlots.Length; i++)

@@ -19,7 +19,7 @@ namespace Assets.PixelFantasy.PixelHeroes.Common.Scripts.CollectionScripts
 
         private Color32[] _pixels;
 
-        public Texture2D GetIcon(Texture2D texture)
+        public Texture2D GetIconByPath(Texture2D texture)
         {
             var icon = new Texture2D(32, 32) { filterMode = FilterMode.Point };
 

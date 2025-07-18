@@ -21,7 +21,7 @@ public class Forge_ItemSlot : MonoBehaviour
         {
             if (item != null && item.Data != null)
             {
-                icon.sprite = IconLoader.GetIcon(item.Data.IconPath);
+                icon.sprite = IconLoader.GetIconByKey(item.ItemKey);
                 icon.enabled = icon.sprite != null;
             }
             else
