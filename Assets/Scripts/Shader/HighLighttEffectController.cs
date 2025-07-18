@@ -44,13 +44,14 @@ public class HighLightEffectController : MonoBehaviour
         highlightImage.enabled = true;
     }
 
-    public void ShowHighlight(Vector2 pos) //위치로만 하이라이트를 주는것이 가능하게 
+    public void ShowHighlight(Vector3 pos , Camera camera) //위치로만 하이라이트를 주는것이 가능하게 
     {
         if (highLightMaterial == null || highlightImage == null)
         {
             return;
         }
-        Vector2 normalizedPos = new Vector2(pos.x / Screen.width, pos.y / Screen.height);
+        Vector3 screenPos = camera.WorldToScreenPoint(pos);
+        Vector2 normalizedPos = new Vector2(screenPos.x / Screen.width, screenPos.y / Screen.height);
 
         highLightMaterial.SetVector("_Center", normalizedPos);
 
@@ -84,6 +85,7 @@ public class HighLightEffectController : MonoBehaviour
             highlightImage.enabled = false;
         }
     }
-    
+
+
 
 }
