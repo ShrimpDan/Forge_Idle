@@ -1,15 +1,13 @@
-﻿using UnityEngine;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class RecruitPreviewManager : MonoBehaviour
 {
     [SerializeField] private RecruitPopup popup;
 
     private AssistantFactory assistantFactory;
-    private AssistantInstance currentCandidate;
     private List<AssistantInstance> candidatePool = new();
-    private AssistantInstance heldCandidate = null;
+    private int currentIndex = 0;
 
     private void Start()
     {
@@ -20,58 +18,61 @@ public class RecruitPreviewManager : MonoBehaviour
         }
 
         assistantFactory = new AssistantFactory(GameManager.Instance.DataManager);
-        InitializeCandidatePool();
     }
 
-    private void InitializeCandidatePool()
-    {
-        candidatePool = assistantFactory.CreateMultiple(10);
-    }
-
+    /// <summary>
+    /// 5명의 후보를 뽑고 첫 번째 제자 보여주기
+    /// </summary>
     public void TryRecruitCandidate()
     {
-        if (heldCandidate != null)
-        {
-            currentCandidate = heldCandidate;
-            Debug.Log($"[Recruit] 보류된 제자 다시 표시: {currentCandidate.Name}");
-            popup.ShowPopup(currentCandidate);
-            return;
-        }
+        candidatePool = assistantFactory.CreateMultiple(5);
+        currentIndex = 0;
 
-        // 새로 뽑기
         if (candidatePool.Count == 0)
         {
-            Debug.Log("[Recruit] 제자 리스트가 비어있습니다.");
+            Debug.LogWarning("[Recruit] 뽑힌 후보가 없습니다.");
             popup.HidePopup();
             return;
         }
 
-        currentCandidate = candidatePool[Random.Range(0, candidatePool.Count)];
+        ShowCurrentCandidate();
+    }
+
+    /// <summary>
+    /// 현재 제자 UI에 출력
+    /// </summary>
+    private void ShowCurrentCandidate()
+    {
+        if (currentIndex >= candidatePool.Count)
+        {
+            popup.HidePopup();
+            return;
+        }
+
+        var currentCandidate = candidatePool[currentIndex];
         popup.ShowPopup(currentCandidate);
     }
 
     public void ApproveCandidate()
     {
-        candidatePool.Remove(currentCandidate);
-        heldCandidate = null;
-        currentCandidate = null;
-        popup.HidePopup();
+        var approved = candidatePool[currentIndex];
+        GameManager.Instance.AssistantInventory.Add(approved);
+
+        currentIndex++;
+        ShowCurrentCandidate();
     }
 
     public void RejectCandidate()
     {
-        heldCandidate = null;
-        currentCandidate = null;
-        popup.HidePopup();
+        currentIndex++;
+        ShowCurrentCandidate();
     }
 
     public void HoldCandidate()
     {
-        if (currentCandidate != null)
-        {
-            heldCandidate = currentCandidate;
-            Debug.Log($"[Recruit] 보류: {heldCandidate.Name}");
-        }
-        popup.HidePopup();
+        // 보류 처리 시, 인벤토리에 넣지 않지만 현재 로직에선 딱히 저장 구조 없음
+        // 나중에 보류 리스트에 따로 저장해도 됨
+        currentIndex++;
+        ShowCurrentCandidate();
     }
 }

@@ -27,11 +27,28 @@ public class AssistantFactory
         if (!canRecruit && !bypassRecruitCheck) return null;
         canRecruit = false;
 
-        var candidates = assistantLoader.ItemsList.FindAll(t => GetTier(t.grade) >= 2);
-        if (candidates.Count == 0) return null;
+        const int maxRetry = 10;
+        int attempts = 0;
 
-        var selected = candidates[rng.Next(candidates.Count)];
-        return CreateAssistantFromData(selected);
+        while (attempts < maxRetry)
+        {
+            string selectedGrade = GetRandomGradeByProbability();
+
+            var candidates = assistantLoader.ItemsList
+                .Where(t => t.grade == selectedGrade)
+                .ToList();
+
+            if (candidates.Count > 0)
+            {
+                var selected = candidates[rng.Next(candidates.Count)];
+                return CreateAssistantFromData(selected);
+            }
+
+            attempts++;
+        }
+
+        Debug.LogWarning("[AssistantFactory] 뽑기 실패: 유효한 등급의 제자 후보가 없습니다.");
+        return null;
     }
 
     public AssistantInstance CreateFixedTrainee(SpecializationType type, bool bypassRecruitCheck = false)
@@ -50,17 +67,37 @@ public class AssistantFactory
     public List<AssistantInstance> CreateMultiple(int count, SpecializationType? fixedType = null)
     {
         var results = new List<AssistantInstance>();
+        const int maxAttemptsPerSlot = 10;
+
         for (int i = 0; i < count; i++)
         {
-            var data = fixedType == null
-                ? CreateRandomTrainee(true)
-                : CreateFixedTrainee(fixedType.Value, true);
+            int attempts = 0;
+            AssistantInstance data = null;
 
-            if (data != null)
-                results.Add(data);
+            while (attempts < maxAttemptsPerSlot)
+            {
+                data = fixedType == null
+                    ? CreateRandomTrainee(true)
+                    : CreateFixedTrainee(fixedType.Value, true);
+
+                if (data != null)
+                {
+                    results.Add(data);
+                    break;
+                }
+
+                attempts++;
+            }
+
+            if (data == null)
+            {
+                Debug.LogWarning($"[AssistantFactory] 제자 {i + 1}명 생성 실패 (고정 타입: {fixedType?.ToString() ?? "랜덤"})");
+            }
         }
+
         return results;
     }
+
 
     public void ResetRecruitLock() => canRecruit = true;
 
@@ -128,9 +165,6 @@ public class AssistantFactory
         return assistantData;
     }
 
-
-
-
     public AssistantInstance CreateFromSpecAndPersonality(SpecializationType spec, string personalityKey, int minTier = 1)
     {
         var candidates = assistantLoader.ItemsList
@@ -166,5 +200,16 @@ public class AssistantFactory
             "N" => 5,
             _ => 5
         };
+    }
+
+    private string GetRandomGradeByProbability()
+    {
+        float rand = UnityEngine.Random.value; // 0.0 ~ 1.0
+
+        if (rand < 0.01f) return "UR";       // 1%
+        else if (rand < 0.05f) return "SSR"; // 4%
+        else if (rand < 0.15f) return "SR";  // 10%
+        else if (rand < 0.40f) return "R";   // 25%
+        else return "N";                     // 60%
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Assets.PixelFantasy.PixelTileEngine.Scripts;
 using UnityEngine;
 
 public class AssistantManager : MonoBehaviour
@@ -71,9 +72,10 @@ public class AssistantManager : MonoBehaviour
         if (fusionUIController != null)
             fusionUIController.SetFilteredMode(false);
 
-        GameManager.Instance.SaveManager.SaveAll();
+        var saveHandler = new AssistantSaveHandler(this, GameManager.Instance.DataManager.PersonalityLoader);
+        saveHandler.Delete();
 
-        Debug.Log("<color=red>[AssistantManager] 제자 전체 초기화 및 저장 완료</color>");
+        Debug.Log("<color=red>[AssistantManager] 제자 전체 초기화 및 저장 삭제 완료</color>");
     }
 
     // 단일 뽑기 처리 (외부에서 호출)
