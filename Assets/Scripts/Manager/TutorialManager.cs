@@ -80,6 +80,8 @@ public class TutorialManager : MonoBehaviour
         InteractionObjectHandler.OnPointerClicked += OnSettingObject; // 클릭 이벤트 등록
         GameManager.Instance.CraftingManager.isCrafingDone += OnEventDone; // 제작 완료 이벤트 등록
         GameManager.Instance.UIManager.CloseUIName += HandleUIClose;
+
+        PlayerPrefs.SetInt("TutorialDone", 0); 
     }
 
     private void OnDestroy()
@@ -119,7 +121,6 @@ public class TutorialManager : MonoBehaviour
                 isWaitingForClick = true;
                 isEvent = false; //박스랑 상호작용해도 대사 넘어가게
                 tutorialStep = 3; //일단 제작 넘기고 Test
-
                 break;
             case 1:
                 arrowIcon.SetActive(true);
@@ -137,7 +138,7 @@ public class TutorialManager : MonoBehaviour
                 StartCoroutine(WaitForClick());
                 break;
             case 3:
-                topHalfBlocker.SetActive(true); ;
+                topHalfBlocker.SetActive(true); 
                 tutorialPanel.SetActive(true);
                 topHalfBlocker.SetActive(true);
                 ShowTextWithTyping("이제 도끼를 클릭해서 제작해볼까요??");
@@ -149,7 +150,7 @@ public class TutorialManager : MonoBehaviour
                 ShowTextWithTyping("도끼가 제작되었어요!! 축하해요!! 자동으로 판매대에 등록될꺼에요!! \n 이제 손님이 방문할꺼에요!!");
                 break;
             case 5:
-                
+                AllObjectInteractOff(); //일단 모든 오브젝트의 상호작용을 막는다.
                 arrowIcon.SetActive(true);
                 MoveArrowToTarget(interactObjects[1].transform);
                 HighlightTarget(hightLightTargets[1]);
@@ -157,15 +158,15 @@ public class TutorialManager : MonoBehaviour
                 ShowTextWithTyping("자 이제 세공을 해볼꺼에요!!");
                 isEvent = true;
                 break;
-
             case 6:
-            
                 AllEffectOff();
                 ClickBlockerOn();
                 ShowTextWithTyping("세공은 제작에 필요한 광석이나 장착에 필요한 보석을 만들수 있어요!!\n 각 보석들을 클릭하면 필요한 재료가 보일꺼에요!!");
+                ShowTextWithTyping("둘러보고 창을 닫아볼까요??");
                 break;
             case 7:
-                ShowTextWithTyping("둘러보고 창을 닫아볼까요??");
+                tutorialPanel.SetActive(false);
+                
                 break;
             case 8:
                 arrowIcon.SetActive(true);
@@ -189,13 +190,13 @@ public class TutorialManager : MonoBehaviour
                 break;
             case 11:
                 ClickBlockerOn();
-                HighlightPos(-200, -900);
-                effect.HideHighlight();
+                HighlightPos(-170, -900);
+                
                 ShowTextWithTyping("일반강화는 골드를 사용해서 확률을 통해서 강화 할수있어요!! ");
                 break;
             case 12:
                 ClickBlockerOn();
-                HighlightPos(200, -900);
+                HighlightPos(178, -900);
                 effect.HideHighlight();
                 ShowTextWithTyping("고급강화는 재화를 사용해서 좀더 확률이 높게 강화가 가능해요!! ");
                 break;
