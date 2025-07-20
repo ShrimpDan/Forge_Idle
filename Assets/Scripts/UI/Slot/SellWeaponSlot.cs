@@ -28,17 +28,17 @@ public class SellWeaponSlot : MonoBehaviour
         slotBtn.onClick.RemoveAllListeners();
         slotBtn.onClick.AddListener(OnClickButton);
 
-        string key = gameManager.Forge.SellingSystem.CraftingWeapon[slotType]?.ItemKey;
+        // string key = gameManager.Forge.SellingSystem.CraftingWeapon[slotType]?.ItemKey;
 
-        if(key != null)
-            SetItem(key);
+        // if(key != null)
+        //     SetItem(key);
     }
 
     public void SetItem(string key)
     {
         SlotItem = dataManager.ItemLoader.GetItemByKey(key);
         craftingData = dataManager.CraftingLoader.GetDataByKey(key);
-        icon.sprite = IconLoader.GetIcon(SlotItem.IconPath);
+        icon.sprite = IconLoader.GetIconByPath(SlotItem.IconPath);
         priceText.text = craftingData.sellCost.ToString();
     }
 
@@ -47,6 +47,6 @@ public class SellWeaponSlot : MonoBehaviour
         var ui = uIManager.OpenUI<SellWeaponPopup>(UIName.SellWeaponPopup);
         ui.Init(gameManager, uIManager);
 
-        ui.SetPopup(this, gameManager.Inventory.GetWeaponListByType(slotType));
+        //ui.SetPopup(this, gameManager.Inventory.GetWeaponListByType(slotType));
     }   
 }

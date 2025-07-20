@@ -25,7 +25,7 @@ public class AssistantSlot : MonoBehaviour
         {
             string iconPath = data?.IconPath;
             icon.sprite = !string.IsNullOrEmpty(iconPath)
-                ? IconLoader.GetIcon(iconPath)
+                ? IconLoader.GetIconByPath(iconPath)
                 : null;
             icon.enabled = icon.sprite != null;
         }

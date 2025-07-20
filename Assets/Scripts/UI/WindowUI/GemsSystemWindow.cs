@@ -58,7 +58,7 @@ public class GemsSystemWindow : BaseUI
         }
         if (weaponIconImg != null && selectedWeapon?.Data != null)
         {
-            weaponIconImg.sprite = IconLoader.GetIcon(selectedWeapon.Data.IconPath);
+            weaponIconImg.sprite = IconLoader.GetIconByPath(selectedWeapon.Data.IconPath);
             weaponIconImg.enabled = true;
         }
         else if (weaponIconImg != null)

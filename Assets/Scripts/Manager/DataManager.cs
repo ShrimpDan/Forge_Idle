@@ -1,8 +1,12 @@
 ﻿public class DataManager
 {
+    // 대장간 관련 데이터 로더
+    public ForgeUpgradeDataLoader UpgradeDataLoader { get; private set; }
+
     // 아이템 관련 데이터 로더
     public ItemDataLoader ItemLoader { get; private set; }
     public CraftingDataLoader CraftingLoader { get; private set; }
+    public CraftingRecipeLoader RecipeLoader { get; private set; }
 
     // 던전 관련 데이터 로더
     public DungeonDataLoader DungeonDataLoader { get; private set; }
@@ -23,9 +27,13 @@
 
     public DataManager()
     {
+        // 대장간 업그레이드 스텟 관련 데이터
+        UpgradeDataLoader = new ForgeUpgradeDataLoader();
+
         // 아이템 관련 데이터
         ItemLoader = new ItemDataLoader();
         CraftingLoader = new CraftingDataLoader();
+        RecipeLoader = new CraftingRecipeLoader();
 
         // 던전 관련 데이터
         DungeonDataLoader = new DungeonDataLoader();

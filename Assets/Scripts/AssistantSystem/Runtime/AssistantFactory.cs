@@ -27,11 +27,28 @@ public class AssistantFactory
         if (!canRecruit && !bypassRecruitCheck) return null;
         canRecruit = false;
 
-        var candidates = assistantLoader.ItemsList.FindAll(t => GetTier(t.grade) >= 2);
-        if (candidates.Count == 0) return null;
+        const int maxRetry = 10;
+        int attempts = 0;
 
-        var selected = candidates[rng.Next(candidates.Count)];
-        return CreateAssistantFromData(selected);
+        while (attempts < maxRetry)
+        {
+            string selectedGrade = GetRandomGradeByProbability();
+
+            var candidates = assistantLoader.ItemsList
+                .Where(t => t.grade == selectedGrade)
+                .ToList();
+
+            if (candidates.Count > 0)
+            {
+                var selected = candidates[rng.Next(candidates.Count)];
+                return CreateAssistantFromData(selected);
+            }
+
+            attempts++;
+        }
+
+        Debug.LogWarning("[AssistantFactory] 뽑기 실패: 유효한 등급의 제자 후보가 없습니다.");
+        return null;
     }
 
     public AssistantInstance CreateFixedTrainee(SpecializationType type, bool bypassRecruitCheck = false)
@@ -50,15 +67,34 @@ public class AssistantFactory
     public List<AssistantInstance> CreateMultiple(int count, SpecializationType? fixedType = null)
     {
         var results = new List<AssistantInstance>();
+        const int maxAttemptsPerSlot = 10;
+
         for (int i = 0; i < count; i++)
         {
-            var data = fixedType == null
-                ? CreateRandomTrainee(true)
-                : CreateFixedTrainee(fixedType.Value, true);
+            int attempts = 0;
+            AssistantInstance data = null;
 
-            if (data != null)
-                results.Add(data);
+            while (attempts < maxAttemptsPerSlot)
+            {
+                data = fixedType == null
+                    ? CreateRandomTrainee(true)
+                    : CreateFixedTrainee(fixedType.Value, true);
+
+                if (data != null)
+                {
+                    results.Add(data);
+                    break;
+                }
+
+                attempts++;
+            }
+
+            if (data == null)
+            {
+                Debug.LogWarning($"[AssistantFactory] 제자 {i + 1}명 생성 실패 (고정 타입: {fixedType?.ToString() ?? "랜덤"})");
+            }
         }
+
         return results;
     }
 
@@ -94,6 +130,7 @@ public class AssistantFactory
 
         int recruitCost = 0;
         int wage = 0;
+        int rehireCost = 0;
 
         if (wageData != null)
         {
@@ -101,12 +138,16 @@ public class AssistantFactory
             int maxRecruit = Mathf.FloorToInt(wageData.maxRecruitCost / 10f) * 10;
             int minWage = Mathf.FloorToInt(wageData.minWage / 10f) * 10;
             int maxWage = Mathf.FloorToInt(wageData.maxWage / 10f) * 10;
+            int minRehire = Mathf.FloorToInt(wageData.minRehireCost / 10f) * 10;
+            int maxRehire = Mathf.FloorToInt(wageData.maxRehireCost / 10f) * 10;
 
             if (maxRecruit <= minRecruit) maxRecruit = minRecruit + 10;
             if (maxWage <= minWage) maxWage = minWage + 10;
+            if (maxRehire <= minRehire) maxRehire = minRehire + 10;
 
             recruitCost = Mathf.FloorToInt(UnityEngine.Random.Range(minRecruit, maxRecruit + 1) / 10f) * 10;
             wage = Mathf.FloorToInt(UnityEngine.Random.Range(minWage, maxWage + 1) / 10f) * 10;
+            rehireCost = Mathf.FloorToInt(UnityEngine.Random.Range(minRehire, maxRehire + 1) / 10f) * 10;
         }
 
         AssistantInstance assistantData = new AssistantInstance(
@@ -120,15 +161,14 @@ public class AssistantFactory
             customerInfo: assistant.customerInfo,
             recruitCost: recruitCost,
             wage: wage,
+            rehireCost: rehireCost,
             grade: assistant.grade
         );
 
-        Debug.Log($"costKey: {costKey}, recruitCost: {recruitCost}, wage: {wage}");
+        Debug.Log($"costKey: {costKey}, recruitCost: {recruitCost}, wage: {wage}, rehireCost: {rehireCost}");
         AssignInfo(assistantData);
         return assistantData;
     }
-
-
 
 
     public AssistantInstance CreateFromSpecAndPersonality(SpecializationType spec, string personalityKey, int minTier = 1)
@@ -166,5 +206,16 @@ public class AssistantFactory
             "N" => 5,
             _ => 5
         };
+    }
+
+    private string GetRandomGradeByProbability()
+    {
+        float rand = UnityEngine.Random.value; // 0.0 ~ 1.0
+
+        if (rand < 0.01f) return "UR";       // 1%
+        else if (rand < 0.05f) return "SSR"; // 4%
+        else if (rand < 0.15f) return "SR";  // 10%
+        else if (rand < 0.40f) return "R";   // 25%
+        else return "N";                     // 60%
     }
 }

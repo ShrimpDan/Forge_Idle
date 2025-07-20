@@ -68,7 +68,7 @@ public class RegualrCustomer : Customer
     {
         //아이에 사용 안됨
         OnPriceBoosted?.Invoke(Job); //가격 증가
-        CustomerManager.Instance.NotifyNormalCustomerPurchased(Job);
+        customerManager.NotifyNormalCustomerPurchased(Job);
     }
 
 

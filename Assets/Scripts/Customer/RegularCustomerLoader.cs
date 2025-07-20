@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 
 public class RegularCustomerLoader
 {
+    private readonly CustomerManager customerManager;
     private readonly RegularDataLoader dataLoader;
     private readonly Dictionary<(CustomerJob, CustomerRarity), Customer> prefabs;
     private readonly Transform spawnPoint;
@@ -10,8 +12,9 @@ public class RegularCustomerLoader
     private readonly Dictionary<CustomerRarity, float> rarityPrefabs;
 
 
-    public RegularCustomerLoader(RegularDataLoader _dataLoader, Dictionary<(CustomerJob, CustomerRarity), Customer> _prefabs, Transform _spawnPoint, Dictionary<CustomerRarity, float> _rarityPrefabs , BuyPoint buyPoint)
+    public RegularCustomerLoader(CustomerManager customerManager, RegularDataLoader _dataLoader, Dictionary<(CustomerJob, CustomerRarity), Customer> _prefabs, Transform _spawnPoint, Dictionary<CustomerRarity, float> _rarityPrefabs , BuyPoint buyPoint)
     {
+        this.customerManager = customerManager;
         dataLoader = _dataLoader;
         prefabs = _prefabs;
         spawnPoint = _spawnPoint;
@@ -20,7 +23,7 @@ public class RegularCustomerLoader
     }
 
 
-    public Customer SpawnRandomByJob(CustomerJob job)
+    public Customer SpawnRandomByJob(CustomerJob job, WeaponType weaponType)
     {
         var list = new List<RegularCustomerData>();
 
@@ -69,14 +72,15 @@ public class RegularCustomerLoader
         }
 
         var baseCustomerData = GameManager.Instance.DataManager.CustomerDataLoader.GetByKey(choice.customerKey);
-        GameObject regularObj = GameManager.Instance.PoolManager.Get(prefab.gameObject, spawnPoint.position, Quaternion.identity);
+        GameObject regularObj = customerManager.PoolManager.Get(prefab.gameObject, spawnPoint.position, Quaternion.identity);
         var obj = regularObj.GetComponent<Customer>();
 
-        obj.Init(baseCustomerData,mainBuyPoint);
+        obj.Init(customerManager, baseCustomerData,mainBuyPoint);
 
         if (obj is RegualrCustomer rc)
         {
             rc.SettingCollectData(choice);
+            rc.SetWeaponType(weaponType);
         }
 
         Debug.Log($"<color=lime>[Regular]</color> {choice.customerName} ({choice.rarity}) 등장!");

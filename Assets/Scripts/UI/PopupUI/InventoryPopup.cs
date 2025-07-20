@@ -39,7 +39,7 @@ public class InventoryPopup : BaseUI
     public void SetItemInfo(ItemInstance item)
     {
         slotItem = item;
-        icon.sprite = IconLoader.GetIcon(item.Data.IconPath);
+        icon.sprite = IconLoader.GetIconByPath(item.Data.IconPath);
         objectName.text = item.Data.Name;
         valueType.text = "개수:";
         value.text = item.Quantity.ToString("F0");
@@ -49,6 +49,7 @@ public class InventoryPopup : BaseUI
         switch (item.Data.ItemType)
         {
             case ItemType.Weapon:
+                icon.sprite = IconLoader.GetIconByKey(item.ItemKey);
                 valueType.text = "강화 레벨:";
                 value.text = $"{item.CurrentEnhanceLevel}";
                 desc += $"\n\n<color=#00c3ff><b>▶ Stats</b></color>\n";
@@ -57,6 +58,7 @@ public class InventoryPopup : BaseUI
                 break;
 
             case ItemType.Gem:
+                icon.sprite = IconLoader.GetIconByPath(item.Data.IconPath);
                 desc += $"\n\n<color=#ffcc00><b>▶ 효과</b></color>\n";
                 desc += $"강화 배율: <b>{item.Data.GemStats.GemMultiplier:F1}x</b>\n";
                 desc += $"{item.Data.GemStats.GemEffectDescription}";
@@ -64,7 +66,7 @@ public class InventoryPopup : BaseUI
         }
 
         description.text = desc;
-        
+
         if (item.Data.ItemType == ItemType.Weapon)
         {
             CreateButton(item);

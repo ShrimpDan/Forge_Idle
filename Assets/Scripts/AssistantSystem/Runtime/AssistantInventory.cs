@@ -6,12 +6,12 @@ using UnityEngine;
 /// </summary>
 public class AssistantInventory
 {
-    private Forge forge;
+    private ForgeManager forgeManager;
     private List<AssistantInstance> assistantList = new();
 
-    public AssistantInventory(Forge forge)
+    public AssistantInventory(ForgeManager forgeManager)
     {
-        this.forge = forge;
+        this.forgeManager = forgeManager;
     }
 
     /// <summary>
@@ -23,11 +23,6 @@ public class AssistantInventory
         {
             Debug.LogWarning("[AssistantInventory] Null 데이터를 추가하려고 시도했습니다.");
             return;
-        }
-
-        if (data.IsEquipped)
-        {
-            forge.ActiveAssistant(data);
         }
         
         assistantList.Add(data);
@@ -138,5 +133,21 @@ public class AssistantInventory
         {
             ReindexSpecialization(type);
         }
+    }
+
+    /// <summary>
+    /// 사용 가능한 제자만 반환
+    /// </summary>
+    public List<AssistantInstance> GetActiveTrainees()
+    {
+        return assistantList.FindAll(t => !t.IsFired);
+    }
+
+    /// <summary>
+    /// 시급을 지불하지 못해 사용 못하는 제자만 반환
+    /// </summary>
+    public List<AssistantInstance> GetFiredTrainees()
+    {
+        return assistantList.FindAll(t => t.IsFired);
     }
 }

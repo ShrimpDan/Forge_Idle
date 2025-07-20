@@ -15,7 +15,7 @@ public class RewardSlot : MonoBehaviour
         SlotItem = item;
         quantity += amount;
 
-        icon.sprite = IconLoader.GetIcon(item.IconPath);
+        icon.sprite = IconLoader.GetIconByPath(item.IconPath);
         quantityText.text = quantity.ToString();
     }
 

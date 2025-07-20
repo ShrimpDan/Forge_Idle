@@ -77,7 +77,7 @@ public class Gem_Weapon_Popup : BaseUI
 
                 if (icon != null)
                 {
-                    icon.sprite = IconLoader.GetIcon(itemData.IconPath);
+                    icon.sprite = IconLoader.GetIconByPath(itemData.IconPath);
                     icon.enabled = true;
                 }
                 if (nameText != null)
@@ -98,7 +98,7 @@ public class Gem_Weapon_Popup : BaseUI
                                 ItemData gemData = dataManager.ItemLoader.GetItemByKey(gem.ItemKey);
                                 if (gemData != null)
                                 {
-                                    gemIcon.sprite = IconLoader.GetIcon(gemData.IconPath);
+                                    gemIcon.sprite = IconLoader.GetIconByPath(gemData.IconPath);
                                     gemIcon.enabled = true;
                                 }
                                 else

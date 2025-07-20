@@ -151,7 +151,7 @@ public class UpgradeWeaponWindow : BaseUI
             ResetUpgradePanel();
             return;
         }
-        inputWeaponIcon.sprite = IconLoader.GetIcon(selectedWeapon.Data.IconPath);
+        inputWeaponIcon.sprite = IconLoader.GetIconByPath(selectedWeapon.Data.IconPath);
         inputWeaponIcon.enabled = true;
         inputWeaponName.text = selectedWeapon.Data.Name;
 
@@ -296,7 +296,7 @@ public class UpgradeWeaponWindow : BaseUI
             return;
         }
 
-        inputWeaponIconGem.sprite = IconLoader.GetIcon(selectedGemWeapon.Data.IconPath);
+        inputWeaponIconGem.sprite = IconLoader.GetIconByPath(selectedGemWeapon.Data.IconPath);
         inputWeaponIconGem.enabled = true;
         inputWeaponNameGem.text = selectedGemWeapon.Data.Name;
 
@@ -308,7 +308,7 @@ public class UpgradeWeaponWindow : BaseUI
             {
                 if (gem != null && gem.Data != null)
                 {
-                    gemSlotIcons[i].sprite = IconLoader.GetIcon(gem.Data.IconPath);
+                    gemSlotIcons[i].sprite = IconLoader.GetIconByPath(gem.Data.IconPath);
                     gemSlotIcons[i].enabled = true;
                 }
                 else

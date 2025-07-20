@@ -38,7 +38,7 @@ public class MineralSlot : MonoBehaviour
             {
                 string iconPath = assistant?.IconPath;
                 assistantIcon.sprite = !string.IsNullOrEmpty(iconPath)
-                    ? IconLoader.GetIcon(iconPath)
+                    ? IconLoader.GetIconByPath(iconPath)
                     : null;
                 assistantIcon.enabled = assistantIcon.sprite != null;
             }
