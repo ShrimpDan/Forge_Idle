@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -81,7 +82,7 @@ public class TutorialManager : MonoBehaviour
         GameManager.Instance.CraftingManager.isCrafingDone += OnEventDone; // 제작 완료 이벤트 등록
         GameManager.Instance.UIManager.CloseUIName += HandleUIClose;
 
-        PlayerPrefs.SetInt("TutorialDone", 0); 
+        PlayerPrefs.SetInt("TutorialDone", 0);
     }
 
     private void OnDestroy()
@@ -138,7 +139,7 @@ public class TutorialManager : MonoBehaviour
                 StartCoroutine(WaitForClick());
                 break;
             case 3:
-                topHalfBlocker.SetActive(true); 
+                topHalfBlocker.SetActive(true);
                 tutorialPanel.SetActive(true);
                 topHalfBlocker.SetActive(true);
                 ShowTextWithTyping("이제 도끼를 클릭해서 제작해볼까요??");
@@ -162,13 +163,16 @@ public class TutorialManager : MonoBehaviour
                 AllEffectOff();
                 ClickBlockerOn();
                 ShowTextWithTyping("세공은 제작에 필요한 광석이나 장착에 필요한 보석을 만들수 있어요!!\n 각 보석들을 클릭하면 필요한 재료가 보일꺼에요!!");
-                ShowTextWithTyping("둘러보고 창을 닫아볼까요??");
                 break;
             case 7:
-                tutorialPanel.SetActive(false);
-                
+                ShowTextWithTyping("둘러보고 창을 닫아볼까요??");
+                ClickBlockerOn();
                 break;
             case 8:
+                tutorialPanel.SetActive(false);
+                break;
+            case 9:
+                AllObjectInteractOff();
                 arrowIcon.SetActive(true);
                 MoveArrowToTarget(interactObjects[2].transform);
                 HighlightTarget(hightLightTargets[2]);
@@ -176,28 +180,25 @@ public class TutorialManager : MonoBehaviour
                 ShowTextWithTyping("다음은 강화에 대해서 알려드릴께요!!");
                 isEvent = true; //이걸 해야 다른걸 눌렀을때 상호작용이 막힘
                 break;
-            case 9:
+            case 10:
                 ClickBlockerOn();
-                HighlightPos(-180, 500);
+                HighlightPos(-190, 500);
                 ShowTextWithTyping("강화는 일반강화, 고급강화로 나눠져 있어요!! 가운데 창을 클릭해서 무기를 올려볼까요?");
                 break;
-                             
-            case 10:
+
+            case 11:
                 HighlightPos(0, 300);
-                effect.HideHighlight();
                 ClickBlockerOn();
                 ShowTextWithTyping("강화는 일반강화, 고급강화로 나눠져 있어요!! 가운데 창을 클릭해서 강화하고 싶은 무기를 올릴수 있어요!!");
                 break;
-            case 11:
-                ClickBlockerOn();
-                HighlightPos(-170, -900);
-                
-                ShowTextWithTyping("일반강화는 골드를 사용해서 확률을 통해서 강화 할수있어요!! ");
-                break;
             case 12:
                 ClickBlockerOn();
-                HighlightPos(178, -900);
-                effect.HideHighlight();
+                HighlightPos(-160, -900);
+                ShowTextWithTyping("일반강화는 골드를 사용해서 확률을 통해서 강화 할수있어요!! ");
+                break;
+            case 13:
+                ClickBlockerOn();
+                HighlightPos(160, -900);
                 ShowTextWithTyping("고급강화는 재화를 사용해서 좀더 확률이 높게 강화가 가능해요!! ");
                 break;
             case 15:
@@ -210,10 +211,10 @@ public class TutorialManager : MonoBehaviour
 
         }
 
-      
+
         waitClickRoutine = StartCoroutine(WaitForClick());
-      
-            
+
+
 
 
     }
@@ -277,7 +278,7 @@ public class TutorialManager : MonoBehaviour
         tutorialPanel.SetActive(false);
     }
 
- 
+
 
     private void MoveArrowToTarget(Transform target)
     {
@@ -291,7 +292,7 @@ public class TutorialManager : MonoBehaviour
             Vector3 screenPos = uiCam.WorldToScreenPoint(target.position);
             screenPos.y += 200f;
             arrowIcon.transform.position = screenPos;
-       
+
         }
     }
 
@@ -313,11 +314,9 @@ public class TutorialManager : MonoBehaviour
 
     public void HighlightPos(float x, float y)
     {
-        Vector2 centerScreen = new Vector2((uiCam.pixelWidth / 2f +x), (uiCam.pixelHeight / 2f +y));
+        Vector2 centerScreen = new Vector2((uiCam.pixelWidth / 2f + x), (uiCam.pixelHeight / 2f + y));
         effect.ShowHighlight(centerScreen);
         MoveArrowToPos(centerScreen);
-
-       
     }
 
     public void ClickBlockerOn() //클릭버튼 블록
@@ -366,8 +365,8 @@ public class TutorialManager : MonoBehaviour
             // 클릭 대기 중이면 다음 스텝
             if (!isEvent)
             {
-            ClickBlockerOff();
-            OnStepClear();
+                ClickBlockerOff();
+                OnStepClear();
             }
         }
     }
@@ -410,7 +409,7 @@ public class TutorialManager : MonoBehaviour
     {
         curInteractObject = gameObject;
         isEvent = false;
-        
+
         if (!isTurtorialMode) return;
 
         // 현재 스텝에서 정해진 오브젝트와 일치하면 튜토리얼 진행
@@ -437,7 +436,7 @@ public class TutorialManager : MonoBehaviour
             isEvent = false;
             OnStepClear();
         }
-        
+
     }
 
     private void AllEffectOff()
@@ -446,5 +445,17 @@ public class TutorialManager : MonoBehaviour
         effect.HideHighlight();
     }
 
-    
+
+    private void OnDrawGizmos()
+    {
+
+        Gizmos.color = Color.red;
+        Vector3 screenPos = RectTransformUtility.WorldToScreenPoint(Camera.main, effect.transform.position);
+        screenPos.z = 10f; // 카메라에서의 거리
+        Vector3 worldPos = Camera.main.ScreenToWorldPoint(screenPos);
+        Gizmos.DrawSphere(worldPos, 0.5f);
+    }
+
+
+
 }
