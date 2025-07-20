@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class ForgeManager
 {
@@ -54,9 +54,14 @@ public class ForgeManager
         Gold = data.Gold;
         Dia = data.Dia;
 
-        LoadSceneManager.Instance.LoadSceneAsync(data.CurrentForgeScene, true);
+        if (data.CurrentForgeScene != SceneType.Main)
+        {
+            LoadSceneManager.Instance.LoadSceneAsync(data.CurrentForgeScene, true);
+        }
+
         RaiseAllEvents();
     }
+
 
     private void RaiseAllEvents()
     {
