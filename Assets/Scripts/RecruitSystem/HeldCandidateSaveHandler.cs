@@ -44,16 +44,19 @@ public class HeldCandidateSaveHandler : ISaveHandler
 
         if (data != null && data.heldList != null)
         {
-            gameManager.HeldCandidates = data.heldList
-                .ConvertAll(AssistantSerializationUtil.ToRuntime);
+            var runtimeList = data.heldList.ConvertAll(AssistantSerializationUtil.ToRuntime);
+
+            gameManager.HeldCandidates.Clear();
+            gameManager.HeldCandidates.AddRange(runtimeList);
 
             Debug.Log($"[HeldCandidateSaveHandler] 불러오기 완료: {data.heldList.Count}개 로드됨");
         }
         else
         {
-            gameManager.HeldCandidates = new List<AssistantInstance>();
+            gameManager.HeldCandidates.Clear();
             Debug.LogWarning("[HeldCandidateSaveHandler] 데이터가 없거나 파싱 실패");
         }
+
     }
 
     public void Delete()
