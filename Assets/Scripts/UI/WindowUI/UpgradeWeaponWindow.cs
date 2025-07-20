@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 public class UpgradeWeaponWindow : BaseUI
 {
@@ -108,6 +109,10 @@ public class UpgradeWeaponWindow : BaseUI
     {
         upgradePanel.SetActive(false);
         gemSystemPanel.SetActive(true);
+        if (GameManager.Instance.TutorialManager != null)
+        {
+            GameManager.Instance.TutorialManager.ForceStepClear();
+        }
         ResetGemSystemPanel();
     }
 
@@ -208,7 +213,7 @@ public class UpgradeWeaponWindow : BaseUI
             yield return null;
         }
         int successRate = CalcEnhanceSuccessRate(selectedWeapon);
-        bool isSuccess = Random.Range(0, 100) < successRate;
+        bool isSuccess = UnityEngine.Random.Range(0, 100) < successRate;
         if (isSuccess)
         {
             progressBar.fillAmount = 1f;

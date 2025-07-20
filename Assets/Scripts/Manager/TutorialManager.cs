@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
@@ -81,6 +82,7 @@ public class TutorialManager : MonoBehaviour
         InteractionObjectHandler.OnPointerClicked += OnSettingObject; // 클릭 이벤트 등록
         GameManager.Instance.CraftingManager.isCrafingDone += OnEventDone; // 제작 완료 이벤트 등록
         GameManager.Instance.UIManager.CloseUIName += HandleUIClose;
+      
 
         PlayerPrefs.SetInt("TutorialDone", 0);
     }
@@ -174,7 +176,7 @@ public class TutorialManager : MonoBehaviour
             case 9:
                 AllObjectInteractOff();
                 arrowIcon.SetActive(true);
-                MoveArrowToTarget(interactObjects[2].transform);
+                MoveArrowToTarget(interactObjects[2].transform); 
                 HighlightTarget(hightLightTargets[2]);
                 interactObjects[2].GetComponent<Collider2D>().enabled = true;
                 ShowTextWithTyping("다음은 강화에 대해서 알려드릴께요!!");
@@ -201,11 +203,30 @@ public class TutorialManager : MonoBehaviour
                 HighlightPos(160, -900);
                 ShowTextWithTyping("고급강화는 재화를 사용해서 좀더 확률이 높게 강화가 가능해요!! ");
                 break;
-            case 15:
-                AllEffectOff();
-                ShowTextWithTyping("이제 손님들이 방문할꺼에요!! 대장간을 한번 잘 운영해봐요!!");
+
+            case 14:
+                HighlightPos(190, 500);
+                ShowTextWithTyping("이번에는 보석강화에 대해서 알려드릴께요!!");
                 break;
-            case 20:
+            case 15:
+                HighlightPos(0, 400);
+                ClickBlockerOn();
+                ShowTextWithTyping("해당 슬롯을 클릭해서 보석을 넣으면 해당 보석의 능력치를 부여할수 있어요!!");
+                
+                break;
+            case 16:
+                HighlightPos(-350, -900);
+                ShowTextWithTyping("이제 창을 닫아볼께요!!");
+                break;
+                
+                
+            case 17:
+                ClickBlockerOn();
+                AllEffectOff();
+                ShowTextWithTyping("자!! 이제 기본적인 가게 운영방식 설명은 끝이에요!! 대장간을 잘 운영해보세요!!");
+                break;
+            case 18:
+
                 EndTutorial();
                 break;
 
@@ -290,7 +311,7 @@ public class TutorialManager : MonoBehaviour
         if (target != null)
         {
             Vector3 screenPos = uiCam.WorldToScreenPoint(target.position);
-            screenPos.y += 200f;
+            screenPos.x += 20f;
             arrowIcon.transform.position = screenPos;
 
         }
@@ -299,7 +320,7 @@ public class TutorialManager : MonoBehaviour
     private void MoveArrowToPos(Vector2 pos)
     {
 
-        arrowIcon.transform.position = new Vector2(pos.x, pos.y + 150);
+        arrowIcon.transform.position = new Vector2(pos.x+=20f, pos.y);
     }
 
     public void HighlightTarget(Transform target) //조명 비추기
@@ -308,8 +329,8 @@ public class TutorialManager : MonoBehaviour
         {
             effect.gameObject.SetActive(true);
         }
-
-        effect.ShowHighlight(target, uiCam);
+       
+       effect.ShowHighlight(target, uiCam);
     }
 
     public void HighlightPos(float x, float y)
@@ -436,6 +457,11 @@ public class TutorialManager : MonoBehaviour
             isEvent = false;
             OnStepClear();
         }
+        else if (uiName == UIName.UpgradeWeaponWindow || tutorialStep == 16)
+        {
+            isEvent = false;
+            OnStepClear();
+        }
 
     }
 
@@ -446,16 +472,14 @@ public class TutorialManager : MonoBehaviour
     }
 
 
-    private void OnDrawGizmos()
+    public void ForceStepClear() //외부에서 튜토리얼 진행  -> 이거 흠... 이걸쓸껄그랬나..
     {
-
-        Gizmos.color = Color.red;
-        Vector3 screenPos = RectTransformUtility.WorldToScreenPoint(Camera.main, effect.transform.position);
-        screenPos.z = 10f; // 카메라에서의 거리
-        Vector3 worldPos = Camera.main.ScreenToWorldPoint(screenPos);
-        Gizmos.DrawSphere(worldPos, 0.5f);
+        if (!isTurtorialMode || isEvent)
+        {
+            return;
+        }
+        OnStepClear();
     }
-
 
 
 }
