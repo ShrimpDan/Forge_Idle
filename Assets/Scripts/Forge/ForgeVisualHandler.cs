@@ -6,7 +6,8 @@ public class ForgeVisualHandler : MonoBehaviour
     [SerializeField] AssistantPrefabSO assistantPrefabSO;
     [SerializeField] Transform craftingSpawnRoot;
     [SerializeField] Transform sellingSpawnRoot;
-    
+    [SerializeField] GameObject[] forgeInterior;
+
     public void SpawnAssistantPrefab(AssistantInstance assi)
     {
         Transform spawnRoot = null;
@@ -61,5 +62,18 @@ public class ForgeVisualHandler : MonoBehaviour
         {
             Destroy(child.gameObject);
         }
+    }
+
+    public void SetInterior(int level)
+    {
+        for (int i = 0; i < level; i++)
+        {
+            forgeInterior[i].SetActive(true);
+        }
+    }
+
+    public void LoadFromData(int level)
+    {
+        SetInterior(level);
     }
 }

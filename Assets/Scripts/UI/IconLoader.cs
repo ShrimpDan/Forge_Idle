@@ -10,7 +10,19 @@ public static class IconLoader
         if (iconDict.Count == 0)
             LoadAllWeaponIconSprites();
 
-        if (string.IsNullOrEmpty(path)) return null;
+        if (string.IsNullOrEmpty(path))
+        {
+            if (iconDict.TryGetValue("Icons/Empty", out Sprite emptyIcon))
+            {
+                return emptyIcon;
+            }
+
+            emptyIcon = Resources.Load<Sprite>("Icons/Empty");
+            iconDict["Icons/Empty"] = emptyIcon;
+            
+            return emptyIcon;
+        }
+        
         if (iconDict.TryGetValue(path, out Sprite icon))
             return icon;
 

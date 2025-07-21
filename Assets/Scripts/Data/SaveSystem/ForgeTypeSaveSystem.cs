@@ -83,7 +83,8 @@ public class ForgeTypeSaveSystem
             ForgeUpgradeType.IncreaseExpensiveRecipeChance,
             ForgeUpgradeType.ReduceCustomerSpawnDelay,
             ForgeUpgradeType.ReduceAutoCraftingTime,
-            ForgeUpgradeType.IncreasePerfectCraftChance
+            ForgeUpgradeType.IncreasePerfectCraftChance,
+            ForgeUpgradeType.UpgradeInterior
         };
 
         List<ForgeUpgradeSaveData> upgradeLevels = new List<ForgeUpgradeSaveData>();
