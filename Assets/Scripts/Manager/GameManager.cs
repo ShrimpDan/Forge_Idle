@@ -64,7 +64,7 @@ public class GameManager : MonoSingleton<GameManager>
 
         SaveManager.LoadAll();
 
-        InvokeRepeating(nameof(ProcessHourlyWage), 600f, 600f);
+        InvokeRepeating(nameof(ProcessHourlyWage), 1f, 1f);
     }
 
     /// <summary>

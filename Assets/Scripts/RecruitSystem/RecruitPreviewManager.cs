@@ -69,12 +69,7 @@ public class RecruitPreviewManager : MonoBehaviour
         GameManager.Instance.HeldCandidates.Clear();
         GameManager.Instance.SaveManager.SaveAll();
 
-        foreach (var paper in activePapers)
-        {
-            if (paper != null)
-                Destroy(paper);
-        }
-        activePapers.Clear();
+        ClearActivePapers();
 
         currentIndex = 0;
         heldCandidates.Clear();
@@ -95,19 +90,13 @@ public class RecruitPreviewManager : MonoBehaviour
     }
 
 
+
     private void ShowCurrentCandidate()
     {
         if (currentIndex >= candidatePool.Count)
         {
             popup.HidePopup();
-
-            foreach (var paper in activePapers)
-            {
-                if (paper != null)
-                    Destroy(paper);
-            }
-
-            activePapers.Clear();
+            ClearActivePapers();
             currentPaperGO = null;
             isTransitioning = false;
             SetButtonsInteractable(false);
@@ -129,6 +118,9 @@ public class RecruitPreviewManager : MonoBehaviour
             var oldPaper = currentPaperGO.GetComponent<AssistantPaperAnimator>();
             oldPaper?.AnimateExitToTopRight(onComplete: () =>
             {
+                activePapers.Remove(currentPaperGO);
+                currentPaperGO = null;
+
                 currentPaperGO = CreatePaper(candidate, OnPaperReady);
             });
         }
@@ -137,6 +129,21 @@ public class RecruitPreviewManager : MonoBehaviour
             currentPaperGO = CreatePaper(candidate, OnPaperReady);
         }
     }
+
+    private void ClearActivePapers()
+    {
+        foreach (var paper in activePapers)
+        {
+            if (paper != null)
+            {
+                Destroy(paper);
+            }
+        }
+
+        activePapers.Clear();
+        currentPaperGO = null;
+    }
+
 
 
     private GameObject CreatePaper(AssistantInstance data, Action onEnterComplete = null)
