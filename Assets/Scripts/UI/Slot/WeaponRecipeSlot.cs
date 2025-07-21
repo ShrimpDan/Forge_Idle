@@ -20,10 +20,18 @@ public class WeaponRecipeSlot : MonoBehaviour
             slotBtn = GetComponent<Button>();
             slotBtn.onClick.AddListener(ClickRecipe);
         }
+
+        UpdateSlotUI();
+    }
+
+    public void UpdateSlotUI()
+    {
+        bool isUnlock = recipeSystem.CheckUnlock(recipeKey);
+        slotBtn.image.color = isUnlock ? Color.white : Color.grey;
     }
 
     private void ClickRecipe()
     {
-        recipeWindow.SetInfoUI(recipeKey);
+        recipeWindow.SetInfoUI(this, recipeKey);
     }
 }

@@ -7,6 +7,7 @@ public class CraftingRecipeData
     public string Key;
     public WeaponType Type;
     public int NeedPoint;
+    public string PrevRecipeKey;
 }
 
 public class CraftingRecipeLoader

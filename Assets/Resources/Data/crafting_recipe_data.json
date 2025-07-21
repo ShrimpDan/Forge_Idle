@@ -3,517 +3,620 @@
     {
       "Key": "sword_blade",
       "Type": 0,
-      "NeedPoint": 0
+      "NeedPoint": 0,
+      "PrevRecipeKey": null
     },
     {
       "Key": "sword_knife",
       "Type": 0,
-      "NeedPoint": 1
+      "NeedPoint": 1,
+      "PrevRecipeKey": "sword_blade"
     },
     {
       "Key": "sword_dagger",
       "Type": 0,
-      "NeedPoint": 2
+      "NeedPoint": 2,
+      "PrevRecipeKey": "sword_knife"
     },
     {
       "Key": "sword_shorts",
       "Type": 0,
-      "NeedPoint": 3
+      "NeedPoint": 3,
+      "PrevRecipeKey": "sword_dagger"
     },
     {
       "Key": "sword_gladius",
       "Type": 0,
-      "NeedPoint": 4
+      "NeedPoint": 4,
+      "PrevRecipeKey": "sword_shorts"
     },
     {
       "Key": "sword_falchion",
       "Type": 0,
-      "NeedPoint": 5
+      "NeedPoint": 5,
+      "PrevRecipeKey": "sword_gladius"
     },
     {
       "Key": "sword_rapier",
       "Type": 0,
-      "NeedPoint": 6
+      "NeedPoint": 6,
+      "PrevRecipeKey": "sword_falchion"
     },
     {
       "Key": "sword_sabre",
       "Type": 0,
-      "NeedPoint": 7
+      "NeedPoint": 7,
+      "PrevRecipeKey": "sword_rapier"
     },
     {
       "Key": "sword_broad",
       "Type": 1,
-      "NeedPoint": 1
+      "NeedPoint": 1,
+      "PrevRecipeKey": "sword_blade"
     },
     {
       "Key": "sword_normal",
       "Type": 1,
-      "NeedPoint": 2
+      "NeedPoint": 2,
+      "PrevRecipeKey": "sword_broad"
     },
     {
       "Key": "sword_cutlass",
-      "Type": 1,
-      "NeedPoint": 3
+      "Type": 1,  
+      "NeedPoint": 3,
+      "PrevRecipeKey": "sword_normal"
     },
     {
       "Key": "sword_claymore",
       "Type": 1,
-      "NeedPoint": 4
+      "NeedPoint": 4,
+      "PrevRecipeKey": "sword_cutlass"
     },
     {
       "Key": "sword_great",
       "Type": 1,
-      "NeedPoint": 5
+      "NeedPoint": 5,
+      "PrevRecipeKey": "sword_claymore"
     },
     {
       "Key": "sword_twohander",
       "Type": 1,
-      "NeedPoint": 6
+      "NeedPoint": 6,
+      "PrevRecipeKey": "sword_great"
     },
     {
       "Key": "sword_twinblade",
       "Type": 1,
-      "NeedPoint": 7
+      "NeedPoint": 7,
+      "PrevRecipeKey": "sword_twohander"
     },
     {
       "Key": "sword_katana",
       "Type": 1,
-      "NeedPoint": 8
+      "NeedPoint": 8,
+      "PrevRecipeKey": "sword_twinblade"
     },
     {
       "Key": "mace_club",
       "Type": 3,
-      "NeedPoint": 1
+      "NeedPoint": 1,
+      "PrevRecipeKey": null
     },
     {
       "Key": "mace_spikeclub",
       "Type": 3,
-      "NeedPoint": 2
+      "NeedPoint": 2,
+      "PrevRecipeKey": "mace_club"
     },
     {
       "Key": "mace_cudgel",
       "Type": 3,
-      "NeedPoint": 3
+      "NeedPoint": 3,
+      "PrevRecipeKey": "mace_spikeclub"
     },
     {
       "Key": "mace_normal",
       "Type": 3,
-      "NeedPoint": 4
+      "NeedPoint": 4,
+      "PrevRecipeKey": "mace_cudgel"
     },
     {
       "Key": "mace_flail",
       "Type": 3,
-      "NeedPoint": 5
+      "NeedPoint": 5,
+      "PrevRecipeKey": "mace_normal"
     },
     {
       "Key": "mace_morningstar",
       "Type": 3,
-      "NeedPoint": 6
+      "NeedPoint": 6,
+      "PrevRecipeKey": "mace_flail"
     },
     {
       "Key": "mace_hammer",
       "Type": 2,
-      "NeedPoint": 2
+      "NeedPoint": 2,
+      "PrevRecipeKey": "mace_club"
     },
     {
       "Key": "mace_maul",
       "Type": 2,
-      "NeedPoint": 3
+      "NeedPoint": 3,
+      "PrevRecipeKey": "mace_hammer"
     },
     {
       "Key": "mace_greathammer",
       "Type": 2,
-      "NeedPoint": 4
+      "NeedPoint": 4,
+      "PrevRecipeKey": "mace_maul"
     },
     {
       "Key": "mace_warhammer",
       "Type": 2,
-      "NeedPoint": 5
+      "NeedPoint": 5,
+      "PrevRecipeKey": "mace_greathammer"
     },
     {
       "Key": "mace_great",
       "Type": 2,
-      "NeedPoint": 6
+      "NeedPoint": 6,
+      "PrevRecipeKey": "mace_warhammer"
     },
     {
       "Key": "mace_hatchet",
       "Type": 4,
-      "NeedPoint": 2
+      "NeedPoint": 2,
+      "PrevRecipeKey": "mace_club"
     },
     {
       "Key": "mace_axe",
       "Type": 4,
-      "NeedPoint": 3
+      "NeedPoint": 3,
+      "PrevRecipeKey": "mace_hatchet"
     },
     {
       "Key": "mace_greataxe",
       "Type": 4,
-      "NeedPoint": 4
+      "NeedPoint": 4,
+      "PrevRecipeKey": "mace_axe"
     },
     {
       "Key": "mace_battleaxe",
       "Type": 4,
-      "NeedPoint": 5
+      "NeedPoint": 5,
+      "PrevRecipeKey": "mace_greataxe"
     },
     {
       "Key": "mace_superaxe",
       "Type": 4,
-      "NeedPoint": 6
+      "NeedPoint": 6,
+      "PrevRecipeKey": "mace_battleaxe"
     },
     {
       "Key": "bow_short",
       "Type": 6,
-      "NeedPoint": 1
+      "NeedPoint": 1,
+      "PrevRecipeKey": null
     },
     {
       "Key": "bow_cross",
       "Type": 6,
-      "NeedPoint": 2
-    },
-    {
-      "Key": "bow_self",
-      "Type": 6,
-      "NeedPoint": 3
-    },
-    {
-      "Key": "bow_normal",
-      "Type": 6,
-      "NeedPoint": 4
-    },
-    {
-      "Key": "bow_reflex",
-      "Type": 6,
-      "NeedPoint": 5
-    },
-    {
-      "Key": "bow_flat",
-      "Type": 6,
-      "NeedPoint": 6
-    },
-    {
-      "Key": "bow_long",
-      "Type": 5,
-      "NeedPoint": 2
-    },
-    {
-      "Key": "bow_composite",
-      "Type": 5,
-      "NeedPoint": 3
-    },
-    {
-      "Key": "bow_compound",
-      "Type": 5,
-      "NeedPoint": 4
-    },
-    {
-      "Key": "bow_great",
-      "Type": 5,
-      "NeedPoint": 5
-    },
-    {
-      "Key": "bow_recurve",
-      "Type": 5,
-      "NeedPoint": 6
-    },
-    {
-      "Key": "bow_war",
-      "Type": 5,
-      "NeedPoint": 7
+      "NeedPoint": 2,
+      "PrevRecipeKey": "bow_short"
     },
     {
       "Key": "bow_slingshot",
       "Type": 7,
-      "NeedPoint": 3
+      "NeedPoint": 3,
+      "PrevRecipeKey": "bow_cross"
     },
     {
       "Key": "bow_pistol",
       "Type": 7,
-      "NeedPoint": 4
+      "NeedPoint": 4,
+      "PrevRecipeKey": "bow_slingshot"
     },
     {
       "Key": "bow_blunderbuss",
       "Type": 7,
-      "NeedPoint": 5
+      "NeedPoint": 5,
+      "PrevRecipeKey": "bow_pistol"
     },
     {
       "Key": "bow_rifle",
       "Type": 7,
-      "NeedPoint": 8
+      "NeedPoint": 8,
+      "PrevRecipeKey": "bow_blunderbuss"
+    },
+    {
+      "Key": "bow_self",
+      "Type": 6,
+      "NeedPoint": 3,
+      "PrevRecipeKey": "bow_short"
+    },
+    {
+      "Key": "bow_normal",
+      "Type": 6,
+      "NeedPoint": 4,
+      "PrevRecipeKey": "bow_self"
+    },
+    {
+      "Key": "bow_reflex",
+      "Type": 6,
+      "NeedPoint": 5,
+      "PrevRecipeKey": "bow_normal"
+    },
+    {
+      "Key": "bow_flat",
+      "Type": 6,
+      "NeedPoint": 6,
+      "PrevRecipeKey": "bow_reflex"
+    },
+    {
+      "Key": "bow_long",
+      "Type": 5,
+      "NeedPoint": 2,
+      "PrevRecipeKey": "bow_short"
+    },
+    {
+      "Key": "bow_composite",
+      "Type": 5,
+      "NeedPoint": 3,
+      "PrevRecipeKey": "bow_long"
+    },
+    {
+      "Key": "bow_compound",
+      "Type": 5,
+      "NeedPoint": 4,
+      "PrevRecipeKey": "bow_composite"
+    },
+    {
+      "Key": "bow_great",
+      "Type": 5,
+      "NeedPoint": 5,
+      "PrevRecipeKey": "bow_compound"
+    },
+    {
+      "Key": "bow_recurve",
+      "Type": 5,
+      "NeedPoint": 6,
+      "PrevRecipeKey": "bow_great"
+    },
+    {
+      "Key": "bow_war",
+      "Type": 5,
+      "NeedPoint": 7,
+      "PrevRecipeKey": "bow_recurve"
     },
     {
       "Key": "plate_vest",
       "Type": 8,
-      "NeedPoint": 1
+      "NeedPoint": 1,
+      "PrevRecipeKey": null
     },
     {
       "Key": "plate_leather",
       "Type": 8,
-      "NeedPoint": 2
+      "NeedPoint": 2,
+      "PrevRecipeKey": "plate_vest"
     },
     {
       "Key": "plate_breast",
       "Type": 8,
-      "NeedPoint": 3
+      "NeedPoint": 3,
+      "PrevRecipeKey": "plate_leather"
     },
     {
       "Key": "plate_light",
       "Type": 8,
-      "NeedPoint": 4
+      "NeedPoint": 4,
+      "PrevRecipeKey": "plate_breast"
     },
     {
       "Key": "plate_heavy",
       "Type": 9,
-      "NeedPoint": 5
+      "NeedPoint": 3,
+      "PrevRecipeKey": "plate_vest"
     },
     {
       "Key": "plate_normal",
       "Type": 9,
-      "NeedPoint": 6
+      "NeedPoint": 4,
+      "PrevRecipeKey": "plate_heavy"
     },
     {
       "Key": "plate_knight",
       "Type": 9,
-      "NeedPoint": 2
+      "NeedPoint": 5,
+      "PrevRecipeKey": "plate_normal"
     },
     {
       "Key": "plate_scalemail",
       "Type": 10,
-      "NeedPoint": 3
+      "NeedPoint": 3,
+      "PrevRecipeKey": "plate_vest"
     },
     {
       "Key": "plate_chainmail",
       "Type": 10,
-      "NeedPoint": 4
+      "NeedPoint": 4,
+      "PrevRecipeKey": "plate_scalemail"
     },
     {
       "Key": "plate_ornate",
       "Type": 10,
-      "NeedPoint": 5
+      "NeedPoint": 5,
+      "PrevRecipeKey": "plate_chainmail"
     },
     {
       "Key": "plate_silver",
       "Type": 10,
-      "NeedPoint": 7
+      "NeedPoint": 7,
+      "PrevRecipeKey": "plate_ornate"
     },
     {
       "Key": "helmet_headband",
       "Type": 11,
-      "NeedPoint": 1
+      "NeedPoint": 1,
+      "PrevRecipeKey": null
     },
     {
       "Key": "helmet_light",
       "Type": 11,
-      "NeedPoint": 2
+      "NeedPoint": 2,
+      "PrevRecipeKey": "helmet_headband"
     },
     {
       "Key": "helmet_cap",
       "Type": 11,
-      "NeedPoint": 3
+      "NeedPoint": 3,
+      "PrevRecipeKey": "helmet_light"
     },
     {
       "Key": "helmet_lighthelm",
       "Type": 11,
-      "NeedPoint": 4
+      "NeedPoint": 4,
+      "PrevRecipeKey": "helmet_cap"
     },
     {
       "Key": "helmet_crown",
       "Type": 11,
-      "NeedPoint": 8
+      "NeedPoint": 8,
+      "PrevRecipeKey": "helmet_lighthelm"
     },
     {
       "Key": "helmet_mask",
       "Type": 12,
-      "NeedPoint": 1
+      "NeedPoint": 1,
+      "PrevRecipeKey": null
     },
     {
       "Key": "helmet_iron",
       "Type": 12,
-      "NeedPoint": 2
+      "NeedPoint": 2,
+      "PrevRecipeKey": "helmet_mask"
     },
     {
       "Key": "helmet_knighthelm",
       "Type": 12,
-      "NeedPoint": 3
+      "NeedPoint": 3,
+      "PrevRecipeKey": "helmet_iron"
     },
     {
       "Key": "helmet_mailhelm",
       "Type": 12,
-      "NeedPoint": 4
+      "NeedPoint": 4,
+      "PrevRecipeKey": "helmet_knighthelm"
     },
     {
       "Key": "helmet_greathelm",
       "Type": 12,
-      "NeedPoint": 5
+      "NeedPoint": 5,
+      "PrevRecipeKey": "helmet_mailhelm"
     },
     {
       "Key": "shield_wooden",
       "Type": 13,
-      "NeedPoint": 1
+      "NeedPoint": 1,
+      "PrevRecipeKey": null
     },
     {
       "Key": "shield_buckler",
       "Type": 13,
-      "NeedPoint": 2
+      "NeedPoint": 2,
+      "PrevRecipeKey": "shield_wooden"
     },
     {
       "Key": "shield_spiked",
       "Type": 13,
-      "NeedPoint": 3
+      "NeedPoint": 3,
+      "PrevRecipeKey": "shield_buckler"
     },
     {
       "Key": "shield_mirror",
       "Type": 13,
-      "NeedPoint": 6
+      "NeedPoint": 6,
+      "PrevRecipeKey": "shield_spiked"
     },
     {
       "Key": "shield_plank",
       "Type": 14,
-      "NeedPoint": 1
+      "NeedPoint": 1,
+      "PrevRecipeKey": null
     },
     {
       "Key": "shield_kite",
       "Type": 14,
-      "NeedPoint": 2
+      "NeedPoint": 2,
+      "PrevRecipeKey": "shield_plank"
     },
     {
       "Key": "shield_iron",
       "Type": 14,
-      "NeedPoint": 3
+      "NeedPoint": 3,
+      "PrevRecipeKey": "shield_kite"
     },
     {
       "Key": "shield_tower",
       "Type": 14,
-      "NeedPoint": 4
+      "NeedPoint": 4,
+      "PrevRecipeKey": "shield_iron"
     },
     {
       "Key": "shield_decorative",
       "Type": 14,
-      "NeedPoint": 5
+      "NeedPoint": 5,
+      "PrevRecipeKey": "shield_tower"
     },
     {
       "Key": "staff_wand",
       "Type": 15,
-      "NeedPoint": 1
+      "NeedPoint": 1,
+      "PrevRecipeKey": null
     },
     {
       "Key": "staff_conduit",
       "Type": 15,
-      "NeedPoint": 2
+      "NeedPoint": 2,
+      "PrevRecipeKey": "staff_wand"
     },
     {
       "Key": "staff_catalyst",
       "Type": 15,
-      "NeedPoint": 3
+      "NeedPoint": 3,
+      "PrevRecipeKey": "staff_conduit"
     },
     {
       "Key": "staff_rod",
       "Type": 15,
-      "NeedPoint": 4
+      "NeedPoint": 4,
+      "PrevRecipeKey": "staff_catalyst"
     },
     {
       "Key": "staff_sceptre",
       "Type": 15,
-      "NeedPoint": 5
+      "NeedPoint": 5,
+      "PrevRecipeKey": "staff_rod"
     },
     {
       "Key": "staff_normal",
       "Type": 16,
-      "NeedPoint": 1
+      "NeedPoint": 1,
+      "PrevRecipeKey": null
     },
     {
       "Key": "staff_cane",
       "Type": 16,
-      "NeedPoint": 2
+      "NeedPoint": 2,
+      "PrevRecipeKey": "staff_normal"
     },
     {
       "Key": "staff_short",
       "Type": 16,
-      "NeedPoint": 3
+      "NeedPoint": 3,
+      "PrevRecipeKey": "staff_cane"
     },
     {
       "Key": "staff_quarter",
       "Type": 16,
-      "NeedPoint": 4
+      "NeedPoint": 4,
+      "PrevRecipeKey": "staff_short"
     },
     {
       "Key": "staff_long",
       "Type": 16,
-      "NeedPoint": 5
+      "NeedPoint": 5,
+      "PrevRecipeKey": "staff_quarter"
     },
     {
       "Key": "staff_great",
       "Type": 16,
-      "NeedPoint": 6
+      "NeedPoint": 6,
+      "PrevRecipeKey": "staff_long"
     },
     {
       "Key": "staff_war",
       "Type": 16,
-      "NeedPoint": 7
+      "NeedPoint": 7,
+      "PrevRecipeKey": "staff_great"
     },
     {
       "Key": "accessories_smallring",
       "Type": 17,
-      "NeedPoint": 1
+      "NeedPoint": 1,
+      "PrevRecipeKey": null
     },
     {
       "Key": "accessories_goldring",
       "Type": 17,
-      "NeedPoint": 2
+      "NeedPoint": 2,
+      "PrevRecipeKey": "accessories_smallring"
     },
     {
       "Key": "accessories_bigring",
       "Type": 17,
-      "NeedPoint": 3
+      "NeedPoint": 3,
+      "PrevRecipeKey": "accessories_goldring"
     },
     {
       "Key": "accessories_aquaring",
       "Type": 17,
-      "NeedPoint": 4
+      "NeedPoint": 4,
+      "PrevRecipeKey": "accessories_bigring"
     },
     {
       "Key": "accessories_rubyring",
       "Type": 17,
-      "NeedPoint": 5
+      "NeedPoint": 5,
+      "PrevRecipeKey": "accessories_aquaring"
     },
     {
       "Key": "accessories_gemring",
       "Type": 17,
-      "NeedPoint": 6
+      "NeedPoint": 6,
+      "PrevRecipeKey": "accessories_rubyring"
     },
     {
       "Key": "accessories_ironamulet",
       "Type": 18,
-      "NeedPoint": 1
+      "NeedPoint": 1,
+      "PrevRecipeKey": null
     },
     {
       "Key": "accessories_goldnecklace",
       "Type": 18,
-      "NeedPoint": 2
+      "NeedPoint": 2,
+      "PrevRecipeKey": "accessories_ironamulet"
     },
     {
       "Key": "accessories_aquaamulet",
       "Type": 18,
-      "NeedPoint": 3
+      "NeedPoint": 3,
+      "PrevRecipeKey": "accessories_goldnecklace"
     },
     {
       "Key": "accessories_bornamulet",
       "Type": 18,
-      "NeedPoint": 4
+      "NeedPoint": 4,
+      "PrevRecipeKey": "accessories_aquaamulet"
     },
     {
       "Key": "accessories_rubyamulet",
       "Type": 18,
-      "NeedPoint": 5
+      "NeedPoint": 5,
+      "PrevRecipeKey": "accessories_bornamulet"
     },
     {
       "Key": "accessories_gemamulet",
       "Type": 18,
-      "NeedPoint": 6
+      "NeedPoint": 6,
+      "PrevRecipeKey": "accessories_rubyamulet"
     },
     {
       "Key": "accessories_pearamulet",
       "Type": 18,
-      "NeedPoint": 7
+      "NeedPoint": 7,
+      "PrevRecipeKey": "accessories_gemamulet"
     }
   ]
 }

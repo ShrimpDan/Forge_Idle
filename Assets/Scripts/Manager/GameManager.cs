@@ -6,15 +6,15 @@ public class GameManager : MonoSingleton<GameManager>
     public DataManager DataManager { get; private set; }
     public AssistantManager AssistantManager { get; private set; }
     public AssistantInventory AssistantInventory => AssistantManager != null ? AssistantManager.AssistantInventory : null;
-    public ForgeManager ForgeManager{ get; private set; }
+    public ForgeManager ForgeManager { get; private set; }
     public Forge Forge { get => ForgeManager.CurrentForge; }
 
     public UIManager UIManager { get; private set; }
-    public DungeonSystem DungeonSystem{ get; private set; }
+    public DungeonSystem DungeonSystem { get; private set; }
     public CraftingManager CraftingManager { get; private set; }
     public GameSaveManager SaveManager { get; private set; }
     public TutorialManager TutorialManager { get; private set; }
-    
+
     protected override void Awake()
     {
         base.Awake();
@@ -118,10 +118,14 @@ public class GameManager : MonoSingleton<GameManager>
         SaveManager.LoadAll();
     }
 
+    [ContextMenu("Get Recipe Point")]
+    public void GetRecipePoint()
+    {
+        Forge.RecipeSystem.AddPoint(50);
+    }
+
     private void OnApplicationQuit()
     {
-       
-            SaveManager.SaveAll();
-       
+        SaveManager.SaveAll();
     }
 }

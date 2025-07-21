@@ -36,7 +36,7 @@ public class Forge : MonoBehaviour
 
         VisualHandler = GetComponent<ForgeVisualHandler>();
         SellingSystem = GetComponent<WeaponSellingSystem>();
-        RecipeSystem = new WeaponRecipeSystem(this, gameManager.DataManager.CraftingLoader);
+        RecipeSystem = new WeaponRecipeSystem(this, gameManager.DataManager.CraftingLoader, gameManager.DataManager.RecipeLoader);
         StatHandler = new ForgeStatHandler(this, gameManager.DataManager);
         AssistantHandler = new ForgeAssistantHandler(this, VisualHandler, StatHandler);
 
@@ -66,7 +66,8 @@ public class Forge : MonoBehaviour
         {
             Type = ForgeType,
             UpgradeLevels = StatHandler.GetSaveData(),
-            EquippedAssistantKeys = AssistantHandler.GetSaveData()
+            EquippedAssistantKeys = AssistantHandler.GetSaveData(),
+            Recipes = RecipeSystem.GetSaveData()
         };
 
         return data;
@@ -76,6 +77,7 @@ public class Forge : MonoBehaviour
     {
         StatHandler.LoadFromData(data.UpgradeLevels);
         AssistantHandler.LoadFromData(data.EquippedAssistantKeys);
+        RecipeSystem.LoadFormData(data.Recipes);
         RaiseAllEvents();
     }
 
