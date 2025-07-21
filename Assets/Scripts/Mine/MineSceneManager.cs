@@ -1,7 +1,9 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
+using UnityEngine.UI;
 using TMPro;
 
 [Serializable]
@@ -10,33 +12,26 @@ public class MineGroup
     public string mineKey;
     public List<MineAssistantSlotUI> slotUIs;
     public List<MineAssistantSlot> slots;
+
+    // ⭐️ 인스펙터에서 직접 할당할 SpawnPoint
+    public Transform spawnPoint;
+
     [NonSerialized] public MineAssistantManager mineManager;
     [NonSerialized] public DateTime lastCollectTime;
 }
 
 public class MineSceneManager : MonoBehaviour
 {
-    [Header("마인 어시스턴트 프리팹")]
     public GameObject mineAssistantPrefab;
-
-    [Header("마인별 그룹(Inspector에서 세팅)")]
     public List<MineGroup> mineGroups;
-
-    [Header("맵 프리팹/카메라")]
     public GameObject mineDetailMap;
     public List<GameObject> minePrefabs;
     public CameraTouchDrag cameraTouchDrag;
     public List<CameraLimit> cameraLimits;
-
-    [Header("채굴 패널 (버튼/채굴량 UI 포함)")]
     public GameObject miningUIPanel;
     public Button collectButton;
     public TMP_Text minedAmountText;
-
-    [Header("마인씬 카메라")]
     public Camera mineCamera;
-
-    [Header("팝업 루트 (Inspector에서 연결하세요)")]
     public Transform popupRoot;
 
     private List<List<GameObject>> spawnedAssistants;
@@ -46,8 +41,6 @@ public class MineSceneManager : MonoBehaviour
 
     private void Awake()
     {
-        NuisanceCustomer.SetBlockClick(true);
-
         var mainCamObj = GameObject.FindWithTag("MainCamera");
         if (mainCamObj != null) mainCamObj.SetActive(false);
         if (mineCamera != null) mineCamera.gameObject.SetActive(true);
@@ -55,8 +48,6 @@ public class MineSceneManager : MonoBehaviour
 
     private void OnDestroy()
     {
-        NuisanceCustomer.SetBlockClick(false);
-
         var mainCamObj = GameObject.FindWithTag("MainCamera");
         if (mainCamObj != null) mainCamObj.SetActive(true);
         if (mineCamera != null) mineCamera.gameObject.SetActive(false);
@@ -86,9 +77,7 @@ public class MineSceneManager : MonoBehaviour
                 slotUI.Init(assistantInventory);
 
                 if (group.slots.Count > slotIdx)
-                {
                     slotUI.SetSlot(group.slots[slotIdx]);
-                }
 
                 int closureIdx = idx;
                 slotUI.OnSlotClicked = (ui) => OnSlotClicked(closureIdx, ui);
@@ -203,17 +192,42 @@ public class MineSceneManager : MonoBehaviour
 
     void SpawnAssistantInMine(int mineIdx, MineAssistantSlotUI slotUI, AssistantInstance assistant)
     {
+        if (mineIdx < 0 || mineIdx >= minePrefabs.Count) return;
         var mineRoot = minePrefabs[mineIdx];
+        if (mineRoot == null) return;
+
         var group = mineGroups[mineIdx];
-        Transform spawn = mineRoot.transform.Find("Spawnpoint") ?? mineRoot.transform;
-        GameObject go = Instantiate(mineAssistantPrefab, spawn.position, Quaternion.identity, mineRoot.transform);
-        go.name = $"MineAssistant_{mineIdx}_{assistant.Key}";
-        var fsm = go.GetComponent<MineAssistantFSM>();
-        if (fsm != null)
-            fsm.Init(assistant, mineIdx, mineRoot, this);
-        slotUI.gameObject.GetComponent<MineAssistantSlotUIObjectRef>()?.SetAssistant(go);
-        spawnedAssistants[mineIdx].Add(go);
+        Transform spawnPoint = group.spawnPoint;
+        if (spawnPoint == null)
+        {
+            // 혹시라도 연결 안된 경우, 직접 찾아본다 (강제 방어)
+            spawnPoint = mineRoot.transform.Find("SpawnPoint");
+            if (spawnPoint == null) spawnPoint = mineRoot.transform;
+        }
+
+        Debug.Log($"[SpawnTest] group: {group.mineKey}, spawnPoint: {spawnPoint.name}, type: {spawnPoint.GetType()}, pos: {spawnPoint.position}");
+
+        string key = $"Assets/Prefabs/Assistant/{assistant.Key}.prefab";
+        Addressables.LoadAssetAsync<GameObject>(key).Completed += handle =>
+        {
+            if (handle.Status != AsyncOperationStatus.Succeeded || handle.Result == null)
+                return;
+
+            GameObject go = Instantiate(handle.Result, spawnPoint.position, Quaternion.identity);
+
+            var fsm = go.GetComponent<MineAssistantFSM>();
+            if (fsm != null)
+            {
+                fsm.Init(assistant, mineIdx, mineRoot, this);
+            }
+
+            slotUI.gameObject.GetComponent<MineAssistantSlotUIObjectRef>()?.SetAssistant(go);
+            spawnedAssistants[mineIdx].Add(go);
+        };
     }
+
+
+
 
     void ClearSlotAssistant(int mineIdx, MineAssistantSlotUI slotUI)
     {

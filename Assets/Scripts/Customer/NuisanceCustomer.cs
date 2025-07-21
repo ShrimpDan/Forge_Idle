@@ -65,13 +65,18 @@ public class NuisanceCustomer : Customer
     protected override void Update()
     {
         base.Update();
-        if (blockClickCheck) return; // 마인씬에서 클릭 방지
+        
 
 #if UNITY_EDITOR || UNITY_STANDALONE
         if (Input.GetMouseButtonDown(0))
         {
-            Debug.Log("클릭됨");
-            CheckClick(Input.mousePosition);
+            if (blockClickCheck) return; 
+            else
+            {
+                Debug.Log("클릭됨");
+                CheckClick(Input.mousePosition);
+            }
+                
         }
 
 #else

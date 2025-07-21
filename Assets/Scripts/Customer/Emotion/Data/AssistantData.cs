@@ -5,7 +5,7 @@ using UnityEngine;
 [Serializable]
 public class AssistantData
 {
-    /// <summary>
+    /// <summary>   
     /// 키 값
     /// </summary>
     public string Key;
