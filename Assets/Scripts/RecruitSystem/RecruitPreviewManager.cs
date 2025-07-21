@@ -7,6 +7,7 @@ public class RecruitPreviewManager : MonoBehaviour
 {
     [Header("UI")]
     [SerializeField] private RecruitPopup popup;
+    [SerializeField] private RecruitConfirmPopup confirmPopup;
     [SerializeField] private GameObject paperPrefab;
     [SerializeField] private Transform paperRoot;
     [SerializeField] private GameObject recruitUI;
@@ -66,10 +67,34 @@ public class RecruitPreviewManager : MonoBehaviour
 
     public void TryRecruitCandidate()
     {
-        GameManager.Instance.HeldCandidates.Clear();
-        GameManager.Instance.SaveManager.SaveAll();
+        if (GameManager.Instance.HeldCandidates.Count > 0)
+        {
+            confirmPopup.Show(
+                "보류 중인 제자가 있습니다.\n삭제 후 새로 뽑기를 진행하시겠습니까?",
+                onConfirm: () =>
+                {
+                    GameManager.Instance.HeldCandidates.Clear();
+                    StartRecruit();
+                },
+                onCancel: () =>
+                {
+                }
+            );
+        }
+        else
+        {
+            StartRecruit();
+        }
+    }
 
-        ClearActivePapers();
+    private void StartRecruit()
+    {
+        foreach (var paper in activePapers)
+        {
+            if (paper != null)
+                Destroy(paper);
+        }
+        activePapers.Clear();
 
         currentIndex = 0;
         heldCandidates.Clear();
@@ -91,7 +116,7 @@ public class RecruitPreviewManager : MonoBehaviour
 
 
 
-    private void ShowCurrentCandidate()
+private void ShowCurrentCandidate()
     {
         if (currentIndex >= candidatePool.Count)
         {
