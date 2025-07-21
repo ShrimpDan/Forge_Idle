@@ -13,8 +13,8 @@ public class MineGroup
     public List<MineAssistantSlotUI> slotUIs;
     public List<MineAssistantSlot> slots;
 
-    // ⭐️ 인스펙터에서 직접 할당할 SpawnPoint
-    public Transform spawnPoint;
+    public Transform spawnPoint;       // Inspector에서 직접 연결
+    public Transform assistantsRoot;   // Inspector에서 직접 연결
 
     [NonSerialized] public MineAssistantManager mineManager;
     [NonSerialized] public DateTime lastCollectTime;
@@ -192,20 +192,19 @@ public class MineSceneManager : MonoBehaviour
 
     void SpawnAssistantInMine(int mineIdx, MineAssistantSlotUI slotUI, AssistantInstance assistant)
     {
-        if (mineIdx < 0 || mineIdx >= minePrefabs.Count) return;
-        var mineRoot = minePrefabs[mineIdx];
-        if (mineRoot == null) return;
-
+        if (mineIdx < 0 || mineIdx >= mineGroups.Count) return;
         var group = mineGroups[mineIdx];
+
+        // spawnPoint와 assistantsRoot를 꼭 연결할 것!
         Transform spawnPoint = group.spawnPoint;
-        if (spawnPoint == null)
+        Transform assistantsRoot = group.assistantsRoot;
+        if (spawnPoint == null || assistantsRoot == null)
         {
-            // 혹시라도 연결 안된 경우, 직접 찾아본다 (강제 방어)
-            spawnPoint = mineRoot.transform.Find("SpawnPoint");
-            if (spawnPoint == null) spawnPoint = mineRoot.transform;
+            Debug.LogError($"[Mine] SpawnPoint 또는 AssistantsRoot가 NULL! (mineIdx={mineIdx})");
+            return;
         }
 
-        Debug.Log($"[SpawnTest] group: {group.mineKey}, spawnPoint: {spawnPoint.name}, type: {spawnPoint.GetType()}, pos: {spawnPoint.position}");
+        Debug.Log($"[SpawnTest] group: {group.mineKey}, spawnPoint: {spawnPoint.name}, parent: {assistantsRoot.name}, pos: {spawnPoint.position}");
 
         string key = $"Assets/Prefabs/Assistant/{assistant.Key}.prefab";
         Addressables.LoadAssetAsync<GameObject>(key).Completed += handle =>
@@ -213,21 +212,26 @@ public class MineSceneManager : MonoBehaviour
             if (handle.Status != AsyncOperationStatus.Succeeded || handle.Result == null)
                 return;
 
-            GameObject go = Instantiate(handle.Result, spawnPoint.position, Quaternion.identity);
+            Vector3 spawnPos = spawnPoint.position;
+            spawnPos.z = -1; // 타일맵보다 위로 올리려면 z 조정
+            GameObject go = Instantiate(handle.Result, spawnPos, Quaternion.identity, assistantsRoot);
+
+            var sr = go.GetComponent<SpriteRenderer>();
+            if (sr != null)
+            {
+                sr.sortingOrder = 104; // 타일맵보다 높은 값!
+            }
 
             var fsm = go.GetComponent<MineAssistantFSM>();
             if (fsm != null)
             {
-                fsm.Init(assistant, mineIdx, mineRoot, this);
+                fsm.Init(assistant, mineIdx, assistantsRoot.gameObject, this);
             }
 
             slotUI.gameObject.GetComponent<MineAssistantSlotUIObjectRef>()?.SetAssistant(go);
             spawnedAssistants[mineIdx].Add(go);
         };
     }
-
-
-
 
     void ClearSlotAssistant(int mineIdx, MineAssistantSlotUI slotUI)
     {

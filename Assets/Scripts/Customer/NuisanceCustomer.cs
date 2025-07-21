@@ -91,6 +91,8 @@ public class NuisanceCustomer : Customer
 
     private void CheckClick(Vector2 screenPos)
     {
+        if (Camera.main == null) return; // 메인카메라 없으면 클릭 무시
+
         Vector2 worldPos = Camera.main.ScreenToWorldPoint(screenPos);
         Collider2D hit = Physics2D.OverlapPoint(worldPos);
 
