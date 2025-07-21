@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
@@ -7,7 +7,6 @@ public class AssistantSaveData
 {
     public List<AssistantDataSave> Assistants;
 }
-
 
 [System.Serializable]
 public class AbilityMultiplierSave
@@ -29,6 +28,11 @@ public class AssistantDataSave
     public bool IsInUse;
     public int SpecializationIndex;
     public string IconPath;
+
+    public int Wage;
+    public int RecruitCost;
+    public int RehireCost;
+    public bool IsFired;
 }
 
 public class AssistantSaveSystem
@@ -51,15 +55,20 @@ public class AssistantSaveSystem
                 Level = assi.Level,
                 PersonalityKey = assi.Personality.Key,
                 Specialization = assi.Specialization,
-                Multipliers = assi.Multipliers.ConvertAll(a => new AbilityMultiplierSave
+                Multipliers = assi.Multipliers.ConvertAll(m => new AbilityMultiplierSave
                 {
-                    AbilityName = a.AbilityName,
-                    Multiplier = a.Multiplier
+                    AbilityName = m.AbilityName,
+                    Multiplier = m.Multiplier
                 }),
                 IsEquipped = assi.IsEquipped,
                 IsInUse = assi.IsInUse,
                 SpecializationIndex = assi.SpecializationIndex,
-                IconPath = assi.IconPath
+                IconPath = assi.IconPath,
+
+                Wage = assi.Wage,
+                RecruitCost = assi.RecruitCost,
+                RehireCost = assi.RehireCost,
+                IsFired = assi.IsFired
             };
 
             saveData.Assistants.Add(a);
@@ -67,14 +76,14 @@ public class AssistantSaveSystem
 
         string json = JsonUtility.ToJson(saveData, true);
         File.WriteAllText(SavePath, json);
-        Debug.Log($"[저장 시스템] 제자 데이터 저장 완료 \n경로: {SavePath}");
+        Debug.Log($"[저장 시스템] 제자 데이터 저장 완료\n경로: {SavePath}");
     }
 
     public static void LoadAssistants(AssistantInventory inventory, PersonalityDataLoader personalityLoader)
     {
         if (!File.Exists(SavePath))
         {
-            Debug.Log("[저장 시스템] 제자 데이터가 존재하지않습니다.");
+            Debug.Log("[저장 시스템] 제자 데이터가 존재하지 않습니다.");
             return;
         }
 
@@ -88,7 +97,6 @@ public class AssistantSaveSystem
             var personality = personalityLoader.GetByKey(a.PersonalityKey);
             var multipliers = a.Multipliers.ConvertAll(m => new AssistantInstance.AbilityMultiplier(m.AbilityName, m.Multiplier));
 
-
             var assi = new AssistantInstance(
                 key: a.Key,
                 name: a.Name,
@@ -100,7 +108,13 @@ public class AssistantSaveSystem
                 isEquipped: a.IsEquipped,
                 isInuse: a.IsInUse
             );
+
             assi.SpecializationIndex = a.SpecializationIndex;
+
+            assi.Wage = a.Wage;
+            assi.RecruitCost = a.RecruitCost;
+            assi.RehireCost = a.RehireCost;
+            assi.IsFired = a.IsFired;
 
             inventory.Add(assi);
         }
@@ -114,10 +128,9 @@ public class AssistantSaveSystem
         {
             File.Delete(SavePath);
             inventory.Clear();
-            Debug.Log("Assistant 삭제");
+            Debug.Log("Assistant 데이터 삭제 완료");
         }
     }
-
 }
 
 public class AssistantSaveHandler : ISaveHandler

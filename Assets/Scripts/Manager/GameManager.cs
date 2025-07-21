@@ -9,6 +9,7 @@ public class GameManager : MonoSingleton<GameManager>
     public AssistantInventory AssistantInventory => AssistantManager != null ? AssistantManager.AssistantInventory : null;
     public ForgeManager ForgeManager{ get; private set; }
     public Forge Forge { get => ForgeManager.CurrentForge; }
+    public WageProcessor WageProcessor { get; private set; }
 
     public UIManager UIManager { get; private set; }
     public List<AssistantInstance> HeldCandidates { get; private set; } = new();
@@ -31,6 +32,8 @@ public class GameManager : MonoSingleton<GameManager>
 
         TutorialManager = FindObjectOfType<TutorialManager>();
         DungeonSystem = new DungeonSystem(this);
+
+        WageProcessor = new WageProcessor(this);
 
         CollectionBookManager.Instance.Initialize();
         if (UIManager)
@@ -64,7 +67,7 @@ public class GameManager : MonoSingleton<GameManager>
 
         SaveManager.LoadAll();
 
-        InvokeRepeating(nameof(ProcessHourlyWage), 5f, 5f);
+        InvokeRepeating(nameof(ProcessWageWrapper), 5f, 5f);
     }
 
     /// <summary>
@@ -72,54 +75,9 @@ public class GameManager : MonoSingleton<GameManager>
     /// 지급 실패 시 IsFired = true 처리.
     /// 전체 지급 총합을 디버그 로그에 출력.
     /// </summary>
-    public void ProcessHourlyWage()
+    private void ProcessWageWrapper()
     {
-        if (AssistantInventory == null)
-        {
-            Debug.LogWarning("[시급] AssistantInventory가 null입니다.");
-            return;
-        }
-
-        var allTrainees = AssistantInventory.GetAll();
-        int totalPaid = 0;
-        int activeCount = 0;
-
-        foreach (var assi in allTrainees)
-        {
-            if (assi.IsFired) continue;
-
-            activeCount++;
-
-            if (ForgeManager.UseGold(assi.Wage))
-            {
-                totalPaid += assi.Wage;
-                Debug.Log($"[시급] {assi.Name}에게 {assi.Wage}G 지급 완료");
-            }
-            else
-            {
-                assi.IsFired = true;
-
-                if (assi.IsEquipped && Forge != null && Forge.AssistantHandler != null)
-                {
-                    Forge.AssistantHandler.DeActiveAssistant(assi);
-                    assi.IsEquipped = false;
-                    Debug.Log($"[시급] {assi.Name} 착용 해제됨 (탈주 처리)");
-                }
-
-                Debug.LogWarning($"[시급] {assi.Name} 시급 {assi.Wage}G 지급 실패 → 제자가 탈주 처리됨");
-            }
-        }
-
-        if (activeCount == 0)
-        {
-            Debug.Log("<color=gray>[시급] 지급 대상 제자가 없습니다.</color>");
-        }
-        else if (totalPaid > 0)
-        {
-            Debug.Log($"<color=yellow>[시급 처리 완료] 총 {totalPaid}G 지출</color>");
-        }
-
-        SaveManager.SaveAll();
+        WageProcessor.ProcessHourlyWage();
     }
 
     /// <summary>
@@ -128,7 +86,7 @@ public class GameManager : MonoSingleton<GameManager>
     [ContextMenu("강제 시급 차감 실행")]
     public void DebugWageTick()
     {
-        ProcessHourlyWage();
+        WageProcessor.ProcessHourlyWage();
     }
 
 
