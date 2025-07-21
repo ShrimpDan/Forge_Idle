@@ -32,14 +32,13 @@ public class ForgeManager
             CurrentFame = CurrentFame,
             MaxFame = MaxFame,
             TotalFame = TotalFame,
-
             Gold = Gold,
             Dia = Dia,
-
-            CurrentForgeScene = CurrentForge.SceneType
+            CurrentForgeScene = CurrentForge != null ? CurrentForge.SceneType : SceneType.Main
         };
 
-        ForgeTypeSaveSystem.SaveForgeType(CurrentForge);
+        if (CurrentForge != null)
+            ForgeTypeSaveSystem.SaveForgeType(CurrentForge);
 
         return data;
     }

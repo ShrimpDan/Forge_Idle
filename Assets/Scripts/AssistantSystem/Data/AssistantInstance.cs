@@ -112,4 +112,6 @@ public class AssistantInstance
             return WageDataManager.Instance.GetByKey(CostKey);
         }
     }
+
+    public bool IsActive => !IsFired;
 }

@@ -64,7 +64,7 @@ public class GameManager : MonoSingleton<GameManager>
 
         SaveManager.LoadAll();
 
-        InvokeRepeating(nameof(ProcessHourlyWage), 1f, 1f);
+        InvokeRepeating(nameof(ProcessHourlyWage), 5f, 5f);
     }
 
     /// <summary>
@@ -98,7 +98,15 @@ public class GameManager : MonoSingleton<GameManager>
             else
             {
                 assi.IsFired = true;
-                Debug.LogWarning($"[시급] {assi.Name} 시급 {assi.Wage}G 지급 실패 → 해고 처리됨");
+
+                if (assi.IsEquipped && Forge != null && Forge.AssistantHandler != null)
+                {
+                    Forge.AssistantHandler.DeActiveAssistant(assi);
+                    assi.IsEquipped = false;
+                    Debug.Log($"[시급] {assi.Name} 착용 해제됨 (탈주 처리)");
+                }
+
+                Debug.LogWarning($"[시급] {assi.Name} 시급 {assi.Wage}G 지급 실패 → 제자가 탈주 처리됨");
             }
         }
 
