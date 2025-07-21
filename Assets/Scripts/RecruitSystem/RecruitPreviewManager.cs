@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -20,16 +21,12 @@ public class RecruitPreviewManager : MonoBehaviour
 
     private AssistantFactory assistantFactory;
     private List<AssistantInstance> candidatePool = new();
-    private List<AssistantInstance> heldCandidates = new();
     private List<GameObject> activePapers = new();
     private GameObject currentPaperGO;
 
     private bool isFromHeldList = false;
     private AssistantInstance currentHeldInstance = null;
-
-
     private bool isTransitioning = false;
-
     private int currentIndex = 0;
 
     private void Start()
@@ -43,28 +40,6 @@ public class RecruitPreviewManager : MonoBehaviour
         assistantFactory = new AssistantFactory(GameManager.Instance.DataManager);
     }
 
-    public void ShowSingleCandidateFromHeld(AssistantInstance held)
-    {
-        isFromHeldList = true;
-        currentHeldInstance = held;
-
-        heldUI.SetActive(false);
-        recruitUI.SetActive(true);
-
-        popup.ShowPopup(held);
-
-        if (currentPaperGO != null)
-            Destroy(currentPaperGO);
-
-        currentPaperGO = CreatePaper(held, () =>
-        {
-            isTransitioning = false;
-            SetButtonsInteractable(true);
-        });
-        SetButtonsInteractable(false);
-    }
-
-
     public void TryRecruitCandidate()
     {
         if (GameManager.Instance.HeldCandidates.Count > 0)
@@ -74,12 +49,10 @@ public class RecruitPreviewManager : MonoBehaviour
                 onConfirm: () =>
                 {
                     GameManager.Instance.HeldCandidates.Clear();
+                    GameManager.Instance.SaveManager.SaveAll();
                     StartRecruit();
                 },
-                onCancel: () =>
-                {
-                }
-            );
+                onCancel: () => { });
         }
         else
         {
@@ -89,24 +62,40 @@ public class RecruitPreviewManager : MonoBehaviour
 
     private void StartRecruit()
     {
-        foreach (var paper in activePapers)
-        {
-            if (paper != null)
-                Destroy(paper);
-        }
-        activePapers.Clear();
-
+        ClearActivePapers();
         currentIndex = 0;
-        heldCandidates.Clear();
+        currentHeldInstance = null;
+        isFromHeldList = false;
         currentPaperGO = null;
+        isTransitioning = false;
 
         recruitUI?.SetActive(true);
+        SetButtonsInteractable(false);
 
-        candidatePool = assistantFactory.CreateMultiple(5);
+        // 중복 방지를 위한 키셋 구성
+        var inventoryKeys = GameManager.Instance.AssistantInventory.GetAll().Select(a => a.Key);
+        var heldKeys = GameManager.Instance.HeldCandidates.Select(a => a.Key);
+        var allExistingKeys = new HashSet<string>(inventoryKeys.Concat(heldKeys));
+
+        // 중복 제거하며 최대 5명 뽑기
+        candidatePool.Clear();
+        int attempts = 0;
+        int maxAttempts = 30;
+
+        while (candidatePool.Count < 5 && attempts < maxAttempts)
+        {
+            var candidate = assistantFactory.CreateRandomTrainee(true);
+            if (candidate != null && !allExistingKeys.Contains(candidate.Key) &&
+                !candidatePool.Any(c => c.Key == candidate.Key))
+            {
+                candidatePool.Add(candidate);
+            }
+            attempts++;
+        }
 
         if (candidatePool.Count == 0)
         {
-            Debug.LogWarning("[Recruit] 뽑힌 후보가 없습니다.");
+            Debug.LogWarning("[Recruit] 유효한 후보가 없습니다.");
             popup.HidePopup();
             return;
         }
@@ -114,9 +103,7 @@ public class RecruitPreviewManager : MonoBehaviour
         ShowCurrentCandidate();
     }
 
-
-
-private void ShowCurrentCandidate()
+    private void ShowCurrentCandidate()
     {
         if (currentIndex >= candidatePool.Count)
         {
@@ -153,23 +140,9 @@ private void ShowCurrentCandidate()
         {
             currentPaperGO = CreatePaper(candidate, OnPaperReady);
         }
+
+        popup.ShowPopup(candidate);
     }
-
-    private void ClearActivePapers()
-    {
-        foreach (var paper in activePapers)
-        {
-            if (paper != null)
-            {
-                Destroy(paper);
-            }
-        }
-
-        activePapers.Clear();
-        currentPaperGO = null;
-    }
-
-
 
     private GameObject CreatePaper(AssistantInstance data, Action onEnterComplete = null)
     {
@@ -184,12 +157,23 @@ private void ShowCurrentCandidate()
         return paper;
     }
 
+    private void ClearActivePapers()
+    {
+        foreach (var paper in activePapers)
+        {
+            if (paper != null)
+                Destroy(paper);
+        }
+
+        activePapers.Clear();
+        currentPaperGO = null;
+    }
+
     public void ApproveCandidate()
     {
         if (isTransitioning) return;
 
         SetButtonsInteractable(false);
-
         var gm = GameManager.Instance;
 
         if (isFromHeldList)
@@ -197,7 +181,7 @@ private void ShowCurrentCandidate()
             int cost = currentHeldInstance.RecruitCost;
             if (!gm.ForgeManager.UseGold(cost))
             {
-                Debug.LogWarning("[Recruit] 골드가 부족하여 영입할 수 없습니다.");
+                Debug.LogWarning("[Recruit] 골드 부족");
                 SetButtonsInteractable(true);
                 return;
             }
@@ -205,9 +189,6 @@ private void ShowCurrentCandidate()
             gm.AssistantInventory.Add(currentHeldInstance);
             gm.HeldCandidates.Remove(currentHeldInstance);
             gm.SaveManager.SaveAll();
-
-            isFromHeldList = false;
-            currentHeldInstance = null;
 
             ReturnToProperUI();
             return;
@@ -218,7 +199,7 @@ private void ShowCurrentCandidate()
 
         if (!gm.ForgeManager.UseGold(recruitCost))
         {
-            Debug.LogWarning("[Recruit] 골드가 부족하여 영입할 수 없습니다.");
+            Debug.LogWarning("[Recruit] 골드 부족");
             SetButtonsInteractable(true);
             return;
         }
@@ -230,7 +211,6 @@ private void ShowCurrentCandidate()
         ShowCurrentCandidate();
     }
 
-
     public void RejectCandidate()
     {
         if (isTransitioning) return;
@@ -240,12 +220,7 @@ private void ShowCurrentCandidate()
         if (isFromHeldList)
         {
             GameManager.Instance.HeldCandidates.Remove(currentHeldInstance);
-
             GameManager.Instance.SaveManager.SaveAll();
-
-            isFromHeldList = false;
-            currentHeldInstance = null;
-
             ReturnToProperUI();
             return;
         }
@@ -262,23 +237,38 @@ private void ShowCurrentCandidate()
 
         if (isFromHeldList)
         {
-            isFromHeldList = false;
-            currentHeldInstance = null;
-
             ReturnToProperUI();
             return;
         }
 
         var held = candidatePool[currentIndex];
         GameManager.Instance.HeldCandidates.Add(held);
-
         GameManager.Instance.SaveManager.SaveAll();
 
         currentIndex++;
         ShowCurrentCandidate();
     }
 
+    public void ShowSingleCandidateFromHeld(AssistantInstance held)
+    {
+        isFromHeldList = true;
+        currentHeldInstance = held;
 
+        heldUI.SetActive(false);
+        recruitUI.SetActive(true);
+
+        popup.ShowPopup(held);
+
+        if (currentPaperGO != null)
+            Destroy(currentPaperGO);
+
+        currentPaperGO = CreatePaper(held, () =>
+        {
+            isTransitioning = false;
+            SetButtonsInteractable(true);
+        });
+        SetButtonsInteractable(false);
+    }
 
     private void ReturnToProperUI()
     {
@@ -298,7 +288,6 @@ private void ShowCurrentCandidate()
         isFromHeldList = false;
         currentHeldInstance = null;
     }
-
 
     private void SetButtonsInteractable(bool interactable)
     {
