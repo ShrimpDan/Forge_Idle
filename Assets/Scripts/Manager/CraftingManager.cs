@@ -1,6 +1,7 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 // ���� ����/���� ���� ���� ����
@@ -84,6 +85,7 @@ public class CraftingManager : MonoBehaviour
             inventory.AddItem(task.itemData, 1);
             task.rewardGiven = true;
             isCrafingDone?.Invoke(); //여기서 이벤트 발생
+            
         }
         
     }

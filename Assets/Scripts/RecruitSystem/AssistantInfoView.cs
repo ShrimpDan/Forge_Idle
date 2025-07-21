@@ -37,7 +37,7 @@ public class AssistantInfoView : MonoBehaviour
 
         // 이름 및 성격
         textName.text = assistant.Name;
-        textPersonality.text = assistant.Personality?.Name;
+        textPersonality.text = assistant.Personality?.personalityName ?? "알 수 없음";
 
         // 등급 아이콘
         rankIcon.sprite = GetRankSprite(assistant.grade);

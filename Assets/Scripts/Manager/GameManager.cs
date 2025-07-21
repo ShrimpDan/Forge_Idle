@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class GameManager : MonoSingleton<GameManager>
 {
@@ -8,9 +9,14 @@ public class GameManager : MonoSingleton<GameManager>
     public AssistantInventory AssistantInventory => AssistantManager != null ? AssistantManager.AssistantInventory : null;
     public ForgeManager ForgeManager { get; private set; }
     public Forge Forge { get => ForgeManager.CurrentForge; }
+    public WageProcessor WageProcessor { get; private set; }
 
     public UIManager UIManager { get; private set; }
     public DungeonSystem DungeonSystem { get; private set; }
+
+    public List<AssistantInstance> HeldCandidates { get; private set; } = new();
+
+    public DungeonSystem DungeonSystem{ get; private set; }
     public CraftingManager CraftingManager { get; private set; }
     public GameSaveManager SaveManager { get; private set; }
     public TutorialManager TutorialManager { get; private set; }
@@ -28,6 +34,8 @@ public class GameManager : MonoSingleton<GameManager>
 
         TutorialManager = FindObjectOfType<TutorialManager>();
         DungeonSystem = new DungeonSystem(this);
+
+        WageProcessor = new WageProcessor(this);
 
         CollectionBookManager.Instance.Initialize();
         if (UIManager)
@@ -51,14 +59,36 @@ public class GameManager : MonoSingleton<GameManager>
     {
         SaveManager = new GameSaveManager();
 
-        // 세이브 핸들러 등록
         SaveManager.RegisterSaveHandler(new ForgeSaveHandeler(ForgeManager));
         SaveManager.RegisterSaveHandler(new InventorySaveHandler(Inventory));
         SaveManager.RegisterSaveHandler(new AssistantSaveHandler(AssistantManager, DataManager.PersonalityLoader));
         SaveManager.RegisterSaveHandler(new CollectionBookSaveHandler(CollectionBookManager.Instance));
         SaveManager.RegisterSaveHandler(new DungeonSaveHandler(DungeonSystem));
 
+        SaveManager.RegisterSaveHandler(new HeldCandidateSaveHandler(this));
+
         SaveManager.LoadAll();
+
+        InvokeRepeating(nameof(ProcessWageWrapper), 5f, 5f);
+    }
+
+    /// <summary>
+    /// 해고되지 않은 모든 제자에게 시급을 지급.
+    /// 지급 실패 시 IsFired = true 처리.
+    /// 전체 지급 총합을 디버그 로그에 출력.
+    /// </summary>
+    private void ProcessWageWrapper()
+    {
+        WageProcessor.ProcessHourlyWage();
+    }
+
+    /// <summary>
+    /// 강제로 시급 차감을 즉시 실행합니다.
+    /// </summary>
+    [ContextMenu("강제 시급 차감 실행")]
+    public void DebugWageTick()
+    {
+        WageProcessor.ProcessHourlyWage();
     }
 
 

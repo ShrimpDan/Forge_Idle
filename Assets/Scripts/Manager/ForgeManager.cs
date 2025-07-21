@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class ForgeManager
 {
@@ -32,14 +32,13 @@ public class ForgeManager
             CurrentFame = CurrentFame,
             MaxFame = MaxFame,
             TotalFame = TotalFame,
-
             Gold = Gold,
             Dia = Dia,
-
-            CurrentForgeScene = CurrentForge.SceneType
+            CurrentForgeScene = CurrentForge != null ? CurrentForge.SceneType : SceneType.Main
         };
 
-        ForgeTypeSaveSystem.SaveForgeType(CurrentForge);
+        if (CurrentForge != null)
+            ForgeTypeSaveSystem.SaveForgeType(CurrentForge);
 
         return data;
     }
@@ -54,9 +53,14 @@ public class ForgeManager
         Gold = data.Gold;
         Dia = data.Dia;
 
-        LoadSceneManager.Instance.LoadSceneAsync(data.CurrentForgeScene, true);
+        if (data.CurrentForgeScene != SceneType.Main)
+        {
+            LoadSceneManager.Instance.LoadSceneAsync(data.CurrentForgeScene, true);
+        }
+
         RaiseAllEvents();
     }
+
 
     private void RaiseAllEvents()
     {
