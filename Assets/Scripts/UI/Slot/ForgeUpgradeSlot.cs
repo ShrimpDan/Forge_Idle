@@ -36,6 +36,10 @@ public class ForgeUpgradeSlot : MonoBehaviour
         {
             valueText.text = $"{curValue}s -> {nextValue}s";
         }
+        else if (type == ForgeUpgradeType.UpgradeInterior)
+        {
+            valueText.text = $"{Mathf.RoundToInt(curValue)} -> {Mathf.RoundToInt(nextValue)}";
+        }
         else
         {
             valueText.text = $"{curValue * 100}% -> {nextValue * 100}%";
@@ -51,6 +55,10 @@ public class ForgeUpgradeSlot : MonoBehaviour
         if (type == ForgeUpgradeType.ReduceCustomerSpawnDelay)
         {
             valueText.text = $"{curValue}s";
+        }
+        else if (type == ForgeUpgradeType.UpgradeInterior)
+        {
+            valueText.text = $"{Mathf.RoundToInt(curValue)}";
         }
         else
         {

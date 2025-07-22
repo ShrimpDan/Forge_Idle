@@ -1,4 +1,4 @@
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -68,6 +68,12 @@ public class AssistantPopup : BaseUI
 
     private void ApplyAssistant()
     {
+        if (!assiData.IsActive)
+        {
+            Debug.LogWarning("탈주한 제자는 착용할 수 없습니다.");
+            return;
+        }
+
         forge.AssistantHandler.ActiveAssistant(assiData);
         SetApplyButton(true);
     }

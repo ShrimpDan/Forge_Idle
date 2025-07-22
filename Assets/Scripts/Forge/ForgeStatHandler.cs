@@ -54,6 +54,7 @@ public class ForgeStatHandler
     public float FinalRareCraftChance => assistantRareCraftChance;
     public float FinalResourcePerMinuteBonus => assistantResourcePerMinuteBonus;
     public float FinalMaxResourceCapacityBonus => assistantMaxResourceCapacityBonus;
+    public int ForgeVisualLevel { get; private set; }
 
     public ForgeStatHandler(Forge forge, DataManager dataManager)
     {
@@ -70,6 +71,7 @@ public class ForgeStatHandler
         upgradePerfectCraftingChance = upgradeDataLoader.GetValue(forge.ForgeType, ForgeUpgradeType.IncreasePerfectCraftChance, UpgradeLevels[ForgeUpgradeType.IncreasePerfectCraftChance]);
         upgradeAutoCraftingTimeReduction = upgradeDataLoader.GetValue(forge.ForgeType, ForgeUpgradeType.ReduceAutoCraftingTime, UpgradeLevels[ForgeUpgradeType.ReduceAutoCraftingTime]);
         upgradeCustomerSpawnInterval = upgradeDataLoader.GetValue(forge.ForgeType, ForgeUpgradeType.ReduceCustomerSpawnDelay, UpgradeLevels[ForgeUpgradeType.ReduceCustomerSpawnDelay]);
+        ForgeVisualLevel =  Mathf.RoundToInt(upgradeDataLoader.GetValue(forge.ForgeType, ForgeUpgradeType.UpgradeInterior, UpgradeLevels[ForgeUpgradeType.UpgradeInterior]));
     }
 
     public int GetUpgradeCost(ForgeUpgradeType type)
@@ -98,6 +100,12 @@ public class ForgeStatHandler
 
         UpgradeLevels[type]++;
         ApplyUpgradeStats(); // 업그레이드 후 스탯 재계산
+
+        if (type == ForgeUpgradeType.UpgradeInterior)
+        {
+            forge.VisualHandler.SetInterior(UpgradeLevels[type]);
+        }
+
         return true;
     }
 
@@ -165,6 +173,7 @@ public class ForgeStatHandler
                 { ForgeUpgradeType.IncreaseSellPrice, 1 },
                 { ForgeUpgradeType.ReduceAutoCraftingTime, 1 },
                 { ForgeUpgradeType.ReduceCustomerSpawnDelay, 1 },
+                { ForgeUpgradeType.UpgradeInterior, 1 }
             };
         }
 
@@ -178,5 +187,6 @@ public class ForgeStatHandler
         }
 
         ApplyUpgradeStats();
+        forge.VisualHandler.SetInterior(UpgradeLevels[ForgeUpgradeType.UpgradeInterior]);
     }
 }

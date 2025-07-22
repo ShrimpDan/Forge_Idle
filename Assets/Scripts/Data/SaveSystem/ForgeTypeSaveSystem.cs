@@ -8,6 +8,7 @@ public class ForgeTypeData
     public ForgeType Type;
     public List<ForgeUpgradeSaveData> UpgradeLevels = new();
     public List<string> EquippedAssistantKeys = new();
+    public List<ForgeRecipeSaveData> Recipes = new();
 }
 
 [System.Serializable]
@@ -15,6 +16,13 @@ public class ForgeUpgradeSaveData
 {
     public ForgeUpgradeType UpgradeType;
     public int Level;
+}
+
+[System.Serializable]
+public class ForgeRecipeSaveData
+{
+    public WeaponType WeaponType;
+    public List<string> recipeKeys;
 }
 
 public class ForgeTypeSaveSystem
@@ -75,7 +83,8 @@ public class ForgeTypeSaveSystem
             ForgeUpgradeType.IncreaseExpensiveRecipeChance,
             ForgeUpgradeType.ReduceCustomerSpawnDelay,
             ForgeUpgradeType.ReduceAutoCraftingTime,
-            ForgeUpgradeType.IncreasePerfectCraftChance
+            ForgeUpgradeType.IncreasePerfectCraftChance,
+            ForgeUpgradeType.UpgradeInterior
         };
 
         List<ForgeUpgradeSaveData> upgradeLevels = new List<ForgeUpgradeSaveData>();

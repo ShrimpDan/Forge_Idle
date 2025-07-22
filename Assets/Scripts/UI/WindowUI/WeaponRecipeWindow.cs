@@ -19,6 +19,7 @@ public class WeaponRecipeWindow : BaseUI
     [SerializeField] private GameObject[] tabPanels;
 
     [Header("UI Elements")]
+    [SerializeField] private TextMeshProUGUI curPointText;
     [SerializeField] private Image icon;
     [SerializeField] private TextMeshProUGUI nameText;
     [SerializeField] private TextMeshProUGUI pointText;
@@ -29,6 +30,7 @@ public class WeaponRecipeWindow : BaseUI
     [SerializeField] private WeaponRecipeSlot[] recipeSlots;
 
     private CraftingRecipeData selectedRecipe;
+    private WeaponRecipeSlot selectedSlot;
 
     public override void Init(GameManager gameManager, UIManager uIManager)
     {
@@ -76,15 +78,19 @@ public class WeaponRecipeWindow : BaseUI
     public override void Open()
     {
         base.Open();
+        curPointText.text = recipeSystem.CurRecipePoint.ToString();
     }
 
     public override void Close()
     {
         base.Close();
+        selectedSlot = null;
+        selectedRecipe = null;
     }
 
-    public void SetInfoUI(string key)
+    public void SetInfoUI(WeaponRecipeSlot slot, string key)
     {
+        selectedSlot = slot;
         selectedRecipe = dataManager.RecipeLoader.GetDataByKey(key);
         ItemData itemData = dataManager.ItemLoader.GetItemByKey(key);
 
@@ -92,15 +98,15 @@ public class WeaponRecipeWindow : BaseUI
         nameText.text = itemData.Name;
         pointText.text = selectedRecipe.NeedPoint.ToString();
 
-        if (recipeSystem.CheckUnlock(selectedRecipe))
-            unlockBtn.interactable = false;
-        else
-            unlockBtn.interactable = true;
+        unlockBtn.interactable = recipeSystem.CanUnlock(selectedRecipe);
     }
 
     private void ClickUnlockBtn()
     {
+        if (selectedRecipe == null) return;
+        
         recipeSystem.UnlockRecipe(selectedRecipe);
-        SetInfoUI(selectedRecipe.Key);
+        SetInfoUI(selectedSlot, selectedRecipe.Key);
+        selectedSlot.UpdateSlotUI();
     }
 }

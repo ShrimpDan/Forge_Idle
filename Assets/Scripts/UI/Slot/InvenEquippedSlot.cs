@@ -41,7 +41,7 @@ public class InvenEquippedSlot : MonoBehaviour
     public void UnEquipItem()
     {
         EquippedItem = null;
-        icon.sprite = null;
+        icon.sprite = IconLoader.GetIconByPath(null);
     }
 }
 

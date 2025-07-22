@@ -44,7 +44,8 @@ public enum ForgeUpgradeType
     IncreaseExpensiveRecipeChance = 1,
     ReduceCustomerSpawnDelay = 2,
     ReduceAutoCraftingTime = 3,
-    IncreasePerfectCraftChance = 4
+    IncreasePerfectCraftChance = 4,
+    UpgradeInterior = 5
 }
 
 public static class ForgeWeaponTypeMapping

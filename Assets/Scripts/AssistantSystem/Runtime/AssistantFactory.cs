@@ -34,8 +34,12 @@ public class AssistantFactory
         {
             string selectedGrade = GetRandomGradeByProbability();
 
+            var ownedKeys = GameManager.Instance.AssistantInventory.GetAll().Select(a => a.Key);
+            var heldKeys = GameManager.Instance.HeldCandidates.Select(h => h.Key);
+            var blockedKeys = new HashSet<string>(ownedKeys.Concat(heldKeys));
+
             var candidates = assistantLoader.ItemsList
-                .Where(t => t.grade == selectedGrade)
+                .Where(t => t.grade == selectedGrade && !blockedKeys.Contains(t.Key))
                 .ToList();
 
             if (candidates.Count > 0)
@@ -56,13 +60,22 @@ public class AssistantFactory
         if (!canRecruit && !bypassRecruitCheck) return null;
         canRecruit = false;
 
-        var candidates = assistantLoader.ItemsList.FindAll(t => GetTier(t.grade) >= 2 &&
-            specializationLoader.GetByKey(t.specializationKey)?.specializationType == type);
+        var ownedKeys = GameManager.Instance.AssistantInventory.GetAll().Select(a => a.Key);
+        var heldKeys = GameManager.Instance.HeldCandidates.Select(h => h.Key);
+        var blockedKeys = new HashSet<string>(ownedKeys.Concat(heldKeys));
+
+        var candidates = assistantLoader.ItemsList.FindAll(t =>
+            GetTier(t.grade) >= 2 &&
+            specializationLoader.GetByKey(t.specializationKey)?.specializationType == type &&
+            !blockedKeys.Contains(t.Key)
+        );
+
         if (candidates.Count == 0) return null;
 
         var selected = candidates[rng.Next(candidates.Count)];
         return CreateAssistantFromData(selected);
     }
+
 
     public List<AssistantInstance> CreateMultiple(int count, SpecializationType? fixedType = null)
     {
