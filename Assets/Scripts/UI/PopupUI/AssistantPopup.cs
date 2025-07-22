@@ -86,10 +86,21 @@ public class AssistantPopup : BaseUI
     {
         bool isEquipped = data.IsEquipped;
         bool isFired = data.IsFired;
+        SpecializationType type = data.Specialization;
 
         applyButton.gameObject.SetActive(false);
         deApplyButton.gameObject.SetActive(false);
         rehireButton.gameObject.SetActive(false);
+
+        if (type == SpecializationType.Mining)
+        {
+            if (isFired)
+            {
+                rehireButton.gameObject.SetActive(true);
+            }
+
+            return;
+        }
 
         if (isFired)
         {
