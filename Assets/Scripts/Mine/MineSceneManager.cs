@@ -13,8 +13,8 @@ public class MineGroup
     public List<MineAssistantSlotUI> slotUIs;
     public List<MineAssistantSlot> slots;
 
-    public Transform spawnPoint;       // Inspector에서 직접 연결
-    public Transform assistantsRoot;   // Inspector에서 직접 연결
+    public Transform spawnPoint;     
+    public Transform assistantsRoot;  
 
     [NonSerialized] public MineAssistantManager mineManager;
     [NonSerialized] public DateTime lastCollectTime;
@@ -195,7 +195,6 @@ public class MineSceneManager : MonoBehaviour
         if (mineIdx < 0 || mineIdx >= mineGroups.Count) return;
         var group = mineGroups[mineIdx];
 
-        // spawnPoint와 assistantsRoot를 꼭 연결할 것!
         Transform spawnPoint = group.spawnPoint;
         Transform assistantsRoot = group.assistantsRoot;
         if (spawnPoint == null || assistantsRoot == null)
@@ -213,13 +212,13 @@ public class MineSceneManager : MonoBehaviour
                 return;
 
             Vector3 spawnPos = spawnPoint.position;
-            spawnPos.z = -1; // 타일맵보다 위로 올리려면 z 조정
+            spawnPos.z = -1; 
             GameObject go = Instantiate(handle.Result, spawnPos, Quaternion.identity, assistantsRoot);
 
             var sr = go.GetComponent<SpriteRenderer>();
             if (sr != null)
             {
-                sr.sortingOrder = 104; // 타일맵보다 높은 값!
+                sr.sortingOrder = 104; 
             }
 
             var fsm = go.GetComponent<MineAssistantFSM>();
