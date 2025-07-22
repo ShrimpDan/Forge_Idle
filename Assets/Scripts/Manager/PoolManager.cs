@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 [Serializable]
@@ -11,14 +9,13 @@ public class PoolInfo
     public int initialSize;
 }
 
-public class PoolManager : MonoSingleton<PoolManager>
+public class PoolManager : MonoBehaviour
 {
     [SerializeField] private List<PoolInfo> poolList;
     private Dictionary<GameObject, Queue<GameObject>> poolDictionary = new Dictionary<GameObject, Queue<GameObject>>();
 
-    protected override void Awake()
+    private void Awake()
     {
-        base.Awake();
         InitializePool();
     }
 

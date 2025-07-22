@@ -22,16 +22,16 @@ public class InventorySlot : MonoBehaviour
         slotBtn.onClick.AddListener(() => OnClickSlot());
 
         SlotItem = item;
-
-        icon.sprite = IconLoader.GetIcon(SlotItem.Data.IconPath);
+        countText.text = item.Data.Name;
 
         if (item.Data.ItemType == ItemType.Weapon)
-            countText.text = item.Data.Name;
+            icon.sprite = IconLoader.GetIconByKey(SlotItem.ItemKey);
         else
-            countText.text = SlotItem.Quantity.ToString();
+            icon.sprite = IconLoader.GetIconByPath(SlotItem.Data.IconPath);
+        
 
         if (uIManager == null)
-            uIManager = GameManager.Instance.UIManager;
+                uIManager = GameManager.Instance.UIManager;
 
         SetEquipped(SlotItem.IsEquipped);
     }

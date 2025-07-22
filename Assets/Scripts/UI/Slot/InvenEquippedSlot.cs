@@ -22,7 +22,7 @@ public class InvenEquippedSlot : MonoBehaviour
             this.uIManager = uIManager;
 
         EquippedItem = item;
-        icon.sprite = IconLoader.GetIcon(item.Data.IconPath);
+        icon.sprite = IconLoader.GetIconByKey(item.ItemKey);
 
         slotBtn = GetComponent<Button>();
 
@@ -41,7 +41,7 @@ public class InvenEquippedSlot : MonoBehaviour
     public void UnEquipItem()
     {
         EquippedItem = null;
-        icon.sprite = null;
+        icon.sprite = IconLoader.GetIconByPath(null);
     }
 }
 

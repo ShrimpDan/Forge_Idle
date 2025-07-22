@@ -38,9 +38,11 @@ public class MonoSingleton<T> : MonoBehaviour where T : MonoSingleton<T>
             instance = this as T;
             DontDestroyOnLoad(this.gameObject);
         }
-
-        else if (instance != null)
+        else if (instance != this)
+        {
+            Debug.LogWarning($"[MonoSingleton<{typeof(T)}>] 중복 인스턴스 제거됨: {name}");
             Destroy(gameObject);
+        }
     }
 
     private void OnDestroy()

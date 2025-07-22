@@ -1,4 +1,4 @@
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -20,44 +20,25 @@ public class AssistantPopup : BaseUI
     [Header("Button UI")]
     [SerializeField] private Button applyButton;
     [SerializeField] private Button deApplyButton;
+    [SerializeField] private Button rehireButton;
     [SerializeField] private Button exitButton;
 
-    AssistantInstance assiData;
+    private AssistantInstance assiData;
 
     public override void Init(GameManager gameManager, UIManager uIManager)
     {
         base.Init(gameManager, uIManager);
         forge = gameManager.Forge;
 
-        exitButton.onClick.AddListener(() => uIManager.CloseUI(UIName.AssistantPopup));
         applyButton.onClick.AddListener(ApplyAssistant);
         deApplyButton.onClick.AddListener(DeApplyAssistant);
+        rehireButton.onClick.AddListener(RehireAssistant);
+        exitButton.onClick.AddListener(() => uIManager.CloseUI(UIName.AssistantPopup));
     }
 
     public override void Open()
     {
         base.Open();
-    }
-
-    public void SetAssistant(AssistantInstance data)
-    {
-        assiData = data;
-        // 캐릭터 아이콘 & 타입별 아이콘 설정
-
-        icon.sprite = IconLoader.GetIcon(data.IconPath);
-        assiName.text = data.Name;
-        assiType.text = data.Specialization.ToString();
-
-        foreach (var option in data.Multipliers)
-        {
-            GameObject obj = Instantiate(optionTextPrefab, optionRoot);
-
-            TextMeshProUGUI optionText = obj.GetComponent<TextMeshProUGUI>();
-            optionText.text = option.AbilityName;
-            optionText.text += $"\nx{option.Multiplier}";
-        }
-
-        SetApplyButton(data.IsEquipped);
     }
 
     public override void Close()
@@ -66,29 +47,113 @@ public class AssistantPopup : BaseUI
         exitButton.onClick.RemoveAllListeners();
     }
 
-    private void ApplyAssistant()
+    public void SetAssistant(AssistantInstance data)
     {
-        forge.ActiveAssistant(assiData);
-        SetApplyButton(true);
-    }
+        assiData = data;
 
-    private void DeApplyAssistant()
-    {
-        forge.DeActiveAssistant(assiData);
-        SetApplyButton(false);
-    }
+        // 아이콘 설정
+        icon.sprite = IconLoader.GetIconByPath(data.IconPath);
+        assiName.text = data.Name;
+        assiType.text = data.Specialization.ToString();
 
-    private void SetApplyButton(bool isEquip)
-    {
-        if (isEquip)
+        // 기존 옵션 제거
+        foreach (Transform child in optionRoot)
         {
-            applyButton.gameObject.SetActive(false);
+            Destroy(child.gameObject);
+        }
+
+        // 🔁 재고용 상태일 경우 재고용 비용만 출력
+        if (data.IsFired)
+        {
+            GameObject obj = Instantiate(optionTextPrefab, optionRoot);
+            TextMeshProUGUI optionText = obj.GetComponent<TextMeshProUGUI>();
+            optionText.text = $"재고용 비용 : {data.RehireCost} G";
+        }
+        else
+        {
+            foreach (var option in data.Multipliers)
+            {
+                GameObject obj = Instantiate(optionTextPrefab, optionRoot);
+                TextMeshProUGUI optionText = obj.GetComponent<TextMeshProUGUI>();
+                optionText.text = $"{option.AbilityName}\nx{option.Multiplier}";
+            }
+        }
+
+        SetApplyButton(data);
+    }
+
+    private void SetApplyButton(AssistantInstance data)
+    {
+        bool isEquipped = data.IsEquipped;
+        bool isFired = data.IsFired;
+        SpecializationType type = data.Specialization;
+
+        applyButton.gameObject.SetActive(false);
+        deApplyButton.gameObject.SetActive(false);
+        rehireButton.gameObject.SetActive(false);
+
+        if (type == SpecializationType.Mining)
+        {
+            if (isFired)
+            {
+                rehireButton.gameObject.SetActive(true);
+            }
+
+            return;
+        }
+
+        if (isFired)
+        {
+            rehireButton.gameObject.SetActive(true);
+        }
+        else if (isEquipped)
+        {
             deApplyButton.gameObject.SetActive(true);
         }
         else
         {
             applyButton.gameObject.SetActive(true);
-            deApplyButton.gameObject.SetActive(false);
+        }
+    }
+
+    private void ApplyAssistant()
+    {
+        if (assiData == null) return;
+
+        if (!assiData.IsActive)
+        {
+            Debug.LogWarning("탈주한 제자는 착용할 수 없습니다.");
+            return;
+        }
+
+        forge.AssistantHandler.ActiveAssistant(assiData);
+        SetApplyButton(assiData);
+    }
+
+    private void DeApplyAssistant()
+    {
+        if (assiData == null) return;
+
+        forge.AssistantHandler.DeActiveAssistant(assiData);
+        SetApplyButton(assiData);
+    }
+
+    private void RehireAssistant()
+    {
+        if (assiData == null || !assiData.IsFired)
+            return;
+
+        int cost = assiData.RehireCost;
+        if (GameManager.Instance.ForgeManager.UseGold(cost))
+        {
+            assiData.IsFired = false;
+            GameManager.Instance.SaveManager.SaveAll();
+            Debug.Log($"{assiData.Name} 재고용 완료!");
+            SetApplyButton(assiData);
+        }
+        else
+        {
+            Debug.LogWarning("골드가 부족합니다.");
         }
     }
 }

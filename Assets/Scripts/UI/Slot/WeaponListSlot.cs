@@ -34,7 +34,7 @@ public class WeaponListSlot : MonoBehaviour
 
     private void SetUI()
     {
-        icon.sprite = IconLoader.GetIcon(itemData.IconPath);
+        icon.sprite = IconLoader.GetIconByPath(itemData.IconPath);
         itemNameText.text = itemData.Name;
         craftDurationText.text = craftingData.craftTime.ToString("F1");
         priceText.text = craftingData.sellCost.ToString();
@@ -44,7 +44,7 @@ public class WeaponListSlot : MonoBehaviour
 
     private void OnClickApplyBtn(SellWeaponSlot slot)
     {
-        forge.SellingSystem.SetCraftingItem(craftingData);
+        //forge.SellingSystem.SetCraftingItem(craftingData);
         slot.SetItem(itemData.ItemKey);
 
         uIManager.CloseUI(UIName.SellWeaponPopup);

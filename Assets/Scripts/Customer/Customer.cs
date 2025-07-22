@@ -22,12 +22,13 @@ public abstract class Customer : MonoBehaviour
 {
 
 
-    private CustomerManager customerManager;
+    protected CustomerManager customerManager;
 
     public static readonly int maxCount = 5; //5명 이상은 존재 안할꺼다
 
     public CustomerType Type => data.type;
     public CustomerJob Job => data.job;
+    public WeaponType WeaponType { get; private set; }
 
     private bool isCrafted;
 
@@ -72,9 +73,9 @@ public abstract class Customer : MonoBehaviour
     //풀링
     private GameObject sourcePrefab;
 
-    public void Init(CustomerData _customerData, BuyPoint _buyPoint)
+    public void Init(CustomerManager customerManager, CustomerData _customerData, BuyPoint _buyPoint)
     {
-        customerManager = CustomerManager.Instance;
+        this.customerManager = customerManager;
         data = _customerData;
         buyPoint = _buyPoint;
         isCrafted = false;
@@ -95,16 +96,17 @@ public abstract class Customer : MonoBehaviour
 
     protected virtual void Start()
     {
-       
+        
     }
+
     protected virtual void OnEnable()
-    {       
+    {
         if (customerFlowCoroutine != null)
         {
             StopCoroutine(customerFlowCoroutine);
         }
         customerFlowCoroutine = StartCoroutine(CustomerFlow());
-      
+
     }
 
 
@@ -120,21 +122,14 @@ public abstract class Customer : MonoBehaviour
 
     protected virtual void Update()
     {
-    }
 
+    }
 
     protected virtual void FixedUpdate()
     {
         animator.SetBool("IsMove", IsMoving);
     }
 
-    public void Init(CustomerData customerData)
-    {
-        customerManager = CustomerManager.Instance;
-        data = customerData;
-
-        isCrafted = false;
-    }
     public void SetSourcePrefab(GameObject prefab)
     {
         this.sourcePrefab = prefab; 
@@ -196,7 +191,7 @@ public abstract class Customer : MonoBehaviour
 
     protected IEnumerator AngryTime()
     {
-        while (timer < 10)
+        while (timer < 90)
         {
             timer += Time.deltaTime;
             yield return null;
@@ -296,8 +291,8 @@ public abstract class Customer : MonoBehaviour
     protected virtual void CustomerExit() //큐에서 나가는 메서드
     {
         Debug.Log("손님나감 호출");
-        CustomerManager.Instance.CustomerExit(this);
-        PoolManager.Instance.Return(this.gameObject, this.sourcePrefab);
+        customerManager.CustomerExit(this);
+        customerManager.PoolManager.Return(this.gameObject, this.sourcePrefab);
     }
     public abstract void Interact();
     public void NotifiedCraftWeapon()
@@ -322,6 +317,12 @@ public abstract class Customer : MonoBehaviour
             Debug.Log("스프라이트 라이브러리 문제 발생");
         }
     }
+
+    public void SetWeaponType(WeaponType type)
+    {
+        WeaponType = type;
+    }
+
     private void OnDrawGizmosSelected() // 움직이는 포인트 시각화
     {
         Gizmos.color = Color.green;

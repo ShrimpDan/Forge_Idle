@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class GameManager : MonoSingleton<GameManager>
 {
@@ -6,42 +7,44 @@ public class GameManager : MonoSingleton<GameManager>
     public DataManager DataManager { get; private set; }
     public AssistantManager AssistantManager { get; private set; }
     public AssistantInventory AssistantInventory => AssistantManager != null ? AssistantManager.AssistantInventory : null;
-    public Forge Forge { get; private set; }
-    public UIManager UIManager { get; private set; }
+    public ForgeManager ForgeManager { get; private set; }
+    public Forge Forge { get => ForgeManager.CurrentForge; }
+    public WageProcessor WageProcessor { get; private set; }
 
-    public DungeonSystem DungeonSystem{ get; private set; }
+    public UIManager UIManager { get; private set; }
+    public DungeonSystem DungeonSystem { get; private set; }
+
+    public List<AssistantInstance> HeldCandidates { get; private set; } = new();
 
     public CraftingManager CraftingManager { get; private set; }
-
     public GameSaveManager SaveManager { get; private set; }
-
-    public PoolManager PoolManager { get; private set; }
-
     public TutorialManager TutorialManager { get; private set; }
-    
+
     protected override void Awake()
     {
         base.Awake();
-       
+
         Inventory = new InventoryManager(this);
         DataManager = new DataManager();
+
+        ForgeManager = new ForgeManager(this);
         AssistantManager = FindObjectOfType<AssistantManager>();
         UIManager = FindObjectOfType<UIManager>();
-        Forge = FindObjectOfType<Forge>();
+
         TutorialManager = FindObjectOfType<TutorialManager>();
         DungeonSystem = new DungeonSystem(this);
-        PoolManager = PoolManager.Instance;
+
+        WageProcessor = new WageProcessor(this);
 
         CollectionBookManager.Instance.Initialize();
         if (UIManager)
             UIManager.Init(this);
-        if (Forge)
-            Forge.Init(this);
+
         if (AssistantManager)
             AssistantManager.Init(this);
         if (TutorialManager)
             TutorialManager.Init(this);
-      
+
         // CraftingManager 동적 생성 및 초기화
         var cmObj = new GameObject("CraftingManager");
         CraftingManager = cmObj.AddComponent<CraftingManager>();
@@ -55,17 +58,36 @@ public class GameManager : MonoSingleton<GameManager>
     {
         SaveManager = new GameSaveManager();
 
-        // 세이브 핸들러 등록
-        SaveManager.RegisterSaveHandler(new ForgeSaveHandeler(Forge));
+        SaveManager.RegisterSaveHandler(new ForgeSaveHandeler(ForgeManager));
         SaveManager.RegisterSaveHandler(new InventorySaveHandler(Inventory));
         SaveManager.RegisterSaveHandler(new AssistantSaveHandler(AssistantManager, DataManager.PersonalityLoader));
-        SaveManager.RegisterSaveHandler(new WeaponSellingSaveHandler(Forge.SellingSystem));
         SaveManager.RegisterSaveHandler(new CollectionBookSaveHandler(CollectionBookManager.Instance));
         SaveManager.RegisterSaveHandler(new DungeonSaveHandler(DungeonSystem));
-        
-        
+
+        SaveManager.RegisterSaveHandler(new HeldCandidateSaveHandler(this));
+
         SaveManager.LoadAll();
-      
+
+        InvokeRepeating(nameof(ProcessWageWrapper), 5f, 5f);
+    }
+
+    /// <summary>
+    /// 해고되지 않은 모든 제자에게 시급을 지급.
+    /// 지급 실패 시 IsFired = true 처리.
+    /// 전체 지급 총합을 디버그 로그에 출력.
+    /// </summary>
+    private void ProcessWageWrapper()
+    {
+        WageProcessor.ProcessHourlyWage();
+    }
+
+    /// <summary>
+    /// 강제로 시급 차감을 즉시 실행합니다.
+    /// </summary>
+    [ContextMenu("강제 시급 차감 실행")]
+    public void DebugWageTick()
+    {
+        WageProcessor.ProcessHourlyWage();
     }
 
 
@@ -92,9 +114,9 @@ public class GameManager : MonoSingleton<GameManager>
     [ContextMenu("Add Test Gold (5000)")]
     public void AddTestGold()
     {
-        if (Forge != null)
+        if (ForgeManager != null)
         {
-            Forge.AddGold(5000);
+            ForgeManager.AddGold(5000);
             Debug.Log("<color=yellow>[GameManager] 테스트 골드 5000 지급 완료!</color>");
         }
         else
@@ -125,10 +147,14 @@ public class GameManager : MonoSingleton<GameManager>
         SaveManager.LoadAll();
     }
 
+    [ContextMenu("Get Recipe Point")]
+    public void GetRecipePoint()
+    {
+        Forge.RecipeSystem.AddPoint(50);
+    }
+
     private void OnApplicationQuit()
     {
-       
-            SaveManager.SaveAll();
-       
+        SaveManager.SaveAll();
     }
 }

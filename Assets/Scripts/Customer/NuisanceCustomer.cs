@@ -150,7 +150,7 @@ public class NuisanceCustomer : Customer
 
     private BuyPoint GetRandomBuyPoint() //수정해야될듯
     {
-        var points = CustomerManager.Instance.allBuyPoints; //넣어줄 예정
+        var points = customerManager.allBuyPoints; //넣어줄 예정
         if (points == null || points.Count == 0)
         {
             return null;
@@ -161,7 +161,7 @@ public class NuisanceCustomer : Customer
 
     private void PenaltyGold()
     {
-        GameManager.Instance.Forge.AddGold(-1000);
+        GameManager.Instance.ForgeManager.AddGold(-1000);
         Debug.Log("골드 차감");
     }
 

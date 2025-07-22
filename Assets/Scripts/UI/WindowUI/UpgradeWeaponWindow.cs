@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 public class UpgradeWeaponWindow : BaseUI
 {
@@ -108,6 +109,10 @@ public class UpgradeWeaponWindow : BaseUI
     {
         upgradePanel.SetActive(false);
         gemSystemPanel.SetActive(true);
+        if (GameManager.Instance.TutorialManager != null)
+        {
+            GameManager.Instance.TutorialManager.ForceStepClear();
+        }
         ResetGemSystemPanel();
     }
 
@@ -146,7 +151,7 @@ public class UpgradeWeaponWindow : BaseUI
             ResetUpgradePanel();
             return;
         }
-        inputWeaponIcon.sprite = IconLoader.GetIcon(selectedWeapon.Data.IconPath);
+        inputWeaponIcon.sprite = IconLoader.GetIconByPath(selectedWeapon.Data.IconPath);
         inputWeaponIcon.enabled = true;
         inputWeaponName.text = selectedWeapon.Data.Name;
 
@@ -208,7 +213,7 @@ public class UpgradeWeaponWindow : BaseUI
             yield return null;
         }
         int successRate = CalcEnhanceSuccessRate(selectedWeapon);
-        bool isSuccess = Random.Range(0, 100) < successRate;
+        bool isSuccess = UnityEngine.Random.Range(0, 100) < successRate;
         if (isSuccess)
         {
             progressBar.fillAmount = 1f;
@@ -291,7 +296,7 @@ public class UpgradeWeaponWindow : BaseUI
             return;
         }
 
-        inputWeaponIconGem.sprite = IconLoader.GetIcon(selectedGemWeapon.Data.IconPath);
+        inputWeaponIconGem.sprite = IconLoader.GetIconByPath(selectedGemWeapon.Data.IconPath);
         inputWeaponIconGem.enabled = true;
         inputWeaponNameGem.text = selectedGemWeapon.Data.Name;
 
@@ -303,7 +308,7 @@ public class UpgradeWeaponWindow : BaseUI
             {
                 if (gem != null && gem.Data != null)
                 {
-                    gemSlotIcons[i].sprite = IconLoader.GetIcon(gem.Data.IconPath);
+                    gemSlotIcons[i].sprite = IconLoader.GetIconByPath(gem.Data.IconPath);
                     gemSlotIcons[i].enabled = true;
                 }
                 else

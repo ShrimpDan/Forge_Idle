@@ -3,6 +3,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Globalization;
+using System;
 
 public class UIManager : MonoBehaviour
 {
@@ -17,6 +18,10 @@ public class UIManager : MonoBehaviour
 
     private Dictionary<string, BaseUI> activeUIs = new();
     private Dictionary<string, GameObject> loadedPrefabs = new();
+
+    public event Action<String> CloseUIName;
+
+    public HeldAssistantUIController HeldAssistantUIController;
 
     // 1000단위마다 k/m/b 접미사로 줄여서 숫자 포맷을 반환 (1.2k, 1.5m 등)
     public static string FormatNumber(int number)
@@ -92,10 +97,6 @@ public class UIManager : MonoBehaviour
             return number.ToString($"N{decimalPoint}");
     }
 
-
-
-
-
     public void Init(GameManager gameManager)
     {
         this.gameManager = gameManager;
@@ -167,7 +168,7 @@ public class UIManager : MonoBehaviour
         if ((ui.UIType == UIType.Popup || ui.UIType == UIType.Window) && ui.RootPanel != null)
         {
             UIEffect.PopupCloseEffect(ui.RootPanel, 0.18f);
-            Destroy(ui.gameObject, 0.19f); 
+            Destroy(ui.gameObject, 0.19f);
         }
         else
         {
@@ -176,6 +177,7 @@ public class UIManager : MonoBehaviour
         }
 
         activeUIs.Remove(uiName);
+        CloseUIName?.Invoke(uiName);
 
         if (ui.UIType == UIType.Popup && popupBlockRay != null)
         {
@@ -239,6 +241,15 @@ public class UIManager : MonoBehaviour
             return;
 
         ui.Init(gameManager, this);
+    }
+
+    public void OpenForgeTab()
+    {
+        var mainUI = fixedRoot.GetComponentInChildren<MainUI>(true);
+        if (mainUI != null)
+        {
+            mainUI.Open();
+        }
     }
 }
 

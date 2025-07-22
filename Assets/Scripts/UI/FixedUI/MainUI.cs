@@ -1,10 +1,11 @@
-﻿using TMPro;
+﻿using System.Diagnostics;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class MainUI : BaseUI
 {
-    private Forge forge;
+    private ForgeManager forgeManager;
 
     [Header("Tab Buttons")]
     [SerializeField] private Button[] tabButtons;
@@ -30,7 +31,7 @@ public class MainUI : BaseUI
     {
         base.Init(gameManager, uIManager);
 
-        forge = gameManager.Forge;
+        forgeManager = gameManager.ForgeManager;
 
         foreach (var tab in tabPanels)
         {
@@ -50,28 +51,33 @@ public class MainUI : BaseUI
             });
         }
 
-        SwitchTab(2);
         OnEnable();
     }
 
+    public override void Open()
+    {
+        base.Open();
+        SwitchTab(2);
+    }
+    
     void OnEnable()
     {
-        if (forge == null) return;
+        if (forgeManager == null) return;
 
-        forge.Events.OnGoldChanged += SetGoldUI;
-        forge.Events.OnDiaChanged += SetDiaUI;
-        forge.Events.OnLevelChanged += SetLevelUI;
-        forge.Events.OnFameChanged += SetFameBarUI;
-        forge.Events.OnTotalFameChanged += SetTotalFameUI;
+        forgeManager.Events.OnGoldChanged += SetGoldUI;
+        forgeManager.Events.OnDiaChanged += SetDiaUI;
+        forgeManager.Events.OnLevelChanged += SetLevelUI;
+        forgeManager.Events.OnFameChanged += SetFameBarUI;
+        forgeManager.Events.OnTotalFameChanged += SetTotalFameUI;
     }
 
     void OnDisable()
     {
-        forge.Events.OnGoldChanged -= SetGoldUI;
-        forge.Events.OnDiaChanged -= SetDiaUI;
-        forge.Events.OnLevelChanged -= SetLevelUI;
-        forge.Events.OnFameChanged -= SetFameBarUI;
-        forge.Events.OnTotalFameChanged -= SetTotalFameUI;
+        forgeManager.Events.OnGoldChanged -= SetGoldUI;
+        forgeManager.Events.OnDiaChanged -= SetDiaUI;
+        forgeManager.Events.OnLevelChanged -= SetLevelUI;
+        forgeManager.Events.OnFameChanged -= SetFameBarUI;
+        forgeManager.Events.OnTotalFameChanged -= SetTotalFameUI;
     }
 
     private void SwitchTab(int index)

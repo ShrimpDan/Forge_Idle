@@ -29,7 +29,7 @@ public class AssiEquippedSlot : MonoBehaviour
         }
         
         EquippedAssi = assi;
-        icon.sprite = IconLoader.GetIcon(assi.IconPath);
+        icon.sprite = IconLoader.GetIconByPath(assi.IconPath);
     }
     
     private void OnClickSlot()
