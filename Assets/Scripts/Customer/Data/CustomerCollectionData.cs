@@ -71,7 +71,7 @@ public class CustomerCollectionData
             }
         default: return 0.0f;
         }
-        }
+        
     }
 
 }

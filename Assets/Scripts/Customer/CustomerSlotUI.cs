@@ -11,11 +11,12 @@ public class CustomerSlotUI : MonoBehaviour
 
 
     private RegularCustomerData data;
-
-    public void Initialize(RegularCustomerData data)
+    private CustomerCollectionData collectionData;
+    public void Initialize(RegularCustomerData data , CustomerCollectionData collectionData)
     {
         this.data = data;
-        bool isDiscovered = CollectionBookManager.Instance.IsDiscovered(data);
+        this.collectionData = collectionData;
+        bool isDiscovered = GameManager.Instance.CollectionManager.IsDiscovered(data);
 
         UpdateState(isDiscovered);
     }
@@ -40,6 +41,16 @@ public class CustomerSlotUI : MonoBehaviour
         {
             image.sprite = silhouetteSprite;
             image.color = new Color(1, 1, 1, 0.3f);
+        }
+
+
+        if (gaugeBar != null)
+        {
+            gaugeBar.fillAmount = (float)collectionData.visitedCount / collectionData.maxVisitedCount;
+        }
+        if (progressText != null)
+        {
+            progressText.text = $"{collectionData.visitedCount}/ {collectionData.maxVisitedCount}";
         }
     }
 

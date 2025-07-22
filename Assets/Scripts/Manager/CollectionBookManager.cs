@@ -201,4 +201,16 @@ public class CollectionBookManager : MonoBehaviour
 
         return totalBonus;
     }
+
+    public CustomerCollectionData GetCollectionData(string key)
+    {
+        if (collectionDict.TryGetValue(key, out var data))
+        {
+            return data;
+        }
+
+        return null;
+    }
+
+    
 }
