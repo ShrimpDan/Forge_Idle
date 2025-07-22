@@ -8,7 +8,6 @@ public struct CameraLimit
 
 public class CameraTouchDrag : MonoBehaviour
 {
-
     [Header("카메라 줌(확대/축소)")]
     public float minCameraSize = 5f;
     public float maxCameraSize = 15f;
@@ -60,21 +59,27 @@ public class CameraTouchDrag : MonoBehaviour
         targetPos = now;
     }
 
+    // ★ MineDetailCanvas로 돌아올 때 호출해주면 됩니다!
+    public void SetCameraSize(float size)
+    {
+        if (targetCamera == null) return;
+        targetCamera.orthographicSize = Mathf.Clamp(size, minCameraSize, maxCameraSize);
+    }
+
     void Update()
     {
         if (targetCamera == null) return;
-        HandleZoom();   // 추가: 확대/축소 처리
+        HandleZoom();
 #if UNITY_EDITOR || UNITY_STANDALONE
         HandleMouseDrag();
 #elif UNITY_ANDROID || UNITY_IOS
-    HandleTouchDrag();
+        HandleTouchDrag();
 #else
-    HandleMouseDrag();
+        HandleMouseDrag();
 #endif
         targetCamera.transform.position = Vector3.SmoothDamp(targetCamera.transform.position, targetPos, ref velocity, smoothTime);
     }
 
-    // 나머지 GetWorld 등 함수도 모두 targetCamera로 교체!
     Vector3 GetWorld(Vector3 screenPos)
     {
         Vector3 camPos = targetCamera.transform.position;
@@ -135,7 +140,6 @@ public class CameraTouchDrag : MonoBehaviour
         targetPos = next;
     }
 
-    // 멀티터치/마우스휠 확대/축소 처리
     void HandleZoom()
     {
         if (!enableZoom) return;

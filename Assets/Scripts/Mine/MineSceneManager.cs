@@ -15,13 +15,14 @@ public class MineGroup
     public List<MineAssistantSlot> slots;
     public Transform spawnPoint;
     public Transform assistantsRoot;
-    public List<Tilemap> obstacleTilemaps; // 장애물 지정
+    public List<Tilemap> obstacleTilemaps; 
     [NonSerialized] public MineAssistantManager mineManager;
     [NonSerialized] public DateTime lastCollectTime;
 }
 
 public class MineSceneManager : MonoBehaviour
 {
+    // Inspector (필드 유지)
     public GameObject mineAssistantPrefab;
     public List<MineGroup> mineGroups;
     public GameObject mineDetailMap;
@@ -34,6 +35,7 @@ public class MineSceneManager : MonoBehaviour
     public Camera mineCamera;
     public Transform popupRoot;
 
+    // 내부 상태
     private List<List<GameObject>> spawnedAssistants;
     private AssistantInventory assistantInventory;
     private MineLoader mineLoader;
@@ -41,16 +43,15 @@ public class MineSceneManager : MonoBehaviour
 
     private void Awake()
     {
-        var mainCamObj = GameObject.FindWithTag("MainCamera");
-        if (mainCamObj != null) mainCamObj.SetActive(false);
-        if (mineCamera != null) mineCamera.gameObject.SetActive(true);
+        SetMainUIClickable(false);
+        SetMainCameraActive(false);
+        SetMineCameraActive(true);
     }
 
     private void OnDestroy()
     {
-        var mainCamObj = GameObject.FindWithTag("MainCamera");
-        if (mainCamObj != null) mainCamObj.SetActive(true);
-        if (mineCamera != null) mineCamera.gameObject.SetActive(false);
+        SetMainCameraActive(true);
+        SetMineCameraActive(false);
     }
 
     private void Start()
@@ -112,7 +113,8 @@ public class MineSceneManager : MonoBehaviour
         {
             cameraTouchDrag.SetCameraLimit(cameraLimits[0]);
             cameraTouchDrag.enabled = true;
-            cameraTouchDrag.enableZoom = false; // DetailMap에서는 확대축소 불가
+            cameraTouchDrag.enableZoom = false;
+            cameraTouchDrag.SetCameraSize(5f);
         }
 
         if (miningUIPanel != null) miningUIPanel.SetActive(true);
@@ -129,7 +131,7 @@ public class MineSceneManager : MonoBehaviour
         {
             cameraTouchDrag.SetCameraLimit(cameraLimits[idx + 1]);
             cameraTouchDrag.enabled = true;
-            cameraTouchDrag.enableZoom = true; // 확대축소 활성
+            cameraTouchDrag.enableZoom = true;
         }
         if (miningUIPanel != null) miningUIPanel.SetActive(false);
 
@@ -179,7 +181,7 @@ public class MineSceneManager : MonoBehaviour
     {
         var group = mineGroups[currentMineIndex];
         MineResourceCollectManager.Instance.CollectResources(group);
-        UpdateMinedAmountUI(currentMineIndex); // 기존 UI 갱신 함수
+        UpdateMinedAmountUI(currentMineIndex);
     }
 
     void UpdateMinedAmountUI(int mineIdx)
@@ -213,20 +215,16 @@ public class MineSceneManager : MonoBehaviour
                 return;
 
             Vector3 spawnPos = spawnPoint.position;
-            spawnPos.z = -1; 
+            spawnPos.z = -1;
             GameObject go = Instantiate(handle.Result, spawnPos, Quaternion.identity, assistantsRoot);
 
             var sr = go.GetComponent<SpriteRenderer>();
             if (sr != null)
-            {
-                sr.sortingOrder = 104; 
-            }
+                sr.sortingOrder = 104;
 
             var fsm = go.GetComponent<MineAssistantFSM>();
             if (fsm != null)
-            {
                 fsm.Init(assistant, mineIdx, assistantsRoot.gameObject, this);
-            }
 
             slotUI.gameObject.GetComponent<MineAssistantSlotUIObjectRef>()?.SetAssistant(go);
             spawnedAssistants[mineIdx].Add(go);
@@ -242,5 +240,62 @@ public class MineSceneManager : MonoBehaviour
             spawnedAssistants[mineIdx].Remove(objRef.spawnedObject);
             objRef.spawnedObject = null;
         }
+    }
+
+    // MainUI 클릭 차단/복구
+    public void SetMainUIClickable(bool clickable)
+    {
+        var mainUIObj = GameObject.Find("Main_UI");
+        if (mainUIObj == null) return;
+        var cg = mainUIObj.GetComponent<CanvasGroup>();
+        if (cg == null) cg = mainUIObj.AddComponent<CanvasGroup>();
+        cg.interactable = clickable;
+        cg.blocksRaycasts = clickable;
+    }
+
+    // ===== 카메라 및 리스너 관리 =====
+    private void SetMainCameraActive(bool active)
+    {
+        var mainCamObj = GameObject.FindWithTag("MainCamera");
+        if (mainCamObj != null)
+        {
+            mainCamObj.SetActive(active);
+            var cam = mainCamObj.GetComponent<Camera>();
+            if (cam != null) cam.enabled = active;
+            SetAudioListenerEnabled(mainCamObj, active);
+        }
+    }
+
+    private void SetMineCameraActive(bool active)
+    {
+        if (mineCamera != null)
+        {
+            mineCamera.gameObject.SetActive(active);
+            mineCamera.enabled = active;
+            SetAudioListenerEnabled(mineCamera.gameObject, active);
+        }
+    }
+
+    private void SetAudioListenerEnabled(GameObject camObj, bool enabled)
+    {
+        var allListeners = GameObject.FindObjectsOfType<AudioListener>();
+        foreach (var listener in allListeners)
+        {
+            // 같은 오브젝트에 붙은 리스너만 조작
+            if (listener.gameObject == camObj)
+                listener.enabled = enabled;
+            else if (enabled)
+                listener.enabled = false; // 중복방지: 하나만 켜짐
+        }
+    }
+    // =========================
+
+    // 마인 씬 닫고 메인씬으로 돌아가기 (버튼 연결)
+    public void OnReturnToMainScene()
+    {
+        SetMainUIClickable(true);
+        SetMainCameraActive(true);
+        SetMineCameraActive(false);
+        LoadSceneManager.Instance.UnLoadScene(SceneType.MineScene);
     }
 }
