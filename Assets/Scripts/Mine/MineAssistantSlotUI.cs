@@ -50,7 +50,8 @@ public class MineAssistantSlotUI : MonoBehaviour
     {
         if (slot != null && slot.IsAssigned && iconImage != null && slot.AssignedAssistant != null)
         {
-            var icon = IconLoader.GetIcon(slot.AssignedAssistant.IconPath);
+            // 변경: GetIcon -> GetIconByPath
+            var icon = IconLoader.GetIconByPath(slot.AssignedAssistant.IconPath);
             iconImage.sprite = icon;
             iconImage.enabled = true;
         }
@@ -65,7 +66,8 @@ public class MineAssistantSlotUI : MonoBehaviour
     {
         if (iconImage != null && assistant != null)
         {
-            var icon = IconLoader.GetIcon(assistant.IconPath);
+            // 변경: GetIcon -> GetIconByPath
+            var icon = IconLoader.GetIconByPath(assistant.IconPath);
             iconImage.sprite = icon;
             iconImage.enabled = true;
         }
