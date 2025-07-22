@@ -62,12 +62,21 @@ public class AssistantPopup : BaseUI
             Destroy(child.gameObject);
         }
 
-        // 능력 옵션 표시
-        foreach (var option in data.Multipliers)
+        // 🔁 재고용 상태일 경우 재고용 비용만 출력
+        if (data.IsFired)
         {
             GameObject obj = Instantiate(optionTextPrefab, optionRoot);
             TextMeshProUGUI optionText = obj.GetComponent<TextMeshProUGUI>();
-            optionText.text = $"{option.AbilityName}\nx{option.Multiplier}";
+            optionText.text = $"재고용 비용 : {data.RehireCost} G";
+        }
+        else
+        {
+            foreach (var option in data.Multipliers)
+            {
+                GameObject obj = Instantiate(optionTextPrefab, optionRoot);
+                TextMeshProUGUI optionText = obj.GetComponent<TextMeshProUGUI>();
+                optionText.text = $"{option.AbilityName}\nx{option.Multiplier}";
+            }
         }
 
         SetApplyButton(data);
