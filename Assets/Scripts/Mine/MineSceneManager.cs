@@ -5,6 +5,7 @@ using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Tilemaps;
 
 [Serializable]
 public class MineGroup
@@ -12,10 +13,9 @@ public class MineGroup
     public string mineKey;
     public List<MineAssistantSlotUI> slotUIs;
     public List<MineAssistantSlot> slots;
-
-    public Transform spawnPoint;     
-    public Transform assistantsRoot;  
-
+    public Transform spawnPoint;
+    public Transform assistantsRoot;
+    public List<Tilemap> obstacleTilemaps; // 장애물 지정
     [NonSerialized] public MineAssistantManager mineManager;
     [NonSerialized] public DateTime lastCollectTime;
 }
@@ -112,6 +112,7 @@ public class MineSceneManager : MonoBehaviour
         {
             cameraTouchDrag.SetCameraLimit(cameraLimits[0]);
             cameraTouchDrag.enabled = true;
+            cameraTouchDrag.enableZoom = false; // DetailMap에서는 확대축소 불가
         }
 
         if (miningUIPanel != null) miningUIPanel.SetActive(true);
@@ -128,6 +129,7 @@ public class MineSceneManager : MonoBehaviour
         {
             cameraTouchDrag.SetCameraLimit(cameraLimits[idx + 1]);
             cameraTouchDrag.enabled = true;
+            cameraTouchDrag.enableZoom = true; // 확대축소 활성
         }
         if (miningUIPanel != null) miningUIPanel.SetActive(false);
 

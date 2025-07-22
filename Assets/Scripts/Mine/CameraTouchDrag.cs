@@ -8,6 +8,17 @@ public struct CameraLimit
 
 public class CameraTouchDrag : MonoBehaviour
 {
+
+    [Header("카메라 줌(확대/축소)")]
+    public float minCameraSize = 5f;
+    public float maxCameraSize = 15f;
+
+    [HideInInspector]
+    public bool enableZoom = true; // 씬 관리자가 on/off
+
+    private float zoomSpeedTouch = 0.04f;
+    private float zoomSpeedMouse = 2f;
+
     public float dragSpeed = 0.6f;
     public float smoothTime = 0.14f;
 
@@ -52,12 +63,13 @@ public class CameraTouchDrag : MonoBehaviour
     void Update()
     {
         if (targetCamera == null) return;
+        HandleZoom();   // 추가: 확대/축소 처리
 #if UNITY_EDITOR || UNITY_STANDALONE
         HandleMouseDrag();
 #elif UNITY_ANDROID || UNITY_IOS
-        HandleTouchDrag();
+    HandleTouchDrag();
 #else
-        HandleMouseDrag();
+    HandleMouseDrag();
 #endif
         targetCamera.transform.position = Vector3.SmoothDamp(targetCamera.transform.position, targetPos, ref velocity, smoothTime);
     }
@@ -121,5 +133,34 @@ public class CameraTouchDrag : MonoBehaviour
         next.y = Mathf.Clamp(next.y, minY, maxY);
         next.z = targetCamera.transform.position.z;
         targetPos = next;
+    }
+
+    // 멀티터치/마우스휠 확대/축소 처리
+    void HandleZoom()
+    {
+        if (!enableZoom) return;
+
+#if UNITY_EDITOR || UNITY_STANDALONE
+        float scroll = Input.GetAxis("Mouse ScrollWheel");
+        if (Mathf.Abs(scroll) > 0.01f)
+        {
+            float newSize = targetCamera.orthographicSize - scroll * zoomSpeedMouse;
+            targetCamera.orthographicSize = Mathf.Clamp(newSize, minCameraSize, maxCameraSize);
+        }
+#endif
+        // 모바일 핀치 줌
+        if (Input.touchCount == 2)
+        {
+            Touch t0 = Input.GetTouch(0);
+            Touch t1 = Input.GetTouch(1);
+            Vector2 prevT0 = t0.position - t0.deltaPosition;
+            Vector2 prevT1 = t1.position - t1.deltaPosition;
+
+            float prevMag = (prevT0 - prevT1).magnitude;
+            float curMag = (t0.position - t1.position).magnitude;
+            float diff = prevMag - curMag;
+            float newSize = targetCamera.orthographicSize + diff * zoomSpeedTouch;
+            targetCamera.orthographicSize = Mathf.Clamp(newSize, minCameraSize, maxCameraSize);
+        }
     }
 }

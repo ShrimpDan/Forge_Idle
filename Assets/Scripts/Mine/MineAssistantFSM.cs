@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class MineAssistantFSM : MonoBehaviour
 {
@@ -18,6 +20,12 @@ public class MineAssistantFSM : MonoBehaviour
     private bool hasTarget = false;
     private float moveSpeed = 2.5f; // 이동 속도
 
+    private List<Tilemap> obstacleTilemaps;
+
+    // 작업 애니메이션 카운트
+    private int workAnimCount = 0;
+    private int workAnimMax = 0;
+
     public void Init(AssistantInstance assistant, int mineIdx, GameObject mineRoot, MineSceneManager mgr)
     {
         this.mineIdx = mineIdx;
@@ -28,6 +36,9 @@ public class MineAssistantFSM : MonoBehaviour
         wanderTimer = 0;
         hasTarget = false;
         isInitialized = true;
+
+        var manager = mgr.mineGroups[mineIdx];
+        obstacleTilemaps = manager.obstacleTilemaps;
     }
 
     private void Update()
@@ -66,10 +77,20 @@ public class MineAssistantFSM : MonoBehaviour
                 break;
 
             case State.Work:
+                // Work 애니메이션 반복 처리
                 wanderTimer += Time.deltaTime;
-                if (wanderTimer > 1.5f)
+                if (wanderTimer > 1.0f)
                 {
-                    SetState(State.Idle);
+                    wanderTimer = 0;
+                    workAnimCount++;
+                    if (workAnimCount < workAnimMax)
+                    {
+                        anim.Play("Slash", 0, 0); // 0프레임부터 다시 재생
+                    }
+                    else
+                    {
+                        SetState(State.Idle);
+                    }
                 }
                 break;
         }
@@ -90,6 +111,9 @@ public class MineAssistantFSM : MonoBehaviour
                 anim.Play("Block");
                 break;
             case State.Work:
+                // Work 진입시 랜덤 반복
+                workAnimMax = Random.Range(3, 11);
+                workAnimCount = 0;
                 anim.Play("Slash");
                 break;
         }
@@ -133,9 +157,40 @@ public class MineAssistantFSM : MonoBehaviour
                 return;
             }
         }
+
+        for (int i = 0; i < 20; ++i)
+        {
+            var dest = new Vector2(
+                UnityEngine.Random.Range(bounds.min.x, bounds.max.x),
+                UnityEngine.Random.Range(bounds.min.y, bounds.max.y)
+            );
+
+            // 통과불가 체크: obstacleTilemaps 중 하나라도 tile 있으면 실패
+            bool isBlocked = false;
+            if (obstacleTilemaps != null)
+            {
+                foreach (var tmap in obstacleTilemaps)
+                {
+                    Vector3Int cell = tmap.WorldToCell(dest);
+                    if (tmap.HasTile(cell))
+                    {
+                        isBlocked = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!isBlocked && !Physics2D.OverlapCircle(dest, 0.3f, LayerMask.GetMask("Obstacle")))
+            {
+                targetPos = dest;
+                hasTarget = true;
+                return;
+            }
+        }
         targetPos = transform.position;
         hasTarget = false;
     }
+
     public static Transform FindDeepChild(Transform parent, string name)
     {
         foreach (Transform child in parent)
