@@ -175,12 +175,11 @@ public class MineSceneManager : MonoBehaviour
         }, true);
     }
 
-    void OnCollectButton()
+    public void OnCollectButton()
     {
         var group = mineGroups[currentMineIndex];
-        float amount = group.mineManager.CalcMinedAmount(group.lastCollectTime, DateTime.Now);
-        group.lastCollectTime = DateTime.Now;
-        UpdateMinedAmountUI(currentMineIndex);
+        MineResourceCollectManager.Instance.CollectResources(group);
+        UpdateMinedAmountUI(currentMineIndex); // 기존 UI 갱신 함수
     }
 
     void UpdateMinedAmountUI(int mineIdx)
