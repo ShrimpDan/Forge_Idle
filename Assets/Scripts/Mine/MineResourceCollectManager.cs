@@ -12,10 +12,6 @@ public class MineResourceCollectManager : MonoBehaviour
         else if (Instance != this) Destroy(gameObject);
     }
 
-    /// <summary>
-    /// 마인 그룹의 현재 어시스턴트 상태와 시간, 배율, 마인데이터 등 모든 정보로 최종 자원 수령량을 계산하고, 인벤토리에 추가
-    /// </summary>
-    /// <param name="group">MineSceneManager의 mineGroups[x]</param>
     public void CollectResources(MineGroup group)
     {
         if (group == null || group.mineManager == null || group.mineManager.Mine == null)
@@ -73,7 +69,7 @@ public class MineResourceCollectManager : MonoBehaviour
             int amountInt = Mathf.FloorToInt(pair.Value);
             if (amountInt > 0)
             {
-                // DataManager 인스턴스 접근: 예시로 GameManager.Instance.DataManager 사용
+                // DataManager 인스턴스 접근
                 ItemData item = GameManager.Instance.DataManager.ItemLoader.GetItemByKey(pair.Key);
                 if (item != null)
                 {
@@ -112,7 +108,7 @@ public class MineResourceCollectManager : MonoBehaviour
         if (assistant == null || assistant.Multipliers == null) return 1.0f;
         foreach (var m in assistant.Multipliers)
         {
-            // AbilityName에 "mine" 또는 "채광" 포함시 배율 적용
+            // 배율 적용
             if (!string.IsNullOrEmpty(m.AbilityName) &&
                 (m.AbilityName.ToLower().Contains("mine") || m.AbilityName.Contains("채광")))
             {
