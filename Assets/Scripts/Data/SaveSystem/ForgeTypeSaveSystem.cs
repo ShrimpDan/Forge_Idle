@@ -22,7 +22,7 @@ public class ForgeUpgradeSaveData
 public class ForgeRecipeSaveData
 {
     public WeaponType WeaponType;
-    public List<string> recipeKeys;
+    public List<string> RecipeKeys;
 }
 
 public class ForgeTypeSaveSystem

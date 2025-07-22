@@ -48,7 +48,7 @@ public class ForgeStatHandler
     public float FinalExpensiveWeaponSellChance => upgradeExpensiveWeaponSellChance + skillExpensiveWeaponSellChance;
     public float FinalCustomerSpawnInterval => upgradeCustomerSpawnInterval + assistantCustomerSpawnIntervalReduction + skillCustomerSpawnIntervalReduction;
     public float FinalAutoCraftingTimeReduction => Mathf.Min(upgradeAutoCraftingTimeReduction + assistantAutoCraftingTimeReduction + skillAutoCraftingTimeReduction, MaxAutoCraftingTimeReduction);
-    public float FinalPerfectCr3aftingChance => upgradePerfectCraftingChance + assistantPerfectCraftingChance + skillPerfectCraftingChance;
+    public float FinalPerfectCr3aftingChance => (upgradePerfectCraftingChance + assistantPerfectCraftingChance + skillPerfectCraftingChance) * 100;
     public float FinalBadCustomerAutoKickChance => assistantBadCustomerAutoKickChance;
     public float FinalReduceWeaponCraftingTime => assistantReduceWeaponCraftingTime;
     public float FinalRareCraftChance => assistantRareCraftChance;

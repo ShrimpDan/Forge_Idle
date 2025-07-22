@@ -8,10 +8,6 @@ public class WeaponRecipeSystem
     private CraftingRecipeLoader recipeLoader;
 
     public Dictionary<WeaponType, List<string>> UnlockedRecipeDict { get; private set; } // 이거 무기타입별 해금된 제작법
-    public int CurRecipePoint { get; private set; }
-    public int TotalRecipePoint { get; private set; }
-    private int UsedPoint => TotalRecipePoint - CurRecipePoint;
-    private int resetGold;
 
     public WeaponRecipeSystem(Forge forge, CraftingDataLoader craftingLoader, CraftingRecipeLoader recipeLoader)
     {
@@ -29,39 +25,9 @@ public class WeaponRecipeSystem
         }
     }
 
-    public void AddPoint(int amount)
-    {
-        CurRecipePoint += amount;
-        TotalRecipePoint += amount;
-    }
-
-    public bool UsePoint(int amount)
-    {
-        if (CurRecipePoint - amount < 0)
-        {
-            return false;
-        }
-
-        CurRecipePoint -= amount;
-        return true;
-    }
-
-    public void ResetPoint()
-    {
-        if (forgeManager.UseGold(resetGold * UsedPoint))
-        {
-            CurRecipePoint = TotalRecipePoint;
-
-            foreach (var key in UnlockedRecipeDict.Keys)
-            {
-                UnlockedRecipeDict[key].Clear();
-            }
-        }
-    }
-
     public void UnlockRecipe(CraftingRecipeData recipeData)
     {
-        if (UsePoint(recipeData.NeedPoint))
+        if (forgeManager.UsePoint(recipeData.NeedPoint))
         {
             UnlockedRecipeDict[recipeData.Type].Add(recipeData.Key);
             return;
@@ -69,6 +35,15 @@ public class WeaponRecipeSystem
 
         // 포인트 부족 알림
     }
+
+    public void ResetRecipe()
+    {
+        foreach (var key in UnlockedRecipeDict.Keys)
+        {
+            UnlockedRecipeDict[key].Clear();
+        }
+    }
+
 
     public List<string> GetKeysByType(WeaponType type)
     {
@@ -117,21 +92,21 @@ public class WeaponRecipeSystem
 
     public List<ForgeRecipeSaveData> GetSaveData()
     {
-        List<ForgeRecipeSaveData> saveDatas = new List<ForgeRecipeSaveData>();
+        List<ForgeRecipeSaveData> unlockedKeys = new List<ForgeRecipeSaveData>();
 
         foreach (var key in UnlockedRecipeDict.Keys)
         {
-            saveDatas.Add(new ForgeRecipeSaveData { WeaponType = key, recipeKeys = UnlockedRecipeDict[key] });
+            unlockedKeys.Add(new ForgeRecipeSaveData { WeaponType = key, RecipeKeys = UnlockedRecipeDict[key] });
         }
 
-        return saveDatas;
+        return unlockedKeys;
     }
 
     public void LoadFormData(List<ForgeRecipeSaveData> recipes)
     {
         foreach (var recipe in recipes)
         {
-            UnlockedRecipeDict[recipe.WeaponType] = recipe.recipeKeys;
+            UnlockedRecipeDict[recipe.WeaponType] = recipe.RecipeKeys;
         }
     }
 }

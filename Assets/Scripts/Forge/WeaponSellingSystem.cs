@@ -7,7 +7,6 @@ public class WeaponSellingSystem : MonoBehaviour
     private Forge forge;
     private ForgeManager forgeManager;
     private InventoryManager inventory;
-    private ItemDataLoader itemLoader;
     private CustomerManager customerManager;
     private BlackSmith blackSmith;
 
@@ -23,8 +22,6 @@ public class WeaponSellingSystem : MonoBehaviour
         forgeManager = forge.ForgeManager;
         blackSmith = forge.BlackSmith;
         customerManager = forge.CustomerManager;
-
-        itemLoader = dataManager.ItemLoader;
 
         craftingQueue = new Queue<CraftingData>();
         customerQueue = new Queue<Customer>();
@@ -119,6 +116,8 @@ public class WeaponSellingSystem : MonoBehaviour
 
             // 골드 지급
             int price = (int)(weapon.sellCost * forge.StatHandler.FinalSellPriceBonus);
+            price = CheckPerfectCrafting(price);
+
             forgeManager.AddGold(price);
             forgeManager.AddFame(5);
             blackSmith.PlayBuyEffect(price, customer.transform.position);
@@ -131,5 +130,19 @@ public class WeaponSellingSystem : MonoBehaviour
 
         forgeManager.Events.RaiseCraftStarted(null);
         forgeManager.Events.RaiseCraftProgress(0, 1);
+    }
+
+    private int CheckPerfectCrafting(int price)
+    {
+        int chance = Random.Range(0, 101);
+
+        // 대성공 시 가격 2배
+        if (chance <= forge.StatHandler.FinalPerfectCr3aftingChance)
+        {
+            // 대성공 시 효과도 추가
+            return price * 2;
+        }
+        
+        return price;
     }
 }
