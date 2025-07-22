@@ -61,6 +61,16 @@ public class MineAssistantFSM : MonoBehaviour
                 if (hasTarget)
                 {
                     Vector2 current = transform.position;
+                    // 장애물 체크
+                    if (IsObstacleBetween(current, targetPos))
+                    {
+                        // 장애물에 막히면 Idle 상태로 전환, 나중에 새 목표 잡음
+                        hasTarget = false;
+                        SetState(State.Idle);
+                        break;
+                    }
+
+                    // 정상 이동
                     transform.position = Vector2.MoveTowards(current, targetPos, moveSpeed * Time.deltaTime);
 
                     if (Vector2.Distance(current, targetPos) < 0.08f)
@@ -71,7 +81,6 @@ public class MineAssistantFSM : MonoBehaviour
                 }
                 else
                 {
-                    // 타겟 없으면 바로 일
                     SetState(State.Work);
                 }
                 break;
@@ -203,7 +212,27 @@ public class MineAssistantFSM : MonoBehaviour
         }
         return null;
     }
+    private bool IsObstacleBetween(Vector2 from, Vector2 to)
+    {
+        // 직선 경로에 tile이 있는지 체크
+        if (obstacleTilemaps == null) return false;
+        float dist = Vector2.Distance(from, to);
+        int steps = Mathf.CeilToInt(dist / 0.1f); // 0.1f 간격 샘플링
+        for (int i = 1; i <= steps; ++i)
+        {
+            Vector2 pos = Vector2.Lerp(from, to, i / (float)steps);
+            foreach (var tmap in obstacleTilemaps)
+            {
+                Vector3Int cell = tmap.WorldToCell(pos);
+                if (tmap.HasTile(cell))
+                    return true;
+            }
+        }
+        // Physics2D로도 Obstacle Layer 검사
+        if (Physics2D.OverlapCircle(to, 0.3f, LayerMask.GetMask("Obstacle")))
+            return true;
 
-
+        return false;
+    }
 
 }
