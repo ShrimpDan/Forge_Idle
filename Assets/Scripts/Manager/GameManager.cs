@@ -20,23 +20,24 @@ public class GameManager : MonoSingleton<GameManager>
     public GameSaveManager SaveManager { get; private set; }
     public TutorialManager TutorialManager { get; private set; }
 
+    public CollectionBookManager CollectionManager { get; private set; }
+
     protected override void Awake()
     {
         base.Awake();
 
         Inventory = new InventoryManager(this);
         DataManager = new DataManager();
-
         ForgeManager = new ForgeManager(this);
-        AssistantManager = FindObjectOfType<AssistantManager>();
-        UIManager = FindObjectOfType<UIManager>();
-
-        TutorialManager = FindObjectOfType<TutorialManager>();
         DungeonSystem = new DungeonSystem(this);
-
         WageProcessor = new WageProcessor(this);
 
-        CollectionBookManager.Instance.Initialize();
+        AssistantManager = FindObjectOfType<AssistantManager>();
+        UIManager = FindObjectOfType<UIManager>();
+        TutorialManager = FindObjectOfType<TutorialManager>();
+        CollectionManager = FindAnyObjectByType<CollectionBookManager>();
+
+        
         if (UIManager)
             UIManager.Init(this);
 
@@ -44,6 +45,9 @@ public class GameManager : MonoSingleton<GameManager>
             AssistantManager.Init(this);
         if (TutorialManager)
             TutorialManager.Init(this);
+
+        if (CollectionManager)
+            CollectionManager.Init(this);
 
         // CraftingManager 동적 생성 및 초기화
         var cmObj = new GameObject("CraftingManager");
@@ -61,7 +65,7 @@ public class GameManager : MonoSingleton<GameManager>
         SaveManager.RegisterSaveHandler(new ForgeSaveHandeler(ForgeManager));
         SaveManager.RegisterSaveHandler(new InventorySaveHandler(Inventory));
         SaveManager.RegisterSaveHandler(new AssistantSaveHandler(AssistantManager, DataManager.PersonalityLoader));
-        SaveManager.RegisterSaveHandler(new CollectionBookSaveHandler(CollectionBookManager.Instance));
+        SaveManager.RegisterSaveHandler(new CollectionBookSaveHandler(CollectionManager)); //이거 수정해야될듯
         SaveManager.RegisterSaveHandler(new DungeonSaveHandler(DungeonSystem));
 
         SaveManager.RegisterSaveHandler(new HeldCandidateSaveHandler(this));

@@ -48,11 +48,14 @@ public class CollectionUI : BaseUI
         slots.Clear();
 
         // 2) 데이터 기준으로 새 슬롯 생성
-        foreach (var data in CollectionBookManager.Instance.GetAllCustomerData())
+        foreach (var data in GameManager.Instance.CollectionManager.GetAllCustomerData())
         {
             var go = Instantiate(slotPrefabs, slotParent);
             var slot = go.GetComponent<CustomerSlotUI>();
-            slot.Initialize(data);  // 내부에서 발견 여부 판단 & 실루엣/아이콘 표시
+
+            var collectionData = GameManager.Instance.CollectionManager.GetCollectionData(data.Key);
+            slot.Initialize(data, collectionData);
+
             slots.Add(slot);
         }
     }
