@@ -16,7 +16,6 @@ public class GameManager : MonoSingleton<GameManager>
 
     public List<AssistantInstance> HeldCandidates { get; private set; } = new();
 
-    public DungeonSystem DungeonSystem{ get; private set; }
     public CraftingManager CraftingManager { get; private set; }
     public GameSaveManager SaveManager { get; private set; }
     public TutorialManager TutorialManager { get; private set; }
