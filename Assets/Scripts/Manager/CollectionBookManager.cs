@@ -1,11 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.VFX;
 
-public class CollectionBookManager : MonoSingleton<CollectionBookManager>
+public class CollectionBookManager : MonoBehaviour
 {
+    private GameManager gameManager;
     private DataManager dataManager;
+
+    [Header("UI")]
+    [SerializeField] private Transform slotParent;
+    [SerializeField] private CustomerSlotUI slotpref;
 
     public event Action<RegularCustomerData> OnCustomerDiscovered;
 
@@ -13,10 +20,21 @@ public class CollectionBookManager : MonoSingleton<CollectionBookManager>
 
     private Dictionary<CustomerJob, List<RegularCustomerData>> regularDic = new Dictionary<CustomerJob, List<RegularCustomerData>>();
 
+    private Dictionary<string, CustomerCollectionData> collectionDict = new Dictionary<string, CustomerCollectionData>();
+
+    public void Init(GameManager gm)
+    {
+        gameManager = gm;
+        Initialize();
+    }
+
     public void Initialize()
     {
+
         dataManager = GameManager.Instance.DataManager;
+
         regularDic.Clear();
+        collectionDict.Clear(); //초기화
 
         RegularDataLoader regularDataLoader = dataManager.RegularDataLoader;
         CustomerDataLoader dataLoader = dataManager.CustomerDataLoader;
@@ -39,6 +57,23 @@ public class CollectionBookManager : MonoSingleton<CollectionBookManager>
                 list = new List<RegularCustomerData>();
                 regularDic.Add(baseData.job, list);
             }
+            if (!collectionDict.ContainsKey(data.Key))
+            {
+                var collectionData = new CustomerCollectionData
+                {
+                    collectionData = data,
+                    maxVisitedCount = 15,
+                    visitedCount = 0,
+                    isDicovered = false,
+                    isEffectUnlocked = false
+
+
+                };
+                collectionDict.Add(data.Key, collectionData);
+
+
+            }
+            
 
             if (!list.Contains(data))
             {
@@ -134,5 +169,36 @@ public class CollectionBookManager : MonoSingleton<CollectionBookManager>
     {
         discovered.Clear();
         regularDic.Clear();
+    }
+
+    public void AddVisited(string key)
+    {
+        if (collectionDict.TryGetValue(key, out var data))
+        {
+            data.visitedCount++;
+            data.visitedCount = Mathf.Min(data.visitedCount, data.maxVisitedCount); //더 적은거보관
+
+            if (!data.isEffectUnlocked && data.visitedCount >= data.maxVisitedCount)
+            {
+                data.isEffectUnlocked = true;    
+
+            }
+
+        }
+    }
+
+    public float GetTotalGoldBounsForJob(CustomerJob job)
+    {
+        float totalBonus = 0f;
+        foreach (var pair in collectionDict)
+        {
+            var data = pair.Value;
+            if (data.isEffectUnlocked)
+            {
+                totalBonus += data.GoldBonus;
+            }
+        }
+
+        return totalBonus;
     }
 }

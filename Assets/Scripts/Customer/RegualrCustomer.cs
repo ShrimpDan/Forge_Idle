@@ -5,12 +5,16 @@ using UnityEngine;
 public class RegualrCustomer : Customer
 {
 
-    
+    public int VisitedCount => visitedCount;
+
     public Action<CustomerJob> OnPriceBoosted;//단골손님 가격올리기
 
     [SerializeField] private GameObject InteractObject; //말풍선
     [SerializeField] private float WaitTime = 4.0f;
     [SerializeField] private RegularCustomerData CollectData;
+
+    [SerializeField] private int visitedCount; //방문 횟수
+    [SerializeField] private int 
 
 
 
@@ -60,6 +64,7 @@ public class RegualrCustomer : Customer
             isDiscovered = true;
             InteractObject.SetActive(false);
             CollectionBookManager.Instance.Discover(CollectData);
+           CollectionBookManager.Instance.AddVisited(CollectData.Key); //클릭시 방문 횟수 채크
             Debug.Log($"[Collection] {CollectData.customerName}");
         }
     }
