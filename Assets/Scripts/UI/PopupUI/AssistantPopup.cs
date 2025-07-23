@@ -13,6 +13,7 @@ public class AssistantPopup : BaseUI
     [SerializeField] private TextMeshProUGUI assiName;
     [SerializeField] private TextMeshProUGUI assiType;
     [SerializeField] private GameObject equippedIndicator;
+    [SerializeField] private GameObject firedIndicator;
 
     [Header("Assistant Option Info")]
     [SerializeField] private GameObject optionTextPrefab;
@@ -150,6 +151,7 @@ public class AssistantPopup : BaseUI
             assiData.IsFired = false;
             GameManager.Instance.SaveManager.SaveAll();
             Debug.Log($"{assiData.Name} 재고용 완료!");
+            RefreshEquippedState();
             SetApplyButton(assiData);
         }
         else
@@ -160,7 +162,15 @@ public class AssistantPopup : BaseUI
 
     private void RefreshEquippedState()
     {
+        if (assiData == null) return;
+
+        bool isEquipped = assiData.IsEquipped;
+        bool isFired = assiData.IsFired;
+
         if (equippedIndicator != null)
-            equippedIndicator.SetActive(assiData != null && assiData.IsEquipped);
+            equippedIndicator.SetActive(isEquipped && !isFired);
+
+        if (firedIndicator != null)
+            firedIndicator.SetActive(isFired);
     }
 }

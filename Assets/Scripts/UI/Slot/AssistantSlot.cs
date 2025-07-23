@@ -6,9 +6,11 @@ public class AssistantSlot : MonoBehaviour
 {
     private UIManager uIManager;
     public AssistantInstance AssistantData { get; private set; }
+    [SerializeField] private CanvasGroup canvasGroup;
     [SerializeField] private Image icon;
     [SerializeField] private Button slotBtn;
     [SerializeField] private GameObject equippedIndicator;
+    [SerializeField] private GameObject firedIndicator;
     private Action<AssistantInstance> clickCallback;
 
     private bool preventPopup = false;
@@ -29,14 +31,22 @@ public class AssistantSlot : MonoBehaviour
                 ? IconLoader.GetIconByPath(iconPath)
                 : null;
             icon.enabled = icon.sprite != null;
+            icon.color = data.IsFired ? new Color(0.5f, 0.5f, 0.5f, 1f) : Color.white;
         }
 
         if (equippedIndicator != null)
-            equippedIndicator.SetActive(data.IsEquipped);
+            equippedIndicator.SetActive(data.IsEquipped && !data.IsFired);
+
+        if (firedIndicator != null)
+            firedIndicator.SetActive(data.IsFired);
+
+        if (canvasGroup != null)
+            canvasGroup.alpha = data.IsFired ? 0.5f : 1f;
 
         if (uIManager == null)
             uIManager = GameManager.Instance.UIManager;
     }
+
 
     private void OnClickSlot()
     {
@@ -53,7 +63,21 @@ public class AssistantSlot : MonoBehaviour
 
     public void RefreshEquippedState()
     {
-        if (equippedIndicator != null && AssistantData != null)
-            equippedIndicator.SetActive(AssistantData.IsEquipped);
+        if (AssistantData == null) return;
+
+        bool isEquipped = AssistantData.IsEquipped;
+        bool isFired = AssistantData.IsFired;
+
+        if (equippedIndicator != null)
+            equippedIndicator.SetActive(isEquipped && !isFired);
+
+        if (firedIndicator != null)
+            firedIndicator.SetActive(isFired);
+
+        if (icon != null)
+            icon.color = isFired ? new Color(0.5f, 0.5f, 0.5f, 1f) : Color.white;
+
+        if (canvasGroup != null)
+            canvasGroup.alpha = isFired ? 0.5f : 1f;
     }
 }
