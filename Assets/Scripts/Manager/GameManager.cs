@@ -22,6 +22,7 @@ public class GameManager : MonoSingleton<GameManager>
 
     public CollectionBookManager CollectionManager { get; private set; }
 
+    public DailyQuestManager DailyQuestManager { get; private set; }
     protected override void Awake()
     {
         base.Awake();
@@ -31,13 +32,17 @@ public class GameManager : MonoSingleton<GameManager>
         ForgeManager = new ForgeManager(this);
         DungeonSystem = new DungeonSystem(this);
         WageProcessor = new WageProcessor(this);
+        
+
 
         AssistantManager = FindObjectOfType<AssistantManager>();
         UIManager = FindObjectOfType<UIManager>();
         TutorialManager = FindObjectOfType<TutorialManager>();
         CollectionManager = FindAnyObjectByType<CollectionBookManager>();
 
-        
+        //일일 퀘스트
+        DailyQuestManager = new DailyQuestManager();
+        DailyQuestManager.Init(this);
         if (UIManager)
             UIManager.Init(this);
 
@@ -48,6 +53,8 @@ public class GameManager : MonoSingleton<GameManager>
 
         if (CollectionManager)
             CollectionManager.Init(this);
+
+
 
         // CraftingManager 동적 생성 및 초기화
         var cmObj = new GameObject("CraftingManager");
