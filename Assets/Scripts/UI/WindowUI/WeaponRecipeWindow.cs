@@ -7,6 +7,7 @@ public class WeaponRecipeWindow : BaseUI
     public override UIType UIType => UIType.Window;
 
     private Forge forge;
+    private ForgeManager forgeManager;
     private WeaponRecipeSystem recipeSystem;
     private DataManager dataManager;
 
@@ -37,6 +38,7 @@ public class WeaponRecipeWindow : BaseUI
         base.Init(gameManager, uIManager);
 
         forge = gameManager.Forge;
+        forgeManager = forge.ForgeManager;
         recipeSystem = forge.RecipeSystem;
         dataManager = gameManager.DataManager;
 
@@ -78,7 +80,7 @@ public class WeaponRecipeWindow : BaseUI
     public override void Open()
     {
         base.Open();
-        curPointText.text = recipeSystem.CurRecipePoint.ToString();
+        curPointText.text = forgeManager.CurRecipePoint.ToString();
     }
 
     public override void Close()
@@ -108,5 +110,6 @@ public class WeaponRecipeWindow : BaseUI
         recipeSystem.UnlockRecipe(selectedRecipe);
         SetInfoUI(selectedSlot, selectedRecipe.Key);
         selectedSlot.UpdateSlotUI();
+        curPointText.text = forgeManager.CurRecipePoint.ToString();
     }
 }

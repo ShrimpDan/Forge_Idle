@@ -37,7 +37,7 @@ public class BlackSmith : MonoBehaviour
 
         cashAnim.SetTrigger(buyHash);
         TextMeshPro goldText = Instantiate(goldTextPrefab, pos, Quaternion.identity);
-        goldText.text = $"+{cost}G";
+        goldText.text = $"+{UIManager.FormatNumber(cost)} Gold";
 
         Sequence seq = DOTween.Sequence();
         seq.Append(goldText.transform.DOMoveY(pos.y + 1.5f, 0.5f).SetEase(Ease.OutFlash));

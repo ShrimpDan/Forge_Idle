@@ -1,15 +1,20 @@
-using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
 [System.Serializable]
 public class ForgeCommonData
 {
+    // 레벨 & 명성치
     public int Level;
     public int CurrentFame;
     public int MaxFame;
     public int TotalFame;
 
+    // 레시피 포인트
+    public int CurRecipePoint;
+    public int TotalRecipePoint;
+
+    // 골드 & 다이아
     public int Gold;
     public int Dia;
 
@@ -67,6 +72,9 @@ public static class ForgeSaveSystem
             MaxFame = 100,
             TotalFame = 0,
 
+            CurRecipePoint = 0,
+            TotalRecipePoint = 0,
+            
             Gold = 0,
             Dia = 0,
 

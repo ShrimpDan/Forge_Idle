@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -29,7 +27,7 @@ public class ForgeUpgradeSlot : MonoBehaviour
     public void SetSlot(int level, float curValue, float nextValue, int cost)
     {
         levelText.text = $"Lv.{level}";
-        costText.text = cost.ToString();
+        costText.text = UIManager.FormatNumber(cost);
         upgradeBtn.interactable = true;
 
         if (type == ForgeUpgradeType.ReduceCustomerSpawnDelay)

@@ -154,7 +154,7 @@ public class GameManager : MonoSingleton<GameManager>
     [ContextMenu("Get Recipe Point")]
     public void GetRecipePoint()
     {
-        Forge.RecipeSystem.AddPoint(50);
+        ForgeManager.AddPoint(50);
     }
 
     private void OnApplicationQuit()

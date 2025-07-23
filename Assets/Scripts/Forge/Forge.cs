@@ -50,16 +50,6 @@ public class Forge : MonoBehaviour
         CustomerManager.StartSpawnCustomer(this);
     }
 
-    private void RaiseAllEvents()
-    {
-        Events.RaiseGoldChanged(ForgeManager.Gold);
-        Events.RaiseDiaChanged(ForgeManager.Dia);
-        Events.RaiseFameChanged(ForgeManager.CurrentFame, ForgeManager.MaxFame);
-        Events.RaiseLevelChanged(ForgeManager.Level);
-        Events.RasieTotalFameChanged(ForgeManager.TotalFame);
-    }
-
-
     public ForgeTypeData SaveToData()
     {
         var data = new ForgeTypeData()
@@ -78,24 +68,11 @@ public class Forge : MonoBehaviour
         StatHandler.LoadFromData(data.UpgradeLevels);
         AssistantHandler.LoadFromData(data.EquippedAssistantKeys);
         RecipeSystem.LoadFormData(data.Recipes);
-        RaiseAllEvents();
     }
 
     public void SetForgeMap(bool isAcitve)
     {
         forgeMap.SetActive(isAcitve);
-    }
-
-    public void CloseForgeTab()
-    {
-        forgeMap.SetActive(false);
-    }
-
-    public void ClearForge()
-    {
-        VisualHandler.ClearAllSpawnRoot();
-
-        // 제자 스탯도 초기화
     }
 
     public void ExitForge()
