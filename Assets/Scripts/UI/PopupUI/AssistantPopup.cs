@@ -12,6 +12,7 @@ public class AssistantPopup : BaseUI
     [SerializeField] private Image typeIcon;
     [SerializeField] private TextMeshProUGUI assiName;
     [SerializeField] private TextMeshProUGUI assiType;
+    [SerializeField] private GameObject equippedIndicator;
 
     [Header("Assistant Option Info")]
     [SerializeField] private GameObject optionTextPrefab;
@@ -51,22 +52,19 @@ public class AssistantPopup : BaseUI
     {
         assiData = data;
 
-        // 아이콘 설정
+        // 아이콘, 텍스트
         icon.sprite = IconLoader.GetIconByPath(data.IconPath);
         assiName.text = data.Name;
         assiType.text = data.Specialization.ToString();
 
-        // 기존 옵션 제거
+        // 옵션 초기화
         foreach (Transform child in optionRoot)
-        {
             Destroy(child.gameObject);
-        }
 
-        // 🔁 재고용 상태일 경우 재고용 비용만 출력
         if (data.IsFired)
         {
             GameObject obj = Instantiate(optionTextPrefab, optionRoot);
-            TextMeshProUGUI optionText = obj.GetComponent<TextMeshProUGUI>();
+            var optionText = obj.GetComponent<TextMeshProUGUI>();
             optionText.text = $"재고용 비용 : {data.RehireCost} G";
         }
         else
@@ -74,12 +72,13 @@ public class AssistantPopup : BaseUI
             foreach (var option in data.Multipliers)
             {
                 GameObject obj = Instantiate(optionTextPrefab, optionRoot);
-                TextMeshProUGUI optionText = obj.GetComponent<TextMeshProUGUI>();
+                var optionText = obj.GetComponent<TextMeshProUGUI>();
                 optionText.text = $"{option.AbilityName}\nx{option.Multiplier}";
             }
         }
 
-        SetApplyButton(data);
+        RefreshEquippedState(); // ← 장착 상태 UI 반영
+        SetApplyButton(data);   // ← 버튼 상태 반영
     }
 
     private void SetApplyButton(AssistantInstance data)
@@ -135,8 +134,10 @@ public class AssistantPopup : BaseUI
         if (assiData == null) return;
 
         forge.AssistantHandler.DeActiveAssistant(assiData);
+        RefreshEquippedState();
         SetApplyButton(assiData);
     }
+
 
     private void RehireAssistant()
     {
@@ -155,5 +156,11 @@ public class AssistantPopup : BaseUI
         {
             Debug.LogWarning("골드가 부족합니다.");
         }
+    }
+
+    private void RefreshEquippedState()
+    {
+        if (equippedIndicator != null)
+            equippedIndicator.SetActive(assiData != null && assiData.IsEquipped);
     }
 }

@@ -8,6 +8,7 @@ public class AssistantSlot : MonoBehaviour
     public AssistantInstance AssistantData { get; private set; }
     [SerializeField] private Image icon;
     [SerializeField] private Button slotBtn;
+    [SerializeField] private GameObject equippedIndicator;
     private Action<AssistantInstance> clickCallback;
 
     private bool preventPopup = false;
@@ -30,6 +31,9 @@ public class AssistantSlot : MonoBehaviour
             icon.enabled = icon.sprite != null;
         }
 
+        if (equippedIndicator != null)
+            equippedIndicator.SetActive(data.IsEquipped);
+
         if (uIManager == null)
             uIManager = GameManager.Instance.UIManager;
     }
@@ -45,5 +49,11 @@ public class AssistantSlot : MonoBehaviour
 
         var ui = uIManager.OpenUI<AssistantPopup>(UIName.AssistantPopup);
         ui.SetAssistant(AssistantData);
+    }
+
+    public void RefreshEquippedState()
+    {
+        if (equippedIndicator != null && AssistantData != null)
+            equippedIndicator.SetActive(AssistantData.IsEquipped);
     }
 }
