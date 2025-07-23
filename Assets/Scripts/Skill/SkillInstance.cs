@@ -19,6 +19,8 @@ public class SkillInstance
         IsCoolDown = false;
     }
 
+    public void AddSkill() => CurCount += 1;
+    
     public void UpgradeSkill()
     {
         if (!CanUpgrade) return;
