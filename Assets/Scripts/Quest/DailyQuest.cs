@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DailyQuestData
+[CreateAssetMenu(fileName = "DailyQuest", menuName = "Data/DailyQuestData", order = 1)]
+public class DailyQuestData : ScriptableObject
 
 {
     public string questId;

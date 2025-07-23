@@ -41,8 +41,11 @@ public class GameManager : MonoSingleton<GameManager>
         CollectionManager = FindAnyObjectByType<CollectionBookManager>();
 
         //일일 퀘스트
-        DailyQuestManager = new DailyQuestManager();
-        DailyQuestManager.Init(this);
+        DailyQuestManager= FindObjectOfType<DailyQuestManager>();
+        if(DailyQuestManager != null)
+        {
+            DailyQuestManager.Init(this);
+        }
         if (UIManager)
             UIManager.Init(this);
 
