@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-public class ForgeManager
+﻿public class ForgeManager
 {
     private GameManager gameManager;
 
@@ -9,6 +7,12 @@ public class ForgeManager
     public int CurrentFame { get; private set; }
     public int MaxFame { get; private set; }
     public int TotalFame { get; private set; }
+
+    // 레시피 포인트
+    public int CurRecipePoint { get; private set; }
+    public int TotalRecipePoint { get; private set; }
+    private int UsedPoint => TotalRecipePoint - CurRecipePoint;
+    private int resetGold;
 
     // 골드 & 다이아
     public int Gold { get; private set; }
@@ -32,6 +36,10 @@ public class ForgeManager
             CurrentFame = CurrentFame,
             MaxFame = MaxFame,
             TotalFame = TotalFame,
+
+            CurRecipePoint = CurRecipePoint,
+            TotalRecipePoint = TotalRecipePoint,
+
             Gold = Gold,
             Dia = Dia,
             CurrentForgeScene = CurrentForge != null ? CurrentForge.SceneType : SceneType.Main
@@ -49,6 +57,9 @@ public class ForgeManager
         CurrentFame = data.CurrentFame;
         MaxFame = data.MaxFame;
         TotalFame = data.TotalFame;
+
+        CurRecipePoint = data.CurRecipePoint;
+        TotalRecipePoint = data.TotalRecipePoint;
 
         Gold = data.Gold;
         Dia = data.Dia;
@@ -68,7 +79,7 @@ public class ForgeManager
         Events.RaiseDiaChanged(Dia);
         Events.RaiseFameChanged(CurrentFame, MaxFame);
         Events.RaiseLevelChanged(Level);
-        Events.RasieTotalFameChanged(TotalFame);
+        Events.RaiseTotalFameChanged(TotalFame);
     }
 
     public void SetCurrentForge(Forge forge)
@@ -97,7 +108,7 @@ public class ForgeManager
         }
 
         Events.RaiseFameChanged(CurrentFame, MaxFame);
-        Events.RasieTotalFameChanged(TotalFame);
+        Events.RaiseTotalFameChanged(TotalFame);
     }
 
     public void AddGold(int amount)
@@ -134,5 +145,31 @@ public class ForgeManager
         }
 
         return false;
+    }
+
+    public void AddPoint(int amount)
+    {
+        CurRecipePoint += amount;
+        TotalRecipePoint += amount;
+    }
+
+    public bool UsePoint(int amount)
+    {
+        if (CurRecipePoint - amount < 0)
+        {
+            return false;
+        }
+
+        CurRecipePoint -= amount;
+        return true;
+    }
+
+    public void ResetPoint()
+    {
+        if (UseGold(resetGold * UsedPoint))
+        {
+            CurRecipePoint = TotalRecipePoint;
+            CurrentForge.RecipeSystem.ResetRecipe();
+        }
     }
 }

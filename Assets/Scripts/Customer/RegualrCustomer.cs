@@ -5,14 +5,12 @@ using UnityEngine;
 public class RegualrCustomer : Customer
 {
 
-    
+
     public Action<CustomerJob> OnPriceBoosted;//단골손님 가격올리기
 
     [SerializeField] private GameObject InteractObject; //말풍선
     [SerializeField] private float WaitTime = 4.0f;
     [SerializeField] private RegularCustomerData CollectData;
-
-
 
 
     private bool isDiscovered = false;
@@ -59,7 +57,8 @@ public class RegualrCustomer : Customer
         {
             isDiscovered = true;
             InteractObject.SetActive(false);
-            CollectionBookManager.Instance.Discover(CollectData);
+            GameManager.Instance.CollectionManager.Discover(CollectData);
+           GameManager.Instance.CollectionManager.AddVisited(CollectData.Key); //클릭시 방문 횟수 채크
             Debug.Log($"[Collection] {CollectData.customerName}");
         }
     }
@@ -89,22 +88,6 @@ public class RegualrCustomer : Customer
      
 
     }
-
-    private void RegualrEvent()
-    {
-        
-        OnPriceBoosted?.Invoke(Job); //단골손님 가격 오르기 이벤트 발생
-        if (CollectData != null)
-        {
-            CollectionBookManager.Instance.Discover(CollectData);
-        }
-        else
-        {
-
-            Debug.Log("컬렉션 북이 연결 안됨");
-        }
-    }
-
 
     private IEnumerator MoveToExit()
     {

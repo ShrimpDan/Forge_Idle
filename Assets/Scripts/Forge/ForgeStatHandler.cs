@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -48,7 +49,7 @@ public class ForgeStatHandler
     public float FinalExpensiveWeaponSellChance => upgradeExpensiveWeaponSellChance + skillExpensiveWeaponSellChance;
     public float FinalCustomerSpawnInterval => upgradeCustomerSpawnInterval + assistantCustomerSpawnIntervalReduction + skillCustomerSpawnIntervalReduction;
     public float FinalAutoCraftingTimeReduction => Mathf.Min(upgradeAutoCraftingTimeReduction + assistantAutoCraftingTimeReduction + skillAutoCraftingTimeReduction, MaxAutoCraftingTimeReduction);
-    public float FinalPerfectCr3aftingChance => upgradePerfectCraftingChance + assistantPerfectCraftingChance + skillPerfectCraftingChance;
+    public float FinalPerfectCr3aftingChance => (upgradePerfectCraftingChance + assistantPerfectCraftingChance + skillPerfectCraftingChance) * 100;
     public float FinalBadCustomerAutoKickChance => assistantBadCustomerAutoKickChance;
     public float FinalReduceWeaponCraftingTime => assistantReduceWeaponCraftingTime;
     public float FinalRareCraftChance => assistantRareCraftChance;
@@ -71,7 +72,7 @@ public class ForgeStatHandler
         upgradePerfectCraftingChance = upgradeDataLoader.GetValue(forge.ForgeType, ForgeUpgradeType.IncreasePerfectCraftChance, UpgradeLevels[ForgeUpgradeType.IncreasePerfectCraftChance]);
         upgradeAutoCraftingTimeReduction = upgradeDataLoader.GetValue(forge.ForgeType, ForgeUpgradeType.ReduceAutoCraftingTime, UpgradeLevels[ForgeUpgradeType.ReduceAutoCraftingTime]);
         upgradeCustomerSpawnInterval = upgradeDataLoader.GetValue(forge.ForgeType, ForgeUpgradeType.ReduceCustomerSpawnDelay, UpgradeLevels[ForgeUpgradeType.ReduceCustomerSpawnDelay]);
-        ForgeVisualLevel =  Mathf.RoundToInt(upgradeDataLoader.GetValue(forge.ForgeType, ForgeUpgradeType.UpgradeInterior, UpgradeLevels[ForgeUpgradeType.UpgradeInterior]));
+        ForgeVisualLevel = Mathf.RoundToInt(upgradeDataLoader.GetValue(forge.ForgeType, ForgeUpgradeType.UpgradeInterior, UpgradeLevels[ForgeUpgradeType.UpgradeInterior]));
     }
 
     public int GetUpgradeCost(ForgeUpgradeType type)
@@ -142,6 +143,35 @@ public class ForgeStatHandler
         assistantCustomerSpawnIntervalReduction = 0;
         assistantResourcePerMinuteBonus = 0;
         assistantMaxResourceCapacityBonus = 0;
+    }
+
+    public void SetSkillEffect(ForgeUpgradeType type, float value, bool isActive)
+    {
+        float multiplier = isActive ? 1 : -1;
+        float effectValue = (float)Math.Round(value * multiplier, 2);
+
+        switch (type)
+        {
+            case ForgeUpgradeType.IncreaseSellPrice:
+                skillSellPriceBonus += effectValue;
+                break;
+
+            case ForgeUpgradeType.IncreaseExpensiveRecipeChance:
+                skillExpensiveWeaponSellChance += effectValue;
+                break;
+
+            case ForgeUpgradeType.ReduceCustomerSpawnDelay:
+                skillCustomerSpawnIntervalReduction += effectValue;
+                break;
+
+            case ForgeUpgradeType.ReduceAutoCraftingTime:
+                skillAutoCraftingTimeReduction += effectValue;
+                break;
+
+            case ForgeUpgradeType.IncreasePerfectCraftChance:
+                skillPerfectCraftingChance += effectValue;
+                break;
+        }
     }
 
     public List<ForgeUpgradeSaveData> GetSaveData()

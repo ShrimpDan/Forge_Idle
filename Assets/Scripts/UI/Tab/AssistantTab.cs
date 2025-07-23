@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -94,8 +95,13 @@ public class AssistantTab : BaseTab
         activeSlots.Clear();
 
         List<AssistantInstance> craftingList = assistantManager.GetAssistantByType(SpecializationType.Crafting);
+        SortByEquippedFiredTier(craftingList);
+
         List<AssistantInstance> miningList = assistantManager.GetAssistantByType(SpecializationType.Mining);
+        SortByEquippedFiredTier(miningList);
+
         List<AssistantInstance> sellingList = assistantManager.GetAssistantByType(SpecializationType.Selling);
+        SortByEquippedFiredTier(sellingList);
 
         CreateSlots(craftingList, craftSlotRoot);
         CreateSlots(miningList, upgradeSlotRoot);
@@ -122,7 +128,7 @@ public class AssistantTab : BaseTab
             slotObj.SetActive(true);
 
             var slot = slotObj.GetComponent<AssistantSlot>();
-            slot.Init(assi, null);
+            slot.Init(assi, null); // 슬롯은 클릭 콜백 없이 초기화됨
 
             activeSlots.Add(slotObj);
         }
@@ -135,7 +141,6 @@ public class AssistantTab : BaseTab
             bool isSelected = i == index;
 
             tabPanels[i].SetActive(isSelected);
-
             tabButtons[i].image.color = isSelected ? selectedColor : defaultColor;
         }
     }
@@ -155,17 +160,16 @@ public class AssistantTab : BaseTab
             case SpecializationType.Crafting:
                 craftAssi.SetAssistant(assi, isActive);
                 break;
-
             case SpecializationType.Mining:
                 enhanceAssi.SetAssistant(assi, isActive);
                 break;
-
             case SpecializationType.Selling:
                 sellingAssi.SetAssistant(assi, isActive);
                 break;
         }
 
         ShowAssistantStat(assi, isActive);
+        RefreshEquippedIndicators();
 
         if (isActive)
             SoundManager.Instance.Play("SFX_UIEquip");
@@ -173,30 +177,21 @@ public class AssistantTab : BaseTab
             SoundManager.Instance.Play("SFX_UIUnequip");
     }
 
-    private void ShowAssistantStat(AssistantInstance assi, bool isAcitve)
+    private void ShowAssistantStat(AssistantInstance assi, bool isActive)
     {
-        if (!isAcitve)
+        if (!isActive)
         {
             ClearStat(assi.Specialization);
             return;
         }
 
-        Transform parent = null;
-
-        switch (assi.Specialization)
+        Transform parent = assi.Specialization switch
         {
-            case SpecializationType.Crafting:
-                parent = craftStatRoot;
-                break;
-
-            case SpecializationType.Mining:
-                parent = enhanceStatRoot;
-                break;
-
-            case SpecializationType.Selling:
-                parent = sellingStatRoot;
-                break;
-        }
+            SpecializationType.Crafting => craftStatRoot,
+            SpecializationType.Mining => enhanceStatRoot,
+            SpecializationType.Selling => sellingStatRoot,
+            _ => null
+        };
 
         ClearStat(assi.Specialization);
 
@@ -213,26 +208,46 @@ public class AssistantTab : BaseTab
 
     private void ClearStat(SpecializationType type)
     {
-        Transform parent = null;
-
-        switch (type)
+        Transform parent = type switch
         {
-            case SpecializationType.Crafting:
-                parent = craftStatRoot;
-                break;
-
-            case SpecializationType.Mining:
-                parent = enhanceStatRoot;
-                break;
-
-            case SpecializationType.Selling:
-                parent = sellingStatRoot;
-                break;
-        }
+            SpecializationType.Crafting => craftStatRoot,
+            SpecializationType.Mining => enhanceStatRoot,
+            SpecializationType.Selling => sellingStatRoot,
+            _ => null
+        };
 
         foreach (Transform child in parent)
         {
             Destroy(child.gameObject);
         }
     }
+
+    public void RefreshEquippedIndicators()
+    {
+        foreach (var slotObj in activeSlots)
+        {
+            var slot = slotObj.GetComponent<AssistantSlot>();
+            slot?.RefreshEquippedState();
+        }
+    }
+
+    private void SortByEquippedFiredTier(List<AssistantInstance> list)
+    {
+        list.Sort((a, b) =>
+        {
+            int equippedCompare = b.IsEquipped.CompareTo(a.IsEquipped);
+            if (equippedCompare != 0)
+                return equippedCompare;
+
+            int firedCompare = b.IsFired.CompareTo(a.IsFired);
+            if (firedCompare != 0)
+                return firedCompare;
+
+            int aTier = a.Personality?.tier ?? 999;
+            int bTier = b.Personality?.tier ?? 999;
+
+            return aTier.CompareTo(bTier);
+        });
+    }
+
 }
