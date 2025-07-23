@@ -79,7 +79,7 @@
         Events.RaiseDiaChanged(Dia);
         Events.RaiseFameChanged(CurrentFame, MaxFame);
         Events.RaiseLevelChanged(Level);
-        Events.RasieTotalFameChanged(TotalFame);
+        Events.RaiseTotalFameChanged(TotalFame);
     }
 
     public void SetCurrentForge(Forge forge)
@@ -108,7 +108,7 @@
         }
 
         Events.RaiseFameChanged(CurrentFame, MaxFame);
-        Events.RasieTotalFameChanged(TotalFame);
+        Events.RaiseTotalFameChanged(TotalFame);
     }
 
     public void AddGold(int amount)

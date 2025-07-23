@@ -1,25 +1,27 @@
 public class SkillInstance
 {
     public string skillKey;
-    public SkillData skillData;
+    public SkillData SkillData { get; private set; }
     public int Level { get; private set; }
     public int CurCount { get; private set; }
     public int NeedCount { get; private set; }
-    public bool canUpgrade => CurCount >= NeedCount;
+    public bool CanUpgrade => CurCount >= NeedCount;
+    public bool IsCoolDown { get; private set; }
 
     public SkillInstance(string key, SkillData data, int level = 1, int curCount = 0, int needCount = 5)
     {
         skillKey = key;
-        skillData = data;
+        SkillData = data;
 
         Level = level;
         CurCount = curCount;
         NeedCount = needCount;
+        IsCoolDown = false;
     }
 
     public void UpgradeSkill()
     {
-        if (!canUpgrade) return;
+        if (!CanUpgrade) return;
 
         CurCount -= NeedCount;
         NeedCount += 2;
@@ -29,11 +31,11 @@ public class SkillInstance
 
     public float GetValue()
     {
-        float value = skillData.BaseValue;
+        float value = SkillData.BaseValue;
 
         for (int i = 1; i < Level; i++)
         {
-            value *= skillData.ValueMultiplier;
+            value *= SkillData.ValueMultiplier;
         }
 
         return value;
@@ -41,11 +43,11 @@ public class SkillInstance
 
     public float GetDuration()
     {
-        float duration = skillData.BaseDuration;
+        float duration = SkillData.BaseDuration;
 
         for (int i = 1; i < Level; i++)
         {
-            duration *= skillData.DurationMultiplier;
+            duration *= SkillData.DurationMultiplier;
         }
 
         return duration;
@@ -53,11 +55,11 @@ public class SkillInstance
 
     public float GetCoolDown()
     {
-        float cooldown = skillData.BaseCoolDown;
+        float cooldown = SkillData.BaseCoolDown;
 
         for (int i = 1; i < Level; i++)
         {
-            cooldown *= skillData.CoolDownMultiplier;
+            cooldown *= SkillData.CoolDownMultiplier;
         }
 
         return cooldown;
@@ -65,7 +67,12 @@ public class SkillInstance
 
     public string GetDescription()
     {
-        string description = string.Format(skillData.Description, GetDuration(), skillData.BaseValue, GetValue() - skillData.BaseValue);
+        string description = string.Format(SkillData.Description, GetDuration(), SkillData.BaseValue, GetValue() - SkillData.BaseValue);
         return description;
+    }
+
+    public void SetCoolDown(bool isCoolDown)
+    {
+        IsCoolDown = isCoolDown;
     }
 }
