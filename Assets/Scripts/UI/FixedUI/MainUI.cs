@@ -12,6 +12,7 @@ public class MainUI : BaseUI
     [SerializeField] private Vector3 selectedScale;
     [SerializeField] private Vector3 defaultScale = Vector3.one;
     [SerializeField] private Color selectedColor = Color.white;
+
     [SerializeField] private Color defaultColor;
 
     [Header("Tab Panels")]
@@ -24,6 +25,9 @@ public class MainUI : BaseUI
     [SerializeField] private TextMeshProUGUI forgeNameText;
     [SerializeField] private TextMeshProUGUI goldText;
     [SerializeField] private TextMeshProUGUI diaText;
+
+    [Header("Top Button")]
+    [SerializeField] private Button levelButton;
 
     public override UIType UIType => UIType.Fixed;
 
@@ -50,6 +54,14 @@ public class MainUI : BaseUI
                 SwitchTab(index);
             });
         }
+
+        levelButton.onClick.AddListener(() =>
+        {
+            SoundManager.Instance.Play("SFX_SystemClick");
+            uIManager.OpenUI<CollectionUI>(UIName.GetUINameByType(ButtonType.Collection));
+
+        });
+
 
         OnEnable();
     }
