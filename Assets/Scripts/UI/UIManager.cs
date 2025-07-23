@@ -2,7 +2,6 @@
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Globalization;
 using System;
 
 public class UIManager : MonoBehaviour
