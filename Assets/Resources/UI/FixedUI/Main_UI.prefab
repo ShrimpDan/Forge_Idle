@@ -20498,6 +20498,7 @@ GameObject:
   - component: {fileID: 477611939693996572}
   - component: {fileID: 8042721400796686056}
   - component: {fileID: 8739213890864388933}
+  - component: {fileID: 6363215944522427413}
   m_Layer: 5
   m_Name: Icon
   m_TagString: Untagged
@@ -20563,6 +20564,50 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1.2
+--- !u!114 &6363215944522427413
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6403082019581810604}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 8739213890864388933}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &6411926253008342380
 GameObject:
   m_ObjectHideFlags: 0
@@ -21545,11 +21590,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 6966221257517264803}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 56f05fada7fbe5644a3f7cac9fa3d054, type: 3}
+  m_Script: {fileID: 11500000, guid: f478f98e0c4ed42409d3b035b994cb62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   weaponIcon: {fileID: 5408699312754587719}
   progressFill: {fileID: 8679502145967229800}
+  forgeRecipeBtn: {fileID: 0}
 --- !u!1 &7031837371846540326
 GameObject:
   m_ObjectHideFlags: 0
@@ -28098,6 +28144,7 @@ MonoBehaviour:
   forgeNameText: {fileID: 6909507444839156414}
   goldText: {fileID: 2531006334700049124}
   diaText: {fileID: 2860911981042853132}
+  levelButton: {fileID: 6363215944522427413}
 --- !u!1 &9026202571475109902
 GameObject:
   m_ObjectHideFlags: 0
