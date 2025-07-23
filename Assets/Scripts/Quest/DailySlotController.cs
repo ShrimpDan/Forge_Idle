@@ -32,6 +32,6 @@ public class DailySlotController : MonoBehaviour
             }
         }
 
-     }
+    }
     
 }

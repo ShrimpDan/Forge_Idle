@@ -21,7 +21,7 @@ public class DailyQuestUI : MonoBehaviour
         questInfo.text = questData.questInfo;
 
        // UpdateProgress(questData.currentAmount, questData.goalAmount);
-        //UpdateReward(questData.rewardCount);
+       //  UpdateReward(questData.rewardCount);
 
         claimButton.SetActive(!questData.isCompleted || !questData.isClaimed);
         claimButton.GetComponent<Button>().onClick.AddListener(() => 
