@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -94,8 +95,13 @@ public class AssistantTab : BaseTab
         activeSlots.Clear();
 
         List<AssistantInstance> craftingList = assistantManager.GetAssistantByType(SpecializationType.Crafting);
+        SortByEquippedFiredTier(craftingList);
+
         List<AssistantInstance> miningList = assistantManager.GetAssistantByType(SpecializationType.Mining);
+        SortByEquippedFiredTier(miningList);
+
         List<AssistantInstance> sellingList = assistantManager.GetAssistantByType(SpecializationType.Selling);
+        SortByEquippedFiredTier(sellingList);
 
         CreateSlots(craftingList, craftSlotRoot);
         CreateSlots(miningList, upgradeSlotRoot);
@@ -224,4 +230,24 @@ public class AssistantTab : BaseTab
             slot?.RefreshEquippedState();
         }
     }
+
+    private void SortByEquippedFiredTier(List<AssistantInstance> list)
+    {
+        list.Sort((a, b) =>
+        {
+            int equippedCompare = b.IsEquipped.CompareTo(a.IsEquipped);
+            if (equippedCompare != 0)
+                return equippedCompare;
+
+            int firedCompare = b.IsFired.CompareTo(a.IsFired);
+            if (firedCompare != 0)
+                return firedCompare;
+
+            int aTier = a.Personality?.tier ?? 999;
+            int bTier = b.Personality?.tier ?? 999;
+
+            return aTier.CompareTo(bTier);
+        });
+    }
+
 }
