@@ -19,6 +19,8 @@ public class RecruitPreviewManager : MonoBehaviour
     [SerializeField] private Button btnReject;
     [SerializeField] private Button btnHold;
 
+    private SpecializationType? recruitFilter = null;
+
     private AssistantFactory assistantFactory;
     private List<AssistantInstance> candidatePool = new();
     private List<GameObject> activePapers = new();
@@ -40,8 +42,10 @@ public class RecruitPreviewManager : MonoBehaviour
         assistantFactory = new AssistantFactory(GameManager.Instance.DataManager);
     }
 
-    public void TryRecruitCandidate()
+    public void TryRecruitCandidateByType(SpecializationType? type)
     {
+        recruitFilter = type;
+
         if (GameManager.Instance.HeldCandidates.Count > 0)
         {
             confirmPopup.Show(
@@ -84,7 +88,10 @@ public class RecruitPreviewManager : MonoBehaviour
 
         while (candidatePool.Count < 5 && attempts < maxAttempts)
         {
-            var candidate = assistantFactory.CreateRandomTrainee(true);
+            var candidate = recruitFilter == null
+                ? assistantFactory.CreateRandomTrainee(true)
+                : assistantFactory.CreateFixedTrainee(recruitFilter.Value, true);
+
             if (candidate != null && !allExistingKeys.Contains(candidate.Key) &&
                 !candidatePool.Any(c => c.Key == candidate.Key))
             {
