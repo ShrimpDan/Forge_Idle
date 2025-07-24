@@ -2,6 +2,7 @@
 {
     // 대장간 관련 데이터 로더
     public ForgeUpgradeDataLoader UpgradeDataLoader { get; private set; }
+    public SkillDataLoader SkillDataLoader{ get; private set; }
 
     // 아이템 관련 데이터 로더
     public ItemDataLoader ItemLoader { get; private set; }
@@ -29,6 +30,7 @@
     {
         // 대장간 업그레이드 스텟 관련 데이터
         UpgradeDataLoader = new ForgeUpgradeDataLoader();
+        SkillDataLoader = new SkillDataLoader();
 
         // 아이템 관련 데이터
         ItemLoader = new ItemDataLoader();
