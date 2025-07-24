@@ -130,8 +130,16 @@ public class DailyQuestManager : MonoBehaviour
         totalQuestGauge.fillAmount = progress;
         TotalQuestText.text = $"{completed}/ {total}";
 
-
-        bounsRewardButton.interactable = true;
+        if (completed >= total && !isAllClear)
+        {
+            TotalQuestText.text = $"완료 {completed}/{total} - 보상 가능!";
+            bounsRewardButton.interactable = true;
+        }
+        else
+        {
+            TotalQuestText.text = $"완료 {completed}/{total}";
+            bounsRewardButton.interactable = false;
+        }
 
 
     }
