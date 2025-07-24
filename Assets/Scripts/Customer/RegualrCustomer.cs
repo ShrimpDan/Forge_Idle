@@ -59,7 +59,9 @@ public class RegualrCustomer : Customer
             InteractObject.SetActive(false);
             GameManager.Instance.CollectionManager.Discover(CollectData);
            GameManager.Instance.CollectionManager.AddVisited(CollectData.Key); //클릭시 방문 횟수 채크
-            Debug.Log($"[Collection] {CollectData.customerName}");
+            GameManager.Instance.DailyQuestManager.ProgressQuest("InteractMissition", 1);
+
+
         }
     }
 

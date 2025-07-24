@@ -9,6 +9,7 @@ public class GameManager : MonoSingleton<GameManager>
     public AssistantInventory AssistantInventory => AssistantManager != null ? AssistantManager.AssistantInventory : null;
     public ForgeManager ForgeManager { get; private set; }
     public Forge Forge { get => ForgeManager.CurrentForge; }
+    public SkillManager SkillManager { get; private set; }
     public WageProcessor WageProcessor { get; private set; }
 
     public UIManager UIManager { get; private set; }
@@ -22,32 +23,46 @@ public class GameManager : MonoSingleton<GameManager>
 
     public CollectionBookManager CollectionManager { get; private set; }
 
+    public DailyQuestManager DailyQuestManager { get; private set; }
     protected override void Awake()
     {
         base.Awake();
 
-        Inventory = new InventoryManager(this);
         DataManager = new DataManager();
-        ForgeManager = new ForgeManager(this);
+        Inventory = new InventoryManager(this);
         DungeonSystem = new DungeonSystem(this);
         WageProcessor = new WageProcessor(this);
+        SkillManager = new SkillManager(this, DataManager.SkillDataLoader);
 
+        ForgeManager = GetComponentInChildren<ForgeManager>();
         AssistantManager = FindObjectOfType<AssistantManager>();
         UIManager = FindObjectOfType<UIManager>();
         TutorialManager = FindObjectOfType<TutorialManager>();
         CollectionManager = FindAnyObjectByType<CollectionBookManager>();
 
-        
+        //일일 퀘스트
+        DailyQuestManager= FindObjectOfType<DailyQuestManager>();
+        if(DailyQuestManager != null)
+        {
+            DailyQuestManager.Init(this);
+        }
+
+        if (ForgeManager)
+            ForgeManager.Init(this);
+
         if (UIManager)
             UIManager.Init(this);
 
         if (AssistantManager)
             AssistantManager.Init(this);
+
         if (TutorialManager)
             TutorialManager.Init(this);
 
         if (CollectionManager)
             CollectionManager.Init(this);
+
+
 
         // CraftingManager 동적 생성 및 초기화
         var cmObj = new GameObject("CraftingManager");
@@ -62,13 +77,13 @@ public class GameManager : MonoSingleton<GameManager>
     {
         SaveManager = new GameSaveManager();
 
-        SaveManager.RegisterSaveHandler(new ForgeSaveHandeler(ForgeManager));
+        SaveManager.RegisterSaveHandler(new SkillSaveHandler(SkillManager));
         SaveManager.RegisterSaveHandler(new InventorySaveHandler(Inventory));
         SaveManager.RegisterSaveHandler(new AssistantSaveHandler(AssistantManager, DataManager.PersonalityLoader));
         SaveManager.RegisterSaveHandler(new CollectionBookSaveHandler(CollectionManager)); //이거 수정해야될듯
         SaveManager.RegisterSaveHandler(new DungeonSaveHandler(DungeonSystem));
-
         SaveManager.RegisterSaveHandler(new HeldCandidateSaveHandler(this));
+        SaveManager.RegisterSaveHandler(new ForgeSaveHandeler(ForgeManager));
 
         SaveManager.LoadAll();
 
@@ -155,6 +170,13 @@ public class GameManager : MonoSingleton<GameManager>
     public void GetRecipePoint()
     {
         ForgeManager.AddPoint(50);
+    }
+
+    [ContextMenu("Get Random Skill")]
+    public void GetRandomSkill()
+    {
+        for(int i = 0; i < 10; i++)
+            SkillManager.AddRandomSkill();
     }
 
     private void OnApplicationQuit()

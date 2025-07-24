@@ -85,7 +85,7 @@ public class CraftingManager : MonoBehaviour
             inventory.AddItem(task.itemData, 1);
             task.rewardGiven = true;
             isCrafingDone?.Invoke(); //여기서 이벤트 발생
-            
+            GameManager.Instance.DailyQuestManager.ProgressQuest("MakeWeapon", 1);
         }
         
     }

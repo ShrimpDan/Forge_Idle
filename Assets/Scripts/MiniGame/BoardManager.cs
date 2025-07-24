@@ -176,6 +176,7 @@ public class BoardManager : MonoBehaviour
         {
             //다찾으면
             ShowResult();
+            GameManager.Instance.DailyQuestManager.ProgressQuest("ClearMiniGame", 1);
         }
 
         OnTreasureComplete?.Invoke(data); //데이터 전달

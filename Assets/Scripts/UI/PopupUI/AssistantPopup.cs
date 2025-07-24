@@ -67,6 +67,12 @@ public class AssistantPopup : BaseUI
             GameObject obj = Instantiate(optionTextPrefab, optionRoot);
             var optionText = obj.GetComponent<TextMeshProUGUI>();
             optionText.text = $"재고용 비용 : {data.RehireCost} G";
+
+            if (obj.GetComponent<LayoutElement>() == null)
+            {
+                var layout = obj.AddComponent<LayoutElement>();
+                layout.preferredHeight = 40f;
+            }
         }
         else
         {
@@ -74,13 +80,20 @@ public class AssistantPopup : BaseUI
             {
                 GameObject obj = Instantiate(optionTextPrefab, optionRoot);
                 var optionText = obj.GetComponent<TextMeshProUGUI>();
-                optionText.text = $"{option.AbilityName}\nx{option.Multiplier}";
+                optionText.text = $"{option.AbilityName}\nx{option.Multiplier:F2}";
+
+                if (obj.GetComponent<LayoutElement>() == null)
+                {
+                    var layout = obj.AddComponent<LayoutElement>();
+                    layout.preferredHeight = 40f;
+                }
             }
         }
 
-        RefreshEquippedState(); // ← 장착 상태 UI 반영
-        SetApplyButton(data);   // ← 버튼 상태 반영
+        RefreshEquippedState();
+        SetApplyButton(data);
     }
+
 
     private void SetApplyButton(AssistantInstance data)
     {

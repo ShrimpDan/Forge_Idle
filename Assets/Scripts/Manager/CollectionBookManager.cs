@@ -10,10 +10,6 @@ public class CollectionBookManager : MonoBehaviour
     private GameManager gameManager;
     private DataManager dataManager;
 
-    [Header("UI")]
-    [SerializeField] private Transform slotParent;
-    [SerializeField] private CustomerSlotUI slotpref;
-
     public event Action<RegularCustomerData> OnCustomerDiscovered;
 
     private readonly HashSet<RegularCustomerData> discovered = new();

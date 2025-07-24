@@ -118,6 +118,7 @@ public class NuisanceCustomer : Customer
             InteractIcon.SetActive(false);
         }
 
+        GameManager.Instance.DailyQuestManager.ProgressQuest("CatchMission", 1);
 
         StopAllCoroutines();
         StartCoroutine(ExitFlow());
