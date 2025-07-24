@@ -4049,6 +4049,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f54a140661c7d24e9b3d1090ece5a4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  slotParent: {fileID: 0}
+  slotpref: {fileID: 0}
 --- !u!4 &357122283
 Transform:
   m_ObjectHideFlags: 0
@@ -4808,19 +4810,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 497851702}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1321900707}
-        m_TargetAssemblyTypeName: HeldListButtonHandler, Assembly-CSharp
-        m_MethodName: OnClickOpenHeldList
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &497851702
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6530,8 +6520,8 @@ MonoBehaviour:
   m_ShadowVolumeIntensityEnabled: 0
   m_ShadowVolumeIntensity: 0.75
   m_LocalBounds:
-    m_Center: {x: 0.00024998188, y: 0, z: 0}
-    m_Extent: {x: 0.50035, y: 0.25, z: 0}
+    m_Center: {x: 0.00029999018, y: 0, z: 0}
+    m_Extent: {x: 0.5006, y: 0.25, z: 0}
   m_PointLightInnerAngle: 360
   m_PointLightOuterAngle: 360
   m_PointLightInnerRadius: 0
@@ -9756,6 +9746,17 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1210602876 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8848176819590952588, guid: e4822139471d4184b868e6d5c228da5b, type: 3}
+  m_PrefabInstance: {fileID: 1366603631058548840}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1232420164
 GameObject:
   m_ObjectHideFlags: 0
@@ -10033,19 +10034,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1256192264}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1321900707}
-        m_TargetAssemblyTypeName: HeldListButtonHandler, Assembly-CSharp
-        m_MethodName: OnClickOpenHeldList
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1256192264
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13193,6 +13182,17 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1686619680 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4452012985629370307, guid: e4822139471d4184b868e6d5c228da5b, type: 3}
+  m_PrefabInstance: {fileID: 1366603631058548840}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1691001747
 GameObject:
   m_ObjectHideFlags: 0
@@ -14002,6 +14002,22 @@ PrefabInstance:
       propertyPath: previewManager
       value: 
       objectReference: {fileID: 902444465353719219}
+    - target: {fileID: 9011678650473051604, guid: 59cb0835c8a35bc4b9ffdf13fa845ae8, type: 3}
+      propertyPath: btnRecruitMining
+      value: 
+      objectReference: {fileID: 1686619680}
+    - target: {fileID: 9011678650473051604, guid: 59cb0835c8a35bc4b9ffdf13fa845ae8, type: 3}
+      propertyPath: btnRecruitRandom
+      value: 
+      objectReference: {fileID: 2086248169}
+    - target: {fileID: 9011678650473051604, guid: 59cb0835c8a35bc4b9ffdf13fa845ae8, type: 3}
+      propertyPath: btnRecruitSelling
+      value: 
+      objectReference: {fileID: 1889622640}
+    - target: {fileID: 9011678650473051604, guid: 59cb0835c8a35bc4b9ffdf13fa845ae8, type: 3}
+      propertyPath: btnRecruitCrafting
+      value: 
+      objectReference: {fileID: 1210602876}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -14175,6 +14191,17 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1889622640 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5740073534266154953, guid: e4822139471d4184b868e6d5c228da5b, type: 3}
+  m_PrefabInstance: {fileID: 1366603631058548840}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1901142510
 GameObject:
   m_ObjectHideFlags: 0
@@ -38465,6 +38492,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1233477712}
+    - target: {fileID: 1569236047507279850, guid: e4822139471d4184b868e6d5c228da5b, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1569236047507279850, guid: e4822139471d4184b868e6d5c228da5b, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 

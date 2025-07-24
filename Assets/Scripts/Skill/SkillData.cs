@@ -51,4 +51,9 @@ public class SkillDataLoader
         SkillDict.TryGetValue(key, out SkillData data);
         return data;
     }
+
+    public SkillData GetRandomSkill()
+    { 
+        return SkillList[Random.Range(0, SkillList.Count)];
+    }
 }
