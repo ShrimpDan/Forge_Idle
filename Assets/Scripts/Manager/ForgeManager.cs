@@ -1,4 +1,6 @@
-﻿public class ForgeManager
+﻿using UnityEngine;
+
+public class ForgeManager : MonoBehaviour
 {
     private GameManager gameManager;
 
@@ -21,11 +23,13 @@
     public Forge CurrentForge { get; private set; }
 
     public ForgeTypeSaveSystem ForgeTypeSaveSystem { get; private set; } = new ForgeTypeSaveSystem();
+    public ForgeSkillSystem SkillSystem { get; private set; }
     public ForgeEventHandler Events { get; private set; } = new ForgeEventHandler();
 
-    public ForgeManager(GameManager gameManager)
+    public void Init(GameManager gameManager)
     {
         this.gameManager = gameManager;
+        SkillSystem = GetComponentInChildren<ForgeSkillSystem>();
     }
 
     public ForgeCommonData SaveToData()

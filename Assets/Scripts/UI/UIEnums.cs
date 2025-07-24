@@ -19,6 +19,7 @@ public enum ButtonType
     Collection,
     Setting,
     ForgeUpgrade,
+    Skill,
 }
 
 public static class UIName
@@ -41,7 +42,8 @@ public static class UIName
     public const string WeaponRecipeWindow = "WeaponRecipeWindow";
     public const string ArmorRecipeWindow = "ArmorRecipeWindow";
     public const string MagicRecipeWindow = "MagicRecipeWindow";
-
+    public const string SkillWindow = "SkillWindow";
+    public const string SkillPopup = "SkillPopup";
 
     // Popup UI
     public const string InventoryPopup = "InventoryPopup";
@@ -72,6 +74,7 @@ public static class UIName
             ButtonType.Collection => CollectionWindow,
             ButtonType.Setting => SettingWindow,
             ButtonType.ForgeUpgrade => ForgeUpgradeWindow,
+            ButtonType.Skill => SkillWindow,
             _ => string.Empty
         };
     }

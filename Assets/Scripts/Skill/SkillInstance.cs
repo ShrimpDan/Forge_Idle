@@ -1,6 +1,8 @@
+using System;
+
 public class SkillInstance
 {
-    public string skillKey;
+    public string SkillKey;
     public SkillData SkillData { get; private set; }
     public int Level { get; private set; }
     public int CurCount { get; private set; }
@@ -8,9 +10,9 @@ public class SkillInstance
     public bool CanUpgrade => CurCount >= NeedCount;
     public bool IsCoolDown { get; private set; }
 
-    public SkillInstance(string key, SkillData data, int level = 1, int curCount = 0, int needCount = 5)
+    public SkillInstance(string key, SkillData data, int level = 1, int curCount = 1, int needCount = 5)
     {
-        skillKey = key;
+        SkillKey = key;
         SkillData = data;
 
         Level = level;
@@ -69,7 +71,7 @@ public class SkillInstance
 
     public string GetDescription()
     {
-        string description = string.Format(SkillData.Description, GetDuration(), SkillData.BaseValue, GetValue() - SkillData.BaseValue);
+        string description = string.Format(SkillData.Description, GetDuration(), SkillData.BaseValue * 100, Math.Round((GetValue() - SkillData.BaseValue) * 100), 2);
         return description;
     }
 
