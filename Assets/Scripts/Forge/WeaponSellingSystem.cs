@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class WeaponSellingSystem : MonoBehaviour
@@ -16,7 +15,7 @@ public class WeaponSellingSystem : MonoBehaviour
 
     private Coroutine craftingCoroutine;
 
-    public void Init(Forge forge, InventoryManager inventory)
+    public void Init(Forge forge, DataManager dataManager, InventoryManager inventory)
     {
         this.forge = forge;
         this.inventory = inventory;
@@ -36,6 +35,16 @@ public class WeaponSellingSystem : MonoBehaviour
     private void OnDisable()
     {
         customerManager.CustomerEvent.OnCustomerArrived -= OrderItem;
+    }
+
+    public bool CanOrder(WeaponType type)
+    {
+        var weaponList = inventory.GetWeaponInstancesByType(type);
+
+        if (weaponList != null)
+            return true;
+
+        return false;
     }
 
     private void OrderItem(Customer customer)
@@ -133,39 +142,7 @@ public class WeaponSellingSystem : MonoBehaviour
             // 대성공 시 효과도 추가
             return price * 2;
         }
-
+        
         return price;
-    }
-
-    public WeaponType GetRandomWeaponType()
-    {
-        if (ForgeWeaponTypeMapping.ForgeWeaponTypeDict.TryGetValue(forge.ForgeType, out var weaponTypes))
-        {
-            if (weaponTypes.Length > 0)
-            {
-                List<WeaponType> typeList = new List<WeaponType>();
-
-                foreach (var type in weaponTypes)
-                {
-                    if (CanOrder(type))
-                        typeList.Add(type);
-                }
-                
-                if(typeList.Count > 0)
-                    return typeList[Random.Range(0, typeList.Count)];
-            }
-        }
-
-        return default;
-    }
-    
-    public bool CanOrder(WeaponType type)
-    {
-        var weaponList = inventory.GetWeaponInstancesByType(type);
-
-        if (weaponList != null)
-            return true;
-
-        return false;
     }
 }

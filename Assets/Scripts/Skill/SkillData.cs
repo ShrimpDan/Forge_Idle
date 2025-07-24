@@ -5,7 +5,6 @@ using UnityEngine;
 public class SkillData
 {
     public string Key;
-    public string Name;
     public ForgeUpgradeType Type;
     public float BaseValue;
     public float BaseDuration;

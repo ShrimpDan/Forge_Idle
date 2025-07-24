@@ -1,60 +1,37 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class ForgeSkillSystem : MonoBehaviour
 {
     private ForgeManager forgeManager;
-    private SkillManager skillManager;
-    public SkillInstance[] ActiveSkills { get; private set; } = new SkillInstance[3];
+    public SkillInstance[] activeSkills = new SkillInstance[3];
+    private Coroutine[] skillCoroutine = new Coroutine[3];
 
-    public void Init(ForgeManager forgeManager, SkillManager skillManager)
+    public void Init(ForgeManager forgeManager)
     {
         this.forgeManager = forgeManager;
-        this.skillManager = skillManager;
     }
 
     public void SetSkill(int idx, SkillInstance skill)
     {
-        if (skill == null) return;
-
-        if (ActiveSkills[idx] != null)
+        if (skillCoroutine[idx] != null)
         {
-            if (ActiveSkills[idx].IsCoolDown)
-            {
-                // 쿹타임 중에는 스킬 교체 불가능 알람 표시
-                return;
-            }
+            StopCoroutine(skillCoroutine[idx]);
 
-            UnSetSkill(ActiveSkills[idx]);
+            forgeManager.CurrentForge.StatHandler.SetSkillEffect(activeSkills[idx].SkillData.Type, activeSkills[idx].GetValue(), false);
+            activeSkills[idx].SetCoolDown(false);
+            forgeManager.Events.RaiseSkillCooldownFinished(idx);
         }
 
-        skill.EquipSkill();
-        ActiveSkills[idx] = skill;
-        forgeManager.Events.RaiseSkillChanged(idx, skill);
-    }
-
-    public void UnSetSkill(SkillInstance skill)
-    {
-        if (skill.IsCoolDown)
-        {
-            // 쿨타임 중에는 해제 불가능 알람
-            return;
-        }
-
-        skill.UnEquipSkill();
-        int idx = Array.IndexOf(ActiveSkills, skill);
-        ActiveSkills[idx] = null;
-        forgeManager.Events.RaiseSkillChanged(idx, null);
+        activeSkills[idx] = skill;
     }
 
     public void UseSkill(int idx)
     {
-        SkillInstance skill = ActiveSkills[idx];
+        SkillInstance skill = activeSkills[idx];
         if (skill == null || skill.IsCoolDown) return;
 
-        StartCoroutine(SkillEffectCoroutine(skill));
+        skillCoroutine[idx] = StartCoroutine(SkillEffectCoroutine(skill));
         StartCoroutine(SkillCooldownCoroutine(idx));
     }
 
@@ -67,7 +44,7 @@ public class ForgeSkillSystem : MonoBehaviour
 
     private IEnumerator SkillCooldownCoroutine(int idx)
     {
-        SkillInstance skill = ActiveSkills[idx];
+        SkillInstance skill = activeSkills[idx];
 
         float curCooldown = skill.GetCoolDown();
         skill.SetCoolDown(true);
@@ -85,39 +62,5 @@ public class ForgeSkillSystem : MonoBehaviour
 
         skill.SetCoolDown(false);
         forgeManager.Events.RaiseSkillCooldownFinished(idx);
-    }
-
-    public List<ActiveSkillSaveData> GetSaveData()
-    {
-        List<ActiveSkillSaveData> activeSkills = new List<ActiveSkillSaveData>();
-
-        for(int i = 0; i < ActiveSkills.Length; i++)
-        {
-            SkillInstance skill = ActiveSkills[i];
-
-            if (skill != null)
-            {
-                ActiveSkillSaveData saveData = new ActiveSkillSaveData()
-                {
-                    SkillKey = skill.SkillKey,
-                    Idx = i
-                };
-
-                activeSkills.Add(saveData);
-            }
-        }
-
-        return activeSkills;
-    }
-
-    public void LoadFromData(List<ActiveSkillSaveData> saveData)
-    {
-        if (saveData == null) return;
-
-        foreach (var data in saveData)
-        {
-            SkillInstance skill = skillManager.GetSkillByKey(data.SkillKey);
-            SetSkill(data.Idx, skill);
-        }
     }
 }

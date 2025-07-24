@@ -1,26 +1,22 @@
-using System;
-
 public class SkillInstance
 {
-    public string SkillKey;
+    public string skillKey;
     public SkillData SkillData { get; private set; }
     public int Level { get; private set; }
     public int CurCount { get; private set; }
     public int NeedCount { get; private set; }
     public bool CanUpgrade => CurCount >= NeedCount;
     public bool IsCoolDown { get; private set; }
-    public bool IsEquipped { get; private set; }
 
-    public SkillInstance(string key, SkillData data, int level = 1, int curCount = 1, int needCount = 5)
+    public SkillInstance(string key, SkillData data, int level = 1, int curCount = 0, int needCount = 5)
     {
-        SkillKey = key;
+        skillKey = key;
         SkillData = data;
 
         Level = level;
         CurCount = curCount;
         NeedCount = needCount;
         IsCoolDown = false;
-        IsEquipped = false;
     }
 
     public void AddSkill() => CurCount += 1;
@@ -34,9 +30,6 @@ public class SkillInstance
 
         Level += 1;
     }
-
-    public void EquipSkill() => IsEquipped = true;
-    public void UnEquipSkill() => IsEquipped = false;
 
     public float GetValue()
     {
@@ -76,7 +69,7 @@ public class SkillInstance
 
     public string GetDescription()
     {
-        string description = string.Format(SkillData.Description, GetDuration(), SkillData.BaseValue * 100, Math.Round((GetValue() - SkillData.BaseValue) * 100), 2);
+        string description = string.Format(SkillData.Description, GetDuration(), SkillData.BaseValue, GetValue() - SkillData.BaseValue);
         return description;
     }
 

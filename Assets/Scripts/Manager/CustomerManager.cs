@@ -192,27 +192,31 @@ public class CustomerManager : MonoBehaviour
             return;
         }
 
-        WeaponType weaponType = forge.SellingSystem.GetRandomWeaponType();
+        WeaponType weaponType = forge.GetRandomWeaponType();
 
-        if (forge.SellingSystem.CanOrder(weaponType))
+        while (!forge.SellingSystem.CanOrder(weaponType))
         {
-            //랜덤소환
-            CustomerJob selected = availableJobs[UnityEngine.Random.Range(0, availableJobs.Count)];
-            Customer customer = customerLoader.SpawnNormal(selected);//만들고
+            weaponType = forge.GetRandomWeaponType();
+        }
 
-            if (customer != null)
+        //랜덤소환
+        CustomerJob selected = availableJobs[UnityEngine.Random.Range(0, availableJobs.Count)];
+        Customer customer = customerLoader.SpawnNormal(selected);//만들고
+
+        if (customer != null)
+        {
+            customer.SetWeaponType(weaponType);
+            normalcustomerCounter[selected]++; //카운트 증가
+
+            //랜덤 스프라이트 추가하기
+            if (normalSpriteAssets.Count > 0)
             {
-                customer.SetWeaponType(weaponType);
-                normalcustomerCounter[selected]++; //카운트 증가
+                var randomAsset = normalSpriteAssets[UnityEngine.Random.Range(0, normalSpriteAssets.Count)];
+                customer.ChangeSpriteLibrary(randomAsset);
 
-                //랜덤 스프라이트 추가하기
-                if (normalSpriteAssets.Count > 0)
-                {
-                    var randomAsset = normalSpriteAssets[UnityEngine.Random.Range(0, normalSpriteAssets.Count)];
-                    customer.ChangeSpriteLibrary(randomAsset);
-                }
             }
         }
+
     }
 
     private void SpawnNuisanceCustomer()
@@ -230,10 +234,8 @@ public class CustomerManager : MonoBehaviour
 
     public void SpawnRegularCustomer(CustomerJob job)
     {
-        WeaponType weaponType = forge.SellingSystem.GetRandomWeaponType();
-
-        if (forge.SellingSystem.CanOrder(weaponType))
-            regularLoader.SpawnRandomByJob(job, weaponType);
+        WeaponType weaponType = forge.GetRandomWeaponType();
+        regularLoader.SpawnRandomByJob(job, weaponType);
     }
 
     //퇴장
@@ -262,10 +264,14 @@ public class CustomerManager : MonoBehaviour
         {
             normalVisitedCounter[job] = 0;
 
-            WeaponType weaponType = forge.SellingSystem.GetRandomWeaponType();
+            WeaponType weaponType = forge.GetRandomWeaponType();
 
-            if (forge.SellingSystem.CanOrder(weaponType))
-                regularLoader.SpawnRandomByJob(job, weaponType);
+            while (!forge.SellingSystem.CanOrder(weaponType))
+            {
+                weaponType = forge.GetRandomWeaponType();
+            }
+
+            regularLoader.SpawnRandomByJob(job, weaponType);
 
             Debug.Log("단골 손님 소환");
         }

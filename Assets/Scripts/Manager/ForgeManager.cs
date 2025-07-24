@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-public class ForgeManager : MonoBehaviour
+﻿public class ForgeManager
 {
     private GameManager gameManager;
 
@@ -23,16 +21,11 @@ public class ForgeManager : MonoBehaviour
     public Forge CurrentForge { get; private set; }
 
     public ForgeTypeSaveSystem ForgeTypeSaveSystem { get; private set; } = new ForgeTypeSaveSystem();
-    public ForgeSkillSystem SkillSystem { get; private set; }
     public ForgeEventHandler Events { get; private set; } = new ForgeEventHandler();
 
-    public void Init(GameManager gameManager)
+    public ForgeManager(GameManager gameManager)
     {
         this.gameManager = gameManager;
-        SkillSystem = GetComponentInChildren<ForgeSkillSystem>();
-
-        if (SkillSystem)
-            SkillSystem.Init(this, gameManager.SkillManager);
     }
 
     public ForgeCommonData SaveToData()
@@ -49,8 +42,6 @@ public class ForgeManager : MonoBehaviour
 
             Gold = Gold,
             Dia = Dia,
-
-            ActiveSkills = SkillSystem.GetSaveData(),
             CurrentForgeScene = CurrentForge != null ? CurrentForge.SceneType : SceneType.Main
         };
 
@@ -73,8 +64,6 @@ public class ForgeManager : MonoBehaviour
         Gold = data.Gold;
         Dia = data.Dia;
 
-        SkillSystem.LoadFromData(data.ActiveSkills);
-        
         if (data.CurrentForgeScene != SceneType.Main)
         {
             LoadSceneManager.Instance.LoadSceneAsync(data.CurrentForgeScene, true);

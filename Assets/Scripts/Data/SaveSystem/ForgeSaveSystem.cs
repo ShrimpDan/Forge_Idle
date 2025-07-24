@@ -1,13 +1,5 @@
-using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
-
-[System.Serializable]
-public class ActiveSkillSaveData
-{
-    public string SkillKey;
-    public int Idx;
-}
 
 [System.Serializable]
 public class ForgeCommonData
@@ -25,9 +17,6 @@ public class ForgeCommonData
     // 골드 & 다이아
     public int Gold;
     public int Dia;
-
-    // 스킬
-    public List<ActiveSkillSaveData> ActiveSkills;
 
     public SceneType CurrentForgeScene;
 }
@@ -89,7 +78,6 @@ public static class ForgeSaveSystem
             Gold = 0,
             Dia = 0,
 
-            ActiveSkills = new List<ActiveSkillSaveData>(),
             CurrentForgeScene = SceneType.Forge_Weapon
         };
     }
