@@ -4,7 +4,7 @@ using UnityEngine;
 public class ForgeSkillSystem : MonoBehaviour
 {
     private ForgeManager forgeManager;
-    public SkillInstance[] activeSkills = new SkillInstance[3];
+    public SkillInstance[] ActiveSkills { get; private set;  } = new SkillInstance[3];
     private Coroutine[] skillCoroutine = new Coroutine[3];
 
     public void Init(ForgeManager forgeManager)
@@ -16,19 +16,20 @@ public class ForgeSkillSystem : MonoBehaviour
     {
         if (skillCoroutine[idx] != null)
         {
-            StopCoroutine(skillCoroutine[idx]);
-
-            forgeManager.CurrentForge.StatHandler.SetSkillEffect(activeSkills[idx].SkillData.Type, activeSkills[idx].GetValue(), false);
-            activeSkills[idx].SetCoolDown(false);
-            forgeManager.Events.RaiseSkillCooldownFinished(idx);
+            if (ActiveSkills[idx].IsCoolDown)
+            {
+                // 쿹타임 중에는 스킬 교체 불가능 알람 표시
+                return;
+            }
         }
 
-        activeSkills[idx] = skill;
+        ActiveSkills[idx] = skill;
+        forgeManager.Events.RaiseSkillChanged(idx);
     }
 
     public void UseSkill(int idx)
     {
-        SkillInstance skill = activeSkills[idx];
+        SkillInstance skill = ActiveSkills[idx];
         if (skill == null || skill.IsCoolDown) return;
 
         skillCoroutine[idx] = StartCoroutine(SkillEffectCoroutine(skill));
@@ -44,7 +45,7 @@ public class ForgeSkillSystem : MonoBehaviour
 
     private IEnumerator SkillCooldownCoroutine(int idx)
     {
-        SkillInstance skill = activeSkills[idx];
+        SkillInstance skill = ActiveSkills[idx];
 
         float curCooldown = skill.GetCoolDown();
         skill.SetCoolDown(true);

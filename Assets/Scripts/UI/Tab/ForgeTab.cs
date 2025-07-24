@@ -10,6 +10,10 @@ public class ForgeTab : BaseTab
     [SerializeField] private Button forgeRecipeBtn;
     [SerializeField] private Button slideTabBtn;
     [SerializeField] private Transform slideTab;
+
+    [Header("Skill Slots")]
+    [SerializeField] private SkillEquipSlot[] skillSlots;
+
     private Transform arrowTr;
     private bool isOpen = false;
 
@@ -27,6 +31,11 @@ public class ForgeTab : BaseTab
 
         slideTabBtn.onClick.RemoveAllListeners();
         slideTabBtn.onClick.AddListener(ClickSlideButton);
+
+        for (int i = 0; i < skillSlots.Length; i++)
+        {
+            skillSlots[i].Init(gameManager.UIManager, forgeManager, i);
+        }
     }
 
     public override void OpenTab()

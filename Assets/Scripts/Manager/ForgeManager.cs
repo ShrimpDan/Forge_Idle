@@ -30,6 +30,9 @@ public class ForgeManager : MonoBehaviour
     {
         this.gameManager = gameManager;
         SkillSystem = GetComponentInChildren<ForgeSkillSystem>();
+
+        if (SkillSystem)
+            SkillSystem.Init(this);
     }
 
     public ForgeCommonData SaveToData()
