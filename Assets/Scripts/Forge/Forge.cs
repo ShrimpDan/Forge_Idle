@@ -41,7 +41,7 @@ public class Forge : MonoBehaviour
         AssistantHandler = new ForgeAssistantHandler(this, VisualHandler, StatHandler);
 
         if (SellingSystem)
-            SellingSystem.Init(this, gameManager.DataManager, gameManager.Inventory);
+            SellingSystem.Init(this, gameManager.Inventory);
 
         if (blackSmith != null)
             blackSmith.Init();
@@ -80,16 +80,5 @@ public class Forge : MonoBehaviour
         ForgeManager.ForgeTypeSaveSystem.SaveForgeType(this);
         CustomerManager.StopSpawnCustomer();
         LoadSceneManager.Instance.UnLoadScene(SceneType);
-    }
-
-    public WeaponType GetRandomWeaponType()
-    {
-        if (ForgeWeaponTypeMapping.ForgeWeaponTypeDict.TryGetValue(ForgeType, out var weaponTypes))
-        {
-            if (weaponTypes.Length > 0)
-                return weaponTypes[Random.Range(0, weaponTypes.Length)];
-        }
-
-        return default;
     }
 }
