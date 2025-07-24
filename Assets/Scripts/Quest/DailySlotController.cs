@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
@@ -21,6 +21,12 @@ public class DailySlotController : MonoBehaviour
         var activeQuests = dailyQuestManager.GetActiveQuests();
         for (int i = 0; i < dailyQuestUIs.Count; i++)
         {
+            if (dailyQuestUIs[i] == null)
+            {
+                Debug.Log("프리팹에서 할당되지 않았습니다.");
+                continue;
+            }
+
             if (i < activeQuests.Count)
             {
                 dailyQuestUIs[i].gameObject.SetActive(true);
@@ -33,5 +39,10 @@ public class DailySlotController : MonoBehaviour
         }
 
     }
-    
+
+    public void Refresh()
+    {
+        SettingSlot();
+    }
+
 }

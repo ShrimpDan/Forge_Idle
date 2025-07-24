@@ -1,6 +1,7 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,6 +14,7 @@ public class DailyQuestUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI questRewardText; // 보상
 
     [SerializeField] private GameObject claimButton; // 보상 받기 버튼
+    [SerializeField] private TextMeshProUGUI buttonText;
 
 
     public void InitButton(DailyQuestData questData , DailyQuestManager dailyQuestManager)
@@ -20,16 +22,51 @@ public class DailyQuestUI : MonoBehaviour
         questNameText.text = questData.title;
         questInfo.text = questData.questInfo;
 
-       // UpdateProgress(questData.currentAmount, questData.goalAmount);
-       //  UpdateReward(questData.rewardCount);
 
-        claimButton.SetActive(!questData.isCompleted || !questData.isClaimed);
-        claimButton.GetComponent<Button>().onClick.AddListener(() => 
+        Button btn = claimButton.GetComponent<Button>();
+
+        btn.interactable = questData.isCompleted && !questData.isClaimed;
+
+       // btn.onClick.RemoveAllListeners();
+
+
+        if (!questData.isClaimed && questData.currentAmount == 0)
         {
-            dailyQuestManager.ClaimReward(questData.questId); // 퀘스트 보상 받기
-            
-            claimButton.SetActive(false);
-        });
+            buttonText.text = "수락하기";
+            btn.interactable = true;
+
+            btn.onClick.AddListener(() =>
+            {
+                questData.isClaimed = true;
+                buttonText.text = "진행중";
+                btn.interactable = false;
+            });
+        }
+
+        else if (questData.isClaimed && !questData.isCompleted)
+        {
+            buttonText.text = "진행중";
+            btn.interactable = false;
+        }
+      
+        else if (questData.isCompleted && !questData.isClaimed)
+        {
+            buttonText.text = "보상 받기";
+            btn.interactable = true;
+
+            btn.onClick.AddListener(() =>
+            {
+                dailyQuestManager.ClaimReward(questData.questId);
+                btn.interactable = false;
+                buttonText.text = "수락함";
+            });
+        }
+      
+        else if (questData.isClaimed)
+        {
+            buttonText.text = "수락함";
+            btn.interactable = false;
+        }
     }
     
 

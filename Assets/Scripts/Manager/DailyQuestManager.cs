@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class DailyQuestManager : MonoBehaviour
 {
@@ -9,7 +11,6 @@ public class DailyQuestManager : MonoBehaviour
     #region  모든퀘스트 관련정보
     private int maxQuestClearCount = 5;
     private bool isAllClear = false;
-
     #endregion
 
     private int curQuestCount = 0;
@@ -19,6 +20,12 @@ public class DailyQuestManager : MonoBehaviour
 
     [SerializeField] private List<DailyQuestData> allQuests; // 모든 퀘스트 데이터
     private List<DailyQuestData> activeQuests;
+
+    [SerializeField] private Image totalQuestGauge;
+    [SerializeField] private TextMeshProUGUI TotalQuestText;
+    [SerializeField] private Button bounsRewardButton;
+
+
 
 
     public void Init(GameManager gm)
@@ -70,8 +77,11 @@ public class DailyQuestManager : MonoBehaviour
             return;
         }
         quest.isClaimed = true;
-
+        curQuestCount++;
         gameManager.ForgeManager.AddDia(quest.rewardCount);
+
+        //모든 보상클리어시 해당 보상버튼 활성화 하는 기능 추가 
+        
     }
 
 
@@ -79,6 +89,8 @@ public class DailyQuestManager : MonoBehaviour
     {
         if (curQuestCount >= maxQuestClearCount)
         {
+            isAllClear = true;
+            //버튼을 눌러서 
             GameManager.Instance.ForgeManager.AddDia(100); //다이아 100개 지급
 
         }
@@ -87,7 +99,7 @@ public class DailyQuestManager : MonoBehaviour
 
     private void RandomPickQuest()
     {
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < 5; i++)
         {
             int randomIndex = Random.Range(0, allQuests.Count);
 
@@ -99,6 +111,35 @@ public class DailyQuestManager : MonoBehaviour
             activeQuests.Add(allQuests[randomIndex]); //랜덤으로 퀘스트 선택
         }
 
+    }
+
+    private void UpdateTotalQuestProgressUI()
+    {
+        int total = maxQuestClearCount;
+        int completed = 0;
+
+        foreach (var quest in activeQuests)
+        {
+            if (quest.isCompleted && quest.isClaimed)
+            {
+                completed++;
+            }
+        }
+
+        float progress = (float)completed / total;
+        totalQuestGauge.fillAmount = progress;
+        TotalQuestText.text = $"{completed}/ {total}";
+
+
+        bounsRewardButton.interactable = true;
+
+
+    }
+
+    public void RefreshUI()
+    {
+        slotController?.Refresh();
+        UpdateTotalQuestProgressUI();
     }
 
     public List<DailyQuestData> GetActiveQuests() => activeQuests;
