@@ -9,6 +9,7 @@ public class SkillInstance
     public int NeedCount { get; private set; }
     public bool CanUpgrade => CurCount >= NeedCount;
     public bool IsCoolDown { get; private set; }
+    public bool IsEquipped { get; private set; }
 
     public SkillInstance(string key, SkillData data, int level = 1, int curCount = 1, int needCount = 5)
     {
@@ -19,6 +20,7 @@ public class SkillInstance
         CurCount = curCount;
         NeedCount = needCount;
         IsCoolDown = false;
+        IsEquipped = false;
     }
 
     public void AddSkill() => CurCount += 1;
@@ -32,6 +34,9 @@ public class SkillInstance
 
         Level += 1;
     }
+
+    public void EquipSkill() => IsEquipped = true;
+    public void UnEquipSkill() => IsEquipped = false;
 
     public float GetValue()
     {

@@ -32,7 +32,7 @@ public class ForgeManager : MonoBehaviour
         SkillSystem = GetComponentInChildren<ForgeSkillSystem>();
 
         if (SkillSystem)
-            SkillSystem.Init(this);
+            SkillSystem.Init(this, gameManager.SkillManager);
     }
 
     public ForgeCommonData SaveToData()
@@ -49,6 +49,8 @@ public class ForgeManager : MonoBehaviour
 
             Gold = Gold,
             Dia = Dia,
+
+            ActiveSkills = SkillSystem.GetSaveData(),
             CurrentForgeScene = CurrentForge != null ? CurrentForge.SceneType : SceneType.Main
         };
 
@@ -71,6 +73,8 @@ public class ForgeManager : MonoBehaviour
         Gold = data.Gold;
         Dia = data.Dia;
 
+        SkillSystem.LoadFromData(data.ActiveSkills);
+        
         if (data.CurrentForgeScene != SceneType.Main)
         {
             LoadSceneManager.Instance.LoadSceneAsync(data.CurrentForgeScene, true);

@@ -34,6 +34,12 @@ public class SkillManager
         return skill;
     }
 
+    public SkillInstance GetSkillByKey(string key)
+    {
+        SkillInstance skill = SkillList.Find(s => s.SkillKey == key);
+        return skill;
+    }
+
     public SkillSaveDataList ToSaveData()
     {
         SkillSaveDataList dataList = new SkillSaveDataList();

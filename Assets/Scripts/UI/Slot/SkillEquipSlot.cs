@@ -33,16 +33,14 @@ public class SkillEquipSlot : MonoBehaviour
         forgeEvent.OnSkillCooldownStarted += StartCooldown;
         forgeEvent.OnSkillCooldownUpdate += UpdateCooldown;
         forgeEvent.OnSkillCooldownFinished += FinishCooldown;
-        
-        SetSlotUI(idx);
     }
 
-    private void SetSlotUI(int idx)
+    private void SetSlotUI(int idx, SkillInstance skill)
     {
         if (this.idx != idx) return;
 
-        skill = skillSystem.ActiveSkills[idx];
-
+        this.skill = skill;
+        
         if (skill == null)
             icon.sprite = IconLoader.GetIconByPath(null);
         else

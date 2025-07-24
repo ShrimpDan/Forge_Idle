@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 using UnityEngine;
 
 public class GameManager : MonoSingleton<GameManager>
@@ -68,13 +67,13 @@ public class GameManager : MonoSingleton<GameManager>
     {
         SaveManager = new GameSaveManager();
 
-        SaveManager.RegisterSaveHandler(new ForgeSaveHandeler(ForgeManager));
+        SaveManager.RegisterSaveHandler(new SkillSaveHandler(SkillManager));
         SaveManager.RegisterSaveHandler(new InventorySaveHandler(Inventory));
         SaveManager.RegisterSaveHandler(new AssistantSaveHandler(AssistantManager, DataManager.PersonalityLoader));
         SaveManager.RegisterSaveHandler(new CollectionBookSaveHandler(CollectionManager)); //이거 수정해야될듯
         SaveManager.RegisterSaveHandler(new DungeonSaveHandler(DungeonSystem));
-        SaveManager.RegisterSaveHandler(new SkillSaveHandler(SkillManager));
         SaveManager.RegisterSaveHandler(new HeldCandidateSaveHandler(this));
+        SaveManager.RegisterSaveHandler(new ForgeSaveHandeler(ForgeManager));
 
         SaveManager.LoadAll();
 
