@@ -75,6 +75,7 @@ public class DungeonManager : MonoBehaviour
         {
             SoundManager.Instance.Play("SFX_BattleStageClear01");
             GameManager.DungeonSystem.UnlockNextDungeon(DungeonData);
+            GameManager.Instance.DailyQuestManager.ProgressQuest("DungonClear", 1);
         }
         else
             SoundManager.Instance.Play("SFX_BattleDungeonGiveUp02");
