@@ -63,17 +63,14 @@ public class DailyQuestManager : MonoBehaviour
         {
             return;
         }
-        if (loader.isCompleted)
+        if (loader.isCompleted || !loader.isAccepted)
         {
             return;
         }
-
+        
         loader.currentAmount = Mathf.Min(loader.currentAmount + amount, loader.data.goalAmount);
 
-        if (loader.isCompleted)
-        {
-            Debug.Log("퀘스트 완료");
-        }
+       
 
         RefreshUI();
 
@@ -88,22 +85,15 @@ public class DailyQuestManager : MonoBehaviour
             return;
         }
 
-        if (!loader.isCompleted || loader.isClaimed)
+        if (!loader.isCompleted || loader.isRewardClaimed)
         {
             return;
         }
 
-        loader.isClaimed = true;
+        loader.isRewardClaimed = true;
         curQuestCount++;
-
-
-
         gameManager.ForgeManager.AddDia(loader.data.rewardCount);
-
         RefreshUI();
-
-        //모든 보상클리어시 해당 보상버튼 활성화 하는 기능 추가 
-
     }
 
 
@@ -121,6 +111,7 @@ public class DailyQuestManager : MonoBehaviour
     {
         activeQuestDic.Clear();
        
+
         while(activeQuestDic.Count <maxQuestClearCount)
         { 
             int randomIndex = Random.Range(0, allQuests.Count);
@@ -142,7 +133,7 @@ public class DailyQuestManager : MonoBehaviour
 
         foreach (var loader in activeQuestDic.Values)
         {
-            if (loader.isCompleted && loader.isClaimed)
+            if (loader.isCompleted && loader.isRewardClaimed)
             {
                 completed++;
             }

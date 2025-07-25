@@ -27,19 +27,21 @@ public class DailyQuestUI : MonoBehaviour
         Button btn = claimButton.GetComponent<Button>();
         btn.onClick.RemoveAllListeners();
 
-        if (!loader.isClaimed && loader.currentAmount == 0)
+        if (!loader.isAccepted)
         {
             buttonText.text = "수락하기";
             btn.interactable = true;
             btn.onClick.AddListener(() =>
             {
-                loader.isClaimed = true;
+                loader.isAccepted = true; 
                 buttonText.text = "진행중";
                 btn.interactable = false;
+                dailyQuestManager.RefreshUI();
             });
         }
-        else if (loader.isCompleted && loader.isClaimed)
+        else if (loader.isCompleted && !loader.isRewardClaimed)
         {
+          
             buttonText.text = "보상 받기";
             btn.interactable = true;
             btn.onClick.AddListener(() =>
@@ -49,14 +51,16 @@ public class DailyQuestUI : MonoBehaviour
                 buttonText.text = "완료함";
             });
         }
-        else if (loader.isClaimed && !loader.isCompleted)
+        else if (loader.isAccepted && !loader.isCompleted)
         {
+           
             buttonText.text = "진행중";
             btn.interactable = false;
         }
-        else if (loader.isClaimed)
+        else if (loader.isRewardClaimed)
         {
-            buttonText.text = "수락함";
+           
+            buttonText.text = "완료함";
             btn.interactable = false;
         }
 
