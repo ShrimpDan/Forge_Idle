@@ -25,12 +25,16 @@ public class AssistantPopup : BaseUI
     [SerializeField] private Button rehireButton;
     [SerializeField] private Button exitButton;
 
+    private AssistantTab assistantTab;
     private AssistantInstance assiData;
 
     public override void Init(GameManager gameManager, UIManager uIManager)
     {
         base.Init(gameManager, uIManager);
         forge = gameManager.Forge;
+
+        if (assistantTab == null)
+            assistantTab = uIManager.GetComponentInChildren<AssistantTab>(true);
 
         applyButton.onClick.AddListener(ApplyAssistant);
         deApplyButton.onClick.AddListener(DeApplyAssistant);
@@ -141,6 +145,8 @@ public class AssistantPopup : BaseUI
 
         forge.AssistantHandler.ActiveAssistant(assiData);
         SetApplyButton(assiData);
+
+        assistantTab?.RefreshSlots();
     }
 
     private void DeApplyAssistant()
@@ -150,6 +156,8 @@ public class AssistantPopup : BaseUI
         forge.AssistantHandler.DeActiveAssistant(assiData);
         RefreshEquippedState();
         SetApplyButton(assiData);
+
+        assistantTab?.RefreshSlots();
     }
 
 
@@ -166,6 +174,7 @@ public class AssistantPopup : BaseUI
             Debug.Log($"{assiData.Name} 재고용 완료!");
             RefreshEquippedState();
             SetApplyButton(assiData);
+            assistantTab?.RefreshSlots();
         }
         else
         {

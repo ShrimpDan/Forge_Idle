@@ -24,13 +24,11 @@ public class AssistantTab : BaseTab
 
     [Header("Selected Assistant")]
     [SerializeField] AssiEquippedSlot craftAssi;
-    [SerializeField] AssiEquippedSlot enhanceAssi;
     [SerializeField] AssiEquippedSlot sellingAssi;
 
     [Header("To Create Bonus Stat")]
     [SerializeField] GameObject bonusStatPrefab;
     [SerializeField] Transform craftStatRoot;
-    [SerializeField] Transform enhanceStatRoot;
     [SerializeField] Transform sellingStatRoot;
 
     private Queue<GameObject> pooledSlots = new Queue<GameObject>();
@@ -58,7 +56,6 @@ public class AssistantTab : BaseTab
 
         // 장착된 Assistant 슬롯 초기화
         craftAssi.Init(uIManager);
-        enhanceAssi.Init(uIManager);
         sellingAssi.Init(uIManager);
     }
 
@@ -80,7 +77,7 @@ public class AssistantTab : BaseTab
             gameManager.Forge.Events.OnAssistantChanged -= SetAssistant;
     }
 
-    private void RefreshSlots()
+    public void RefreshSlots()
     {
         if (assistantManager == null)
         {
@@ -160,9 +157,6 @@ public class AssistantTab : BaseTab
             case SpecializationType.Crafting:
                 craftAssi.SetAssistant(assi, isActive);
                 break;
-            case SpecializationType.Mining:
-                enhanceAssi.SetAssistant(assi, isActive);
-                break;
             case SpecializationType.Selling:
                 sellingAssi.SetAssistant(assi, isActive);
                 break;
@@ -188,7 +182,6 @@ public class AssistantTab : BaseTab
         Transform parent = assi.Specialization switch
         {
             SpecializationType.Crafting => craftStatRoot,
-            SpecializationType.Mining => enhanceStatRoot,
             SpecializationType.Selling => sellingStatRoot,
             _ => null
         };
@@ -211,7 +204,6 @@ public class AssistantTab : BaseTab
         Transform parent = type switch
         {
             SpecializationType.Crafting => craftStatRoot,
-            SpecializationType.Mining => enhanceStatRoot,
             SpecializationType.Selling => sellingStatRoot,
             _ => null
         };
