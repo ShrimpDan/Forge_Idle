@@ -177,8 +177,9 @@ public class AssistantPopup : BaseUI
             assiData.IsFired = false;
             GameManager.Instance.SaveManager.SaveAll();
             Debug.Log($"{assiData.Name} 재고용 완료!");
-            RefreshEquippedState();
-            SetApplyButton(assiData);
+
+            SetAssistant(assiData);
+
             assistantTab?.RefreshSlots();
         }
         else
@@ -186,6 +187,7 @@ public class AssistantPopup : BaseUI
             Debug.LogWarning("골드가 부족합니다.");
         }
     }
+
 
     private void RefreshEquippedState()
     {

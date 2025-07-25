@@ -302,4 +302,10 @@ public class RecruitPreviewManager : MonoBehaviour
         btnReject.interactable = interactable;
         btnHold.interactable = interactable;
     }
+
+
+    public void OnClickRecruitRandom() => TryRecruitCandidateByType(null);
+    public void OnClickRecruitCrafting() => TryRecruitCandidateByType(SpecializationType.Crafting);
+    public void OnClickRecruitMining() => TryRecruitCandidateByType(SpecializationType.Mining);
+    public void OnClickRecruitSelling() => TryRecruitCandidateByType(SpecializationType.Selling);
 }
