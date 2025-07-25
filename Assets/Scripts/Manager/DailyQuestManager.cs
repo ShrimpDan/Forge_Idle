@@ -19,7 +19,7 @@ public class DailyQuestManager : MonoBehaviour
     private int curQuestCount = 0;
     private GameManager gameManager;
 
-    private DailySlotController slotController;
+    [SerializeField]private DailySlotController slotController;
 
     [SerializeField] private List<DailyQuestData> allQuests; // 모든 퀘스트 데이터
     
@@ -38,14 +38,22 @@ public class DailyQuestManager : MonoBehaviour
     {
         gameManager = gm;
        
-        slotController = GetComponentInChildren<DailySlotController>();
+       
         activeQuests = new List<DailyQuestData>();
         RandomPickQuest();
 
+        Debug.Log($"랜덤 퀘스트 개수: {activeQuestDic.Count}"); // 데이터가 잘 들어갔는지 확인
+
+        // CheckDailyReset();
 
         if (slotController != null)
         {
+            Debug.Log("SlotController Init 호출됨");
             slotController.Init(this);
+        }
+        else
+        {
+            Debug.Log("SlotController 호출 안됨");
         }
     }
    
@@ -159,6 +167,29 @@ public class DailyQuestManager : MonoBehaviour
     {
         slotController?.Refresh();
         UpdateTotalQuestProgressUI();
+    }
+
+    private void CheckDailyReset()
+    {
+        string lastDate = PlayerPrefs.GetString("LastQusetResetDate","");
+        string today = System.DateTime.Now.ToString("yyyyMMdd");
+
+        if (lastDate != today)
+        {
+            Debug.Log("퀘스트 초기화 진행");
+            ResetQuests();
+            PlayerPrefs.SetString("LastQusetResetDate",today);
+        }
+    }
+
+    private void ResetQuests()
+    {
+        activeQuestDic.Clear();
+        curQuestCount = 0;
+        isAllClear = false;
+
+        RandomPickQuest();   // 새로운 퀘스트 뽑기
+        RefreshUI();
     }
 
     public Dictionary<string, DailyQuestLoader> GetActiveQuestDic() => activeQuestDic;
