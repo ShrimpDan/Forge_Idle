@@ -44,6 +44,7 @@ public class DailySlotController : MonoBehaviour
 
     public void Refresh()
     {
+      
         SettingSlot();
     }
 

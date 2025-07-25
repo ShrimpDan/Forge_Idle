@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -31,8 +32,10 @@ public class DailyQuestManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI TotalQuestText;
     [SerializeField] private Button bounsRewardButton;
 
+    [SerializeField] private int TestTime;
+    private bool isResetting = false;
 
-
+    private const string lastDateKey= "LastQusetResetDate";
 
     public void Init(GameManager gm)
     {
@@ -44,7 +47,7 @@ public class DailyQuestManager : MonoBehaviour
 
         Debug.Log($"랜덤 퀘스트 개수: {activeQuestDic.Count}"); // 데이터가 잘 들어갔는지 확인
 
-        // CheckDailyReset();
+        CheckDailyReset();
 
         if (slotController != null)
         {
@@ -59,10 +62,7 @@ public class DailyQuestManager : MonoBehaviour
    
 
 
-    public void LoadQuest() //여기에서 데이터 로드해야함 
-    {
 
-    }
 
     public void ProgressQuest(string questId, int amount) // 외부에서 퀘스트 호출해야 증가 
     {
@@ -76,13 +76,8 @@ public class DailyQuestManager : MonoBehaviour
             return;
         }
         
-        loader.currentAmount = Mathf.Min(loader.currentAmount + amount, loader.data.goalAmount);
-
-       
-
+        loader.currentAmount = Mathf.Min(loader.currentAmount + amount, loader.data.goalAmount);     
         RefreshUI();
-
-
     }
 
     public void ClaimReward(string questId)
@@ -122,7 +117,7 @@ public class DailyQuestManager : MonoBehaviour
 
         while(activeQuestDic.Count <maxQuestClearCount)
         { 
-            int randomIndex = Random.Range(0, allQuests.Count);
+            int randomIndex = UnityEngine.Random.Range(0, allQuests.Count);
             var data = allQuests[randomIndex];
 
             if (activeQuestDic.ContainsKey(data.questId))
@@ -166,19 +161,32 @@ public class DailyQuestManager : MonoBehaviour
     public void RefreshUI()
     {
         slotController?.Refresh();
+        CheckDailyReset();
         UpdateTotalQuestProgressUI();
     }
 
+ 
     private void CheckDailyReset()
     {
-        string lastDate = PlayerPrefs.GetString("LastQusetResetDate","");
-        string today = System.DateTime.Now.ToString("yyyyMMdd");
+        if (isResetting) return; // ⭐ 초기화 중 중복 실행 방지
 
-        if (lastDate != today)
+        string lastDateString = PlayerPrefs.GetString(lastDateKey, "");
+        DateTime lastDateTime = string.IsNullOrEmpty(lastDateString)
+            ? DateTime.MinValue
+            : DateTime.Parse(lastDateString);
+
+        DateTime now = DateTime.Now;
+        DateTime resetTime = DateTime.Today.AddHours(23).AddMinutes(TestTime).AddMinutes(0);
+
+        if (lastDateTime < resetTime && now >= resetTime)
         {
-            Debug.Log("퀘스트 초기화 진행");
+            isResetting = true; // ⭐ 플래그 세팅
+
             ResetQuests();
-            PlayerPrefs.SetString("LastQusetResetDate",today);
+            PlayerPrefs.SetString(lastDateKey, now.ToString());
+            PlayerPrefs.Save();
+
+            isResetting = false;
         }
     }
 
