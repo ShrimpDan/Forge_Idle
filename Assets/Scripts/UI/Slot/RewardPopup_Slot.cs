@@ -18,7 +18,6 @@ public class RewardPopup_Slot : MonoBehaviour
         quantityText.text = quantity.ToString();
     }
 
-    // ���� ���� �� Add�ϴ� ���̸� ���
     public void Add(int count)
     {
         quantity += count;

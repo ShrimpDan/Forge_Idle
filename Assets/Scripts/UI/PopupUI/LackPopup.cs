@@ -5,15 +5,15 @@ using TMPro;
 /// 사용법
 /// [SerializeField] private LackPopup lackPopupPrefab; 
 /// [SerializeField] private Transform popupParent;  
-/// // 골드 부족
+/// // 골드 
 /// var popup = Instantiate(lackPopupPrefab, popupParent ? popupParent : null);
 /// popup.Show(LackType.Gold);
 /// 
-/// // 재료 부족
+/// // 재료 
 /// var popup = Instantiate(lackPopupPrefab, popupParent ? popupParent : null);
 /// popup.Show(LackType.Resource);
 ///
-/// // 포인트 부족
+/// // 포인트
 /// var popup = Instantiate(lackPopupPrefab, popupParent ? popupParent : null);
 /// popup.Show(LackType.Point);
 /// 

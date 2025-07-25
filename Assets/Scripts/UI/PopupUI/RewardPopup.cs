@@ -60,7 +60,7 @@ public class RewardPopup : BaseUI
         gameObject.SetActive(true);
     }
 
-    // 타이틀 아이콘 빛나는 효과 (간단, DOTween)
+    // 타이틀 아이콘 빛나는 효과
     private void PlayTitleIconGlow()
     {
         if (titleIcon == null) return;
@@ -68,7 +68,6 @@ public class RewardPopup : BaseUI
         titleIcon.color = new Color(1f, 0.97f, 0.45f, 0.0f); // 밝은 노란색, 투명
         titleIcon.transform.localScale = Vector3.one * 1.15f;
 
-        // DOTween: 알파 → 0.8, scale 요요, 이후 서서히 사라짐
         titleIcon.DOFade(0.85f, 0.15f).From(0f).SetEase(Ease.OutQuad);
         titleIcon.transform.DOScale(1.04f, 0.18f).SetLoops(2, LoopType.Yoyo).SetEase(Ease.OutBack)
             .OnComplete(() => {
