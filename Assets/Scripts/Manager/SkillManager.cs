@@ -12,10 +12,8 @@ public class SkillManager
         this.skillDataLoader = skillDataLoader;
     }
 
-    public void AddRandomSkill()
+    public void AddSkill(SkillData skillData)
     {
-        SkillData skillData = skillDataLoader.GetRandomSkill();
-
         var existSkill = SkillList.Find(s => s.SkillKey == skillData.Key);
 
         if (existSkill != null)

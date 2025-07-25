@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class GameManager : MonoSingleton<GameManager>
 {
@@ -176,7 +177,7 @@ public class GameManager : MonoSingleton<GameManager>
     public void GetRandomSkill()
     {
         for(int i = 0; i < 10; i++)
-            SkillManager.AddRandomSkill();
+            SkillManager.AddSkill(DataManager.SkillDataLoader.GetRandomSkill());
     }
 
     private void OnApplicationQuit()
