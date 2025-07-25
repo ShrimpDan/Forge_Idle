@@ -322,7 +322,6 @@ public class CraftWeaponWindow : BaseUI
         if (itemData == null || uIManager == null || itemLoader == null)
             return;
 
-        // 리워드 정보 생성 (여러개면 리스트)
         var rewardList = new List<(string itemKey, int count)>()
     {
         (itemData.ItemKey, 1)
@@ -331,4 +330,5 @@ public class CraftWeaponWindow : BaseUI
         var rewardPopup = uIManager.OpenUI<RewardPopup>(UIName.RewardPopup);
         rewardPopup.Show(rewardList, itemLoader, "");
     }
+
 }

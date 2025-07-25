@@ -1,7 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections.Generic;
 using TMPro;
+using DG.Tweening;
+using System.Collections.Generic;
 
 public class RewardPopup : BaseUI
 {
@@ -14,6 +15,7 @@ public class RewardPopup : BaseUI
     [SerializeField] private GameObject rewardSlotPrefab;
     [SerializeField] private TextMeshProUGUI titleText;
     [SerializeField] private Button overlayButton;
+    [SerializeField] private Image titleIcon; // 인스펙터에 TitleIcon 등록
 
     private List<RewardPopup_Slot> slots = new();
 
@@ -21,7 +23,7 @@ public class RewardPopup : BaseUI
     private float closeDuration = 0.25f;
     private float exitTitleScale = 1.1f;
     private float exitTitleAnimDuration = 0.7f;
-    private UIManager uiManager; 
+    private UIManager uiManager;
 
     public override void Init(GameManager gm, UIManager um)
     {
@@ -53,7 +55,25 @@ public class RewardPopup : BaseUI
         if (exitTitle != null)
             UIEffect.TextScaleEffect(exitTitle.GetComponentInChildren<TMP_Text>(), exitTitleScale, exitTitleAnimDuration);
 
+        PlayTitleIconGlow(); // 효과 발동
+
         gameObject.SetActive(true);
+    }
+
+    // 타이틀 아이콘 빛나는 효과 (간단, DOTween)
+    private void PlayTitleIconGlow()
+    {
+        if (titleIcon == null) return;
+
+        titleIcon.color = new Color(1f, 0.97f, 0.45f, 0.0f); // 밝은 노란색, 투명
+        titleIcon.transform.localScale = Vector3.one * 1.15f;
+
+        // DOTween: 알파 → 0.8, scale 요요, 이후 서서히 사라짐
+        titleIcon.DOFade(0.85f, 0.15f).From(0f).SetEase(Ease.OutQuad);
+        titleIcon.transform.DOScale(1.04f, 0.18f).SetLoops(2, LoopType.Yoyo).SetEase(Ease.OutBack)
+            .OnComplete(() => {
+                titleIcon.DOFade(0f, 0.5f).SetDelay(0.22f);
+            });
     }
 
     public override void Open()
@@ -62,6 +82,7 @@ public class RewardPopup : BaseUI
         UIEffect.PopupOpenEffect(popupPanel, openDuration);
         if (exitTitle != null)
             UIEffect.TextScaleEffect(exitTitle.GetComponentInChildren<TMP_Text>(), exitTitleScale, exitTitleAnimDuration);
+        PlayTitleIconGlow();
     }
 
     public override void Close()
@@ -71,7 +92,6 @@ public class RewardPopup : BaseUI
 
     private void Awake()
     {
-
         if (exitTitle != null)
             exitTitle.onClick.AddListener(() => uiManager?.CloseUI("RewardPopup"));
 

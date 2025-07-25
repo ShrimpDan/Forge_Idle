@@ -1,10 +1,14 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class MineResourceCollectManager : MonoBehaviour
 {
     public static MineResourceCollectManager Instance;
+
+    [Header("UI")]
+    public TMP_Text minedAmountText;
 
     private void Awake()
     {
@@ -31,7 +35,6 @@ public class MineResourceCollectManager : MonoBehaviour
 
         MineData mineData = group.mineManager.Mine;
 
-        // 실제 필드명에 맞춰 수정
         var resourceTypes = mineData.RewardMineralKeys ?? new List<string>();
         int minAmount = mineData.CollectMin;
         int maxAmount = mineData.CollectMax;
@@ -63,24 +66,35 @@ public class MineResourceCollectManager : MonoBehaviour
             }
         }
 
-        // 실제 인벤토리 추가 및 로그
+        // 누적 획득 결과 저장용 StringBuilder
+        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+
         foreach (var pair in resourceDict)
         {
             int amountInt = Mathf.FloorToInt(pair.Value);
             if (amountInt > 0)
             {
-                // DataManager 인스턴스 접근
                 ItemData item = GameManager.Instance.DataManager.ItemLoader.GetItemByKey(pair.Key);
                 if (item != null)
                 {
                     GameManager.Instance.Inventory.AddItem(item, amountInt);
                     Debug.Log($"[CollectManager] {item.Name} x {amountInt} 수령!");
+                    sb.AppendLine($"{item.Name} x {amountInt}"); // ★ 문자열 누적
                 }
                 else
                 {
                     Debug.LogWarning($"[CollectManager] 자원 키에 해당하는 ItemData를 찾지 못함: {pair.Key}");
                 }
             }
+        }
+
+        // Text로 획득내역 표시
+        if (minedAmountText != null)
+        {
+            if (sb.Length > 0)
+                minedAmountText.text = sb.ToString();
+            else
+                minedAmountText.text = "수령 가능한 자원이 없습니다.";
         }
 
         group.lastCollectTime = now;
