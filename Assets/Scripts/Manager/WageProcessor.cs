@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class WageProcessor
 {
@@ -45,6 +46,9 @@ public class WageProcessor
                 }
 
                 Debug.LogWarning($"[시급] {assi.Name} 시급 {assi.Wage}G 지급 실패 → 제자가 탈주 처리됨");
+
+                var assistantTab = GameObject.FindObjectOfType<AssistantTab>();
+                assistantTab?.RefreshSlots();
             }
         }
 
