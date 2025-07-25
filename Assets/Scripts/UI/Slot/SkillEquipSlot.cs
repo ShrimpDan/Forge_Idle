@@ -1,4 +1,4 @@
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -55,7 +55,7 @@ public class SkillEquipSlot : MonoBehaviour
         if (skill == null)
             uIManager.OpenUI<SkillWindow>(UIName.SkillWindow);
         else
-            skillSystem.UseSkill(idx);
+          skillSystem.UseSkill(idx);
     }
 
     private void StartCooldown(int idx, float curCooldown)

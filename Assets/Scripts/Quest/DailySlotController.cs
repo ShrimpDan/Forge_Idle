@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
 
@@ -18,7 +19,8 @@ public class DailySlotController : MonoBehaviour
 
     private void SettingSlot()
     {
-        var activeQuests = dailyQuestManager.GetActiveQuests();
+        var questList = dailyQuestManager.GetActiveQuestDic().Values.ToList();
+
         for (int i = 0; i < dailyQuestUIs.Count; i++)
         {
             if (dailyQuestUIs[i] == null)
@@ -27,10 +29,10 @@ public class DailySlotController : MonoBehaviour
                 continue;
             }
 
-            if (i < activeQuests.Count)
+            if (i < questList.Count)
             {
                 dailyQuestUIs[i].gameObject.SetActive(true);
-                dailyQuestUIs[i].InitButton(activeQuests[i], dailyQuestManager);
+                dailyQuestUIs[i].InitButton(questList[i], dailyQuestManager);
             }
             else
             {

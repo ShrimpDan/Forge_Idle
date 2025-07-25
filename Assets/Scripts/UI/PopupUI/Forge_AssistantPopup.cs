@@ -1,4 +1,4 @@
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -57,7 +57,7 @@ public class Forge_AssistantPopup : BaseUI
     {
         assiData = data;
         assiName.text = data.Name;
-        assiType.text = data.Specialization.ToString();
+        assiType.text = FusionSlotView.GetKoreanSpecialization(data.Specialization);
 
         foreach (Transform child in optionRoot)
             Destroy(child.gameObject);

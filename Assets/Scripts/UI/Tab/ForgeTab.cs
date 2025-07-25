@@ -9,7 +9,7 @@ public class ForgeTab : BaseTab
     [SerializeField] private Image progressFill;
     [SerializeField] private Button forgeRecipeBtn;
     [SerializeField] private Button slideTabBtn;
-    [SerializeField] private Transform slideTab;
+    [SerializeField] private RectTransform slideTab;
 
     [Header("Skill Slots")]
     [SerializeField] private SkillEquipSlot[] skillSlots;
@@ -90,11 +90,11 @@ public class ForgeTab : BaseTab
     {
         if (isOpen)
         {
-            slideTab.DOMoveY(200f, 0.5f).SetEase(Ease.Linear).OnComplete(() => arrowTr.localScale = new Vector3(1f, 1f, 1f));
+            slideTab.DOAnchorPosY(0f, 0.5f).SetEase(Ease.Linear).OnComplete(() => arrowTr.localScale = new Vector3(1f, 1f, 1f));
         }
         else
         {
-            slideTab.DOMoveY(16, 0.5f).SetEase(Ease.Linear).OnComplete(() => arrowTr.localScale = new Vector3(1f, -1f, 1f));
+            slideTab.DOAnchorPosY(-200f, 0.5f).SetEase(Ease.Linear).OnComplete(() => arrowTr.localScale = new Vector3(1f, -1f, 1f));
         }
     }
 }

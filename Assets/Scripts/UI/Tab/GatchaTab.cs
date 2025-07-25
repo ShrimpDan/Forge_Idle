@@ -44,7 +44,7 @@ public class GatchaTab : BaseTab
             tabButtons[i].image.color = isSelected ? selectedColor : defaultColor;
         }
 
-        SoundManager.Instance.Play("SFX_SystemClick");
+      //  SoundManager.Instance.Play("SFX_SystemClick");
 
     }
 }
