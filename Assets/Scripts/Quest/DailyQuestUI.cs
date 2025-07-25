@@ -17,56 +17,49 @@ public class DailyQuestUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI buttonText;
 
 
-    public void InitButton(DailyQuestData questData , DailyQuestManager dailyQuestManager)
+    public void InitButton(DailyQuestLoader loader, DailyQuestManager dailyQuestManager)
     {
-        questNameText.text = questData.title;
-        questInfo.text = questData.questInfo;
-        questProgressText.text = $"{questData.currentAmount / questData.goalAmount}";
-        questRewardText.text = $"다이아 : {questData.rewardCount}";
+        questNameText.text = loader.data.title;
+        questInfo.text = loader.data.questInfo;
+        questProgressText.text = $"{loader.currentAmount} / {loader.data.goalAmount}";
+        questRewardText.text = $"다이아 : {loader.data.rewardCount}";
+
         Button btn = claimButton.GetComponent<Button>();
+        btn.onClick.RemoveAllListeners();
 
-        btn.interactable = questData.isCompleted && !questData.isClaimed;
-
-        btn.onClick.RemoveAllListeners(); // Test
-
-
-        if (!questData.isClaimed && questData.currentAmount == 0)
+        if (!loader.isClaimed && loader.currentAmount == 0)
         {
-            // 수락 전
             buttonText.text = "수락하기";
             btn.interactable = true;
             btn.onClick.AddListener(() =>
             {
-                questData.isClaimed = true;
+                loader.isClaimed = true;
                 buttonText.text = "진행중";
                 btn.interactable = false;
             });
         }
-        else if (questData.isCompleted && questData.isClaimed)
+        else if (loader.isCompleted && loader.isClaimed)
         {
-           // 완료 + 수락 상태 → 보상 받기
             buttonText.text = "보상 받기";
             btn.interactable = true;
             btn.onClick.AddListener(() =>
             {
-                dailyQuestManager.ClaimReward(questData.questId);
+                dailyQuestManager.ClaimReward(loader.data.questId);
                 btn.interactable = false;
                 buttonText.text = "완료함";
             });
         }
-        else if (questData.isClaimed && !questData.isCompleted)
+        else if (loader.isClaimed && !loader.isCompleted)
         {
-            // 진행 중
             buttonText.text = "진행중";
             btn.interactable = false;
         }
-        else if (questData.isClaimed)
+        else if (loader.isClaimed)
         {
-            // 이미 보상 받은 상태
             buttonText.text = "수락함";
             btn.interactable = false;
         }
-    
+
     }
     
 
