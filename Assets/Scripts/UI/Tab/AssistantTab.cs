@@ -194,7 +194,10 @@ public class AssistantTab : BaseTab
             if (obj.TryGetComponent(out TextMeshProUGUI tmp))
             {
                 tmp.text = stat.AbilityName;
-                tmp.text += $"\nx{stat.Multiplier:F2}";
+
+                float percent = (stat.Multiplier - 1f) * 100f;
+                string sign = percent >= 0 ? "+" : "";
+                tmp.text += $"\n{sign}{percent:F0}%";
             }
         }
     }

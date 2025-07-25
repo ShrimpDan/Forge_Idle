@@ -3950,17 +3950,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d96fba4737f6b64f986f644742a70e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &316620232 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 9011678650473051604, guid: 59cb0835c8a35bc4b9ffdf13fa845ae8, type: 3}
-  m_PrefabInstance: {fileID: 1816963634}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 75007059}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f46c514d337e23740872b62ca7781e57, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &322379933
 GameObject:
   m_ObjectHideFlags: 0
@@ -6777,8 +6766,8 @@ MonoBehaviour:
   m_ShadowVolumeIntensityEnabled: 0
   m_ShadowVolumeIntensity: 0.75
   m_LocalBounds:
-    m_Center: {x: 0.00009998679, y: 0.00020000339, z: 0}
-    m_Extent: {x: 0.5008, y: 0.2506, z: 0}
+    m_Center: {x: -0.00030001998, y: 0.00010000169, z: 0}
+    m_Extent: {x: 0.50049996, y: 0.25010002, z: 0}
   m_PointLightInnerAngle: 360
   m_PointLightOuterAngle: 360
   m_PointLightInnerRadius: 0
@@ -39010,19 +38999,23 @@ PrefabInstance:
       objectReference: {fileID: 1233477712}
     - target: {fileID: 1569236047507279850, guid: e4822139471d4184b868e6d5c228da5b, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1569236047507279850, guid: e4822139471d4184b868e6d5c228da5b, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 316620232}
+      objectReference: {fileID: 902444465353719219}
     - target: {fileID: 1569236047507279850, guid: e4822139471d4184b868e6d5c228da5b, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnClickRecruitOne
+      value: OnClickRecruitRandom
       objectReference: {fileID: 0}
     - target: {fileID: 1569236047507279850, guid: e4822139471d4184b868e6d5c228da5b, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: RecruitButtonHandler, Assembly-CSharp
+      value: RecruitPreviewManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 1569236047507279850, guid: e4822139471d4184b868e6d5c228da5b, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 1640722100330823659, guid: e4822139471d4184b868e6d5c228da5b, type: 3}
       propertyPath: enhanceAssi
@@ -39351,7 +39344,15 @@ PrefabInstance:
     - target: {fileID: 4452012985629370307, guid: e4822139471d4184b868e6d5c228da5b, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1233477712}
+      objectReference: {fileID: 902444465353719219}
+    - target: {fileID: 4452012985629370307, guid: e4822139471d4184b868e6d5c228da5b, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnClickRecruitMining
+      objectReference: {fileID: 0}
+    - target: {fileID: 4452012985629370307, guid: e4822139471d4184b868e6d5c228da5b, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: RecruitPreviewManager, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 4551398236804655713, guid: e4822139471d4184b868e6d5c228da5b, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -39599,7 +39600,15 @@ PrefabInstance:
     - target: {fileID: 5740073534266154953, guid: e4822139471d4184b868e6d5c228da5b, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1233477712}
+      objectReference: {fileID: 902444465353719219}
+    - target: {fileID: 5740073534266154953, guid: e4822139471d4184b868e6d5c228da5b, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnClickRecruitSelling
+      objectReference: {fileID: 0}
+    - target: {fileID: 5740073534266154953, guid: e4822139471d4184b868e6d5c228da5b, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: RecruitPreviewManager, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 5804303748898246480, guid: e4822139471d4184b868e6d5c228da5b, type: 3}
       propertyPath: m_Name
       value: DrawButton
@@ -40023,7 +40032,15 @@ PrefabInstance:
     - target: {fileID: 8848176819590952588, guid: e4822139471d4184b868e6d5c228da5b, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1233477712}
+      objectReference: {fileID: 902444465353719219}
+    - target: {fileID: 8848176819590952588, guid: e4822139471d4184b868e6d5c228da5b, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnClickRecruitCrafting
+      objectReference: {fileID: 0}
+    - target: {fileID: 8848176819590952588, guid: e4822139471d4184b868e6d5c228da5b, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: RecruitPreviewManager, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 8911117538200691594, guid: e4822139471d4184b868e6d5c228da5b, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0

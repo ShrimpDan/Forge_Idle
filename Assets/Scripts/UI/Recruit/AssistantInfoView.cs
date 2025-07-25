@@ -86,7 +86,9 @@ public class AssistantInfoView : MonoBehaviour
         System.Text.StringBuilder sb = new System.Text.StringBuilder();
         foreach (var ability in assistant.Multipliers)
         {
-            sb.AppendLine($"{ability.AbilityName} 증가 : x{ability.Multiplier:F2}");
+            float percent = (ability.Multiplier - 1f) * 100f;
+            string sign = percent >= 0 ? "+" : "";
+            sb.AppendLine($"{ability.AbilityName} 증가 : {sign}{percent:F0}%");
         }
         return sb.ToString();
     }

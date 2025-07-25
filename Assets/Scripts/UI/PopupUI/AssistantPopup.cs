@@ -60,7 +60,7 @@ public class AssistantPopup : BaseUI
         // 아이콘, 텍스트
         icon.sprite = IconLoader.GetIconByPath(data.IconPath);
         assiName.text = data.Name;
-        assiType.text = data.Specialization.ToString();
+        assiType.text = FusionSlotView.GetKoreanSpecialization(data.Specialization);
 
         // 옵션 초기화
         foreach (Transform child in optionRoot)
@@ -84,7 +84,10 @@ public class AssistantPopup : BaseUI
             {
                 GameObject obj = Instantiate(optionTextPrefab, optionRoot);
                 var optionText = obj.GetComponent<TextMeshProUGUI>();
-                optionText.text = $"{option.AbilityName}\nx{option.Multiplier:F2}";
+
+                float percent = (option.Multiplier - 1f) * 100f;
+                string sign = percent >= 0 ? "+" : "";
+                optionText.text = $"{option.AbilityName}\n{sign}{percent:F0}%";
 
                 if (obj.GetComponent<LayoutElement>() == null)
                 {
@@ -144,6 +147,8 @@ public class AssistantPopup : BaseUI
         }
 
         forge.AssistantHandler.ActiveAssistant(assiData);
+
+        RefreshEquippedState();
         SetApplyButton(assiData);
 
         assistantTab?.RefreshSlots();
@@ -172,8 +177,9 @@ public class AssistantPopup : BaseUI
             assiData.IsFired = false;
             GameManager.Instance.SaveManager.SaveAll();
             Debug.Log($"{assiData.Name} 재고용 완료!");
-            RefreshEquippedState();
-            SetApplyButton(assiData);
+
+            SetAssistant(assiData);
+
             assistantTab?.RefreshSlots();
         }
         else
@@ -181,6 +187,7 @@ public class AssistantPopup : BaseUI
             Debug.LogWarning("골드가 부족합니다.");
         }
     }
+
 
     private void RefreshEquippedState()
     {
