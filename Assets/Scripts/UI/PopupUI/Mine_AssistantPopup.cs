@@ -1,4 +1,4 @@
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
@@ -45,7 +45,7 @@ public class Mine_AssistantPopup : BaseUI
         onAssignToggleCallback = onAssignToggle;
 
         assiName.text = data.Name;
-        assiType.text = data.Specialization.ToString();
+        assiType.text = FusionSlotView.GetKoreanSpecialization(data.Specialization);
 
         foreach (Transform child in optionRoot)
             Destroy(child.gameObject);
