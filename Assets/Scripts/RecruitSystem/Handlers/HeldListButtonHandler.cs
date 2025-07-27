@@ -20,6 +20,7 @@ public class HeldListButtonHandler : MonoBehaviour
             return;
         }
 
+        SoundManager.Instance.Play("SFX_SystemClick");
         heldUIController.ShowHeldAssistantList(heldList);
     }
 

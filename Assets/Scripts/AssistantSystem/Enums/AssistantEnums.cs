@@ -5,7 +5,8 @@ public enum SpecializationType
 {
     Crafting,
     Mining,
-    Selling
+    Selling,
+    All
 }
 
 public static class AssistantStatNames

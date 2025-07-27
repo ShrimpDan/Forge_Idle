@@ -34,24 +34,27 @@ public class AssistantFactory
         {
             string selectedGrade = GetRandomGradeByProbability();
 
-            var ownedKeys = GameManager.Instance.AssistantInventory.GetAll().Select(a => a.Key);
-            var heldKeys = GameManager.Instance.HeldCandidates.Select(h => h.Key);
-            var blockedKeys = new HashSet<string>(ownedKeys.Concat(heldKeys));
-
             var candidates = assistantLoader.ItemsList
-                .Where(t => t.grade == selectedGrade && !blockedKeys.Contains(t.Key))
+                .Where(t => t.grade == selectedGrade)
                 .ToList();
+
+            if (candidates.Count == 0 && attempts == maxRetry - 1)
+            {
+                Debug.LogWarning($"[Fallback] {selectedGrade} 후보 없음 → 전체에서 아무거나");
+                candidates = assistantLoader.ItemsList.ToList();
+            }
 
             if (candidates.Count > 0)
             {
-                var selected = candidates[rng.Next(candidates.Count)];
+                var selected = candidates[UnityEngine.Random.Range(0, candidates.Count)];
                 return CreateAssistantFromData(selected);
             }
 
             attempts++;
         }
 
-        Debug.LogWarning("[AssistantFactory] 뽑기 실패: 유효한 등급의 제자 후보가 없습니다.");
+        Debug.LogWarning("[AssistantFactory] 뽑기 실패: 유효한 후보 없음");
+        canRecruit = true;
         return null;
     }
 
@@ -60,15 +63,11 @@ public class AssistantFactory
         if (!canRecruit && !bypassRecruitCheck) return null;
         canRecruit = false;
 
-        var ownedKeys = GameManager.Instance.AssistantInventory.GetAll().Select(a => a.Key);
-        var heldKeys = GameManager.Instance.HeldCandidates.Select(h => h.Key);
-        var blockedKeys = new HashSet<string>(ownedKeys.Concat(heldKeys));
-
-        var candidates = assistantLoader.ItemsList.FindAll(t =>
-            GetTier(t.grade) >= 2 &&
-            specializationLoader.GetByKey(t.specializationKey)?.specializationType == type &&
-            !blockedKeys.Contains(t.Key)
-        );
+        List<AssistantData> candidates = type == SpecializationType.All
+            ? assistantLoader.ItemsList.Where(t => GetTier(t.grade) >= 2).ToList()
+            : assistantLoader.ItemsList.Where(t =>
+                GetTier(t.grade) >= 2 &&
+                specializationLoader.GetByKey(t.specializationKey)?.specializationType == type).ToList();
 
         if (candidates.Count == 0) return null;
 
