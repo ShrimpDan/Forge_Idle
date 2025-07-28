@@ -175,8 +175,11 @@ public class DailyQuestManager : MonoBehaviour
             ? DateTime.MinValue
             : DateTime.Parse(lastDateString);
 
-        DateTime now = DateTime.Now;
+        //DateTime now = DateTime.Now; 로컬시간 사용 뺌
+        DateTime now = TimeManager.Instance.Now();
         DateTime resetTime = DateTime.Today.AddHours(23).AddMinutes(TestTime).AddMinutes(0);
+        //NTP서버 
+
 
         if (lastDateTime < resetTime && now >= resetTime)
         {

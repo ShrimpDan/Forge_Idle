@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -25,6 +26,8 @@ public class GameManager : MonoSingleton<GameManager>
     public CollectionBookManager CollectionManager { get; private set; }
 
     public DailyQuestManager DailyQuestManager { get; private set; }
+
+
     protected override void Awake()
     {
         base.Awake();
@@ -74,8 +77,15 @@ public class GameManager : MonoSingleton<GameManager>
         DontDestroyOnLoad(cmObj);
     }
 
+
+
+
+
+
     private void Start()
     {
+
+
         SaveManager = new GameSaveManager();
 
         SaveManager.RegisterSaveHandler(new SkillSaveHandler(SkillManager));
@@ -89,6 +99,8 @@ public class GameManager : MonoSingleton<GameManager>
         SaveManager.LoadAll();
 
         InvokeRepeating(nameof(ProcessWageWrapper), 5f, 5f);
+
+
     }
 
     /// <summary>
