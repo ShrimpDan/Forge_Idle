@@ -28,7 +28,7 @@ public class ForgeManager : MonoBehaviour
     public ForgeTypeSaveSystem ForgeTypeSaveSystem { get; private set; } = new ForgeTypeSaveSystem();
     public ForgeSkillSystem SkillSystem { get; private set; }
     public ForgeEventHandler Events { get; private set; } = new ForgeEventHandler();
-    public Dictionary<ForgeType?, Dictionary<SpecializationType, AssistantInstance>> EquippedAssistant { get; private set; } = new();
+    public Dictionary<ForgeType, Dictionary<SpecializationType, AssistantInstance>> EquippedAssistant { get; private set; } = new();
 
     public void Init(GameManager gameManager)
     {
@@ -223,7 +223,7 @@ public class ForgeManager : MonoBehaviour
 
     private void LoadAssiSaveData(List<EquipAssiSaveData> equippedAssi)
     {
-        EquippedAssistant = new Dictionary<ForgeType?, Dictionary<SpecializationType, AssistantInstance>>()
+        EquippedAssistant = new Dictionary<ForgeType, Dictionary<SpecializationType, AssistantInstance>>()
         {
             { ForgeType.Weapon, new Dictionary<SpecializationType, AssistantInstance>()
                 {

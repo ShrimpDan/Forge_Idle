@@ -12,7 +12,7 @@ public class ActiveSkillSaveData
 [System.Serializable]
 public class EquipAssiSaveData
 {
-    public ForgeType? ForgeType;
+    public ForgeType ForgeType;
     public string AssistantKey; 
 }
 

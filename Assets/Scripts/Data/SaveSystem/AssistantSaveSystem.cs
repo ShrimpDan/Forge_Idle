@@ -24,7 +24,7 @@ public class AssistantDataSave
     public string PersonalityKey;
     public SpecializationType Specialization;
     public List<AbilityMultiplierSave> Multipliers;
-    public ForgeType? EquippedForge;
+    public ForgeType EquippedForge;
     public bool IsEquipped;
     public bool IsInUse;
     public int SpecializationIndex;

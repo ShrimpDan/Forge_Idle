@@ -17,7 +17,7 @@ public class AssistantInstance
     public int RecruitCost { get; set; }
     public int Wage { get; set; }
     public int RehireCost { get; set; }
-    public ForgeType? EquippedForge { get; set; }
+    public ForgeType EquippedForge { get; set; }
     public bool IsEquipped { get; set; }
     public bool IsInUse { get; set; }
 
@@ -46,7 +46,7 @@ public class AssistantInstance
         int recruitCost = 0,
         int wage = 0,
         int rehireCost = 0,
-        ForgeType? forgeType = null
+        ForgeType forgeType = ForgeType.None
     )
     {
         Key = key;
@@ -104,7 +104,7 @@ public class AssistantInstance
         Multipliers = newMultipliers;
     }
 
-    public void EquipAssi(bool isEquip, ForgeType? forgeType = null)
+    public void EquipAssi(bool isEquip, ForgeType forgeType = ForgeType.None)
     {
         IsEquipped = isEquip;
         EquippedForge = forgeType;
