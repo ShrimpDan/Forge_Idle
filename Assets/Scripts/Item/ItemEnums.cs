@@ -35,7 +35,8 @@ public enum ForgeType
 {
     Weapon = 0,
     Armor = 1,
-    Magic = 2
+    Magic = 2,
+    None = 3
 }
 
 public enum ForgeUpgradeType

@@ -7,7 +7,6 @@ public class ForgeTypeData
 {
     public ForgeType Type;
     public List<ForgeUpgradeSaveData> UpgradeLevels = new();
-    public List<string> EquippedAssistantKeys = new();
     public List<ForgeRecipeSaveData> Recipes = new();
 }
 
@@ -103,7 +102,6 @@ public class ForgeTypeSaveSystem
         {
             Type = type,
             UpgradeLevels = upgradeLevels,
-            EquippedAssistantKeys = null
         };
     }
 

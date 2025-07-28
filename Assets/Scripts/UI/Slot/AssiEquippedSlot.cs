@@ -20,9 +20,9 @@ public class AssiEquippedSlot : MonoBehaviour
         slotBtn.onClick.AddListener(OnClickSlot);
     }
 
-    public void SetAssistant(AssistantInstance assi, bool isAcitve)
+    public void SetAssistant(AssistantInstance assi)
     {
-        if (assi == null || !isAcitve)
+        if (assi == null)
         {
             UnEquipAssistant();
             return;

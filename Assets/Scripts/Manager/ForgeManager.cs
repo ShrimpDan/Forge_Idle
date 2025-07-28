@@ -1,8 +1,11 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 public class ForgeManager : MonoBehaviour
 {
     private GameManager gameManager;
+    private AssistantInventory assistantInventory;
 
     // 레벨 & 명성치
     public int Level { get; private set; }
@@ -25,10 +28,13 @@ public class ForgeManager : MonoBehaviour
     public ForgeTypeSaveSystem ForgeTypeSaveSystem { get; private set; } = new ForgeTypeSaveSystem();
     public ForgeSkillSystem SkillSystem { get; private set; }
     public ForgeEventHandler Events { get; private set; } = new ForgeEventHandler();
+    public Dictionary<ForgeType, Dictionary<SpecializationType, AssistantInstance>> EquippedAssistant { get; private set; } = new();
 
     public void Init(GameManager gameManager)
     {
         this.gameManager = gameManager;
+        assistantInventory = gameManager.AssistantInventory;
+
         SkillSystem = GetComponentInChildren<ForgeSkillSystem>();
 
         if (SkillSystem)
@@ -51,6 +57,8 @@ public class ForgeManager : MonoBehaviour
             Dia = Dia,
 
             ActiveSkills = SkillSystem.GetSaveData(),
+            EquippedAssi = GetAssiSaveData(),
+
             CurrentForgeScene = CurrentForge != null ? CurrentForge.SceneType : SceneType.Main
         };
 
@@ -74,7 +82,7 @@ public class ForgeManager : MonoBehaviour
         Dia = data.Dia;
 
         SkillSystem.LoadFromData(data.ActiveSkills);
-        
+        LoadAssiSaveData(data.EquippedAssi);
         if (data.CurrentForgeScene != SceneType.Main)
         {
             LoadSceneManager.Instance.LoadSceneAsync(data.CurrentForgeScene, true);
@@ -82,7 +90,6 @@ public class ForgeManager : MonoBehaviour
 
         RaiseAllEvents();
     }
-
 
     private void RaiseAllEvents()
     {
@@ -181,6 +188,70 @@ public class ForgeManager : MonoBehaviour
         {
             CurRecipePoint = TotalRecipePoint;
             CurrentForge.RecipeSystem.ResetRecipe();
+        }
+    }
+
+    public AssistantInstance GetEquippedAssi(string key)
+    {
+        return EquippedAssistant.SelectMany(forgeEntry => forgeEntry.Value.Values)
+                                .FirstOrDefault(assistant => assistant.Key == key);
+    }
+
+    private List<EquipAssiSaveData> GetAssiSaveData()
+    {
+        List<EquipAssiSaveData> equippedAssi = new List<EquipAssiSaveData>();
+
+        foreach (var forgeType in EquippedAssistant.Keys)
+        {
+            foreach (var assi in EquippedAssistant[forgeType].Values)
+            {
+                if (assi != null)
+                {
+                    EquipAssiSaveData data = new EquipAssiSaveData
+                    {
+                        ForgeType = forgeType,
+                        AssistantKey = assi.Key
+                    };
+
+                    equippedAssi.Add(data);
+                }
+            }
+        }
+
+        return equippedAssi;
+    }
+
+    private void LoadAssiSaveData(List<EquipAssiSaveData> equippedAssi)
+    {
+        EquippedAssistant = new Dictionary<ForgeType, Dictionary<SpecializationType, AssistantInstance>>()
+        {
+            { ForgeType.Weapon, new Dictionary<SpecializationType, AssistantInstance>()
+                {
+                    { SpecializationType.Crafting, null },
+                    { SpecializationType.Selling, null }
+                }
+            },
+            { ForgeType.Armor, new Dictionary<SpecializationType, AssistantInstance>()
+                {
+                    { SpecializationType.Crafting, null },
+                    { SpecializationType.Selling, null }
+                }
+            },
+            { ForgeType.Magic, new Dictionary<SpecializationType, AssistantInstance>()
+                {
+                    { SpecializationType.Crafting, null },
+                    { SpecializationType.Selling, null }
+                }
+            }
+        };
+
+        if (equippedAssi != null)
+        {
+            foreach (var data in equippedAssi)
+            {
+                AssistantInstance assi = assistantInventory.GetAssistantInstance(data.AssistantKey);
+                EquippedAssistant[data.ForgeType][assi.Specialization] = assi;
+            }
         }
     }
 }

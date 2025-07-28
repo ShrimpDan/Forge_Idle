@@ -24,7 +24,7 @@ public class AssistantInventory
             Debug.LogWarning("[AssistantInventory] Null 데이터를 추가하려고 시도했습니다.");
             return;
         }
-        
+
         assistantList.Add(data);
         ReindexSpecialization(data.Specialization);
     }
@@ -149,5 +149,10 @@ public class AssistantInventory
     public List<AssistantInstance> GetFiredTrainees()
     {
         return assistantList.FindAll(t => t.IsFired);
+    }
+
+    public AssistantInstance GetAssistantInstance(string key)
+    {
+        return assistantList.Find(a => a.Key == key);
     }
 }

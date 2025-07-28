@@ -36,7 +36,7 @@ public class GameManager : MonoSingleton<GameManager>
         Inventory = new InventoryManager(this);
         DungeonSystem = new DungeonSystem(this);
         WageProcessor = new WageProcessor(this);
-        SkillManager = new SkillManager(this, DataManager.SkillDataLoader);
+        SkillManager = new SkillManager(DataManager.SkillDataLoader);
 
         ForgeManager = GetComponentInChildren<ForgeManager>();
         AssistantManager = FindObjectOfType<AssistantManager>();
@@ -51,14 +51,14 @@ public class GameManager : MonoSingleton<GameManager>
             DailyQuestManager.Init(this);
         }
 
+        if (AssistantManager)
+            AssistantManager.Init(this);
+
         if (ForgeManager)
             ForgeManager.Init(this);
 
         if (UIManager)
             UIManager.Init(this);
-
-        if (AssistantManager)
-            AssistantManager.Init(this);
 
         if (TutorialManager)
             TutorialManager.Init(this);

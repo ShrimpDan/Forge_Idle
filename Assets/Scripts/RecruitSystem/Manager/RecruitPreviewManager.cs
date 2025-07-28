@@ -4,6 +4,11 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
+// RecruitPreviewManager.cs
+// 제자 영입 프리뷰를 관리하는 UI 컨트롤러입니다.
+// 제자 5명을 생성하고 UI에 순차적으로 표시하며, 영입/거절/보류 처리를 담당합니다.
+// 보류 중인 제자를 다시 불러와 확인하는 기능도 포함합니다.
+
 public class RecruitPreviewManager : MonoBehaviour
 {
     [Header("UI")]
@@ -19,9 +24,9 @@ public class RecruitPreviewManager : MonoBehaviour
     [SerializeField] private Button btnReject;
     [SerializeField] private Button btnHold;
 
+    private AssistantFactory assistantFactory;
     private SpecializationType? recruitFilter = null;
 
-    private AssistantFactory assistantFactory;
     private List<AssistantInstance> candidatePool = new();
     private List<GameObject> activePapers = new();
     private GameObject currentPaperGO;
@@ -31,6 +36,7 @@ public class RecruitPreviewManager : MonoBehaviour
     private bool isTransitioning = false;
     private int currentIndex = 0;
 
+    // 팩토리 초기화
     private void Start()
     {
         if (GameManager.Instance?.DataManager == null)
@@ -42,6 +48,7 @@ public class RecruitPreviewManager : MonoBehaviour
         assistantFactory = new AssistantFactory(GameManager.Instance.DataManager);
     }
 
+    // 랜덤/특화 제자 뽑기 시도 (보류 제자 존재 여부 확인 포함)
     public void TryRecruitCandidateByType(SpecializationType? type)
     {
         recruitFilter = type;
@@ -64,6 +71,7 @@ public class RecruitPreviewManager : MonoBehaviour
         }
     }
 
+    // 실제로 제자 5명 생성 후 프리뷰 시작
     private void StartRecruit()
     {
         ClearActivePapers();
@@ -76,15 +84,13 @@ public class RecruitPreviewManager : MonoBehaviour
         recruitUI?.SetActive(true);
         SetButtonsInteractable(false);
 
-        // 중복 방지를 위한 키셋 구성
-        var inventoryKeys = GameManager.Instance.AssistantInventory.GetAll().Select(a => a.Key);
-        var heldKeys = GameManager.Instance.HeldCandidates.Select(a => a.Key);
-        var allExistingKeys = new HashSet<string>(inventoryKeys.Concat(heldKeys));
+        var allExistingKeys = new HashSet<string>(
+            GameManager.Instance.AssistantInventory.GetAll().Select(a => a.Key)
+            .Concat(GameManager.Instance.HeldCandidates.Select(a => a.Key)));
 
-        // 중복 제거하며 최대 5명 뽑기
         candidatePool.Clear();
         int attempts = 0;
-        int maxAttempts = 30;
+        const int maxAttempts = 30;
 
         while (candidatePool.Count < 5 && attempts < maxAttempts)
         {
@@ -97,6 +103,7 @@ public class RecruitPreviewManager : MonoBehaviour
             {
                 candidatePool.Add(candidate);
             }
+
             attempts++;
         }
 
@@ -111,6 +118,7 @@ public class RecruitPreviewManager : MonoBehaviour
         ShowCurrentCandidate();
     }
 
+    // 현재 제자 후보를 화면에 표시
     private void ShowCurrentCandidate()
     {
         if (currentIndex >= candidatePool.Count)
@@ -152,6 +160,7 @@ public class RecruitPreviewManager : MonoBehaviour
         popup.ShowPopup(candidate);
     }
 
+    // 제자 종이 생성 및 애니메이션 재생
     private GameObject CreatePaper(AssistantInstance data, Action onEnterComplete = null)
     {
         var paper = Instantiate(paperPrefab, paperRoot);
@@ -166,6 +175,7 @@ public class RecruitPreviewManager : MonoBehaviour
         return paper;
     }
 
+    // 모든 종이 제거
     private void ClearActivePapers()
     {
         foreach (var paper in activePapers)
@@ -178,6 +188,7 @@ public class RecruitPreviewManager : MonoBehaviour
         currentPaperGO = null;
     }
 
+    // 제자 영입 확정
     public void ApproveCandidate()
     {
         if (isTransitioning) return;
@@ -185,41 +196,35 @@ public class RecruitPreviewManager : MonoBehaviour
         SetButtonsInteractable(false);
         var gm = GameManager.Instance;
 
-        if (isFromHeldList)
-        {
-            int cost = currentHeldInstance.RecruitCost;
-            if (!gm.ForgeManager.UseGold(cost))
-            {
-                Debug.LogWarning("[Recruit] 골드 부족");
-                SetButtonsInteractable(true);
-                return;
-            }
+        var target = isFromHeldList ? currentHeldInstance : candidatePool[currentIndex];
+        int cost = target.RecruitCost;
 
-            gm.AssistantInventory.Add(currentHeldInstance);
-            gm.HeldCandidates.Remove(currentHeldInstance);
-            gm.SaveManager.SaveAll();
-
-            ReturnToProperUI();
-            return;
-        }
-
-        var approved = candidatePool[currentIndex];
-        int recruitCost = approved.RecruitCost;
-
-        if (!gm.ForgeManager.UseGold(recruitCost))
+        if (!gm.ForgeManager.UseGold(cost))
         {
             Debug.LogWarning("[Recruit] 골드 부족");
             SetButtonsInteractable(true);
             return;
         }
 
-        gm.AssistantInventory.Add(approved);
+        gm.AssistantInventory.Add(target);
+
+        if (isFromHeldList)
+            gm.HeldCandidates.Remove(currentHeldInstance);
+
         gm.SaveManager.SaveAll();
 
-        currentIndex++;
-        ShowCurrentCandidate();
+        if (isFromHeldList)
+        {
+            ReturnToProperUI();
+        }
+        else
+        {
+            currentIndex++;
+            ShowCurrentCandidate();
+        }
     }
 
+    // 제자 영입 거절
     public void RejectCandidate()
     {
         if (isTransitioning) return;
@@ -238,6 +243,7 @@ public class RecruitPreviewManager : MonoBehaviour
         ShowCurrentCandidate();
     }
 
+    // 제자 보류 처리
     public void HoldCandidate()
     {
         if (isTransitioning) return;
@@ -258,6 +264,8 @@ public class RecruitPreviewManager : MonoBehaviour
         ShowCurrentCandidate();
     }
 
+
+    // 보류 제자 프리뷰 호출
     public void ShowSingleCandidateFromHeld(AssistantInstance held)
     {
         isFromHeldList = true;
@@ -276,9 +284,11 @@ public class RecruitPreviewManager : MonoBehaviour
             isTransitioning = false;
             SetButtonsInteractable(true);
         });
+
         SetButtonsInteractable(false);
     }
 
+    // UI 상태 복귀
     private void ReturnToProperUI()
     {
         popup.HidePopup();
@@ -287,7 +297,6 @@ public class RecruitPreviewManager : MonoBehaviour
         {
             recruitUI.SetActive(false);
             heldUI.SetActive(true);
-
             SetButtonsInteractable(false);
 
             GameManager.Instance.UIManager.HeldAssistantUIController
@@ -298,6 +307,7 @@ public class RecruitPreviewManager : MonoBehaviour
         currentHeldInstance = null;
     }
 
+    // 버튼 활성화 상태 일괄 설정
     private void SetButtonsInteractable(bool interactable)
     {
         btnApprove.interactable = interactable;
@@ -305,7 +315,7 @@ public class RecruitPreviewManager : MonoBehaviour
         btnHold.interactable = interactable;
     }
 
-
+    // 버튼 이벤트 (랜덤/특화별)
     public void OnClickRecruitRandom() => TryRecruitCandidateByType(SpecializationType.All);
     public void OnClickRecruitCrafting() => TryRecruitCandidateByType(SpecializationType.Crafting);
     public void OnClickRecruitMining() => TryRecruitCandidateByType(SpecializationType.Mining);

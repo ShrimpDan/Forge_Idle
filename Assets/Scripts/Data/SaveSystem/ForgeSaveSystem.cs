@@ -10,6 +10,13 @@ public class ActiveSkillSaveData
 }
 
 [System.Serializable]
+public class EquipAssiSaveData
+{
+    public ForgeType ForgeType;
+    public string AssistantKey; 
+}
+
+[System.Serializable]
 public class ForgeCommonData
 {
     // 레벨 & 명성치
@@ -28,6 +35,7 @@ public class ForgeCommonData
 
     // 스킬
     public List<ActiveSkillSaveData> ActiveSkills;
+    public List<EquipAssiSaveData> EquippedAssi;
 
     public SceneType CurrentForgeScene;
 }
@@ -90,6 +98,8 @@ public static class ForgeSaveSystem
             Dia = 0,
 
             ActiveSkills = new List<ActiveSkillSaveData>(),
+            EquippedAssi = new List<EquipAssiSaveData>(),
+
             CurrentForgeScene = SceneType.Forge_Weapon
         };
     }

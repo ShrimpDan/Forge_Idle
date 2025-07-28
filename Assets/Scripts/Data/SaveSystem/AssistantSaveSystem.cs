@@ -24,6 +24,7 @@ public class AssistantDataSave
     public string PersonalityKey;
     public SpecializationType Specialization;
     public List<AbilityMultiplierSave> Multipliers;
+    public ForgeType EquippedForge;
     public bool IsEquipped;
     public bool IsInUse;
     public int SpecializationIndex;
@@ -60,6 +61,7 @@ public class AssistantSaveSystem
                     AbilityName = m.AbilityName,
                     Multiplier = m.Multiplier
                 }),
+                EquippedForge = assi.EquippedForge,
                 IsEquipped = assi.IsEquipped,
                 IsInUse = assi.IsInUse,
                 SpecializationIndex = assi.SpecializationIndex,
@@ -106,7 +108,8 @@ public class AssistantSaveSystem
                 iconPath: a.IconPath,
                 level: a.Level,
                 isEquipped: a.IsEquipped,
-                isInuse: a.IsInUse
+                isInuse: a.IsInUse,
+                forgeType: a.EquippedForge
             );
 
             assi.SpecializationIndex = a.SpecializationIndex;
