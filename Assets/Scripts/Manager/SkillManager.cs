@@ -2,13 +2,11 @@ using System.Collections.Generic;
 
 public class SkillManager
 {
-    private GameManager gameManager;
     private SkillDataLoader skillDataLoader;
     public List<SkillInstance> SkillList { get; private set; } = new();
 
-    public SkillManager(GameManager gameManager, SkillDataLoader skillDataLoader)
+    public SkillManager(SkillDataLoader skillDataLoader)
     {
-        this.gameManager = gameManager;
         this.skillDataLoader = skillDataLoader;
     }
 

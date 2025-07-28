@@ -110,103 +110,52 @@ public class ForgeStatHandler
         return true;
     }
 
-    public void ApplyAssistantStat(AssistantInstance assi)
+    public void ApplyAssistantStat(AssistantInstance assi, bool isApply)
     {
         foreach (var stat in assi.Multipliers)
         {
+            float multiplier = isApply ? 1 : -1;
+            float statValue = stat.Multiplier * multiplier;
+
             switch (stat.AbilityName)
             {
                 case AssistantStatNames.IncreaseCraftSpeed:
-                    
+                    assistantReduceWeaponCraftingTime += statValue;
                     break;
 
                 case AssistantStatNames.IncreaseAdvancedCraftChance:
-                    assistantRareCraftChance += stat.Multiplier;
+                    assistantRareCraftChance += statValue;
                     break;
 
                 case AssistantStatNames.IncreaseAutoCraftSpeed:
-                    assistantAutoCraftingTimeReduction += stat.Multiplier;
+                    assistantAutoCraftingTimeReduction += statValue;
                     break;
 
                 case AssistantStatNames.IncreaseGreatSuccessChance:
-                    assistantPerfectCraftingChance += stat.Multiplier;
+                    assistantPerfectCraftingChance += statValue;
                     break;
 
                 case AssistantStatNames.IncreaseMiningYieldPerMinute:
+                    assistantResourcePerMinuteBonus += statValue;
                     break;
 
                 case AssistantStatNames.IncreaseMaxMiningCapacity:
+                    assistantMaxResourceCapacityBonus += statValue;
                     break;
 
                 case AssistantStatNames.IncreaseSellPrice:
-                    assistantSellPriceBonus += stat.Multiplier;
+                    assistantSellPriceBonus += statValue;
                     break;
 
                 case AssistantStatNames.IncreaseCustomerCount:
-                    assistantCustomerSpawnIntervalReduction += stat.Multiplier;
+                    assistantCustomerSpawnIntervalReduction += statValue;
                     break;
 
                 case AssistantStatNames.IncreaseAutoCustomerRepelChance:
-
+                    assistantBadCustomerAutoKickChance += statValue;
                     break;
             }
         }
-    }
-
-    public void DeApplyAssistantStat(AssistantInstance assi)
-    {
-        foreach (var stat in assi.Multipliers)
-        {
-            switch (stat.AbilityName)
-            {
-                case AssistantStatNames.IncreaseCraftSpeed:
-                    
-                    break;
-
-                case AssistantStatNames.IncreaseAdvancedCraftChance:
-                    assistantRareCraftChance -= stat.Multiplier;
-                    break;
-
-                case AssistantStatNames.IncreaseAutoCraftSpeed:
-                    assistantAutoCraftingTimeReduction -= stat.Multiplier;
-                    break;
-
-                case AssistantStatNames.IncreaseGreatSuccessChance:
-                    assistantPerfectCraftingChance -= stat.Multiplier;
-                    break;
-
-                case AssistantStatNames.IncreaseMiningYieldPerMinute:
-                    break;
-
-                case AssistantStatNames.IncreaseMaxMiningCapacity:
-                    break;
-
-                case AssistantStatNames.IncreaseSellPrice:
-                    assistantSellPriceBonus -= stat.Multiplier;
-                    break;
-
-                case AssistantStatNames.IncreaseCustomerCount:
-                    assistantCustomerSpawnIntervalReduction -= stat.Multiplier;
-                    break;
-
-                case AssistantStatNames.IncreaseAutoCustomerRepelChance:
-
-                    break;
-            }
-        }
-    }
-
-    public void ResetAssistantStats()
-    {
-        assistantSellPriceBonus = 0;
-        assistantPerfectCraftingChance = 0;
-        assistantAutoCraftingTimeReduction = 0;
-        assistantBadCustomerAutoKickChance = 0;
-        assistantReduceWeaponCraftingTime = 0;
-        assistantRareCraftChance = 0;
-        assistantCustomerSpawnIntervalReduction = 0;
-        assistantResourcePerMinuteBonus = 0;
-        assistantMaxResourceCapacityBonus = 0;
     }
 
     public void SetSkillEffect(ForgeUpgradeType type, float value, bool isActive)

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class Forge : MonoBehaviour
 {
@@ -35,13 +36,18 @@ public class Forge : MonoBehaviour
         SellingSystem = GetComponent<WeaponSellingSystem>();
         RecipeSystem = new WeaponRecipeSystem(this, gameManager.DataManager.CraftingLoader, gameManager.DataManager.RecipeLoader);
         StatHandler = new ForgeStatHandler(this, gameManager.DataManager);
-        AssistantHandler = new ForgeAssistantHandler(ForgeManager, VisualHandler, StatHandler, gameManager.AssistantInventory);
+        AssistantHandler = new ForgeAssistantHandler(this);
 
         if (SellingSystem)
             SellingSystem.Init(this, gameManager.Inventory);
 
         if (blackSmith != null)
             blackSmith.Init();
+
+        if (!ForgeManager.EquippedAssistant.ContainsKey(ForgeType))
+        {
+            ForgeManager.EquippedAssistant[ForgeType] = new Dictionary<SpecializationType, AssistantInstance>();
+        }
 
         ForgeManager.ForgeTypeSaveSystem.LoadForge(this);
         CustomerManager.StartSpawnCustomer(this);
@@ -53,7 +59,6 @@ public class Forge : MonoBehaviour
         {
             Type = ForgeType,
             UpgradeLevels = StatHandler.GetSaveData(),
-            EquippedAssistantKeys = AssistantHandler.GetSaveData(),
             Recipes = RecipeSystem.GetSaveData()
         };
 
@@ -63,7 +68,6 @@ public class Forge : MonoBehaviour
     public void LoadFromData(ForgeTypeData data)
     {
         StatHandler.LoadFromData(data.UpgradeLevels);
-        AssistantHandler.LoadFromData(data.EquippedAssistantKeys);
         RecipeSystem.LoadFormData(data.Recipes);
     }
 

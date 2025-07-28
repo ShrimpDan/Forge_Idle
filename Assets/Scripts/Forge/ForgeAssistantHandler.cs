@@ -2,80 +2,55 @@ using System.Collections.Generic;
 
 public class ForgeAssistantHandler
 {
+    private Forge forge;
     private ForgeManager forgeManager;
+
     private ForgeVisualHandler visualHandler;
     private ForgeStatHandler statHandler;
-    private AssistantInventory assistantInventory;
 
-    public Dictionary<SpecializationType, AssistantInstance> EquippedAssistant { get; private set; }
-
-    public ForgeAssistantHandler(ForgeManager forgeManager, ForgeVisualHandler visualHandler, ForgeStatHandler statHandler, AssistantInventory assistantInventory)
+    public ForgeAssistantHandler(Forge forge)
     {
-        this.forgeManager = forgeManager;
-        this.visualHandler = visualHandler;
-        this.statHandler = statHandler;
-        this.assistantInventory = assistantInventory;
+        this.forge = forge;
+        forgeManager = forge.ForgeManager;
+        visualHandler = forge.VisualHandler;
+        statHandler = forge.StatHandler;
 
-        InitAssistant();
+        InitAssistant(forgeManager.EquippedAssistant[forge.ForgeType]);
     }
 
-    private void InitAssistant()
+    private void InitAssistant(Dictionary<SpecializationType, AssistantInstance> assiDict)
     {
-        EquippedAssistant = new Dictionary<SpecializationType, AssistantInstance>()
+        foreach (var assi in assiDict.Values)
         {
-            { SpecializationType.Crafting, null },
-            { SpecializationType.Selling, null },
-        };
+            if (assi == null) continue;
+            statHandler.ApplyAssistantStat(assi, true);
+            visualHandler.SpawnAssistantPrefab(assi);
+        }
     }
 
     public void ActiveAssistant(AssistantInstance assi)
     {
         // 이전에 등록된 제자가 있다면 해제
-        AssistantInstance preAssi = EquippedAssistant[assi.Specialization];
+        AssistantInstance preAssi = forgeManager.EquippedAssistant[forge.ForgeType][assi.Specialization];
+
         if (preAssi != null)
         {
             DeActiveAssistant(preAssi);
         }
 
-        EquippedAssistant[assi.Specialization] = assi;
-        forgeManager.Events.RaiseAssistantChanged(assi, true);
-        assi.IsEquipped = true;
+        forgeManager.EquippedAssistant[forge.ForgeType][assi.Specialization] = assi;
+        assi.EquipAssi(true, forge.ForgeType);
 
-        statHandler.ApplyAssistantStat(assi);
+        statHandler.ApplyAssistantStat(assi, true);
         visualHandler.SpawnAssistantPrefab(assi);
     }
 
     public void DeActiveAssistant(AssistantInstance assi)
     {
-        assi.IsEquipped = false;
-        EquippedAssistant[assi.Specialization] = null;
-        forgeManager.Events.RaiseAssistantChanged(assi, false);
+        forgeManager.EquippedAssistant[assi.EquippedForge][assi.Specialization] = null;
+        assi.EquipAssi(false);
 
-        statHandler.DeApplyAssistantStat(assi);
+        statHandler.ApplyAssistantStat(assi, false);
         visualHandler.ClearSpawnRoot(assi.Specialization);
-    }
-
-    public List<string> GetSaveData()
-    {
-        List<string> keys = new List<string>();
-
-        foreach (var assi in EquippedAssistant.Values)
-        {
-            if(assi != null)
-                keys.Add(assi.Key);
-        }
-
-        return keys;
-    }
-
-    public void LoadFromData(List<string> equippedAssistantKeys)
-    {
-        if (equippedAssistantKeys == null) return;
-        
-        foreach (var key in equippedAssistantKeys)
-        {
-            AssistantInstance assi = assistantInventory.GetAssistantInstance(key);
-            ActiveAssistant(assi);
-        }
     }
 }
