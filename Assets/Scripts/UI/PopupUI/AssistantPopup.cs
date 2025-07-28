@@ -101,7 +101,6 @@ public class AssistantPopup : BaseUI
         SetApplyButton(data);
     }
 
-
     private void SetApplyButton(AssistantInstance data)
     {
         bool isEquipped = data.IsEquipped;
@@ -118,7 +117,6 @@ public class AssistantPopup : BaseUI
             {
                 rehireButton.gameObject.SetActive(true);
             }
-
             return;
         }
 
@@ -150,8 +148,8 @@ public class AssistantPopup : BaseUI
 
         RefreshEquippedState();
         SetApplyButton(assiData);
-
         assistantTab?.RefreshSlots();
+        SoundManager.Instance.Play("SFX_UIEquip");
     }
 
     private void DeApplyAssistant()
@@ -163,8 +161,8 @@ public class AssistantPopup : BaseUI
         SetApplyButton(assiData);
 
         assistantTab?.RefreshSlots();
+        SoundManager.Instance.Play("SFX_UIUnequip");
     }
-
 
     private void RehireAssistant()
     {
@@ -187,7 +185,6 @@ public class AssistantPopup : BaseUI
             Debug.LogWarning("골드가 부족합니다.");
         }
     }
-
 
     private void RefreshEquippedState()
     {

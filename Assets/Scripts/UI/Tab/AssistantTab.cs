@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,6 +6,8 @@ using UnityEngine.UI;
 public class AssistantTab : BaseTab
 {
     private AssistantManager assistantManager;
+    private ForgeManager forgeManager;
+    private ForgeAssistantHandler assistantHandler;
 
     [Header("Tab Buttons")]
     [SerializeField] private Button[] tabButtons;
@@ -34,8 +35,6 @@ public class AssistantTab : BaseTab
     private Queue<GameObject> pooledSlots = new Queue<GameObject>();
     private List<GameObject> activeSlots = new List<GameObject>();
 
-    private bool isInit = false;
-
     public override void Init(GameManager gameManager, UIManager uIManager)
     {
         base.Init(gameManager, uIManager);
@@ -53,6 +52,7 @@ public class AssistantTab : BaseTab
         SwitchTab(0);
 
         assistantManager = gameManager.AssistantManager;
+        forgeManager = gameManager.ForgeManager;
 
         // 장착된 Assistant 슬롯 초기화
         craftAssi.Init(uIManager);
@@ -63,18 +63,8 @@ public class AssistantTab : BaseTab
     {
         base.OpenTab();
 
-        if (gameManager.Forge != null)
-            gameManager.Forge.Events.OnAssistantChanged += SetAssistant;
-
+        SetAssistant();
         RefreshSlots();
-    }
-
-    public override void CloseTab()
-    {
-        base.CloseTab();
-
-        if (gameManager.Forge != null)
-            gameManager.Forge.Events.OnAssistantChanged -= SetAssistant;
     }
 
     public void RefreshSlots()
@@ -104,14 +94,7 @@ public class AssistantTab : BaseTab
         CreateSlots(miningList, upgradeSlotRoot);
         CreateSlots(sellingList, gemSlotRoot);
 
-        if (!isInit)
-        {
-            foreach (var assi in assistantManager.AssistantInventory.GetEquippedTrainees())
-            {
-                SetAssistant(assi, true);
-            }
-            isInit = true;
-        }
+        SetAssistant();
     }
 
     private void CreateSlots(List<AssistantInstance> assiList, Transform parent)
@@ -150,67 +133,61 @@ public class AssistantTab : BaseTab
         return Instantiate(assiSlotPrefab);
     }
 
-    private void SetAssistant(AssistantInstance assi, bool isActive)
+    private void SetAssistant()
     {
-        switch (assi.Specialization)
+        foreach (var key in forgeManager.EquippedAssistant[forgeManager.CurrentForge.ForgeType].Keys)
         {
-            case SpecializationType.Crafting:
-                craftAssi.SetAssistant(assi, isActive);
-                break;
-            case SpecializationType.Selling:
-                sellingAssi.SetAssistant(assi, isActive);
-                break;
+            AssistantInstance assi = forgeManager.EquippedAssistant[forgeManager.CurrentForge.ForgeType][key];
+
+            switch (key)
+            {
+                case SpecializationType.Crafting:
+                    craftAssi.SetAssistant(assi);
+                    break;
+                case SpecializationType.Selling:
+                    sellingAssi.SetAssistant(assi);
+                    break;
+            }
+
+            ShowAssistantStat();
+            RefreshEquippedIndicators();
         }
-
-        ShowAssistantStat(assi, isActive);
-        RefreshEquippedIndicators();
-
-        if (isActive)
-            SoundManager.Instance.Play("SFX_UIEquip");
-        else
-            SoundManager.Instance.Play("SFX_UIUnequip");
     }
 
-    private void ShowAssistantStat(AssistantInstance assi, bool isActive)
+    private void ShowAssistantStat()
     {
-        if (!isActive)
+        foreach (var type in forgeManager.EquippedAssistant[forgeManager.CurrentForge.ForgeType].Keys)
         {
-            ClearStat(assi.Specialization);
-            return;
-        }
-
-        Transform parent = assi.Specialization switch
-        {
-            SpecializationType.Crafting => craftStatRoot,
-            SpecializationType.Selling => sellingStatRoot,
-            _ => null
-        };
-
-        ClearStat(assi.Specialization);
-
-        foreach (var stat in assi.Multipliers)
-        {
-            GameObject obj = Instantiate(bonusStatPrefab, parent);
-            if (obj.TryGetComponent(out TextMeshProUGUI tmp))
+            Transform parent = type switch
             {
-                tmp.text = stat.AbilityName;
+                SpecializationType.Crafting => craftStatRoot,
+                SpecializationType.Selling => sellingStatRoot,
+                _ => null
+            };
 
-                float percent = (stat.Multiplier - 1f) * 100f;
-                string sign = percent >= 0 ? "+" : "";
-                tmp.text += $"\n{sign}{percent:F0}%";
+            ClearStat(parent);
+
+            AssistantInstance assi = forgeManager.EquippedAssistant[forgeManager.CurrentForge.ForgeType][type];
+            if (assi != null)
+            {
+                foreach (var stat in assi.Multipliers)
+                {
+                    GameObject obj = Instantiate(bonusStatPrefab, parent);
+                    if (obj.TryGetComponent(out TextMeshProUGUI tmp))
+                    {
+                        tmp.text = stat.AbilityName;
+
+                        float percent = (stat.Multiplier - 1f) * 100f;
+                        string sign = percent >= 0 ? "+" : "";
+                        tmp.text += $"\n{sign}{percent:F0}%";
+                    }
+                }
             }
         }
     }
 
-    private void ClearStat(SpecializationType type)
+    private void ClearStat(Transform parent)
     {
-        Transform parent = type switch
-        {
-            SpecializationType.Crafting => craftStatRoot,
-            SpecializationType.Selling => sellingStatRoot,
-            _ => null
-        };
-
         foreach (Transform child in parent)
         {
             Destroy(child.gameObject);
@@ -244,5 +221,4 @@ public class AssistantTab : BaseTab
             return aTier.CompareTo(bTier);
         });
     }
-
 }
