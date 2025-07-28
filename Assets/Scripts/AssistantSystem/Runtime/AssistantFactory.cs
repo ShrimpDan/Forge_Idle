@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -33,9 +34,15 @@ public class AssistantFactory
         while (attempts < maxRetry)
         {
             string selectedGrade = GetRandomGradeByProbability();
+            Debug.Log($"[등급 선택됨]: '{selectedGrade}'");
 
             var candidates = assistantLoader.ItemsList
-                .Where(t => t.grade == selectedGrade)
+                .Where(t =>
+                {
+                    string gradeClean = t.grade?.Trim();
+                    Debug.Log($"[제자 등급 확인]: '{gradeClean}'");
+                    return string.Equals(gradeClean, selectedGrade, System.StringComparison.OrdinalIgnoreCase);
+                })
                 .ToList();
 
             if (candidates.Count == 0 && attempts == maxRetry - 1)
@@ -63,13 +70,19 @@ public class AssistantFactory
         if (!canRecruit && !bypassRecruitCheck) return null;
         canRecruit = false;
 
-        List<AssistantData> candidates = type == SpecializationType.All
-            ? assistantLoader.ItemsList.Where(t => GetTier(t.grade) >= 2).ToList()
-            : assistantLoader.ItemsList.Where(t =>
-                GetTier(t.grade) >= 2 &&
-                specializationLoader.GetByKey(t.specializationKey)?.specializationType == type).ToList();
+        string selectedGrade = GetRandomGradeByProbability();
 
-        if (candidates.Count == 0) return null;
+        var candidates = assistantLoader.ItemsList
+            .Where(t =>
+                string.Equals(t.grade?.Trim(), selectedGrade, StringComparison.OrdinalIgnoreCase) &&
+                specializationLoader.GetByKey(t.specializationKey)?.specializationType == type)
+            .ToList();
+
+        if (candidates.Count == 0)
+        {
+            Debug.LogWarning($"[FixedTrainee] 특화: {type}, 등급: {selectedGrade} → 후보 없음");
+            return null;
+        }
 
         var selected = candidates[rng.Next(candidates.Count)];
         return CreateAssistantFromData(selected);
@@ -79,32 +92,47 @@ public class AssistantFactory
     public List<AssistantInstance> CreateMultiple(int count, SpecializationType? fixedType = null)
     {
         var results = new List<AssistantInstance>();
-        const int maxAttemptsPerSlot = 10;
+        var ownedKeys = GameManager.Instance.AssistantInventory.GetAll()
+            .Select(a => a.Key)
+            .ToHashSet();
 
-        for (int i = 0; i < count; i++)
+        var availableCandidates = assistantLoader.ItemsList
+            .Where(a => !ownedKeys.Contains(a.Key))
+            .ToList();
+
+        if (availableCandidates.Count < count)
         {
-            int attempts = 0;
-            AssistantInstance data = null;
+            Debug.LogWarning("[AssistantFactory] 보유하지 않은 제자가 부족합니다.");
+            return results;
+        }
 
-            while (attempts < maxAttemptsPerSlot)
-            {
-                data = fixedType == null
-                    ? CreateRandomTrainee(true)
-                    : CreateFixedTrainee(fixedType.Value, true);
+        var usedKeys = new HashSet<string>();
+        int attempts = 0;
+        const int maxAttempts = 100;
 
-                if (data != null)
-                {
-                    results.Add(data);
-                    break;
-                }
+        while (results.Count < count && attempts < maxAttempts)
+        {
+            attempts++;
 
-                attempts++;
-            }
+            string selectedGrade = GetRandomGradeByProbability();
 
-            if (data == null)
-            {
-                Debug.LogWarning($"[AssistantFactory] 제자 {i + 1}명 생성 실패 (고정 타입: {fixedType?.ToString() ?? "랜덤"})");
-            }
+            var gradeFiltered = availableCandidates
+                .Where(a => string.Equals(a.grade?.Trim(), selectedGrade, StringComparison.OrdinalIgnoreCase))
+                .Where(a => !usedKeys.Contains(a.Key))
+                .ToList();
+
+            if (gradeFiltered.Count == 0)
+                continue;
+
+            var selected = gradeFiltered[UnityEngine.Random.Range(0, gradeFiltered.Count)];
+            var instance = CreateAssistantFromData(selected);
+            results.Add(instance);
+            usedKeys.Add(selected.Key);
+        }
+
+        if (results.Count < count)
+        {
+            Debug.LogWarning($"[AssistantFactory] {count}명 중 {results.Count}명만 생성됨 (후보 부족)");
         }
 
         return results;
@@ -224,10 +252,12 @@ public class AssistantFactory
     {
         float rand = UnityEngine.Random.value; // 0.0 ~ 1.0
 
-        if (rand < 0.01f) return "UR";       // 1%
-        else if (rand < 0.05f) return "SSR"; // 4%
-        else if (rand < 0.15f) return "SR";  // 10%
-        else if (rand < 0.40f) return "R";   // 25%
-        else return "N";                     // 60%
+        if (rand < 0.005f) return "UR";        // 0.5%
+        else if (rand < 0.015f) return "SSR";  // 1%
+        else if (rand < 0.045f) return "SR";   // 3%
+        else if (rand < 0.345f) return "R";    // 30%
+        else return "N";                       // 65.5%
     }
+
+
 }
