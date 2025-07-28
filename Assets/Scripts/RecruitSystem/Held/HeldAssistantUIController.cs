@@ -60,6 +60,7 @@ public class HeldAssistantUIController : MonoBehaviour
     /// </summary>
     public void HideHeldAssistantList()
     {
+        SoundManager.Instance.Play("SFX_SystemClick");
         heldUI.SetActive(false);
     }
 }

@@ -103,6 +103,7 @@ public class RecruitPreviewManager : MonoBehaviour
         if (candidatePool.Count == 0)
         {
             Debug.LogWarning("[Recruit] 유효한 후보가 없습니다.");
+            assistantFactory.ResetRecruitLock();
             popup.HidePopup();
             return;
         }
@@ -158,6 +159,7 @@ public class RecruitPreviewManager : MonoBehaviour
         var infoView = paper.GetComponent<AssistantInfoView>();
 
         infoView.SetData(data);
+        SoundManager.Instance.Play("SFX_RecruitPaperFlip");
         animator?.AnimateEnterFromTopLeft(onComplete: onEnterComplete);
 
         activePapers.Add(paper);
@@ -304,7 +306,7 @@ public class RecruitPreviewManager : MonoBehaviour
     }
 
 
-    public void OnClickRecruitRandom() => TryRecruitCandidateByType(null);
+    public void OnClickRecruitRandom() => TryRecruitCandidateByType(SpecializationType.All);
     public void OnClickRecruitCrafting() => TryRecruitCandidateByType(SpecializationType.Crafting);
     public void OnClickRecruitMining() => TryRecruitCandidateByType(SpecializationType.Mining);
     public void OnClickRecruitSelling() => TryRecruitCandidateByType(SpecializationType.Selling);
