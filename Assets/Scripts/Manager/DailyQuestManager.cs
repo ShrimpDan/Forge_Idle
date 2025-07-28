@@ -8,6 +8,7 @@ using UnityEditor.Experimental.RestService;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
+using static UnityEngine.Rendering.DebugUI.Table;
 
 public class DailyQuestManager : MonoBehaviour
 {
@@ -39,6 +40,7 @@ public class DailyQuestManager : MonoBehaviour
     private bool isResetting = false;
 
     private const string lastDateKey= "LastQuestResetDate";
+    private DateTime resetTime;
 
     public void Init(GameManager gm)
     {
@@ -71,6 +73,11 @@ public class DailyQuestManager : MonoBehaviour
         {
             Debug.Log("SlotController 호출 안됨");
         }
+    }
+
+    private void Start()
+    {
+        resetTime = TimeManager.Instance.Now().AddSeconds(TestTime); //일단 작동하는지 확인부터 
     }
 
 
@@ -178,7 +185,6 @@ public class DailyQuestManager : MonoBehaviour
     public void RefreshUI()
     {
         slotController?.Refresh();
-        CheckDailyReset();
         UpdateTotalQuestProgressUI();
     }
 
@@ -186,16 +192,17 @@ public class DailyQuestManager : MonoBehaviour
     private void CheckDailyReset()
     {
         if (isResetting) return; // 초기화 중 중복 실행 방지
-        
+
 
         //DateTime now = DateTime.Now; 로컬시간 사용 뺌
-        DateTime now = TimeManager.Instance.Now().AddHours(9);
-        DateTime resetTime = DateTime.Now.Date.AddHours(9).AddSeconds(TestTime);
+        DateTime now = TimeManager.Instance.Now();
+      
+
         Debug.Log($"[DailyQuestManager] 현재 시간 {now} , 리셋 시간 {resetTime}");
         //NTP서버 
 
 
-        if (resetTime > lastResetTime && now > resetTime)
+        if (resetTime > lastResetTime && now >= resetTime)
         {
             Debug.Log("[DailyQuestManager] 날짜 변경됨 - 퀘스트 갱신");
             ResetQuests();

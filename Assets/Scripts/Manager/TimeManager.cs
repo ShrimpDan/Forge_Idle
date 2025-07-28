@@ -39,8 +39,8 @@ public class TimeManager : MonoSingleton<TimeManager>
 
     public DateTime Now()
     {
-        return DateTime.UtcNow + serverOffset;
-    }
+        return DateTime.UtcNow + serverOffset + TimeSpan.FromHours(9); //한국 시간 
+            }
 
 
  
