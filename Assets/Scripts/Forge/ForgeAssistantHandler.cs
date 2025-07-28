@@ -1,19 +1,20 @@
-using System;
 using System.Collections.Generic;
 
 public class ForgeAssistantHandler
 {
-    private Forge forge;
+    private ForgeManager forgeManager;
     private ForgeVisualHandler visualHandler;
     private ForgeStatHandler statHandler;
+    private AssistantInventory assistantInventory;
 
     public Dictionary<SpecializationType, AssistantInstance> EquippedAssistant { get; private set; }
 
-    public ForgeAssistantHandler(Forge forge, ForgeVisualHandler visualHandler, ForgeStatHandler statHandler)
+    public ForgeAssistantHandler(ForgeManager forgeManager, ForgeVisualHandler visualHandler, ForgeStatHandler statHandler, AssistantInventory assistantInventory)
     {
-        this.forge = forge;
+        this.forgeManager = forgeManager;
         this.visualHandler = visualHandler;
         this.statHandler = statHandler;
+        this.assistantInventory = assistantInventory;
 
         InitAssistant();
     }
@@ -37,7 +38,7 @@ public class ForgeAssistantHandler
         }
 
         EquippedAssistant[assi.Specialization] = assi;
-        forge.Events.RaiseAssistantChanged(assi, true);
+        forgeManager.Events.RaiseAssistantChanged(assi, true);
         assi.IsEquipped = true;
 
         statHandler.ApplyAssistantStat(assi);
@@ -48,7 +49,7 @@ public class ForgeAssistantHandler
     {
         assi.IsEquipped = false;
         EquippedAssistant[assi.Specialization] = null;
-        forge.Events.RaiseAssistantChanged(assi, false);
+        forgeManager.Events.RaiseAssistantChanged(assi, false);
 
         statHandler.DeApplyAssistantStat(assi);
         visualHandler.ClearSpawnRoot(assi.Specialization);
@@ -69,6 +70,12 @@ public class ForgeAssistantHandler
 
     public void LoadFromData(List<string> equippedAssistantKeys)
     {
-        //throw new NotImplementedException();
+        if (equippedAssistantKeys == null) return;
+        
+        foreach (var key in equippedAssistantKeys)
+        {
+            AssistantInstance assi = assistantInventory.GetAssistantInstance(key);
+            ActiveAssistant(assi);
+        }
     }
 }

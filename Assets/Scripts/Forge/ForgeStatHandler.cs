@@ -116,7 +116,39 @@ public class ForgeStatHandler
         {
             switch (stat.AbilityName)
             {
+                case AssistantStatNames.IncreaseCraftSpeed:
+                    
+                    break;
 
+                case AssistantStatNames.IncreaseAdvancedCraftChance:
+                    assistantRareCraftChance += stat.Multiplier;
+                    break;
+
+                case AssistantStatNames.IncreaseAutoCraftSpeed:
+                    assistantAutoCraftingTimeReduction += stat.Multiplier;
+                    break;
+
+                case AssistantStatNames.IncreaseGreatSuccessChance:
+                    assistantPerfectCraftingChance += stat.Multiplier;
+                    break;
+
+                case AssistantStatNames.IncreaseMiningYieldPerMinute:
+                    break;
+
+                case AssistantStatNames.IncreaseMaxMiningCapacity:
+                    break;
+
+                case AssistantStatNames.IncreaseSellPrice:
+                    assistantSellPriceBonus += stat.Multiplier;
+                    break;
+
+                case AssistantStatNames.IncreaseCustomerCount:
+                    assistantCustomerSpawnIntervalReduction += stat.Multiplier;
+                    break;
+
+                case AssistantStatNames.IncreaseAutoCustomerRepelChance:
+
+                    break;
             }
         }
     }
@@ -127,7 +159,39 @@ public class ForgeStatHandler
         {
             switch (stat.AbilityName)
             {
+                case AssistantStatNames.IncreaseCraftSpeed:
+                    
+                    break;
 
+                case AssistantStatNames.IncreaseAdvancedCraftChance:
+                    assistantRareCraftChance -= stat.Multiplier;
+                    break;
+
+                case AssistantStatNames.IncreaseAutoCraftSpeed:
+                    assistantAutoCraftingTimeReduction -= stat.Multiplier;
+                    break;
+
+                case AssistantStatNames.IncreaseGreatSuccessChance:
+                    assistantPerfectCraftingChance -= stat.Multiplier;
+                    break;
+
+                case AssistantStatNames.IncreaseMiningYieldPerMinute:
+                    break;
+
+                case AssistantStatNames.IncreaseMaxMiningCapacity:
+                    break;
+
+                case AssistantStatNames.IncreaseSellPrice:
+                    assistantSellPriceBonus -= stat.Multiplier;
+                    break;
+
+                case AssistantStatNames.IncreaseCustomerCount:
+                    assistantCustomerSpawnIntervalReduction -= stat.Multiplier;
+                    break;
+
+                case AssistantStatNames.IncreaseAutoCustomerRepelChance:
+
+                    break;
             }
         }
     }

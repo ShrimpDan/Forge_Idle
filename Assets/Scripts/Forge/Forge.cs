@@ -24,9 +24,6 @@ public class Forge : MonoBehaviour
     public WeaponSellingSystem SellingSystem { get; private set; }
     public WeaponRecipeSystem RecipeSystem { get; private set; }
 
-    // 이벤트 핸들러
-    public ForgeEventHandler Events { get; private set; } = new ForgeEventHandler();
-
     private void Awake()
     {
         gameManager = GameManager.Instance;
@@ -38,7 +35,7 @@ public class Forge : MonoBehaviour
         SellingSystem = GetComponent<WeaponSellingSystem>();
         RecipeSystem = new WeaponRecipeSystem(this, gameManager.DataManager.CraftingLoader, gameManager.DataManager.RecipeLoader);
         StatHandler = new ForgeStatHandler(this, gameManager.DataManager);
-        AssistantHandler = new ForgeAssistantHandler(this, VisualHandler, StatHandler);
+        AssistantHandler = new ForgeAssistantHandler(ForgeManager, VisualHandler, StatHandler, gameManager.AssistantInventory);
 
         if (SellingSystem)
             SellingSystem.Init(this, gameManager.Inventory);

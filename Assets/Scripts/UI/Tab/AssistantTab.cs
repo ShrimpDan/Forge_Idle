@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -63,8 +62,8 @@ public class AssistantTab : BaseTab
     {
         base.OpenTab();
 
-        if (gameManager.Forge != null)
-            gameManager.Forge.Events.OnAssistantChanged += SetAssistant;
+        if (gameManager.ForgeManager != null)
+            gameManager.ForgeManager.Events.OnAssistantChanged += SetAssistant;
 
         RefreshSlots();
     }
@@ -73,8 +72,8 @@ public class AssistantTab : BaseTab
     {
         base.CloseTab();
 
-        if (gameManager.Forge != null)
-            gameManager.Forge.Events.OnAssistantChanged -= SetAssistant;
+        if (gameManager.ForgeManager != null)
+            gameManager.ForgeManager.Events.OnAssistantChanged -= SetAssistant;
     }
 
     public void RefreshSlots()
