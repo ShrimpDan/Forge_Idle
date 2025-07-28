@@ -159,6 +159,7 @@ public class RecruitPreviewManager : MonoBehaviour
         var infoView = paper.GetComponent<AssistantInfoView>();
 
         infoView.SetData(data);
+        SoundManager.Instance.Play("SFX_RecruitPaperFlip");
         animator?.AnimateEnterFromTopLeft(onComplete: onEnterComplete);
 
         activePapers.Add(paper);
