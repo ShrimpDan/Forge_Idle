@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
+// RecruitButtonHandler.cs
+// 제자 영입 UI에서 버튼 클릭 이벤트를 처리합니다.
+// 랜덤 및 특화 영입 버튼과 영입 확정/거절/보류 버튼의 클릭 이벤트를 담당합니다.
+
 public class RecruitButtonHandler : MonoBehaviour
 {
     [Header("버튼")]
@@ -15,6 +19,7 @@ public class RecruitButtonHandler : MonoBehaviour
     [Header("참조 스크립트")]
     [SerializeField] private RecruitPreviewManager previewManager;
 
+    // 버튼 리스너 설정
     private void Awake()
     {
         btnRecruitRandom.onClick.AddListener(() => OnClickRecruitByType(null));

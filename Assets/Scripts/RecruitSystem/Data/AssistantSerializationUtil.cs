@@ -1,7 +1,12 @@
 ﻿using System.Collections.Generic;
 
+// AssistantSerializationUtil.cs
+// AssistantInstance와 SerializableAssistantInstance 간의 변환 기능을 제공하는 유틸리티 클래스입니다.
+// 저장/불러오기 시스템에서 사용되는 데이터 직렬화 및 역직렬화를 담당합니다.
+
 public static class AssistantSerializationUtil
 {
+    // 런타임 제자 데이터를 저장용 구조로 직렬화
     public static SerializableAssistantInstance ToSerializable(AssistantInstance instance)
     {
         return new SerializableAssistantInstance
@@ -29,6 +34,7 @@ public static class AssistantSerializationUtil
         };
     }
 
+    // 저장용 제자 데이터를 런타임 구조로 역직렬화
     public static AssistantInstance ToRuntime(SerializableAssistantInstance data)
     {
         var personality = new PersonalityData

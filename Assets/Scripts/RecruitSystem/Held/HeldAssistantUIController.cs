@@ -2,6 +2,10 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+// HeldAssistantUIController.cs
+// 보류 중인 제자 리스트를 UI 상에 표시하거나 숨기는 기능을 담당합니다.
+// 각 제자 종이를 지정된 좌표에 생성하여 배치하며, 해당 UI의 활성/비활성 처리를 포함합니다.
+
 public class HeldAssistantUIController : MonoBehaviour
 {
     [Header("UI References")]
@@ -22,9 +26,7 @@ public class HeldAssistantUIController : MonoBehaviour
 
     private List<GameObject> activeHeldItems = new();
 
-    /// <summary>
-    /// 보류 제자 리스트를 UI에 표시
-    /// </summary>
+    // 보류 제자 리스트를 UI에 표시
     public void ShowHeldAssistantList(List<AssistantInstance> heldList)
     {
         heldUI.SetActive(true);
@@ -55,9 +57,7 @@ public class HeldAssistantUIController : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 보류 제자 UI 닫기
-    /// </summary>
+    // 보류 제자 UI 닫기
     public void HideHeldAssistantList()
     {
         SoundManager.Instance.Play("SFX_SystemClick");
