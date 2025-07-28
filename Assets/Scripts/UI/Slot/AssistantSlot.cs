@@ -50,7 +50,7 @@ public class AssistantSlot : MonoBehaviour
 
     private void OnClickSlot()
     {
-        SoundManager.Instance.Play("SFX_SystemClick");
+        SoundManager.Instance.Play("ClickSound");
 
         clickCallback?.Invoke(AssistantData);
 

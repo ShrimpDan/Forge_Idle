@@ -11,7 +11,7 @@ public class MineAssistantFSM : MonoBehaviour
     private bool isInitialized = false;
 
     private float wanderTimer = 0f;
-    private float wanderInterval = 2.0f;
+    private float wanderInterval = 1.0f;
 
     private enum State { Idle, Walk, Work }
     private State state = State.Idle;
@@ -115,15 +115,18 @@ public class MineAssistantFSM : MonoBehaviour
         {
             case State.Idle:
                 anim.Play("Idle");
+                wanderInterval = UnityEngine.Random.Range(0.7f, 1.2f);
                 break;
             case State.Walk:
                 anim.Play("Block");
+                SoundManager.Instance.Play("MineWalkSound");
                 break;
             case State.Work:
                 // Work 진입시 랜덤 반복
                 workAnimMax = Random.Range(3, 11);
                 workAnimCount = 0;
                 anim.Play("Slash");
+                SoundManager.Instance.Play("MineSound");
                 break;
         }
     }

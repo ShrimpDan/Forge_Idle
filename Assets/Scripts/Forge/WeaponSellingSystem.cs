@@ -91,6 +91,9 @@ public class WeaponSellingSystem : MonoBehaviour
             // 어떤 무기를 만드는지 아이콘 이벤트 호출
             forgeManager.Events.RaiseCraftStarted(IconLoader.GetIconByKey(weapon.ItemKey));
 
+
+            SoundManager.Instance.Play("CraftingWeaponSound");
+
             while (time < duration && !customer.IsAngry)
             {
                 time += 0.1f;

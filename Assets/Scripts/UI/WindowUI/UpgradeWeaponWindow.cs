@@ -218,6 +218,7 @@ public class UpgradeWeaponWindow : BaseUI
         {
             progressBar.fillAmount = 1f;
             selectedWeapon.EnhanceItem();
+            SoundManager.Instance.Play("Successound");
             // TODO: 성공 애니메이션
         }
         else
@@ -232,6 +233,7 @@ public class UpgradeWeaponWindow : BaseUI
                 progressBar.fillAmount = Mathf.Lerp(start, 0, t);
                 yield return null;
             }
+            SoundManager.Instance.Play("FailSound");
         }
         RefreshUpgradePanel();
         upgradeButton.interactable = true;

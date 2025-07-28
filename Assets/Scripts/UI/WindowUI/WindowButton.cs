@@ -14,7 +14,7 @@ public class WindowButton : MonoBehaviour
 
     private void OpenWindowUI()
     {
-        SoundManager.Instance.Play("SFX_SystemClick");
+        SoundManager.Instance.Play("ClickSound");
         GameManager.Instance.UIManager.OpenUI<BaseUI>(UIName.GetUINameByType(type));
     }
 }

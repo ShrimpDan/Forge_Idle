@@ -49,6 +49,8 @@ public class LackPopup : MonoBehaviour
             _ => "필요한 자원이 부족합니다."
         };
 
+        SoundManager.Instance?.Play("LackSound");
+
         UIEffect.PopupOpenEffect(panel, animDuration);
 
         Invoke(nameof(Hide), popupDuration + animDuration);
