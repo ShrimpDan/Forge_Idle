@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using Unity.VisualScripting;
+using UnityEditor.Experimental.RestService;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
@@ -33,9 +34,11 @@ public class DailyQuestManager : MonoBehaviour
     [SerializeField] private Button bounsRewardButton;
 
     [SerializeField] private int TestTime;
+
+    private DateTime lastResetTime;
     private bool isResetting = false;
 
-    private const string lastDateKey= "LastQusetResetDate";
+    private const string lastDateKey= "LastQuestResetDate";
 
     public void Init(GameManager gm)
     {
@@ -49,6 +52,16 @@ public class DailyQuestManager : MonoBehaviour
 
         CheckDailyReset();
 
+        if (PlayerPrefs.HasKey(lastDateKey))
+        {
+            lastResetTime = DateTime.Parse(PlayerPrefs.GetString(lastDateKey));
+        }
+        else
+        {
+            lastResetTime = TimeManager.Instance.Now(); ;
+            PlayerPrefs.SetString(lastDateKey, lastResetTime.ToString());
+        }
+
         if (slotController != null)
         {
             Debug.Log("SlotController Init 호출됨");
@@ -59,8 +72,12 @@ public class DailyQuestManager : MonoBehaviour
             Debug.Log("SlotController 호출 안됨");
         }
     }
-   
 
+
+    private void Update()
+    {
+        CheckDailyReset();
+    }
 
 
 
@@ -75,8 +92,8 @@ public class DailyQuestManager : MonoBehaviour
         {
             return;
         }
-        
-        loader.currentAmount = Mathf.Min(loader.currentAmount + amount, loader.data.goalAmount);     
+
+        loader.currentAmount = Mathf.Min(loader.currentAmount + amount, loader.data.goalAmount);
         RefreshUI();
     }
 
@@ -168,28 +185,25 @@ public class DailyQuestManager : MonoBehaviour
  
     private void CheckDailyReset()
     {
-        if (isResetting) return; // ⭐ 초기화 중 중복 실행 방지
-
-        string lastDateString = PlayerPrefs.GetString(lastDateKey, "");
-        DateTime lastDateTime = string.IsNullOrEmpty(lastDateString)
-            ? DateTime.MinValue
-            : DateTime.Parse(lastDateString);
+        if (isResetting) return; // 초기화 중 중복 실행 방지
+        
 
         //DateTime now = DateTime.Now; 로컬시간 사용 뺌
-        DateTime now = TimeManager.Instance.Now();
-        DateTime resetTime = DateTime.Today.AddHours(23).AddMinutes(TestTime).AddMinutes(0);
+        DateTime now = TimeManager.Instance.Now().AddHours(9);
+        DateTime resetTime = DateTime.Now.Date.AddHours(9).AddSeconds(TestTime);
+        Debug.Log($"[DailyQuestManager] 현재 시간 {now} , 리셋 시간 {resetTime}");
         //NTP서버 
 
 
-        if (lastDateTime < resetTime && now >= resetTime)
+        if (resetTime > lastResetTime && now > resetTime)
         {
-            isResetting = true; // ⭐ 플래그 세팅
-
+            Debug.Log("[DailyQuestManager] 날짜 변경됨 - 퀘스트 갱신");
             ResetQuests();
-            PlayerPrefs.SetString(lastDateKey, now.ToString());
-            PlayerPrefs.Save();
+            RefreshUI();
 
-            isResetting = false;
+            lastResetTime = now;
+            PlayerPrefs.SetString("DailyQuest_LastReset", lastResetTime.ToString());
+            PlayerPrefs.Save();
         }
     }
 
