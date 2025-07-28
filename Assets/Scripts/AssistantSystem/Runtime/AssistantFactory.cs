@@ -80,8 +80,17 @@ public class AssistantFactory
 
         if (candidates.Count == 0)
         {
-            Debug.LogWarning($"[FixedTrainee] 특화: {type}, 등급: {selectedGrade} → 후보 없음");
-            return null;
+            candidates = assistantLoader.ItemsList
+                .Where(t => specializationLoader.GetByKey(t.specializationKey)?.specializationType == type)
+                .ToList();
+
+            if (candidates.Count == 0)
+            {
+                Debug.LogWarning($"[FixedTrainee] 특화: {type} → 후보 전혀 없음");
+                return null;
+            }
+
+            Debug.LogWarning($"[FixedTrainee] 원하는 등급 없음 → 해당 특화 전체에서 임의 선택");
         }
 
         var selected = candidates[rng.Next(candidates.Count)];
@@ -98,6 +107,8 @@ public class AssistantFactory
 
         var availableCandidates = assistantLoader.ItemsList
             .Where(a => !ownedKeys.Contains(a.Key))
+            .Where(a => fixedType == null ||
+                specializationLoader.GetByKey(a.specializationKey)?.specializationType == fixedType)
             .ToList();
 
         if (availableCandidates.Count < count)
@@ -157,9 +168,12 @@ public class AssistantFactory
         var multipliers = new List<AssistantInstance.AbilityMultiplier>();
         for (int i = 0; i < specializationData.statNames.Count; i++)
         {
+            float raw = specializationData.statValues[i] * m;
+            float clamped = Mathf.Max(raw, 0f);
+
             multipliers.Add(new AssistantInstance.AbilityMultiplier(
                 abilityName: specializationData.statNames[i],
-                multiplier: specializationData.statValues[i] * m));
+                multiplier: clamped));
         }
 
         string costKey = string.IsNullOrEmpty(assistant.costKey)
