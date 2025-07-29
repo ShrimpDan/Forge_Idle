@@ -166,7 +166,7 @@ public class UIManager : MonoBehaviour
         // Popup/Window: 애니메이션
         if ((ui.UIType == UIType.Popup || ui.UIType == UIType.Window) && ui.RootPanel != null)
         {
-            UIEffect.PopupCloseEffect(ui.RootPanel, 0.18f);
+            UIEffect.PopupCloseEffect(ui.RootPanel, 0.18f, () => ui.Close());
             Destroy(ui.gameObject, 0.19f);
         }
         else
