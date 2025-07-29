@@ -50,15 +50,12 @@ public static class ForgeSaveSystem
 
         string json = JsonUtility.ToJson(data, true);
         File.WriteAllText(SavePath, json);
-        Debug.Log($"[저장 시스템] {manager} 저장이 완료되었습니다.\n 경로: {SavePath}");
     }
 
     public static void LoadForge(ForgeManager manager)
     {
         if (!File.Exists(SavePath))
         {
-            Debug.LogWarning($"[저장 시스템] {manager}의 데이터가 존재하지 않습니다.");
-
             var newData = GetDefaultData();
             manager.LoadFromData(newData);
             return;
@@ -77,8 +74,6 @@ public static class ForgeSaveSystem
 
             var newData = GetDefaultData();
             manager.LoadFromData(newData);
-
-            Debug.Log($"{manager} 데이터 삭제");
         }
     }
 

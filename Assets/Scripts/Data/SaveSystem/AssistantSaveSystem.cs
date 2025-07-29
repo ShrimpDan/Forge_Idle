@@ -78,14 +78,12 @@ public class AssistantSaveSystem
 
         string json = JsonUtility.ToJson(saveData, true);
         File.WriteAllText(SavePath, json);
-        Debug.Log($"[저장 시스템] 제자 데이터 저장 완료\n경로: {SavePath}");
     }
 
     public static void LoadAssistants(AssistantInventory inventory, PersonalityDataLoader personalityLoader)
     {
         if (!File.Exists(SavePath))
         {
-            Debug.Log("[저장 시스템] 제자 데이터가 존재하지 않습니다.");
             return;
         }
 
@@ -122,7 +120,6 @@ public class AssistantSaveSystem
             inventory.Add(assi);
         }
 
-        Debug.Log("[저장 시스템] 제자 데이터 불러오기 완료");
     }
 
     public static void Delete(AssistantInventory inventory)
@@ -131,7 +128,6 @@ public class AssistantSaveSystem
         {
             File.Delete(SavePath);
             inventory.Clear();
-            Debug.Log("Assistant 데이터 삭제 완료");
         }
     }
 }

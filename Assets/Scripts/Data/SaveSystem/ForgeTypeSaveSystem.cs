@@ -38,7 +38,6 @@ public class ForgeTypeSaveSystem
 
         string json = JsonUtility.ToJson(data, true);
         File.WriteAllText(path, json);
-        Debug.Log($"[저장 시스템] {forge} 저장이 완료되었습니다.\n 경로: {path}");
     }
 
     public void LoadForge(Forge forge)
@@ -47,8 +46,6 @@ public class ForgeTypeSaveSystem
 
         if (!File.Exists(path))
         {
-            Debug.LogWarning($"[저장 시스템] {forge}의 데이터가 존재하지 않습니다.");
-
             var newData = GetDefaultData(forge.ForgeType);
             forge.LoadFromData(newData);
             return;
@@ -69,8 +66,6 @@ public class ForgeTypeSaveSystem
 
             var newData = GetDefaultData(forge.ForgeType);
             forge.LoadFromData(newData);
-
-            Debug.Log($"{forge} 데이터 삭제");
         }
     }
 

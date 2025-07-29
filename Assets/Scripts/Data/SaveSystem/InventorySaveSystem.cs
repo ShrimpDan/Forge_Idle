@@ -31,14 +31,12 @@ public class InventorySaveSystem
         var saveData = inventoryManager.ToSaveData();
         string json = JsonUtility.ToJson(saveData, true);
         File.WriteAllText(SavePath, json);
-        Debug.Log($"[저장 시스템] 인벤토리 저장이 완료되었습니다.\n 경로: {SavePath}");
     }
 
     public static void LoadInventory(InventoryManager inventoryManager)
     {
         if (!File.Exists(SavePath))
         {
-            Debug.LogWarning("[저장 시스템] 세이브 파일이 존재하지않습니다.");
             inventoryManager.ClearInventory();
             return;
         }
@@ -46,7 +44,6 @@ public class InventorySaveSystem
         string json = File.ReadAllText(SavePath);
         var saveData = JsonUtility.FromJson<InventorySaveData>(json);
         inventoryManager.LoadFromSaveData(saveData);
-        Debug.Log("[저장 시스템] 인벤토리 로드 완료.");
     }
 
     public static void Delete()
@@ -54,7 +51,6 @@ public class InventorySaveSystem
         if (File.Exists(SavePath))
         {
             File.Delete(SavePath);
-            Debug.Log("InventorySaveData 삭제");
         }
     }
 }
