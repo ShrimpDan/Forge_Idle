@@ -294,8 +294,12 @@ public class MineSceneManager : MonoBehaviour
     public void OnReturnToMainScene()
     {
         SetMainUIClickable(true);
-        SetMainCameraActive(true);
+        //SetMainCameraActive(true);  // 이거 주석!
         SetMineCameraActive(false);
-        LoadSceneManager.Instance.UnLoadScene(SceneType.MineScene);
+
+        // Unload 끝난 뒤 카메라 켜기
+        LoadSceneManager.Instance.UnLoadScene(SceneType.MineScene, () => {
+            SetMainCameraActive(true); // 콜백에서 활성화
+        });
     }
 }
