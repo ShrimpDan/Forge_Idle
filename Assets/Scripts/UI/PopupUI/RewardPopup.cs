@@ -15,7 +15,7 @@ public class RewardPopup : BaseUI
     [SerializeField] private GameObject rewardSlotPrefab;
     [SerializeField] private TextMeshProUGUI titleText;
     [SerializeField] private Button overlayButton;
-    [SerializeField] private Image titleIcon; // ÀÎ½ºÆåÅÍ¿¡ TitleIcon µî·Ï
+    [SerializeField] private Image titleIcon; // ï¿½Î½ï¿½ï¿½ï¿½ï¿½Í¿ï¿½ TitleIcon ï¿½ï¿½ï¿½
 
     private List<RewardPopup_Slot> slots = new();
 
@@ -31,7 +31,7 @@ public class RewardPopup : BaseUI
         uiManager = um;
     }
 
-    public void Show(List<(string itemKey, int count)> rewardList, ItemDataLoader itemLoader, string title = "È¹µæ")
+    public void Show(List<(string itemKey, int count)> rewardList, ItemDataLoader itemLoader, string title = "íšë“ ë³´ìƒ")
     {
         if (titleText != null)
             titleText.text = title;
@@ -55,22 +55,51 @@ public class RewardPopup : BaseUI
         if (exitTitle != null)
             UIEffect.TextScaleEffect(exitTitle.GetComponentInChildren<TMP_Text>(), exitTitleScale, exitTitleAnimDuration);
 
-        PlayTitleIconGlow(); // È¿°ú ¹ßµ¿
+        PlayTitleIconGlow(); // È¿ï¿½ï¿½ ï¿½ßµï¿½
 
         gameObject.SetActive(true);
     }
 
-    // Å¸ÀÌÆ² ¾ÆÀÌÄÜ ºû³ª´Â È¿°ú
+    public void Show(Dictionary<ItemData, int> rewardDict, string title = "íšë“ ë³´ìƒ")
+    {
+        if (titleText != null)
+            titleText.text = title;
+
+        foreach (Transform child in rewardRoot)
+            Destroy(child.gameObject);
+        slots.Clear();
+
+        foreach (var itemData in rewardDict.Keys)
+        {
+            if (itemData == null) continue;
+            var go = Instantiate(rewardSlotPrefab, rewardRoot);
+            var slot = go.GetComponent<RewardPopup_Slot>();
+            slot.Init(itemData, rewardDict[itemData]);
+            slots.Add(slot);
+        }
+
+        UIEffect.PopupOpenEffect(popupPanel, openDuration);
+
+        if (exitTitle != null)
+            UIEffect.TextScaleEffect(exitTitle.GetComponentInChildren<TMP_Text>(), exitTitleScale, exitTitleAnimDuration);
+
+        PlayTitleIconGlow();
+
+        gameObject.SetActive(true);
+    }
+
+    // Å¸ï¿½ï¿½Æ² ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¿ï¿½ï¿½
     private void PlayTitleIconGlow()
     {
         if (titleIcon == null) return;
 
-        titleIcon.color = new Color(1f, 0.97f, 0.45f, 0.0f); // ¹àÀº ³ë¶õ»ö, Åõ¸í
+        titleIcon.color = new Color(1f, 0.97f, 0.45f, 0.0f); // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½
         titleIcon.transform.localScale = Vector3.one * 1.15f;
 
         titleIcon.DOFade(0.85f, 0.15f).From(0f).SetEase(Ease.OutQuad);
         titleIcon.transform.DOScale(1.04f, 0.18f).SetLoops(2, LoopType.Yoyo).SetEase(Ease.OutBack)
-            .OnComplete(() => {
+            .OnComplete(() =>
+            {
                 titleIcon.DOFade(0f, 0.5f).SetDelay(0.22f);
             });
     }

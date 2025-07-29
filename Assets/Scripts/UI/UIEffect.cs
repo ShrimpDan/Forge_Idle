@@ -2,11 +2,12 @@ using UnityEngine;
 using DG.Tweening;
 using UnityEngine.UI;
 using TMPro;
+using System;
 
 public static class UIEffect
 {
-    /// ÅØ½ºÆ® È®´ë/Ãà¼Ò È¿°ú (¹«ÇÑ ¹Ýº¹)
-    /// »ç¿ë¿¹½Ã: UIEffect.TextScaleEffect(Text, Å¸°ÙÅ©±â, ÇÑ»çÀÌÅ¬´ç Áö¼Ó½Ã°£);
+    /// ï¿½Ø½ï¿½Æ® È®ï¿½ï¿½/ï¿½ï¿½ï¿½ È¿ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ ï¿½Ýºï¿½)
+    /// ï¿½ï¿½ë¿¹ï¿½ï¿½: UIEffect.TextScaleEffect(Text, Å¸ï¿½ï¿½Å©ï¿½ï¿½, ï¿½Ñ»ï¿½ï¿½ï¿½Å¬ï¿½ï¿½ ï¿½ï¿½ï¿½Ó½Ã°ï¿½);
 
     public static void TextScaleEffect(TMP_Text text, float targetScale, float duration)
     {
@@ -16,9 +17,9 @@ public static class UIEffect
     }
 
 
-    /// ÆË¾÷ open È¿°ú
-    /// UIEffect.PopupOpenEffect(Panel, È¿°ú ½Ã°£ );
-    
+    /// ï¿½Ë¾ï¿½ open È¿ï¿½ï¿½
+    /// UIEffect.PopupOpenEffect(Panel, È¿ï¿½ï¿½ ï¿½Ã°ï¿½ );
+
     public static void PopupOpenEffect(RectTransform panel, float duration)
     {
         panel.localScale = Vector3.zero;
@@ -26,12 +27,16 @@ public static class UIEffect
         panel.DOScale(1f, duration).SetEase(Ease.OutBack);
     }
 
-    /// ÆË¾÷ close È¿°ú
-    /// »ç¿ë¿¹½Ã: UIEffect.PopupCloseEffect(Panel, È¿°ú ½Ã°£ );
-    public static void PopupCloseEffect(RectTransform panel, float duration)
+    /// ï¿½Ë¾ï¿½ close È¿ï¿½ï¿½
+    /// ï¿½ï¿½ë¿¹ï¿½ï¿½: UIEffect.PopupCloseEffect(Panel, È¿ï¿½ï¿½ ï¿½Ã°ï¿½ );
+    public static void PopupCloseEffect(RectTransform panel, float duration, Action onCompleted = null)
     {
         panel.DOScale(0f, duration)
             .SetEase(Ease.InBack)
-            .OnComplete(() => panel.gameObject.SetActive(false));
+            .OnComplete(() =>
+            {
+                panel.gameObject.SetActive(false);
+                onCompleted?.Invoke();
+            });
     }
 }
