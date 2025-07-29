@@ -27,6 +27,7 @@ public class GameManager : MonoSingleton<GameManager>
 
     public DailyQuestManager DailyQuestManager { get; private set; }
 
+    
 
     protected override void Awake()
     {
@@ -150,6 +151,20 @@ public class GameManager : MonoSingleton<GameManager>
         {
             ForgeManager.AddGold(5000);
             Debug.Log("<color=yellow>[GameManager] 테스트 골드 5000 지급 완료!</color>");
+        }
+        else
+        {
+            Debug.LogWarning("[GameManager] Forge 인스턴스를 찾을 수 없습니다!");
+        }
+    }
+
+    [ContextMenu("Add Test Gold (500000)")]
+    public void AddTestGold2()
+    {
+        if (ForgeManager != null)
+        {
+            ForgeManager.AddGold(500000);
+            Debug.Log("<color=yellow>[GameManager] 테스트 골드 500000 지급 완료!</color>");
         }
         else
         {

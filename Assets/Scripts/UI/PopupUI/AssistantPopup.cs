@@ -85,9 +85,12 @@ public class AssistantPopup : BaseUI
                 GameObject obj = Instantiate(optionTextPrefab, optionRoot);
                 var optionText = obj.GetComponent<TextMeshProUGUI>();
 
-                float percent = (option.Multiplier - 1f) * 100f;
-                string sign = percent >= 0 ? "+" : "";
-                optionText.text = $"{option.AbilityName}\n{sign}{percent:F0}%";
+                float clamped = Mathf.Max(option.Multiplier, 0f);
+                float percent = (clamped - 1f) * 100f;
+
+                string sign = percent > 0 ? "+" : "";
+                string display = percent <= 0f ? "0%" : $"{sign}{percent:F0}%";
+                optionText.text = $"{option.AbilityName}\n{display}";
 
                 if (obj.GetComponent<LayoutElement>() == null)
                 {

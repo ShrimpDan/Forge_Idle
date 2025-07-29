@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using DG.Tweening.Core.Easing;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEditor.Experimental.RestService;
@@ -208,9 +209,12 @@ public class DailyQuestManager : MonoBehaviour
             ResetQuests();
             RefreshUI();
 
+            
             lastResetTime = now;
             PlayerPrefs.SetString("DailyQuest_LastReset", lastResetTime.ToString());
             PlayerPrefs.Save();
+
+
         }
     }
 
