@@ -58,7 +58,7 @@ public static class UIName
     public const string Mine_AssistantPopup = "Mine_AssistantPopup";
     public const string Gem_Weapon_Popup = "Gem_Weapon_Popup";
     public const string RewardPopup = "RewardPopup";
-
+    public const string LackPopup = "LackPopup";
     public static string GetUINameByType(ButtonType type)
     {
         return type switch

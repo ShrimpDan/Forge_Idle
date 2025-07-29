@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System;
 
 public enum SceneType
 {
@@ -87,6 +88,12 @@ public class LoadSceneManager : MonoSingleton<LoadSceneManager>
         StartCoroutine(UnLoadSceneCoroutine(SceneName.GetSceneByType(type)));
     }
 
+    // 오버로드: 콜백 추가 버전
+    public void UnLoadScene(SceneType type, Action onComplete)
+    {
+        StartCoroutine(UnLoadSceneCoroutine(SceneName.GetSceneByType(type), onComplete));
+    }
+
     IEnumerator UnLoadSceneCoroutine(string sceneName)
     {
         loadingCanvas.blocksRaycasts = true;
@@ -98,6 +105,15 @@ public class LoadSceneManager : MonoSingleton<LoadSceneManager>
 
         // 로딩 스크린 페이드 인
         yield return StartCoroutine(FadeRoutine(fadeInCurve, false));
+    }
+
+    // 콜백 지원 오버로드
+    private IEnumerator UnLoadSceneCoroutine(string sceneName, Action onComplete)
+    {
+        AsyncOperation op = SceneManager.UnloadSceneAsync(sceneName);
+        while (!op.isDone)
+            yield return null;
+        onComplete?.Invoke();
     }
 
     private IEnumerator FadeRoutine(AnimationCurve curve, bool blockRaycasts)

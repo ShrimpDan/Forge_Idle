@@ -36,6 +36,7 @@ public class AssistantInfoView : MonoBehaviour
             }
             else
             {
+                Debug.Log($"[SetData] 아이콘 경로: {assistant.IconPath}, 제자 이름: {assistant.Name}");
                 Debug.LogWarning($"[AssistantInfoView] 아이콘 경로 오류: '{assistant.IconPath}' 에 해당하는 스프라이트를 찾을 수 없습니다.");
             }
         }

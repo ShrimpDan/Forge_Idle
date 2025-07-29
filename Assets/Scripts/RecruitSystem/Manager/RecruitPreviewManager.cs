@@ -121,13 +121,10 @@ public class RecruitPreviewManager : MonoBehaviour
     // 현재 제자 후보를 화면에 표시
     private void ShowCurrentCandidate()
     {
-        if (currentIndex >= candidatePool.Count)
+        if (currentIndex < 0 || currentIndex >= candidatePool.Count)
         {
-            popup.HidePopup();
-            ClearActivePapers();
-            currentPaperGO = null;
-            isTransitioning = false;
-            SetButtonsInteractable(false);
+            Debug.LogWarning($"[Recruit] 잘못된 인덱스 접근 시도: currentIndex={currentIndex}, 총 개수={candidatePool.Count}");
+            EndRecruitFlow();
             return;
         }
 
@@ -192,9 +189,15 @@ public class RecruitPreviewManager : MonoBehaviour
     public void ApproveCandidate()
     {
         if (isTransitioning) return;
-
         SetButtonsInteractable(false);
         var gm = GameManager.Instance;
+
+        if (!isFromHeldList && (currentIndex < 0 || currentIndex >= candidatePool.Count))
+        {
+            Debug.LogWarning($"[Recruit] ApproveCandidate에서 잘못된 인덱스 접근: {currentIndex}");
+            EndRecruitFlow();
+            return;
+        }
 
         var target = isFromHeldList ? currentHeldInstance : candidatePool[currentIndex];
         int cost = target.RecruitCost;
@@ -216,19 +219,17 @@ public class RecruitPreviewManager : MonoBehaviour
         if (isFromHeldList)
         {
             ReturnToProperUI();
+            return;
         }
-        else
-        {
-            currentIndex++;
-            ShowCurrentCandidate();
-        }
+
+        AdvanceToNextCandidate();
     }
+
 
     // 제자 영입 거절
     public void RejectCandidate()
     {
         if (isTransitioning) return;
-
         SetButtonsInteractable(false);
 
         if (isFromHeldList)
@@ -239,15 +240,14 @@ public class RecruitPreviewManager : MonoBehaviour
             return;
         }
 
-        currentIndex++;
-        ShowCurrentCandidate();
+        AdvanceToNextCandidate();
     }
+
 
     // 제자 보류 처리
     public void HoldCandidate()
     {
         if (isTransitioning) return;
-
         SetButtonsInteractable(false);
 
         if (isFromHeldList)
@@ -256,12 +256,41 @@ public class RecruitPreviewManager : MonoBehaviour
             return;
         }
 
+        if (currentIndex < 0 || currentIndex >= candidatePool.Count)
+        {
+            Debug.LogWarning($"[Recruit] HoldCandidate에서 잘못된 인덱스 접근: {currentIndex}");
+            EndRecruitFlow();
+            return;
+        }
+
         var held = candidatePool[currentIndex];
         GameManager.Instance.HeldCandidates.Add(held);
         GameManager.Instance.SaveManager.SaveAll();
 
+        AdvanceToNextCandidate();
+    }
+
+    private void AdvanceToNextCandidate()
+    {
         currentIndex++;
-        ShowCurrentCandidate();
+
+        if (currentIndex >= candidatePool.Count)
+        {
+            EndRecruitFlow();
+        }
+        else
+        {
+            ShowCurrentCandidate();
+        }
+    }
+
+    private void EndRecruitFlow()
+    {
+        popup.HidePopup();
+        ClearActivePapers();
+        currentPaperGO = null;
+        SetButtonsInteractable(false);
+        recruitUI.SetActive(false);
     }
 
 

@@ -79,32 +79,24 @@ public class AssistantFactory
         if (!canRecruit && !bypassRecruitCheck) return null;
         canRecruit = false;
 
-        string selectedGrade = GetRandomGradeByProbability();
+        if (type == SpecializationType.All)
+        {
+            return CreateRandomTrainee(true); 
+        }
 
-        var candidates = assistantLoader.ItemsList
-            .Where(t =>
-                string.Equals(t.grade?.Trim(), selectedGrade, StringComparison.OrdinalIgnoreCase) &&
-                specializationLoader.GetByKey(t.specializationKey)?.specializationType == type)
-            .ToList();
+        var candidates = assistantLoader.ItemsList.FindAll(t =>
+            GetTier(t.grade) >= 2 &&
+            specializationLoader.GetByKey(t.specializationKey)?.specializationType == type);
 
         if (candidates.Count == 0)
         {
-            candidates = assistantLoader.ItemsList
-                .Where(t => specializationLoader.GetByKey(t.specializationKey)?.specializationType == type)
-                .ToList();
-
-            if (candidates.Count == 0)
-            {
-                Debug.LogWarning($"[FixedTrainee] 특화: {type} → 후보 전혀 없음");
-                return null;
-            }
-
-            Debug.LogWarning($"[FixedTrainee] 원하는 등급 없음 → 해당 특화 전체에서 임의 선택");
+            return null;
         }
 
         var selected = candidates[rng.Next(candidates.Count)];
         return CreateAssistantFromData(selected);
     }
+
 
     // 중복 없이 다수의 제자를 생성
     public List<AssistantInstance> CreateMultiple(int count, SpecializationType? fixedType = null)
