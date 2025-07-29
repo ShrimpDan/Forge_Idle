@@ -198,7 +198,7 @@ public class DailyQuestManager : MonoBehaviour
         DateTime now = TimeManager.Instance.Now();
       
 
-        Debug.Log($"[DailyQuestManager] 현재 시간 {now} , 리셋 시간 {resetTime}");
+      
         //NTP서버 
 
 
