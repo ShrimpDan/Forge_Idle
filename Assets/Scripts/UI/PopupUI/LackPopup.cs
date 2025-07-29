@@ -2,39 +2,42 @@ using UnityEngine;
 using TMPro;
 
 
-/// »ç¿ë¹ı
+/// ï¿½ï¿½ï¿½ï¿½
 /// [SerializeField] private LackPopup lackPopupPrefab; 
 /// [SerializeField] private Transform popupParent;  
-/// // °ñµå 
+/// // ï¿½ï¿½ï¿½ 
 /// var popup = Instantiate(lackPopupPrefab, popupParent ? popupParent : null);
 /// popup.Show(LackType.Gold);
 /// 
-/// // Àç·á 
+/// // ï¿½ï¿½ï¿½ 
 /// var popup = Instantiate(lackPopupPrefab, popupParent ? popupParent : null);
 /// popup.Show(LackType.Resource);
 ///
-/// // Æ÷ÀÎÆ®
+/// // ï¿½ï¿½ï¿½ï¿½Æ®
 /// var popup = Instantiate(lackPopupPrefab, popupParent ? popupParent : null);
 /// popup.Show(LackType.Point);
 /// 
 public enum LackType
 {
     Gold,
+    Dia,
     Resource,
     Point
 }
 
-public class LackPopup : MonoBehaviour
+public class LackPopup : BaseUI
 {
     [Header("UI References")]
     [SerializeField] private RectTransform panel;
     [SerializeField] private TMP_Text messageText;
 
     [Header("Animation Settings")]
-    [SerializeField] private float popupDuration = 1.2f;   // ÆË¾÷ À¯Áö ½Ã°£ (ÃÊ)
-    [SerializeField] private float animDuration = 0.25f;   // ÆË¾÷ ¿­°í ´İ´Â ¾Ö´Ï¸ŞÀÌ¼Ç ½Ã°£ (ÃÊ)
+    [SerializeField] private float popupDuration = 1.2f;   // ï¿½Ë¾ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ (ï¿½ï¿½)
+    [SerializeField] private float animDuration = 0.25f;   // ï¿½Ë¾ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½İ´ï¿½ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½Ã°ï¿½ (ï¿½ï¿½)
 
     private bool isShowing = false;
+
+    public override UIType UIType => UIType.Popup;
 
     public void Show(LackType type)
     {
@@ -43,10 +46,11 @@ public class LackPopup : MonoBehaviour
 
         messageText.text = type switch
         {
-            LackType.Gold => "°ñµå°¡ ºÎÁ·ÇÕ´Ï´Ù.",
-            LackType.Resource => "Àç·á°¡ ºÎÁ·ÇÕ´Ï´Ù.",
-            LackType.Point => "Æ÷ÀÎÆ®°¡ ºÎÁ·ÇÕ´Ï´Ù.",
-            _ => "ÇÊ¿äÇÑ ÀÚ¿øÀÌ ºÎÁ·ÇÕ´Ï´Ù."
+            LackType.Gold => "ê³¨ë“œê°€ ë¶€ì¡±í•©ë‹ˆë‹¤.",
+            LackType.Dia => "ë‹¤ì´ì•„ê°€ ë¶€ì¡±í•©ë‹ˆë‹¤.",
+            LackType.Resource => "ì¬ë£Œê°€ ë¶€ì¡±í•©ë‹ˆë‹¤.",
+            LackType.Point => "í¬ì¸íŠ¸ê°€ ë¶€ì¡±í•©ë‹ˆë‹¤.",
+            _ => "í•„ìš”í•œ ìì›ì´ ë¶€ì¡±í•©ë‹ˆë‹¤."
         };
 
         SoundManager.Instance?.Play("LackSound");
@@ -56,7 +60,7 @@ public class LackPopup : MonoBehaviour
         Invoke(nameof(Hide), popupDuration + animDuration);
     }
 
-    /// Ä¿½ºÅÒ ¸Ş½ÃÁö ÆË¾÷
+    /// Ä¿ï¿½ï¿½ï¿½ï¿½ ï¿½Ş½ï¿½ï¿½ï¿½ ï¿½Ë¾ï¿½
     public void ShowCustom(string customMsg)
     {
         if (isShowing) return;
@@ -71,7 +75,8 @@ public class LackPopup : MonoBehaviour
     private void Hide()
     {
         UIEffect.PopupCloseEffect(panel, animDuration);
-        Invoke(nameof(DestroySelf), animDuration); // ¾Ö´Ï¸ŞÀÌ¼Ç ³¡³ª°í ¿ÀºêÁ§Æ® »èÁ¦
+        Invoke(nameof(DestroySelf), animDuration); // ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½
+        uIManager.CloseUI(UIName.LackPopup);
     }
 
     private void DestroySelf()
