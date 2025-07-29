@@ -221,6 +221,14 @@ public class BoardManager : MonoBehaviour
     private void ShowResult()
     {
         resultUI.SetActive(true);
+
+        var mineWindow = FindObjectOfType<MineMiniGameWindow>();
+        if (mineWindow != null)
+        {
+            mineWindow.MarkCleared();
+        }
+
+       
         SoundManager.Instance.Play("SFX_SystemReward");
     }
 }

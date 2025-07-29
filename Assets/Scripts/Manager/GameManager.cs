@@ -27,6 +27,7 @@ public class GameManager : MonoSingleton<GameManager>
 
     public DailyQuestManager DailyQuestManager { get; private set; }
 
+    
 
     protected override void Awake()
     {

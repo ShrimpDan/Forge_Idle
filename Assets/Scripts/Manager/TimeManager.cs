@@ -17,6 +17,7 @@ public class TimeManager : MonoSingleton<TimeManager>
     {
         base.Awake();
         _ = InitializeTime();
+      
     }
 
     public async Task InitializeTime()
@@ -40,13 +41,20 @@ public class TimeManager : MonoSingleton<TimeManager>
     public DateTime Now()
     {
         return DateTime.UtcNow + serverOffset + TimeSpan.FromHours(9); //한국 시간 
-            }
+    }
+
+    DateTime lastClearDate;
+
+   
 
 
- 
+    public bool HasOneDayPassed(DateTime lastDate) //다른것도 사용가능
+    {
+        return lastDate.Date < Now().Date; // 하루가 지났는지 판단
+    }
 
- 
-    //네트워크에서 빅라디안으로 오면 그걸 CPU 가 이해하기 위해 리틀 라디안으로 바꿔야한다. 
+
+
 
     private async Task<DateTime?> GetWorldTimeAPI()
     {
@@ -171,5 +179,8 @@ public class TimeApiResponse
                       ((x & 0x00ff0000) >> 8) +
                       ((x & 0xff000000) >> 24));
     }
+
+
+    //네트워크에서 빅라디안으로 오면 그걸 CPU 가 이해하기 위해 리틀 라디안으로 바꿔야한다. 
  * 
  */
