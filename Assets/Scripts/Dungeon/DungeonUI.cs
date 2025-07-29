@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class DungeonUI : MonoBehaviour
 {
     private DungeonManager dungeonManager;
+    private UIManager uIManager;
 
     [Header("Battle Info UI")]
     [SerializeField] private Image timeFill;
@@ -46,7 +47,7 @@ public class DungeonUI : MonoBehaviour
     public void UpdateTimerUI(float current, float max)
     {
         timeFill.fillAmount = current / max;
-        timeText.text = current.ToString("F0");
+        timeText.text = current.ToString("F1");
     }
 
     public void UpdateMonsterUI(int killedMonster, int maxMonster)
@@ -59,6 +60,13 @@ public class DungeonUI : MonoBehaviour
 
     public void OpenClearPopup(bool isClear)
     {
+        if (isClear)
+        {
+            var ui = uIManager.OpenUI<RewardPopup>(UIName.RewardPopup);
+            ui.Show(dungeonManager.RewardHandler.RewardItems);
+            return;
+        }
+
         dungeonPopup.Init(dungeonManager, isClear);
     }
 
