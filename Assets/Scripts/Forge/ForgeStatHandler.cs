@@ -107,7 +107,49 @@ public class ForgeStatHandler
             forge.VisualHandler.SetInterior(UpgradeLevels[type]);
         }
 
+        if (IsAllUpgradesMaxed())
+        {
+            forgeManager.UnlockForge(GetNextForgeType(forge.ForgeType));
+        }
+
         return true;
+    }
+
+    public bool IsAllUpgradesMaxed()
+    {
+        if (UpgradeLevels == null || UpgradeLevels.Count == 0)
+        {
+            return false;
+        }
+
+        foreach (var kvp in UpgradeLevels)
+        {
+            ForgeUpgradeType upgradeType = kvp.Key;
+            int currentLevel = kvp.Value;
+            int maxLevel = upgradeDataLoader.GetMaxLevel(forge.ForgeType, upgradeType);
+
+            if (currentLevel < maxLevel)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private ForgeType GetNextForgeType(ForgeType currentForgeType)
+    {
+        switch (currentForgeType)
+        {
+            case ForgeType.Weapon:
+                return ForgeType.Armor;
+            case ForgeType.Armor:
+                return ForgeType.Magic;
+            case ForgeType.Magic:
+                return ForgeType.None; // 마지막 대장간 이후에는 더 이상 없음
+            default:
+                return ForgeType.None;
+        }
     }
 
     public void ApplyAssistantStat(AssistantInstance assi, bool isApply)

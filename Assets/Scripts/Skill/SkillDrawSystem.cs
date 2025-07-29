@@ -18,6 +18,10 @@ public class SkillDrawSystem : MonoBehaviour
 
     [SerializeField] float slotAnimationDuration = 0.2f;
 
+    [Header("Needed Dia")]
+    [SerializeField] int oneDrawNeedDia;
+    [SerializeField] int tenDrawNeedDia;
+
     void Start()
     {
         skillManager = GameManager.Instance.SkillManager;
@@ -27,6 +31,12 @@ public class SkillDrawSystem : MonoBehaviour
 
     public void DrawSkill(int count)
     {
+        if (count == 1 && !forgeManager.UseDia(oneDrawNeedDia))
+            return;
+
+        if (count == 10 && !forgeManager.UseDia(tenDrawNeedDia))
+            return;
+
         ClearSlotRoot();
         gatchaBG.SetActive(true);
         confirmBtn.interactable = false;
@@ -36,6 +46,8 @@ public class SkillDrawSystem : MonoBehaviour
 
     private IEnumerator DrawSkillsSequentially(int count)
     {
+        
+
         for (int i = 0; i < count; i++)
         {
             SkillData skillData = skillDataLoader.GetRandomSkill();
