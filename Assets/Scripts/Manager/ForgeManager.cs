@@ -5,6 +5,7 @@ using UnityEngine;
 public class ForgeManager : MonoBehaviour
 {
     private GameManager gameManager;
+    private UIManager uIManager;
     private AssistantInventory assistantInventory;
 
     // 레벨 & 명성치
@@ -33,6 +34,7 @@ public class ForgeManager : MonoBehaviour
     public void Init(GameManager gameManager)
     {
         this.gameManager = gameManager;
+        uIManager = gameManager.UIManager;
         assistantInventory = gameManager.AssistantInventory;
 
         SkillSystem = GetComponentInChildren<ForgeSkillSystem>();
@@ -151,6 +153,8 @@ public class ForgeManager : MonoBehaviour
             return true;
         }
 
+        var ui = uIManager.OpenUI<LackPopup>(UIName.LackPopup);
+        ui.Show(LackType.Gold);
         return false;
     }
 
@@ -163,6 +167,8 @@ public class ForgeManager : MonoBehaviour
             return true;
         }
 
+        var ui = uIManager.OpenUI<LackPopup>(UIName.LackPopup);
+        ui.Show(LackType.Dia);
         return false;
     }
 
@@ -176,6 +182,8 @@ public class ForgeManager : MonoBehaviour
     {
         if (CurRecipePoint - amount < 0)
         {
+            var ui = uIManager.OpenUI<LackPopup>(UIName.LackPopup);
+            ui.Show(LackType.Point);
             return false;
         }
 
@@ -252,7 +260,7 @@ public class ForgeManager : MonoBehaviour
             {
                 AssistantInstance assi = assistantInventory.GetAssistantInstance(data.AssistantKey);
 
-                if(EquippedAssistant.ContainsKey(data.ForgeType))
+                if (EquippedAssistant.ContainsKey(data.ForgeType))
                     EquippedAssistant[data.ForgeType][assi.Specialization] = assi;
             }
         }
