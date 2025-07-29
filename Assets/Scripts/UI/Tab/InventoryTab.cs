@@ -36,7 +36,7 @@ public class InventoryTab : BaseTab
             int index = i;
             tabButtons[i].onClick.AddListener(() =>
             {
-                SoundManager.Instance.Play("SFX_SystemClick");
+                SoundManager.Instance.Play("ClickSound");
                 SwitchTab(index);
             });
         }

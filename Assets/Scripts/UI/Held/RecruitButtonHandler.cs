@@ -41,21 +41,21 @@ public class RecruitButtonHandler : MonoBehaviour
     // 영입 확정
     public void OnClickApprove()
     {
-        SoundManager.Instance.Play("SFX_SystemClick");
+        SoundManager.Instance.Play("ClickSound");
         previewManager.ApproveCandidate();
     }
 
     // 영입 거절
     public void OnClickReject()
     {
-        SoundManager.Instance.Play("SFX_SystemClick");
+        SoundManager.Instance.Play("ClickSound");
         previewManager.RejectCandidate();
     }
 
     // 보류 처리
     public void OnClickHold()
     {
-        SoundManager.Instance.Play("SFX_SystemClick");
+        SoundManager.Instance.Play("ClickSound");
         previewManager.HoldCandidate();
     }
 }
