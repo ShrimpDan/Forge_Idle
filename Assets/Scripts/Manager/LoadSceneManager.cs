@@ -5,7 +5,6 @@ using System;
 
 public enum SceneType
 {
-    Main,
     Dungeon,
     MiniGame,
     MineScene,
@@ -16,7 +15,6 @@ public enum SceneType
 
 public static class SceneName
 {
-    public const string MainScene = "MainScene";
     public const string DungeonScene = "DungeonScene";
     public const string MiniGame = "MiniGame";
     public const string MineScene = "MineScene";
@@ -28,7 +26,6 @@ public static class SceneName
     {
         return type switch
         {
-            SceneType.Main => MainScene,
             SceneType.Dungeon => DungeonScene,
             SceneType.MiniGame => MiniGame,
             SceneType.MineScene => MineScene,

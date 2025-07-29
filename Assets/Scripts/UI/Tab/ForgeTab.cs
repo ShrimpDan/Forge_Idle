@@ -7,9 +7,15 @@ public class ForgeTab : BaseTab
     private ForgeManager forgeManager;
     [SerializeField] private Image weaponIcon;
     [SerializeField] private Image progressFill;
-    [SerializeField] private Button forgeRecipeBtn;
+    
     [SerializeField] private Button slideTabBtn;
     [SerializeField] private RectTransform slideTab;
+
+    [Header("BottomSlider Button")]
+    [SerializeField] private Button forgeUpgradeBtn;
+    [SerializeField] private Button forgeRecipeBtn;
+    [SerializeField] private Button forgeSkillBtn;
+    [SerializeField] private Button forgeMoveBtn;
 
     [Header("Skill Slots")]
     [SerializeField] private SkillEquipSlot[] skillSlots;
@@ -47,8 +53,17 @@ public class ForgeTab : BaseTab
             forgeManager.CurrentForge.SetForgeMap(true);
             forgeManager.Events.OnCraftProgress += UpdateProgress;
 
+            forgeUpgradeBtn.onClick.RemoveAllListeners();
+            forgeUpgradeBtn.onClick.AddListener(OpenUpgradeWindow);
+
             forgeRecipeBtn.onClick.RemoveAllListeners();
             forgeRecipeBtn.onClick.AddListener(OpenRecipeWindow);
+
+            forgeSkillBtn.onClick.RemoveAllListeners();
+            forgeSkillBtn.onClick.AddListener(OpenSkillWindow);
+
+            forgeMoveBtn.onClick.RemoveAllListeners();
+            forgeMoveBtn.onClick.AddListener(OpenMoveWindow);
         }
     }
 
@@ -73,11 +88,26 @@ public class ForgeTab : BaseTab
         progressFill.fillAmount = curTime / totalTime;
     }
 
+    private void OpenUpgradeWindow()
+    {
+        uIManager.OpenUI<ForgeUpgradeWindow>(UIName.ForgeUpgradeWindow);
+    }
+
     private void OpenRecipeWindow()
     {
         if (forgeManager.CurrentForge == null) return;
 
         uIManager.OpenUI<WeaponRecipeWindow>(UIName.GetRecipeWindowByType(forgeManager.CurrentForge.ForgeType));
+    }
+
+    private void OpenSkillWindow()
+    {
+        uIManager.OpenUI<SkillWindow>(UIName.SkillWindow);
+    }
+
+    private void OpenMoveWindow()
+    {
+        uIManager.OpenUI<ForgeMoveWindow>(UIName.ForgeMoveWindow);
     }
 
     private void ClickSlideButton()

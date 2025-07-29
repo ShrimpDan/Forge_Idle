@@ -37,6 +37,7 @@ public class ForgeCommonData
     public List<ActiveSkillSaveData> ActiveSkills;
     public List<EquipAssiSaveData> EquippedAssi;
 
+    public List<ForgeType> UnlockedForge;
     public SceneType CurrentForgeScene;
 }
 
@@ -92,6 +93,7 @@ public static class ForgeSaveSystem
             Gold = 0,
             Dia = 0,
 
+            UnlockedForge = new List<ForgeType>() { ForgeType.Weapon },
             ActiveSkills = new List<ActiveSkillSaveData>(),
             EquippedAssi = new List<EquipAssiSaveData>(),
 

@@ -43,8 +43,8 @@ public static class UIName
     public const string ArmorRecipeWindow = "ArmorRecipeWindow";
     public const string MagicRecipeWindow = "MagicRecipeWindow";
     public const string SkillWindow = "SkillWindow";
-    public const string SkillPopup = "SkillPopup";
-
+    public const string ForgeMoveWindow = "ForgeMoveWindow";
+    
     // Popup UI
     public const string InventoryPopup = "InventoryPopup";
     public const string AssistantPopup = "AssistantPopup";
@@ -59,6 +59,8 @@ public static class UIName
     public const string Gem_Weapon_Popup = "Gem_Weapon_Popup";
     public const string RewardPopup = "RewardPopup";
     public const string LackPopup = "LackPopup";
+    public const string SkillPopup = "SkillPopup";
+
     public static string GetUINameByType(ButtonType type)
     {
         return type switch
