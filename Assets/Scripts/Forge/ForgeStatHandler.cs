@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -114,8 +114,10 @@ public class ForgeStatHandler
     {
         foreach (var stat in assi.Multipliers)
         {
-            float multiplier = isApply ? 1 : -1;
-            float statValue = stat.Multiplier * multiplier;
+            float raw = stat.Multiplier;
+            if (!isApply) raw *= -1;
+
+            float statValue = Mathf.Max(raw, 0f);
 
             switch (stat.AbilityName)
             {
