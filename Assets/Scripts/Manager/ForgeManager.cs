@@ -59,7 +59,7 @@ public class ForgeManager : MonoBehaviour
             ActiveSkills = SkillSystem.GetSaveData(),
             EquippedAssi = GetAssiSaveData(),
 
-            CurrentForgeScene = CurrentForge != null ? CurrentForge.SceneType : SceneType.Main
+            CurrentForgeScene = CurrentForge != null ? CurrentForge.SceneType : SceneType.Forge_Weapon
         };
 
         if (CurrentForge != null)
@@ -83,6 +83,7 @@ public class ForgeManager : MonoBehaviour
 
         SkillSystem.LoadFromData(data.ActiveSkills);
         LoadAssiSaveData(data.EquippedAssi);
+
         if (data.CurrentForgeScene != SceneType.Main)
         {
             LoadSceneManager.Instance.LoadSceneAsync(data.CurrentForgeScene, true);
@@ -250,7 +251,9 @@ public class ForgeManager : MonoBehaviour
             foreach (var data in equippedAssi)
             {
                 AssistantInstance assi = assistantInventory.GetAssistantInstance(data.AssistantKey);
-                EquippedAssistant[data.ForgeType][assi.Specialization] = assi;
+
+                if(EquippedAssistant.ContainsKey(data.ForgeType))
+                    EquippedAssistant[data.ForgeType][assi.Specialization] = assi;
             }
         }
     }
