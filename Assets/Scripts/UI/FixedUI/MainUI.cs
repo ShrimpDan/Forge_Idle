@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 public class MainUI : BaseUI
 {
     private ForgeManager forgeManager;
@@ -62,7 +63,6 @@ public class MainUI : BaseUI
 
         });
 
-
         OnEnable();
     }
 
@@ -71,7 +71,7 @@ public class MainUI : BaseUI
         base.Open();
         SwitchTab(2);
     }
-    
+
     void OnEnable()
     {
         if (forgeManager == null) return;
