@@ -100,7 +100,7 @@ public class GameManager : MonoSingleton<GameManager>
 
         InvokeRepeating(nameof(ProcessWageWrapper), 5f, 5f);
 
-
+        SoundManager.Instance.Play("MainBGM");
     }
 
     /// <summary>
