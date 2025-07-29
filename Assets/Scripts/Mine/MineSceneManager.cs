@@ -43,6 +43,7 @@ public class MineSceneManager : MonoBehaviour
 
     private void Awake()
     {
+        SceneCameraState.IsMineSceneActive = true;
         SetMainUIClickable(false);
         SetMainCameraActive(false);
         SetMineCameraActive(true);
@@ -50,7 +51,7 @@ public class MineSceneManager : MonoBehaviour
 
     private void OnDestroy()
     {
-        SetMainCameraActive(true);
+        SceneCameraState.IsMineSceneActive = false;
         SetMineCameraActive(false);
     }
 
@@ -289,17 +290,14 @@ public class MineSceneManager : MonoBehaviour
         }
     }
     // =========================
-
-    // 마인 씬 닫고 메인씬으로 돌아가기 (버튼 연결)
-    public void OnReturnToMainScene()
+    public void OnReturnToForgeMain()
     {
         SetMainUIClickable(true);
-        //SetMainCameraActive(true);  // 이거 주석!
         SetMineCameraActive(false);
 
-        // Unload 끝난 뒤 카메라 켜기
         LoadSceneManager.Instance.UnLoadScene(SceneType.MineScene, () => {
-            SetMainCameraActive(true); // 콜백에서 활성화
+            SceneCameraState.IsMineSceneActive = false; 
+            MainUI mainUI = FindObjectOfType<MainUI>();
         });
     }
 }
