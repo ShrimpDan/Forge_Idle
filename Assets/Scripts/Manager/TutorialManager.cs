@@ -81,7 +81,10 @@ public class TutorialManager : MonoBehaviour
         GameManager.Instance.CraftingManager.isCrafingDone += OnEventDone; // 제작 완료 이벤트 등록
         GameManager.Instance.UIManager.CloseUIName += HandleUIClose;
         GameManager.Instance.UIManager.OpenUIName += HandleUIOpen;
+        MainUI.onTabClick += HandleTapOpen;
+        //GameManager.Instance.UIManager
         ForgeTab.onClickButton += HandleButtonClick;
+
 
 
         PlayerPrefs.SetInt("TutorialDone", 0);
@@ -95,7 +98,7 @@ public class TutorialManager : MonoBehaviour
         GameManager.Instance.UIManager.CloseUIName -= HandleUIClose;
         GameManager.Instance.CraftingManager.isCrafingDone -= OnEventDone; //일단 막아둬
         GameManager.Instance.UIManager.OpenUIName -= HandleUIOpen;
-
+        MainUI.onTabClick -= HandleTapOpen;
         if (waitClickRoutine != null)
         {
             StopCoroutine(waitClickRoutine);
@@ -127,7 +130,6 @@ public class TutorialManager : MonoBehaviour
                 ShowTextWithTyping("어서오세요!! 대장간은 처음 방문하시는군요!!\n 만나서 반갑습니다 간단한 운영법을 알려드릴께요!!");
                 isWaitingForClick = true;
                 isEvent = false; //박스랑 상호작용해도 대사 넘어가게
-              
                 break;
             case 1:
                 effect.HighLightOn();
@@ -135,7 +137,6 @@ public class TutorialManager : MonoBehaviour
                 HighlightPos(450, -720);
                 ShowTextWithTyping("대장간을 운영하기 위해 기본적인 기능들을 알려드릴께요!! 우측 화살표를 눌러주세요!!");
                 break;
-
             case 2:
                 ShowTextWithTyping("이곳은 대장관 관련된 강화 , 레시피, 스킬 관련된 버튼이 숨겨져 있어요!!\n 첫번째로 강화에 대해서 설명해드릴께요 강화버튼을 눌러주세요!!");
                 HighlightPos(-260, -730);
@@ -147,22 +148,52 @@ public class TutorialManager : MonoBehaviour
                 break;
             case 4:
                 ShowTextWithTyping("간단하게 둘러보고 창을 닫아볼까요??");
+                ClickBlockerOn();
                 break;
             case 5:
+                tutorialPanel.SetActive(false);
+                break;
+            case 6:
+                tutorialPanel.SetActive(true);
                 ShowTextWithTyping("다음은 제작에 대해서 설명해드릴께요!! 제작버튼을 눌러주세요!!");
                 effect.HighLightOn();
                 arrowIcon.SetActive(true);
                 HighlightPos(-90, -730);
                 break;
-            case 6:
-                HighlightPos(0, 350);
+            case 7:
+                HighlightPos(0, 300);
                 ShowTextWithTyping("제작을 위해서는 제작포인트가 필요해요!! 처음 무기를 만드시는거니 이번에는 포인트 소모 없이 제작할수 있게 해드릴께요!!");
                 ClickBlockerOn();
                 break;
-            case 7:
+            case 8:
                 AllEffectOff();
                 ShowTextWithTyping("제작 포인트는 무기를 판매하거나 던전을 클리어 하면 얻을수 있어요!! \n 자 그럼이제 한번 무기 제작을 해볼까요?? 무기 제작을 하고 창을 닫아주세요!!");
+                ClickBlockerOn();
                 break;
+            case 9:
+                tutorialPanel.SetActive(false);
+                break;
+            case 10:
+                tutorialPanel.SetActive(true);
+                ShowTextWithTyping("이번에는 스킬에 대해서 설명해 드릴꺼에요!! 가게를 운영하면서 뽑기를 통해 스킬을 얻을수 있어요!! \n 하단 탭에서 상점으로 가볼까요??");
+                effect.HighLightOn();
+                arrowIcon.SetActive(true);
+                HighlightPos(400, -900);
+                break;
+            case 11:
+                AllEffectOff();
+                ShowTextWithTyping("상점에서는 제자나 대장간 스킬을 구매할수 있어요!! 먼저 스킬을 구매해 볼꺼에요!!");
+                ClickBlockerOn();
+                GameManager.Instance.ForgeManager.AddDia(100);
+                break;
+            case 12:
+                ShowTextWithTyping("스킬을 1개 뽑아보세요!!");
+                
+                break;
+            case 13:
+
+                break;
+
 
                 /*
             case 2:
@@ -234,7 +265,6 @@ public class TutorialManager : MonoBehaviour
                 HighlightPos(160, -900);
                 ShowTextWithTyping("고급강화는 재화를 사용해서 좀더 확률이 높게 강화가 가능해요!! ");
                 break;
-
             case 14:
                 HighlightPos(190, 500);
                 ShowTextWithTyping("이번에는 보석강화에 대해서 알려드릴께요!!");
@@ -243,24 +273,19 @@ public class TutorialManager : MonoBehaviour
                 HighlightPos(0, 400);
                 ClickBlockerOn();
                 ShowTextWithTyping("해당 슬롯을 클릭해서 보석을 넣으면 해당 보석의 능력치를 부여할수 있어요!!");
-                
                 break;
             case 16:
                 HighlightPos(-350, -900);
                 ShowTextWithTyping("이제 창을 닫아볼께요!!");
                 break;
-                
-                
             case 17:
                 ClickBlockerOn();
                 AllEffectOff();
                 ShowTextWithTyping("자!! 이제 기본적인 가게 운영방식 설명은 끝이에요!! 대장간을 잘 운영해보세요!!");
                 break;
             case 18:
-
                 EndTutorial();
                 break;
-
                  */
         }
 
@@ -279,7 +304,7 @@ public class TutorialManager : MonoBehaviour
         {
             OnStepClear();
         }
-        else if (tutorialStep == 5 && buttonName == "Forge_Recipe")
+        else if (tutorialStep == 6 && buttonName == "Forge_Recipe")
         {
             OnStepClear();
         }
@@ -498,27 +523,39 @@ public class TutorialManager : MonoBehaviour
 
     private void HandleUIOpen(string uiName)
     { 
-        if(uiName == UIName.ForgeUpgradeWindow && tutorialStep ==2)
+        if(uiName == UIName.ForgeUpgradeWindow && tutorialStep == 2)
         {
             OnStepClear();
 
         }
     }
+    private void HandleTapOpen(string tabName)
+    {
+        if (tabName == "Shop_Tab" && tutorialStep == 10)
+        {
+            OnStepClear();
+        }
+    }
 
     private void HandleUIClose(string uiName)
     {
-        if (uiName == UIName.ForgeUpgradeWindow && tutorialStep == 4)
+        if (uiName == UIName.ForgeUpgradeWindow && tutorialStep == 5)
         {
             isEvent = false;
             OnStepClear();
         }
+        else if (uiName == UIName.WeaponRecipeWindow && tutorialStep == 9)
+        {
+            OnStepClear();
+        }
 
-        else if (uiName == UIName.RefineSystemWindow || tutorialStep == 6)
+        else if (uiName == UIName.RefineSystemWindow || tutorialStep == 5)
         {
             Debug.Log(uiName);
             isEvent = false;
             OnStepClear();
         }
+       
         else if (uiName == UIName.UpgradeWeaponWindow || tutorialStep == 16)
         {
             isEvent = false;

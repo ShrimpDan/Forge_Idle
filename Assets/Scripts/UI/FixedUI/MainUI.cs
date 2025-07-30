@@ -32,7 +32,7 @@ public class MainUI : BaseUI
     [SerializeField] private Button levelButton;
 
     public static event Action<string> onUIClose;
-
+    public static event Action<string> onTabClick;
     public override UIType UIType => UIType.Fixed;
 
     public override void Init(GameManager gameManager, UIManager uIManager)
@@ -104,9 +104,14 @@ public class MainUI : BaseUI
             if (tabPanels[i].TryGetComponent(out BaseTab tabUI))
             {
                 if (isSelected)
+                {
                     tabUI.OpenTab();
+                    onTabClick?.Invoke(tabUI.name);
+                }
                 else
+                { 
                     tabUI.CloseTab();
+                }
             }
             else
             {
