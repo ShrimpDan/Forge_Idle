@@ -38,7 +38,7 @@ public class RecipeSlot : MonoBehaviour
         var itemData = itemLoader?.GetItemByKey(data.ItemKey);
         // 아이콘 불러오기: data.ItemKey를 key로 활용
         Sprite iconSprite = (itemData != null)
-            ? IconLoader.GetIcon(itemData.ItemType, data.ItemKey)
+            ? IconLoader.GetIconByKey(data.ItemKey)
             : null;
 
         if (itemData != null && iconSprite == null)
@@ -64,7 +64,7 @@ public class RecipeSlot : MonoBehaviour
             if (slot == null) continue;
             var resItem = itemLoader?.GetItemByKey(req.ResourceKey);
             Sprite reqIconSprite = (resItem != null)
-                ? IconLoader.GetIcon(resItem.ItemType, req.ResourceKey)
+                ? IconLoader.GetIconByPath(req.ResourceKey)
                 : null;
 
             int owned = inventory?.ResourceList?.Find(x => x.ItemKey == req.ResourceKey)?.Quantity ?? 0;
