@@ -64,7 +64,7 @@ public class RecipeSlot : MonoBehaviour
             if (slot == null) continue;
             var resItem = itemLoader?.GetItemByKey(req.ResourceKey);
             Sprite reqIconSprite = (resItem != null)
-                ? IconLoader.GetIconByPath(req.ResourceKey)
+                ? IconLoader.GetIcon(resItem.ItemType, resItem.ItemKey)
                 : null;
 
             int owned = inventory?.ResourceList?.Find(x => x.ItemKey == req.ResourceKey)?.Quantity ?? 0;

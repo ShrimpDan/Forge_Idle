@@ -78,8 +78,12 @@ public class Forge : MonoBehaviour
 
     public void ExitForge()
     {
-        ForgeManager.ForgeTypeSaveSystem.SaveForgeType(this);
+        ForgeManager.SkillSystem.StopAllSkillEffectCoroutine();
         CustomerManager.StopSpawnCustomer();
-        LoadSceneManager.Instance.UnLoadScene(SceneType);
+
+        ForgeManager.ForgeTypeSaveSystem.SaveForgeType(this, () =>
+        {
+            LoadSceneManager.Instance.UnLoadScene(SceneType);
+        });
     }
 }
