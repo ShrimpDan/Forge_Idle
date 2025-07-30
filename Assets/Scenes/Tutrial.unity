@@ -1654,7 +1654,7 @@ PrefabInstance:
     - target: {fileID: 5925936015454588451, guid: 9924dd9a4d5ab9c409fb8dd252d28a39, type: 3}
       propertyPath: blackSmithUI
       value: 
-      objectReference: {fileID: 588903820}
+      objectReference: {fileID: 0}
     - target: {fileID: 8321866209466776390, guid: 9924dd9a4d5ab9c409fb8dd252d28a39, type: 3}
       propertyPath: m_Name
       value: BlackSmith
@@ -3681,8 +3681,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f54a140661c7d24e9b3d1090ece5a4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  slotParent: {fileID: 0}
-  slotpref: {fileID: 0}
 --- !u!4 &357122283
 Transform:
   m_ObjectHideFlags: 0
@@ -4176,28 +4174,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &556359845 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8245483450802197654, guid: e4822139471d4184b868e6d5c228da5b, type: 3}
-  m_PrefabInstance: {fileID: 1366603631058548840}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 064032d9171f62147ad53dd12ad8cfcc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &556359846 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2789486402832314721, guid: e4822139471d4184b868e6d5c228da5b, type: 3}
-  m_PrefabInstance: {fileID: 1366603631058548840}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ac5e69cf614318548beb9b18db437667, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &577832192
 GameObject:
   m_ObjectHideFlags: 0
@@ -4618,16 +4594,6 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
---- !u!1 &588903820 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6966221257517264803, guid: e4822139471d4184b868e6d5c228da5b, type: 3}
-  m_PrefabInstance: {fileID: 1366603631058548840}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &589596436 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4708347716631477748, guid: e4822139471d4184b868e6d5c228da5b, type: 3}
-  m_PrefabInstance: {fileID: 1366603631058548840}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &621007990
 GameObject:
   m_ObjectHideFlags: 0
@@ -4957,11 +4923,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!224 &645007261 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 5266896168008766563, guid: e4822139471d4184b868e6d5c228da5b, type: 3}
-  m_PrefabInstance: {fileID: 1366603631058548840}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &653040428
 GameObject:
   m_ObjectHideFlags: 0
@@ -5412,8 +5373,8 @@ MonoBehaviour:
   m_ShadowVolumeIntensityEnabled: 0
   m_ShadowVolumeIntensity: 0.75
   m_LocalBounds:
-    m_Center: {x: -0.000050008297, y: -0.00014999509, z: 0}
-    m_Extent: {x: 0.50035, y: 0.25075, z: 0}
+    m_Center: {x: -0.00020000339, y: -0.00025001168, z: 0}
+    m_Extent: {x: 0.50020003, y: 0.25035, z: 0}
   m_PointLightInnerAngle: 360
   m_PointLightOuterAngle: 360
   m_PointLightInnerRadius: 0
@@ -7482,43 +7443,43 @@ PrefabInstance:
     - target: {fileID: 3775548531614091731, guid: 7c6b8c536c8b77048abf2c09de3d0036, type: 3}
       propertyPath: backgroundPanel
       value: 
-      objectReference: {fileID: 589596436}
+      objectReference: {fileID: 0}
     - target: {fileID: 3775548531614091731, guid: 7c6b8c536c8b77048abf2c09de3d0036, type: 3}
       propertyPath: multiDrawParent
       value: 
-      objectReference: {fileID: 645007261}
+      objectReference: {fileID: 0}
     - target: {fileID: 3775548531614091731, guid: 7c6b8c536c8b77048abf2c09de3d0036, type: 3}
       propertyPath: singleDrawParent
       value: 
-      objectReference: {fileID: 645007261}
+      objectReference: {fileID: 0}
     - target: {fileID: 4122176374683881127, guid: 7c6b8c536c8b77048abf2c09de3d0036, type: 3}
       propertyPath: backgroundPanel
       value: 
-      objectReference: {fileID: 589596436}
+      objectReference: {fileID: 0}
     - target: {fileID: 4122176374683881127, guid: 7c6b8c536c8b77048abf2c09de3d0036, type: 3}
       propertyPath: multiDrawParent
       value: 
-      objectReference: {fileID: 645007261}
+      objectReference: {fileID: 0}
     - target: {fileID: 5143866629263005692, guid: 7c6b8c536c8b77048abf2c09de3d0036, type: 3}
       propertyPath: backgroundPanel
       value: 
-      objectReference: {fileID: 589596436}
+      objectReference: {fileID: 0}
     - target: {fileID: 5143866629263005692, guid: 7c6b8c536c8b77048abf2c09de3d0036, type: 3}
       propertyPath: multiDrawParent
       value: 
-      objectReference: {fileID: 645007261}
+      objectReference: {fileID: 0}
     - target: {fileID: 6744297500529542838, guid: 7c6b8c536c8b77048abf2c09de3d0036, type: 3}
       propertyPath: backgroundPanel
       value: 
-      objectReference: {fileID: 589596436}
+      objectReference: {fileID: 0}
     - target: {fileID: 6744297500529542838, guid: 7c6b8c536c8b77048abf2c09de3d0036, type: 3}
       propertyPath: multiDrawParent
       value: 
-      objectReference: {fileID: 645007261}
+      objectReference: {fileID: 0}
     - target: {fileID: 6744297500529542838, guid: 7c6b8c536c8b77048abf2c09de3d0036, type: 3}
       propertyPath: singleDrawParent
       value: 
-      objectReference: {fileID: 645007261}
+      objectReference: {fileID: 0}
     - target: {fileID: 6753165797277035087, guid: 7c6b8c536c8b77048abf2c09de3d0036, type: 3}
       propertyPath: m_Name
       value: AssistantManager
@@ -8431,7 +8392,7 @@ PrefabInstance:
     - target: {fileID: 5655499570232016811, guid: ce693dffa6df2894ca80bbcad4ab47c4, type: 3}
       propertyPath: fusionAnimator
       value: 
-      objectReference: {fileID: 556359846}
+      objectReference: {fileID: 0}
     - target: {fileID: 5655499570232016811, guid: ce693dffa6df2894ca80bbcad4ab47c4, type: 3}
       propertyPath: traineeManager
       value: 
@@ -8443,7 +8404,7 @@ PrefabInstance:
     - target: {fileID: 5655499570232016811, guid: ce693dffa6df2894ca80bbcad4ab47c4, type: 3}
       propertyPath: fusionUIController
       value: 
-      objectReference: {fileID: 556359845}
+      objectReference: {fileID: 0}
     - target: {fileID: 8156493767711822041, guid: ce693dffa6df2894ca80bbcad4ab47c4, type: 3}
       propertyPath: m_Name
       value: AssistantButtonHandler
@@ -12876,32 +12837,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!1 &2088615162 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6208947303889691539, guid: e4822139471d4184b868e6d5c228da5b, type: 3}
-  m_PrefabInstance: {fileID: 1366603631058548840}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &2088615166
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2088615162}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6983b1024491bad4b8a9f6510e9069e1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tutorialPanel: {fileID: 0}
-  tutorialText: {fileID: 0}
-  arrowIcon: {fileID: 0}
-  interactObjects: []
-  uiCam: {fileID: 0}
-  effect: {fileID: 0}
-  hightLightTargets: []
-  clickBlocker: {fileID: 0}
-  topHalfBlocker: {fileID: 0}
 --- !u!1 &2092263331
 GameObject:
   m_ObjectHideFlags: 0
@@ -36118,9 +36053,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6403082019581810604, guid: e4822139471d4184b868e6d5c228da5b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1473836670}
-    - targetCorrespondingSourceObject: {fileID: 6208947303889691539, guid: e4822139471d4184b868e6d5c228da5b, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2088615166}
   m_SourcePrefab: {fileID: 100100000, guid: e4822139471d4184b868e6d5c228da5b, type: 3}
 --- !u!212 &1752301701674101777
 SpriteRenderer:

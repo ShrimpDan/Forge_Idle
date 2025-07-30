@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -29,6 +30,8 @@ public class MainUI : BaseUI
 
     [Header("Top Button")]
     [SerializeField] private Button levelButton;
+
+    public static event Action<string> onUIClose;
 
     public override UIType UIType => UIType.Fixed;
 

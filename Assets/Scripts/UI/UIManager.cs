@@ -18,7 +18,8 @@ public class UIManager : MonoBehaviour
     private Dictionary<string, BaseUI> activeUIs = new();
     private Dictionary<string, GameObject> loadedPrefabs = new();
 
-    public event Action<String> CloseUIName;
+    public event Action<string> OpenUIName;
+    public event Action<string> CloseUIName;
 
     public HeldAssistantUIController HeldAssistantUIController;
 
@@ -154,7 +155,7 @@ public class UIManager : MonoBehaviour
             popupBlockRay.enabled = true;
         else if (ui.UIType == UIType.Window && windowBlockRay != null)
             windowBlockRay.enabled = true;
-
+        OpenUIName?.Invoke(uiName);
         return ui;
     }
 

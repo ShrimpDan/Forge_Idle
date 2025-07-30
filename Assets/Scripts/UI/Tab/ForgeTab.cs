@@ -1,9 +1,13 @@
+﻿using System;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class ForgeTab : BaseTab
 {
+
+
+
     private ForgeManager forgeManager;
     [SerializeField] private Image weaponIcon;
     [SerializeField] private Image progressFill;
@@ -16,6 +20,13 @@ public class ForgeTab : BaseTab
 
     private Transform arrowTr;
     private bool isOpen = false;
+
+
+    #region 튜토리얼 이벤트
+    public static event Action<string> onClickButton;
+
+    #endregion
+
 
     public override void Init(GameManager gameManager, UIManager uIManager)
     {
@@ -36,6 +47,7 @@ public class ForgeTab : BaseTab
         {
             skillSlots[i].Init(gameManager.UIManager, forgeManager, i);
         }
+
     }
 
     public override void OpenTab()
@@ -49,6 +61,8 @@ public class ForgeTab : BaseTab
 
             forgeRecipeBtn.onClick.RemoveAllListeners();
             forgeRecipeBtn.onClick.AddListener(OpenRecipeWindow);
+
+            
         }
     }
 
@@ -78,12 +92,15 @@ public class ForgeTab : BaseTab
         if (forgeManager.CurrentForge == null) return;
 
         uIManager.OpenUI<WeaponRecipeWindow>(UIName.GetRecipeWindowByType(forgeManager.CurrentForge.ForgeType));
+        onClickButton?.Invoke(forgeRecipeBtn.name);
     }
 
     private void ClickSlideButton()
     {
         isOpen = !isOpen;
+
         OpenSlideTab(isOpen);
+        onClickButton?.Invoke(slideTabBtn.name);
     }
 
     private void OpenSlideTab(bool isOpen)

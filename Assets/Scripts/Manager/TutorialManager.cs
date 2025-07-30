@@ -10,8 +10,6 @@ using UnityEngine.EventSystems;
 public class TutorialManager : MonoBehaviour
 {
 
-    public bool IsEventDone => isEvent;
-
     //대사 출력확인
     private bool isTyping = false;
     private Coroutine typingRoutine;
@@ -42,7 +40,6 @@ public class TutorialManager : MonoBehaviour
     [SerializeField] private GameObject clickBlocker;
     [SerializeField] private GameObject topHalfBlocker;
     private Coroutine waitClickRoutine;
-
 
 
     private GameObject curInteractObject;
@@ -78,11 +75,14 @@ public class TutorialManager : MonoBehaviour
     private void Start()
     {
 
+        
         ClickBlocker.OnBlockClick += HandleClickBlock;
         InteractionObjectHandler.OnPointerClicked += OnSettingObject; // 클릭 이벤트 등록
         GameManager.Instance.CraftingManager.isCrafingDone += OnEventDone; // 제작 완료 이벤트 등록
         GameManager.Instance.UIManager.CloseUIName += HandleUIClose;
-      
+        GameManager.Instance.UIManager.OpenUIName += HandleUIOpen;
+        ForgeTab.onClickButton += HandleButtonClick;
+
 
         PlayerPrefs.SetInt("TutorialDone", 0);
     }
@@ -90,9 +90,11 @@ public class TutorialManager : MonoBehaviour
     private void OnDestroy()
     {
         ClickBlocker.OnBlockClick -= HandleClickBlock;
+        ForgeTab.onClickButton -= HandleButtonClick;
         InteractionObjectHandler.OnPointerClicked -= OnSettingObject;
-        //GameManager.Instance.UIManager.CloseUIName -= HandleUIClose;
-        //GameManager.Instance.CraftingManager.isCrafingDone -= OnEventDone; 일단 막아둬
+        GameManager.Instance.UIManager.CloseUIName -= HandleUIClose;
+        GameManager.Instance.CraftingManager.isCrafingDone -= OnEventDone; //일단 막아둬
+        GameManager.Instance.UIManager.OpenUIName -= HandleUIOpen;
 
         if (waitClickRoutine != null)
         {
@@ -120,20 +122,49 @@ public class TutorialManager : MonoBehaviour
         {
             case 0:
                 tutorialPanel.SetActive(true);
+                ClickBlockerOn();
+                AllObjectInteractOff();
                 ShowTextWithTyping("어서오세요!! 대장간은 처음 방문하시는군요!!\n 만나서 반갑습니다 간단한 운영법을 알려드릴께요!!");
                 isWaitingForClick = true;
                 isEvent = false; //박스랑 상호작용해도 대사 넘어가게
-                tutorialStep = 3; //일단 제작 넘기고 Test
+              
                 break;
             case 1:
+                effect.HighLightOn();
                 arrowIcon.SetActive(true);
-                MoveArrowToTarget(hightLightTargets[0]);
-                interactObjects[0].GetComponent<Collider2D>().enabled = true; //클릭 방지
-                waitClickRoutine = StartCoroutine(WaitForClick());
-                ShowTextWithTyping("제작대를 클릭해서 무기를 만들어 볼까요??");
-                GameManager.Instance.Inventory.AddItem(GameManager.Instance.DataManager.ItemLoader.GetItemByKey("ingot_copper"), 2);
-                GameManager.Instance.Inventory.AddItem(GameManager.Instance.DataManager.ItemLoader.GetItemByKey("resource_bronze"), 1);
+                HighlightPos(450, -720);
+                ShowTextWithTyping("대장간을 운영하기 위해 기본적인 기능들을 알려드릴께요!! 우측 화살표를 눌러주세요!!");
                 break;
+
+            case 2:
+                ShowTextWithTyping("이곳은 대장관 관련된 강화 , 레시피, 스킬 관련된 버튼이 숨겨져 있어요!!\n 첫번째로 강화에 대해서 설명해드릴께요 강화버튼을 눌러주세요!!");
+                HighlightPos(-260, -730);
+                break;
+            case 3:
+                AllEffectOff();
+                ShowTextWithTyping("강화는 골드를 사용해서 가게운영에 도움이 되는 다양한 기술들을 배울수 있어요!!");
+                ClickBlockerOn();
+                break;
+            case 4:
+                ShowTextWithTyping("간단하게 둘러보고 창을 닫아볼까요??");
+                break;
+            case 5:
+                ShowTextWithTyping("다음은 제작에 대해서 설명해드릴께요!! 제작버튼을 눌러주세요!!");
+                effect.HighLightOn();
+                arrowIcon.SetActive(true);
+                HighlightPos(-90, -730);
+                break;
+            case 6:
+                HighlightPos(0, 350);
+                ShowTextWithTyping("제작을 위해서는 제작포인트가 필요해요!! 처음 무기를 만드시는거니 이번에는 포인트 소모 없이 제작할수 있게 해드릴께요!!");
+                ClickBlockerOn();
+                break;
+            case 7:
+                AllEffectOff();
+                ShowTextWithTyping("제작 포인트는 무기를 판매하거나 던전을 클리어 하면 얻을수 있어요!! \n 자 그럼이제 한번 무기 제작을 해볼까요?? 무기 제작을 하고 창을 닫아주세요!!");
+                break;
+
+                /*
             case 2:
                 AllEffectOff();
                 ClickBlockerOn();//대화를 해야하니까
@@ -230,10 +261,11 @@ public class TutorialManager : MonoBehaviour
                 EndTutorial();
                 break;
 
+                 */
         }
 
 
-        waitClickRoutine = StartCoroutine(WaitForClick());
+      //  waitClickRoutine = StartCoroutine(WaitForClick());
 
 
 
@@ -241,6 +273,17 @@ public class TutorialManager : MonoBehaviour
     }
 
 
+    private void HandleButtonClick(string buttonName)
+    {
+        if (tutorialStep == 1 && buttonName == "SlideTab_Btn")
+        {
+            OnStepClear();
+        }
+        else if (tutorialStep == 5 && buttonName == "Forge_Recipe")
+        {
+            OnStepClear();
+        }
+    }
 
 
     private void EndTutorial()
@@ -319,8 +362,20 @@ public class TutorialManager : MonoBehaviour
 
     private void MoveArrowToPos(Vector2 pos)
     {
+        Canvas canvas = arrowIcon.GetComponentInParent<Canvas>();
+        if (canvas == null)
+        {
+            return;
+        }
 
-        arrowIcon.transform.position = new Vector2(pos.x+=20f, pos.y);
+        RectTransform canvasRect = canvas.GetComponent<RectTransform>();
+
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect,pos,uiCam,out Vector2 localPos);
+
+
+        arrowIcon.GetComponent<RectTransform>().anchoredPosition = new Vector2(localPos.x + 20f, localPos.y);
+
+     
     }
 
     public void HighlightTarget(Transform target) //조명 비추기
@@ -408,15 +463,7 @@ public class TutorialManager : MonoBehaviour
         }
         isTyping = false;
     }
-    private IEnumerator WaitForClick()
-    {
-        yield return WaitForSecondsCache.Wait(0.3f);
-        yield return new WaitUntil(() => Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject());
-
-        isWaitingForClick = false;
-        waitClickRoutine = null;
-        OnStepClear();
-    }
+   
 
     public void AllObjectInteractOff()
     {
@@ -449,9 +496,24 @@ public class TutorialManager : MonoBehaviour
 
     }
 
+    private void HandleUIOpen(string uiName)
+    { 
+        if(uiName == UIName.ForgeUpgradeWindow && tutorialStep ==2)
+        {
+            OnStepClear();
+
+        }
+    }
+
     private void HandleUIClose(string uiName)
     {
-        if (uiName == UIName.RefineSystemWindow || tutorialStep == 6)
+        if (uiName == UIName.ForgeUpgradeWindow && tutorialStep == 4)
+        {
+            isEvent = false;
+            OnStepClear();
+        }
+
+        else if (uiName == UIName.RefineSystemWindow || tutorialStep == 6)
         {
             Debug.Log(uiName);
             isEvent = false;
@@ -481,5 +543,11 @@ public class TutorialManager : MonoBehaviour
         OnStepClear();
     }
 
+
+    private bool IsClickedObject(string expectedName) //이름비교 
+    {
+        GameObject clickedObj = EventSystem.current.currentSelectedGameObject;
+        return clickedObj != null && clickedObj.name == expectedName;
+    }
 
 }

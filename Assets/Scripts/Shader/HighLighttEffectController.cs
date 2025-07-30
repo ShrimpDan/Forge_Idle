@@ -79,6 +79,14 @@ public class HighLightEffectController : MonoBehaviour
         }
     }
 
+    public void HighLightOn()
+    {
+        if (highlightImage != null)
+        {
+            highlightImage.enabled = true;
+        }
+    }
+
     public void HideHighlight()
     {
         if (highlightImage != null)

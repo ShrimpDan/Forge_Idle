@@ -42,8 +42,8 @@ public class GameManager : MonoSingleton<GameManager>
         ForgeManager = GetComponentInChildren<ForgeManager>();
         AssistantManager = FindObjectOfType<AssistantManager>();
         UIManager = FindObjectOfType<UIManager>();
-        TutorialManager = FindObjectOfType<TutorialManager>();
         CollectionManager = FindAnyObjectByType<CollectionBookManager>();
+        TutorialManager = FindObjectOfType<TutorialManager>();
 
         //일일 퀘스트
         DailyQuestManager= FindObjectOfType<DailyQuestManager>();
