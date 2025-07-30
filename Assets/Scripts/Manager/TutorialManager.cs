@@ -6,6 +6,7 @@ using TMPro;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class TutorialManager : MonoBehaviour
 {
@@ -43,6 +44,9 @@ public class TutorialManager : MonoBehaviour
 
 
     private GameObject curInteractObject;
+    [Header("상점")]
+    [SerializeField] private ShopTab shopTab;
+    [SerializeField] private Button confirmButton;
 
     public void Init(GameManager gm)
     {
@@ -84,7 +88,8 @@ public class TutorialManager : MonoBehaviour
         MainUI.onTabClick += HandleTapOpen;
         //GameManager.Instance.UIManager
         ForgeTab.onClickButton += HandleButtonClick;
-
+        if (confirmButton != null)
+            confirmButton.onClick.AddListener(OnConfirmButtonClicked);
 
 
         PlayerPrefs.SetInt("TutorialDone", 0);
@@ -105,6 +110,8 @@ public class TutorialManager : MonoBehaviour
             waitClickRoutine = null;
         }
         ClickBlockerOff();
+        if (confirmButton != null)
+            confirmButton.onClick.RemoveListener(OnConfirmButtonClicked);
     }
 
 
@@ -181,16 +188,44 @@ public class TutorialManager : MonoBehaviour
                 HighlightPos(400, -900);
                 break;
             case 11:
-                AllEffectOff();
-                ShowTextWithTyping("상점에서는 제자나 대장간 스킬을 구매할수 있어요!! 먼저 스킬을 구매해 볼꺼에요!!");
+                HighlightPos(20, -700);
+                effect.HideHighlight();
+                ShowTextWithTyping("상점에서는 제자나 대장간 스킬을 구매할수 있어요!! 먼저 스킬을 구매해 볼꺼에요!!\n 먼저 하단에 스킬 탭 버튼을 눌러주세요!!");
+                shopTab.AllButtonOff();
+                shopTab.SetButtonInteractableOnly(1);
                 ClickBlockerOn();
                 GameManager.Instance.ForgeManager.AddDia(100);
                 break;
             case 12:
+                AllEffectOff();
                 ShowTextWithTyping("스킬을 1개 뽑아보세요!!");
-                
+                ClickBlockerOn();
                 break;
             case 13:
+                tutorialPanel.SetActive(false);
+                break;
+            case 14:
+                tutorialPanel.SetActive(true);
+                effect.HighLightOn();
+                arrowIcon.SetActive(true);
+                HighlightPos(0, -880);
+                ShowTextWithTyping("이제 스킬을 적용시켜볼꺼에요 다시 대장간으로 돌아가보죠!!");
+                break;
+            case 15:
+                effect.HideHighlight();
+                HighlightPos(90, -730);
+                tutorialPanel.SetActive(false);
+                ShowTextWithTyping("스킬 창으로가서 획득한 스킬을 확인해 보죠!!");
+                break;
+            case 16:
+                arrowIcon.SetActive(false);
+                ShowTextWithTyping("화면을 보시면 아까 획득한 스킬이 들어가있죠?? 다이아를 사용해서 스킬을 뽑으면 자동으로 들어가게 됩니다!!");
+                ClickBlockerOn();
+                break;
+            case 17:
+                ShowTextWithTyping("스킬을 강화하면 더 좋은 대장간을 만들수 있어요!!");
+                break;
+            case 18:
 
                 break;
 
@@ -528,10 +563,18 @@ public class TutorialManager : MonoBehaviour
             OnStepClear();
 
         }
+        if (uiName == UIName.SkillWindow && tutorialStep == 15)
+        {
+            OnStepClear();
+        }
     }
     private void HandleTapOpen(string tabName)
     {
         if (tabName == "Shop_Tab" && tutorialStep == 10)
+        {
+            OnStepClear();
+        }
+        else if (tabName == "Forge_Tab" && tutorialStep == 14)
         {
             OnStepClear();
         }
@@ -549,14 +592,14 @@ public class TutorialManager : MonoBehaviour
             OnStepClear();
         }
 
-        else if (uiName == UIName.RefineSystemWindow || tutorialStep == 5)
+        else if (uiName == UIName.RefineSystemWindow && tutorialStep == 5)
         {
             Debug.Log(uiName);
             isEvent = false;
             OnStepClear();
         }
        
-        else if (uiName == UIName.UpgradeWeaponWindow || tutorialStep == 16)
+        else if (uiName == UIName.UpgradeWeaponWindow && tutorialStep == 16)
         {
             isEvent = false;
             OnStepClear();
@@ -581,10 +624,17 @@ public class TutorialManager : MonoBehaviour
     }
 
 
-    private bool IsClickedObject(string expectedName) //이름비교 
+   
+
+    private void OnConfirmButtonClicked()
     {
-        GameObject clickedObj = EventSystem.current.currentSelectedGameObject;
-        return clickedObj != null && clickedObj.name == expectedName;
+        // 튜토리얼 단계 체크 후 처리
+        if (tutorialStep == 13)
+        {
+            Debug.Log("확인 버튼 클릭됨 -> 다음 단계 진행");
+            OnStepClear();
+        }
+        //else if() 제자 뽑을때 다시
     }
 
 }

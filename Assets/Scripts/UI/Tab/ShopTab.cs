@@ -29,7 +29,7 @@ public class ShopTab : BaseTab
                 baseTab.Init(gameManager, uIManager);
             }
         }
-        
+
         SwitchTab(0);
     }
 
@@ -53,8 +53,36 @@ public class ShopTab : BaseTab
             tabButtons[i].image.color = isSelected ? selectedColor : defaultColor;
         }
 
-       // SoundManager.Instance.Play("SFX_SystemClick");
+        // SoundManager.Instance.Play("SFX_SystemClick");
 
+    }
+
+    public void SetButtonInteractableOnly(int index)
+    {
+        if (index > tabButtons.Length)
+        {
+            return;
+        }
+        tabButtons[index].interactable = true;
+    }
+
+    public void AllButtonOff()
+    {
+        foreach (var btn in tabButtons)
+        {
+            btn.interactable = false;
+        }
+
+    }
+
+    public void AllButtonON()
+    {
+        foreach (var btn in tabButtons)
+        {
+            btn.interactable = true;
+
+
+        }
     }
 }
 
