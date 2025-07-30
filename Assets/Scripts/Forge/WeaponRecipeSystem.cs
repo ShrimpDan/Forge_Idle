@@ -32,8 +32,6 @@ public class WeaponRecipeSystem
             UnlockedRecipeDict[recipeData.Type].Add(recipeData.Key);
             return;
         }
-
-        // 포인트 부족 알림
     }
 
     public void ResetRecipe()

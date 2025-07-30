@@ -345,7 +345,7 @@ public class RecruitPreviewManager : MonoBehaviour
     }
 
     // 버튼 이벤트 (랜덤/특화별)
-    public void OnClickRecruitRandom() => TryRecruitCandidateByType(SpecializationType.All);
+    public void OnClickRecruitRandom() => TryRecruitCandidateByType(null);
     public void OnClickRecruitCrafting() => TryRecruitCandidateByType(SpecializationType.Crafting);
     public void OnClickRecruitMining() => TryRecruitCandidateByType(SpecializationType.Mining);
     public void OnClickRecruitSelling() => TryRecruitCandidateByType(SpecializationType.Selling);

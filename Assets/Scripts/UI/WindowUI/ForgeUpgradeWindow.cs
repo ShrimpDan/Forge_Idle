@@ -28,16 +28,6 @@ public class ForgeUpgradeWindow : BaseUI
         exitBtn.onClick.AddListener(() => uIManager.CloseUI(UIName.ForgeUpgradeWindow));
     }
 
-    public override void Open()
-    {
-        base.Open();
-    }
-
-    public override void Close()
-    {
-        base.Close();
-    }
-
     public void UpgradeForge(ForgeUpgradeSlot slot)
     {
         if (forge.StatHandler.TryUpgradeStat(slot.UpgradeType))

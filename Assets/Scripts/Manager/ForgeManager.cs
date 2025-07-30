@@ -24,8 +24,8 @@ public class ForgeManager : MonoBehaviour
     public int Gold { get; private set; }
     public int Dia { get; private set; }
 
+    public List<ForgeType> UnlockedForge { get; private set; } = new();
     public Forge CurrentForge { get; private set; }
-
     public ForgeTypeSaveSystem ForgeTypeSaveSystem { get; private set; } = new ForgeTypeSaveSystem();
     public ForgeSkillSystem SkillSystem { get; private set; }
     public ForgeEventHandler Events { get; private set; } = new ForgeEventHandler();
@@ -61,6 +61,7 @@ public class ForgeManager : MonoBehaviour
             ActiveSkills = SkillSystem.GetSaveData(),
             EquippedAssi = GetAssiSaveData(),
 
+            UnlockedForge = UnlockedForge,
             CurrentForgeScene = CurrentForge != null ? CurrentForge.SceneType : SceneType.Forge_Weapon
         };
 
@@ -86,10 +87,8 @@ public class ForgeManager : MonoBehaviour
         SkillSystem.LoadFromData(data.ActiveSkills);
         LoadAssiSaveData(data.EquippedAssi);
 
-        if (data.CurrentForgeScene != SceneType.Main)
-        {
-            LoadSceneManager.Instance.LoadSceneAsync(data.CurrentForgeScene, true);
-        }
+        UnlockedForge = data.UnlockedForge;
+        LoadSceneManager.Instance.LoadSceneAsync(data.CurrentForgeScene, true);
 
         RaiseAllEvents();
     }
@@ -112,6 +111,16 @@ public class ForgeManager : MonoBehaviour
 
         CurrentForge = forge;
         gameManager.UIManager.OpenForgeTab();
+    }
+
+    public void UnlockForge(ForgeType forgeType)
+    {
+        if (forgeType == ForgeType.None) return;
+        
+        if (!UnlockedForge.Contains(forgeType))
+        {
+            UnlockedForge.Add(forgeType);
+        }
     }
 
     public void AddFame(int amount)
