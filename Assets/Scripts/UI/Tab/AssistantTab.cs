@@ -14,6 +14,11 @@ public class AssistantTab : BaseTab
     [SerializeField] private Color selectedColor = Color.white;
     [SerializeField] private Color defaultColor;
 
+    [Header("Wage UI")]
+    [SerializeField] private GameObject wagePopup;
+    [SerializeField] private Button wageButton;
+    [SerializeField] private Button wageCloseButton;
+
     [Header("Tab Panels")]
     [SerializeField] private GameObject[] tabPanels;
 
@@ -49,14 +54,18 @@ public class AssistantTab : BaseTab
             });
         }
 
+        wageButton.onClick.AddListener(OnClickWageButton);
+        wageCloseButton.onClick.AddListener(OnClickCloseWagePopup);
+
         SwitchTab(0);
 
         assistantManager = gameManager.AssistantManager;
         forgeManager = gameManager.ForgeManager;
 
-        // 장착된 Assistant 슬롯 초기화
         craftAssi.Init(uIManager);
         sellingAssi.Init(uIManager);
+
+        wagePopup.SetActive(false);
     }
 
     public override void OpenTab()
@@ -108,7 +117,7 @@ public class AssistantTab : BaseTab
             slotObj.SetActive(true);
 
             var slot = slotObj.GetComponent<AssistantSlot>();
-            slot.Init(assi, null); // 슬롯은 클릭 콜백 없이 초기화됨
+            slot.Init(assi, null);
 
             activeSlots.Add(slotObj);
         }
@@ -220,5 +229,20 @@ public class AssistantTab : BaseTab
 
             return aTier.CompareTo(bTier);
         });
+    }
+
+    private void OnClickWageButton()
+    {
+        SoundManager.Instance?.Play("ClickSound");
+
+        wagePopup.SetActive(true);
+        wagePopup.GetComponent<WagePopup>().Show();
+    }
+
+    private void OnClickCloseWagePopup()
+    {
+        SoundManager.Instance?.Play("ClickSound");
+
+        wagePopup.SetActive(false);
     }
 }

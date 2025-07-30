@@ -1,22 +1,17 @@
 using UnityEngine;
 using TMPro;
 
-
-/// ����
-/// [SerializeField] private LackPopup lackPopupPrefab; 
-/// [SerializeField] private Transform popupParent;  
-/// // ��� 
+/// 부족 자원 팝업 예시 사용법
+/// [SerializeField] private LackPopup lackPopupPrefab;
+/// [SerializeField] private Transform popupParent;
 /// var popup = Instantiate(lackPopupPrefab, popupParent ? popupParent : null);
-/// popup.Show(LackType.Gold);
+/// popup.Init(gameManager, uIManager);
+/// popup.Show(LackType.Gold);       // 골드 부족
+/// popup.Show(LackType.Resource);   // 재료 부족
+/// popup.Show(LackType.Point);      // 포인트 부족
+/// popup.Show(LackType.Dia);        // 다이아 부족
 /// 
-/// // ��� 
-/// var popup = Instantiate(lackPopupPrefab, popupParent ? popupParent : null);
-/// popup.Show(LackType.Resource);
-///
-/// // ����Ʈ
-/// var popup = Instantiate(lackPopupPrefab, popupParent ? popupParent : null);
-/// popup.Show(LackType.Point);
-/// 
+/// 커스텀 메시지는 popup.ShowCustom("직접 입력한 메시지");
 public enum LackType
 {
     Gold,
@@ -32,13 +27,14 @@ public class LackPopup : BaseUI
     [SerializeField] private TMP_Text messageText;
 
     [Header("Animation Settings")]
-    [SerializeField] private float popupDuration = 1.2f;   // �˾� ���� �ð� (��)
-    [SerializeField] private float animDuration = 0.25f;   // �˾� ���� �ݴ� �ִϸ��̼� �ð� (��)
+    [SerializeField] private float popupDuration = 1.2f;   // 팝업 표시 시간(초)
+    [SerializeField] private float animDuration = 0.25f;   // 팝업 오픈/클로즈 애니메이션 시간(초)
 
     private bool isShowing = false;
 
     public override UIType UIType => UIType.Popup;
 
+    /// 부족 유형에 따른 메시지 팝업
     public void Show(LackType type)
     {
         if (isShowing) return;
@@ -54,13 +50,12 @@ public class LackPopup : BaseUI
         };
 
         SoundManager.Instance?.Play("LackSound");
-
         UIEffect.PopupOpenEffect(panel, animDuration);
 
         Invoke(nameof(Hide), popupDuration + animDuration);
     }
 
-    /// Ŀ���� �޽��� �˾�
+    /// 커스텀 메시지 팝업
     public void ShowCustom(string customMsg)
     {
         if (isShowing) return;
@@ -75,8 +70,10 @@ public class LackPopup : BaseUI
     private void Hide()
     {
         UIEffect.PopupCloseEffect(panel, animDuration);
-        Invoke(nameof(DestroySelf), animDuration); // �ִϸ��̼� ������ ������Ʈ ����
-        uIManager.CloseUI(UIName.LackPopup);
+        Invoke(nameof(DestroySelf), animDuration);
+        // BaseUI.Init을 통해 uIManager가 할당되어 있다면 CloseUI 호출
+        if (uIManager != null)
+            uIManager.CloseUI(UIName.LackPopup);
     }
 
     private void DestroySelf()
@@ -84,4 +81,5 @@ public class LackPopup : BaseUI
         isShowing = false;
         Destroy(gameObject);
     }
+
 }

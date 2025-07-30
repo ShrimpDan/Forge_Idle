@@ -21,13 +21,12 @@ public class RecipeSlot : MonoBehaviour
     private InventoryManager inventory;
     private Action onSelectCallback;
 
-
     public void Setup(
-        CraftingData data,
-        ItemDataLoader itemLoader,
-        Forge forge,
-        InventoryManager inventory,
-        Action onSelect)
+    CraftingData data,
+    ItemDataLoader itemLoader,
+    Forge forge,
+    InventoryManager inventory,
+    Action onSelect)
     {
         craftingData = data;
         this.itemLoader = itemLoader;
@@ -35,56 +34,54 @@ public class RecipeSlot : MonoBehaviour
         this.inventory = inventory;
         this.onSelectCallback = onSelect;
 
-        // 아이템 정보 표시
-        var myItemData = itemLoader?.GetItemByKey(data.ItemKey);
-        itemIcon.sprite = myItemData != null ? IconLoader.GetIconByPath(myItemData.IconPath) : null;
-        itemIcon.enabled = myItemData != null && itemIcon.sprite != null;
-        itemName.text = myItemData != null ? myItemData.Name : "";
-        craftTimeText.text = $"제작시간: {data.craftTime}초";
-        craftCostText.text = $"비용: {data.craftCost:N0}";
+        // 이 부분이 중요!
+        var itemData = itemLoader?.GetItemByKey(data.ItemKey);
+        // 아이콘 불러오기: data.ItemKey를 key로 활용
+        Sprite iconSprite = (itemData != null)
+            ? IconLoader.GetIcon(itemData.ItemType, data.ItemKey)
+            : null;
+
+        if (itemData != null && iconSprite == null)
+            Debug.LogError($"[RecipeSlot] Icon not found for itemKey: {data.ItemKey} (type: {itemData.ItemType})");
+
+        itemIcon.sprite = iconSprite;
+        itemIcon.enabled = iconSprite != null;
+
+        itemName.text = itemData != null ? itemData.Name : "";
+        craftTimeText.text = $"제작 시간: {data.craftTime}초";
+        craftCostText.text = $"제작 비용: {data.craftCost:N0}";
         sellCostText.text = $"판매가: {data.sellCost:N0}";
 
-        // 리소스 슬롯 갱신
+        // 재료 아이콘도 마찬가지
         foreach (Transform child in requiredListRoot)
             Destroy(child.gameObject);
 
-        bool canCraft = true;
         foreach (var req in data.RequiredResources)
         {
-            if (resourceSlotPrefab == null)
-            {
-                Debug.LogError("[RecipeSlot] resourceSlotPrefab 연결 필요!");
-                continue;
-            }
+            if (resourceSlotPrefab == null) continue;
             var go = Instantiate(resourceSlotPrefab, requiredListRoot);
             var slot = go.GetComponent<ResourceSlot>();
-            if (slot == null)
-            {
-                Debug.LogError("[RecipeSlot] ResourceSlot 컴포넌트 없음!");
-                continue;
-            }
+            if (slot == null) continue;
             var resItem = itemLoader?.GetItemByKey(req.ResourceKey);
-            Sprite iconSprite = resItem != null ? IconLoader.GetIconByPath(resItem.IconPath) : null;
+            Sprite reqIconSprite = (resItem != null)
+                ? IconLoader.GetIcon(resItem.ItemType, req.ResourceKey)
+                : null;
+
             int owned = inventory?.ResourceList?.Find(x => x.ItemKey == req.ResourceKey)?.Quantity ?? 0;
-            slot.Set(iconSprite, owned, req.Amount);
-            if (owned < req.Amount) canCraft = false;
+            slot.Set(reqIconSprite, owned, req.Amount);
         }
 
-        // 골드 체크
-        bool enoughGold = forge != null && forge.ForgeManager.Gold >= craftingData.craftCost;
-
-        selectButton.interactable = canCraft && enoughGold;
+        selectButton.interactable = true;
         selectButton.onClick.RemoveAllListeners();
         selectButton.onClick.AddListener(OnSelectButtonClicked);
     }
 
+
     private void OnSelectButtonClicked()
     {
-        Debug.Log($"[RecipeSlot] RecipeButton 클릭됨! {name}");
         onSelectCallback?.Invoke();
     }
 
-    // 인스펙터에서 미할당시 에러 방지
     private void Reset()
     {
         if (!selectButton) selectButton = GetComponent<Button>();
