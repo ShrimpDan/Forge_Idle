@@ -23,14 +23,29 @@ public class WeaponRecipeSystem
         {
             UnlockedRecipeDict[type] = new List<string>();
         }
+
+        InitDefaultRecipes();
+    }
+
+    public void InitDefaultRecipes()
+    {
+        foreach (var recipe in recipeLoader.RecipeList)
+        {
+            // NeedPoint 0 + 선행레시피 없음이면 최초 해금
+            if (recipe.NeedPoint == 0 && string.IsNullOrEmpty(recipe.PrevRecipeKey))
+            {
+                if (!UnlockedRecipeDict[recipe.Type].Contains(recipe.Key))
+                    UnlockedRecipeDict[recipe.Type].Add(recipe.Key);
+            }
+        }
     }
 
     public void UnlockRecipe(CraftingRecipeData recipeData)
     {
         if (forgeManager.UsePoint(recipeData.NeedPoint))
         {
-            UnlockedRecipeDict[recipeData.Type].Add(recipeData.Key);
-            return;
+            if (!UnlockedRecipeDict[recipeData.Type].Contains(recipeData.Key))
+                UnlockedRecipeDict[recipeData.Type].Add(recipeData.Key);
         }
     }
 
@@ -45,7 +60,7 @@ public class WeaponRecipeSystem
 
     public List<string> GetKeysByType(WeaponType type)
     {
-        return UnlockedRecipeDict[type];
+        return UnlockedRecipeDict.ContainsKey(type) ? UnlockedRecipeDict[type] : new List<string>();
     }
 
     public List<CraftingData> GetDatasByType(WeaponType type)
@@ -68,22 +83,13 @@ public class WeaponRecipeSystem
     public bool CheckUnlock(string key)
     {
         CraftingRecipeData data = recipeLoader.GetDataByKey(key);
-
-        if (UnlockedRecipeDict[data.Type].Contains(data.Key))
-            return true;
-
-        return false;
+        return UnlockedRecipeDict.ContainsKey(data.Type) && UnlockedRecipeDict[data.Type].Contains(data.Key);
     }
 
     public bool CanUnlock(CraftingRecipeData data)
     {
         if (CheckUnlock(data.Key)) return false;
-
-        // 선행 조건이 없는 경우 (첫 레시피)
-        if (string.IsNullOrEmpty(data.PrevRecipeKey))
-            return true;
-
-        // 선행 레시피가 해금되었는지 확인
+        if (string.IsNullOrEmpty(data.PrevRecipeKey)) return true;
         CraftingRecipeData prevRecipe = recipeLoader.GetDataByKey(data.PrevRecipeKey);
         return UnlockedRecipeDict[prevRecipe.Type].Contains(prevRecipe.Key);
     }

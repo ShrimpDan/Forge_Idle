@@ -16,11 +16,17 @@ public class CraftWeaponWindow : BaseUI
     [SerializeField] private Transform recipeListRoot;
     [SerializeField] private GameObject recipeSlotPrefab;
     [SerializeField] private Transform tabsRoot;
+    [SerializeField] private GameObject tabButtonPrefab;
     [SerializeField] private ScrollRect tabsScrollRect;
+
+    [Header("LcakPopup")]
+    [SerializeField] private LackPopup lackPopupPrefab;
+    [SerializeField] private Transform popupParent;
 
     private List<InputSlotContext> inputSlots = new();
     private List<Button> tabButtons = new();
     private List<CustomerJob> tabJobTypes = new();
+    private List<WeaponType> forgeWeaponTypes = new();
     private int selectedTabIndex = -1;
     private int slotCount = 6;
 
@@ -102,20 +108,29 @@ public class CraftWeaponWindow : BaseUI
         exitBtn.onClick.RemoveAllListeners();
         exitBtn.onClick.AddListener(() => uIManager.CloseUI(UIName.CraftWeaponWindow));
 
+        // ==== [탭 세팅: 포지 타입에 따라 WeaponType 배열화] ====
         tabButtons.Clear();
-        tabJobTypes.Clear();
+        forgeWeaponTypes.Clear();
+
         foreach (Transform t in tabsRoot)
+            Destroy(t.gameObject);
+
+        ForgeType forgeType = gm.Forge.ForgeType;
+        if (ForgeWeaponTypeMapping.ForgeWeaponTypeDict.TryGetValue(forgeType, out var weaponTypes))
         {
-            var btn = t.GetComponent<Button>();
-            tabButtons.Add(btn);
+            forgeWeaponTypes = weaponTypes.ToList();
+            for (int i = 0; i < forgeWeaponTypes.Count; i++)
+            {
+                var tabGo = Instantiate(tabButtonPrefab, tabsRoot);
+                var btn = tabGo.GetComponent<Button>();
+                tabButtons.Add(btn);
+
+                // 탭 텍스트 설정
+                var txt = tabGo.GetComponentInChildren<TMP_Text>();
+                if (txt != null)
+                    txt.text = forgeWeaponTypes[i].ToString();
+            }
         }
-        tabJobTypes.Add(CustomerJob.Woodcutter);
-        tabJobTypes.Add(CustomerJob.Farmer);
-        tabJobTypes.Add(CustomerJob.Miner);
-        tabJobTypes.Add(CustomerJob.Warrior);
-        tabJobTypes.Add(CustomerJob.Archer);
-        tabJobTypes.Add(CustomerJob.Tanker);
-        tabJobTypes.Add(CustomerJob.Assassin);
 
         for (int i = 0; i < tabButtons.Count; i++)
         {
@@ -161,7 +176,6 @@ public class CraftWeaponWindow : BaseUI
 
     private void OnTabClicked(int tabIdx)
     {
-        // 드래그 끝난지 얼마 안됐으면 CenterTab 호출하지 않는다.
         if (Time.unscaledTime - lastTabDragEndTime < tabClickCooldown)
             return;
 
@@ -169,20 +183,25 @@ public class CraftWeaponWindow : BaseUI
         for (int i = 0; i < tabButtons.Count; i++)
             tabButtons[i].interactable = (i != tabIdx);
 
-        ShowRecipeListByJob(tabJobTypes[tabIdx]);
+        ShowRecipeListByJob(tabIdx);
         CenterTab(tabIdx);
     }
 
-    private void ShowRecipeListByJob(CustomerJob jobType)
+    private void ShowRecipeListByJob(int tabIdx)
     {
         foreach (Transform child in recipeListRoot)
             Destroy(child.gameObject);
 
-        List<string> validKeys = jobToWeaponKeyList.TryGetValue(jobType, out var keys) ? keys : null;
-        if (validKeys == null) return;
+        if (tabIdx < 0 || tabIdx >= forgeWeaponTypes.Count)
+            return;
+
+        WeaponType weaponType = forgeWeaponTypes[tabIdx];
+
+        var unlockedKeys = gameManager.Forge.RecipeSystem.GetKeysByType(weaponType);
+        if (unlockedKeys == null || unlockedKeys.Count == 0) return;
 
         var recipes = craftingLoader.CraftingList
-            .Where(x => validKeys.Contains(x.ItemKey))
+            .Where(x => unlockedKeys.Contains(x.ItemKey))
             .ToList();
 
         foreach (var data in recipes)
@@ -198,6 +217,7 @@ public class CraftWeaponWindow : BaseUI
             );
         }
     }
+
 
     private void CenterTab(int tabIdx)
     {
@@ -218,18 +238,43 @@ public class CraftWeaponWindow : BaseUI
 
     void OnRecipeSelected(CraftingData craftingData)
     {
-        int idx = inputSlots.FindIndex(slot =>
-            gameManager.CraftingManager.GetCraftTask(slot.TaskIndex)?.isCrafting == false);
-        if (idx < 0) return;
-
         var inventory = gameManager.Inventory;
         var forge = gameManager.Forge;
         if (inventory == null || forge == null)
             return;
 
-        var required = craftingData.RequiredResources
-            .Select(r => (r.ResourceKey, r.Amount)).ToList();
         int goldNeed = (int)craftingData.craftCost;
+        // 1. 골드 체크
+        if (forge.ForgeManager.Gold < goldNeed)
+        {
+            var popup = Instantiate(lackPopupPrefab, popupParent ? popupParent : transform);
+            popup.Show(LackType.Gold);
+            return;
+        }
+
+        // 2. 재료 체크
+        var required = craftingData.RequiredResources.Select(r => (r.ResourceKey, r.Amount)).ToList();
+        bool allHave = true;
+        foreach (var (resourceKey, amount) in required)
+        {
+            int owned = inventory.ResourceList?.Find(x => x.ItemKey == resourceKey)?.Quantity ?? 0;
+            if (owned < amount)
+            {
+                allHave = false;
+                break;
+            }
+        }
+        if (!allHave)
+        {
+            var popup = Instantiate(lackPopupPrefab, popupParent ? popupParent : transform);
+            popup.Show(LackType.Resource);
+            return;
+        }
+
+        // 3. 골드/재료 모두 충분할 때만 제작
+        int idx = inputSlots.FindIndex(slot =>
+            gameManager.CraftingManager.GetCraftTask(slot.TaskIndex)?.isCrafting == false);
+        if (idx < 0) return;
 
         if (!forge.ForgeManager.UseGold(goldNeed))
             return;
@@ -251,6 +296,7 @@ public class CraftWeaponWindow : BaseUI
         gameManager.CraftingManager.StartCrafting(idx, craftingData, itemData);
         slot.Btn.interactable = false;
     }
+
 
     void Update()
     {
