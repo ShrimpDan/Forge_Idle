@@ -35,6 +35,10 @@ public class MineSceneManager : MonoBehaviour
     public Camera mineCamera;
     public Transform popupRoot;
 
+    //lackpopup
+    public LackPopup lackPopupPrefab;
+    public Transform lackpopupRoot;
+
     // 내부 상태
     private List<List<GameObject>> spawnedAssistants;
     private AssistantInventory assistantInventory;
@@ -181,7 +185,7 @@ public class MineSceneManager : MonoBehaviour
     public void OnCollectButton()
     {
         var group = mineGroups[currentMineIndex];
-        MineResourceCollectManager.Instance.CollectResources(group);
+        MineResourceCollectManager.Instance.CollectResources(group, lackPopupPrefab, lackpopupRoot); 
         UpdateMinedAmountUI(currentMineIndex);
     }
 

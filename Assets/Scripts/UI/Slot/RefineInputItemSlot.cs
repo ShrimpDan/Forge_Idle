@@ -13,14 +13,12 @@ public class RefineInputItemSlot : MonoBehaviour
 
     public void Set(ItemData item, int owned, int required)
     {
-        icon.sprite = item != null ? IconLoader.GetIconByPath(item.IconPath) : null;
-        icon.enabled = item != null;
+        icon.sprite = (item != null) ? IconLoader.GetIcon(item.ItemType, item.ItemKey) : null;
+        icon.enabled = icon.sprite != null;
         itemName.text = item != null ? item.Name : "";
         amountText.text = $"{owned}/{required}";
 
-        if (owned >= required)
-            amountText.color = EnoughColor;
-        else
-            amountText.color = NotEnoughColor;
+        amountText.color = (owned >= required) ? EnoughColor : NotEnoughColor;
     }
+
 }

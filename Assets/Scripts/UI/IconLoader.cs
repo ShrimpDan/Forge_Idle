@@ -11,6 +11,7 @@ public static class IconLoader
         return GetIconByPath(path);
     }
 
+    // 무기/방어구 아니면 전부 Resource 폴더!
     public static string GetIconPath(ItemType itemType, string key)
     {
         switch (itemType)
@@ -22,7 +23,7 @@ public static class IconLoader
             case ItemType.Gem:
             case ItemType.Ingot:
             case ItemType.Resource:
-                return $"Icons/{key}";
+                return $"Icons/Resource/{key}";
             default:
                 return $"Icons/{key}";
         }
@@ -31,7 +32,7 @@ public static class IconLoader
     public static Sprite GetIconByPath(string path)
     {
         if (iconDict.Count == 0)
-            LoadAllWeaponArmorSprites();
+            LoadAllWeaponArmorAndResourceSprites();
 
         if (string.IsNullOrEmpty(path))
         {
@@ -59,18 +60,16 @@ public static class IconLoader
     public static Sprite GetIconByKey(string key)
     {
         if (iconDict.Count == 0)
-            LoadAllWeaponArmorSprites();
+            LoadAllWeaponArmorAndResourceSprites();
 
         if (iconDict.TryGetValue(key, out Sprite icon))
             return icon;
 
         return null;
     }
-
-    /// 무기/방어구만 미리 로드
-    private static void LoadAllWeaponArmorSprites()
+    private static void LoadAllWeaponArmorAndResourceSprites()
     {
-        string[] spriteSheetPaths = { "Icons/weapon", "Icons/armor" };
+        string[] spriteSheetPaths = { "Icons/weapon", "Icons/armor", "Icons/Resource" };
 
         foreach (string path in spriteSheetPaths)
         {
@@ -90,7 +89,6 @@ public static class IconLoader
             }
         }
     }
-
 
     public static void ClearDict()
     {

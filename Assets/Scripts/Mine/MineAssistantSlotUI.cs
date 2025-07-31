@@ -35,10 +35,17 @@ public class MineAssistantSlotUI : MonoBehaviour
     {
         if (slot == null) return;
 
-        if (slot.IsAssigned && slot.AssignedAssistant != null)
+        // 이미 다른 곳에서 사용 중이면 등록 불가
+        if (assistant != null && (assistant.IsEquipped || assistant.IsInUse))
         {
-            assistantInventory.Add(slot.AssignedAssistant);
+            slot.Assign(null);
+            UpdateUI();
+            return;
         }
+
+        if (slot.IsAssigned && slot.AssignedAssistant != null)
+            assistantInventory.Add(slot.AssignedAssistant);
+
         if (assistant != null)
             assistantInventory.Remove(assistant);
 
@@ -46,11 +53,19 @@ public class MineAssistantSlotUI : MonoBehaviour
         UpdateUI();
     }
 
+
     public void UpdateUI()
     {
         if (slot != null && slot.IsAssigned && iconImage != null && slot.AssignedAssistant != null)
         {
-            // 변경: GetIcon -> GetIconByPath
+            // 이미 사용 중인 경우 아이콘 비활성화
+            if (slot.AssignedAssistant.IsEquipped || slot.AssignedAssistant.IsInUse)
+            {
+                iconImage.sprite = null;
+                iconImage.enabled = false;
+                return;
+            }
+
             var icon = IconLoader.GetIconByPath(slot.AssignedAssistant.IconPath);
             iconImage.sprite = icon;
             iconImage.enabled = true;
@@ -61,6 +76,7 @@ public class MineAssistantSlotUI : MonoBehaviour
             iconImage.enabled = false;
         }
     }
+
 
     public void SetTempAssistant(AssistantInstance assistant, Action<AssistantInstance> onClick)
     {

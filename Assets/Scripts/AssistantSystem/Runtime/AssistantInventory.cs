@@ -155,4 +155,10 @@ public class AssistantInventory
     {
         return assistantList.Find(a => a.Key == key);
     }
+
+    // 마인씬용 사용 가능 목록
+    public List<AssistantInstance> GetAvailableForMine()
+    {
+        return assistantList.FindAll(a => !a.IsFired && !a.IsEquipped && !a.IsInUse);
+    }
 }
