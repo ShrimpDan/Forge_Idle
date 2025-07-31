@@ -172,6 +172,34 @@ public class GameManager : MonoSingleton<GameManager>
         }
     }
 
+    [ContextMenu("Add Test Dia (500)")]
+    public void AddTestDia500()
+    {
+        if (ForgeManager != null)
+        {
+            ForgeManager.AddDia(500);
+            Debug.Log("<color=cyan>[GameManager] 테스트 다이아 500 지급 완료!</color>");
+        }
+        else
+        {
+            Debug.LogWarning("[GameManager] Forge 인스턴스를 찾을 수 없습니다!");
+        }
+    }
+
+    [ContextMenu("Add Test Dia (750)")]
+    public void AddTestDia750()
+    {
+        if (ForgeManager != null)
+        {
+            ForgeManager.AddDia(750);
+            Debug.Log("<color=cyan>[GameManager] 테스트 다이아 750 지급 완료!</color>");
+        }
+        else
+        {
+            Debug.LogWarning("[GameManager] Forge 인스턴스를 찾을 수 없습니다!");
+        }
+    }
+
     [ContextMenu("Add All Resource Items (20 Each)")]
     public void AddAllResourcesTest()
     {
