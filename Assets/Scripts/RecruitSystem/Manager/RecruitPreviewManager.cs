@@ -36,6 +36,8 @@ public class RecruitPreviewManager : MonoBehaviour
     private bool isTransitioning = false;
     private int currentIndex = 0;
 
+    public static event Action isEndGecha;
+
     // 팩토리 초기화
     private void Start()
     {
@@ -291,6 +293,7 @@ public class RecruitPreviewManager : MonoBehaviour
         currentPaperGO = null;
         SetButtonsInteractable(false);
         recruitUI.SetActive(false);
+        isEndGecha?.Invoke();
     }
 
 
