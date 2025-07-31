@@ -17,8 +17,8 @@ public class TutorialManager : MonoBehaviour
     private string fullText = "";
 
     private GameManager gameManager;
-    private int tutorialStep = 0; //
-    public static bool isTurtorialMode = false;
+    [SerializeField] private int tutorialStep = 0; //숫자 몇인지 확인하면서 작업
+    public static bool isTurtorialMode = true;
 
     [SerializeField] private GameObject tutorialPanel;
     [SerializeField] private TextMeshProUGUI tutorialText;
@@ -30,7 +30,7 @@ public class TutorialManager : MonoBehaviour
     [SerializeField] Camera uiCam;
 
     private bool isWaitingForClick = false;
-    private bool isEvent = true; // 해당 이벤트가 끝났는지 확인 이벤트가 있을때만 false로 변경해서 기다리자
+    private bool isEvent = false; // 해당 이벤트가 끝났는지 확인 이벤트가 있을때만 false로 변경해서 기다리자
 
     [Header("조명 이펙트")]
     [SerializeField] private HighLightEffectController effect;
@@ -180,8 +180,9 @@ public class TutorialManager : MonoBehaviour
                 arrowIcon.SetActive(true);
                 HighlightPos(0, 130);
                 ShowTextWithTyping("이제 제작한 레시피를 사용해서 무기를 만들어 볼꺼에요!! 가운데 제작대를 클릭해 주세요!!");
-                GameManager.Instance.Inventory.AddItem(GameManager.Instance.DataManager.ItemLoader.GetItemByKey("resource_copper"), 2);
-                GameManager.Instance.Inventory.AddItem(GameManager.Instance.DataManager.ItemLoader.GetItemByKey("ingot_copper"), 3);
+                GameManager.Instance.Inventory.AddItem(GameManager.Instance.DataManager.ItemLoader.GetItemByKey("resource_bronze"), 1);
+                GameManager.Instance.Inventory.AddItem(GameManager.Instance.DataManager.ItemLoader.GetItemByKey("ingot_copper"), 2);
+                GameManager.Instance.ForgeManager.AddGold(1000); //골드 제공
                 break;
             case 11:
                 topHalfBlocker.SetActive(true);
@@ -193,8 +194,10 @@ public class TutorialManager : MonoBehaviour
                 topHalfBlocker.SetActive(false);
                 ShowTextWithTyping("제작을 해주세요!!");
                 ClickBlockerOn();
+
                 break;
             case 13:
+                AllEffectOff();
                 tutorialPanel.SetActive(false);
                break;
             case 14:
@@ -204,7 +207,7 @@ public class TutorialManager : MonoBehaviour
                 break;
             case 15:
                 ShowTextWithTyping("손님은 일반손님,단골손님, 진상손님이 있어요!! 진상손님은 클릭해서 쫒아내야해요!!\n 단골손님은 방문시 클릭하면 컬렉션에 등록되요!!");
-                ClickBlockerOn();
+                
                 break;
             case 16:
                 effect.HighLightOn();
@@ -214,7 +217,7 @@ public class TutorialManager : MonoBehaviour
                 break;
             case 17:
                 AllEffectOff();
-                ShowTextWithTyping("단골 손님이 여러번 방문하면 특별한 효과를 얻을수 있어요!!");
+                ShowTextWithTyping("단골 손님이 여러번 방문하면 특별한 효과를 얻을수 있어요!! 창을 닫아주세요!!");
                 break;
             case 18:
                 effect.HighLightOn();
@@ -426,7 +429,7 @@ public class TutorialManager : MonoBehaviour
 
     public void OnEventDone()
     {
-        isEvent = true;
+        
         OnStepClear();
 
     }
@@ -619,7 +622,6 @@ public class TutorialManager : MonoBehaviour
     {
         if (uiName == UIName.ForgeUpgradeWindow && tutorialStep == 5)
         {
-            isEvent = false;
             OnStepClear();
         }
         else if (uiName == UIName.WeaponRecipeWindow && tutorialStep == 9)
@@ -666,7 +668,7 @@ public class TutorialManager : MonoBehaviour
     private void OnConfirmButtonClicked()
     {
         // 튜토리얼 단계 체크 후 처리
-        if (tutorialStep == 13)
+        if (tutorialStep == 33) //해당 단계가 맞는지 일단 비교후 넘김 
         {
             Debug.Log("확인 버튼 클릭됨 -> 다음 단계 진행");
             OnStepClear();
