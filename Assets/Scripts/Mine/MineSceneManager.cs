@@ -185,7 +185,7 @@ public class MineSceneManager : MonoBehaviour
     public void OnCollectButton()
     {
         var group = mineGroups[currentMineIndex];
-        MineResourceCollectManager.Instance.CollectResources(group, lackPopupPrefab, lackpopupRoot); 
+        MineResourceCollectManager.Instance.CollectResources(group, lackPopupPrefab, lackpopupRoot);
         UpdateMinedAmountUI(currentMineIndex);
     }
 
@@ -299,9 +299,74 @@ public class MineSceneManager : MonoBehaviour
         SetMainUIClickable(true);
         SetMineCameraActive(false);
 
-        LoadSceneManager.Instance.UnLoadScene(SceneType.MineScene, () => {
-            SceneCameraState.IsMineSceneActive = false; 
+        LoadSceneManager.Instance.UnLoadScene(SceneType.MineScene, () =>
+        {
+            SceneCameraState.IsMineSceneActive = false;
             MainUI mainUI = FindObjectOfType<MainUI>();
         });
     }
+
+    // 세이브 관련 인터페이스
+
+    public MineSaveData ToSaveData()
+    {
+        var saveData = new MineSaveData();
+
+        foreach (var group in mineGroups)
+        {
+            var groupSave = new MineGroupSaveData
+            {
+                MineKey = group.mineKey,
+                LastCollectTime = group.lastCollectTime.ToString("o")
+            };
+            foreach (var slot in group.slots)
+            {
+                var slotSave = new MineSlotSaveData();
+                slotSave.AssistantKey = slot.AssignedAssistant != null ? slot.AssignedAssistant.Key : null;
+                slotSave.AssignedTime = slot.AssignedTime.ToString("o");
+                groupSave.Slots.Add(slotSave);
+            }
+            saveData.Groups.Add(groupSave);
+        }
+
+        return saveData;
+    }
+
+    public void LoadFromSaveData(MineSaveData saveData)
+    {
+        if (saveData == null) return;
+        foreach (var groupSave in saveData.Groups)
+        {
+            var group = mineGroups.Find(g => g.mineKey == groupSave.MineKey);
+            if (group == null) continue;
+
+            if (!string.IsNullOrEmpty(groupSave.LastCollectTime))
+                group.lastCollectTime = DateTime.Parse(groupSave.LastCollectTime);
+
+            for (int i = 0; i < group.slots.Count && i < groupSave.Slots.Count; i++)
+            {
+                var slotSave = groupSave.Slots[i];
+                if (string.IsNullOrEmpty(slotSave.AssistantKey))
+                {
+                    group.slots[i].Assign(null);
+                }
+                else
+                {
+                    var assistant = assistantInventory.GetAssistantInstance(slotSave.AssistantKey);
+                    group.slots[i].Assign(assistant);
+                }
+                if (!string.IsNullOrEmpty(slotSave.AssignedTime))
+                    group.slots[i].AssignedTime = DateTime.Parse(slotSave.AssignedTime);
+            }
+        }
+    }
+
+    public void ClearAllSlots()
+    {
+        foreach (var group in mineGroups)
+            foreach (var slot in group.slots)
+                slot.Unassign();
+    }
+
+
 }

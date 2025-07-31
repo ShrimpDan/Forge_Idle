@@ -49,6 +49,17 @@ public class AssistantSaveSystem
 
         foreach (var assi in inventory.GetAll())
         {
+            if (assi == null)
+            {
+                Debug.LogWarning("[AssistantSaveSystem] Null 어시스턴트가 인벤토리에 있습니다. 저장에서 제외합니다.");
+                continue;
+            }
+            if (assi.Personality == null)
+            {
+                Debug.LogWarning($"[AssistantSaveSystem] Personality==null! 저장 불가. Key={assi.Key}, Name={assi.Name}");
+                continue; // Personality 없는 인스턴스는 저장하지 않음
+            }
+
             var a = new AssistantDataSave
             {
                 Key = assi.Key,
@@ -66,7 +77,6 @@ public class AssistantSaveSystem
                 IsInUse = assi.IsInUse,
                 SpecializationIndex = assi.SpecializationIndex,
                 IconPath = assi.IconPath,
-
                 Wage = assi.Wage,
                 RecruitCost = assi.RecruitCost,
                 RehireCost = assi.RehireCost,
