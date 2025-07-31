@@ -59,8 +59,6 @@ public abstract class Customer : MonoBehaviour
     [Header("PurchaseEffect")]
     [SerializeField] TextMeshPro goldText;
 
-    
-
     private Coroutine moveRoutine; //큐에서 사용
     private Coroutine customerFlowCoroutine;
 

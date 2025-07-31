@@ -82,4 +82,6 @@ public class Forge : MonoBehaviour
         CustomerManager.StopSpawnCustomer();
         LoadSceneManager.Instance.UnLoadScene(SceneType);
     }
+
+    
 }

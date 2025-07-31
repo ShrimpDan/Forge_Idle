@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 public class WeaponRecipeSystem
 {
@@ -24,7 +24,7 @@ public class WeaponRecipeSystem
             UnlockedRecipeDict[type] = new List<string>();
         }
 
-        InitDefaultRecipes();
+       // InitDefaultRecipes();
     }
 
     public void InitDefaultRecipes()
