@@ -70,7 +70,7 @@ public static class IconLoader
     /// 무기/방어구만 미리 로드
     private static void LoadAllWeaponArmorSprites()
     {
-        string[] spriteSheetPaths = { "Icons/weapon", "Icons/armor" };
+        string[] spriteSheetPaths = { "Icons/weapon", "Icons/armor", "Icons/Resource" };
 
         foreach (string path in spriteSheetPaths)
         {

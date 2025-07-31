@@ -16,7 +16,7 @@ public class RefineListSlot : MonoBehaviour
     {
         itemData = data;
         onClick = onClickCallback;
-        if (icon != null) icon.sprite = IconLoader.GetIconByPath(data.IconPath);
+        if (icon != null) icon.sprite = IconLoader.GetIconByKey(data.ItemKey);
         if (itemName != null) itemName.text = data.Name;
         if (selectButton != null)
         {

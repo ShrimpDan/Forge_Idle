@@ -13,7 +13,7 @@ public class RefineInputItemSlot : MonoBehaviour
 
     public void Set(ItemData item, int owned, int required)
     {
-        icon.sprite = item != null ? IconLoader.GetIconByPath(item.IconPath) : null;
+        icon.sprite = item != null ? IconLoader.GetIconByKey(item.ItemKey) : null;
         icon.enabled = item != null;
         itemName.text = item != null ? item.Name : "";
         amountText.text = $"{owned}/{required}";
