@@ -3,8 +3,8 @@
     {
       "Key": "sword_blade",
       "craftTime": 5,
-      "craftCost": 15,
-      "sellCost": 18,
+      "craftCost": 100,
+      "sellCost": 50,
       "weaponType": 0,
       "resourceKey": [
         "ingot_copper",
@@ -17,13 +17,13 @@
     },
     {
       "Key": "sword_knife",
-      "craftTime": 10,
-      "craftCost": 60,
-      "sellCost": 77,
+      "craftTime": 8,
+      "craftCost": 150,
+      "sellCost": 75,
       "weaponType": 0,
       "resourceKey": [
-        "ingot_bronze",
-        "resource_copper"
+        "ingot_copper",
+        "resource_bronze"
       ],
       "amount": [
         3,
@@ -32,116 +32,171 @@
     },
     {
       "Key": "sword_dagger",
-      "craftTime": 16,
-      "craftCost": 200,
-      "sellCost": 290,
+      "craftTime": 11,
+      "craftCost": 220,
+      "sellCost": 110,
       "weaponType": 0,
       "resourceKey": [
-        "ingot_iron",
-        "resource_bronze",
-        "resource_silver"
+        "ingot_bronze",
+        "resource_iron"
       ],
       "amount": [
         4,
-        2,
-        1
+        2
       ]
     },
     {
       "Key": "sword_shorts",
-      "craftTime": 25,
-      "craftCost": 950,
-      "sellCost": 1900,
+      "craftTime": 15,
+      "craftCost": 320,
+      "sellCost": 160,
       "weaponType": 0,
       "resourceKey": [
-        "ingot_silver",
-        "ingot_gold",
-        "resource_mithril",
+        "ingot_iron",
+        "resource_gold",
         "gem_ruby"
       ],
       "amount": [
-        6,
-        3,
+        5,
         2,
         1
       ]
     },
     {
       "Key": "sword_gladius",
-      "craftTime": 35,
-      "craftCost": 4700,
-      "sellCost": 5640,
+      "craftTime": 19,
+      "craftCost": 450,
+      "sellCost": 225,
       "weaponType": 0,
       "resourceKey": [
+        "ingot_silver",
         "ingot_gold",
-        "ingot_mithril",
-        "resource_gold",
+        "resource_amethyst",
         "gem_ruby"
       ],
       "amount": [
-        8,
-        5,
+        6,
         3,
-        1
-      ]
-    },
-    {
-      "Key": "sword_falchion",
-      "craftTime": 5,
-      "craftCost": 15,
-      "sellCost": 18,
-      "weaponType": 0,
-      "resourceKey": [
-        "ingot_copper",
-        "resource_bronze"
-      ],
-      "amount": [
         2,
         1
       ]
     },
     {
-      "Key": "sword_rapier",
-      "craftTime": 10,
-      "craftCost": 60,
-      "sellCost": 77,
+      "Key": "sword_falchion",
+      "craftTime": 24,
+      "craftCost": 650,
+      "sellCost": 325,
       "weaponType": 0,
       "resourceKey": [
-        "ingot_bronze",
-        "resource_copper"
+        "ingot_gold",
+        "ingot_mithril",
+        "gem_ruby",
+        "gem_emerald"
       ],
       "amount": [
-        3,
-        2
-      ]
-    },
-    {
-      "Key": "sword_sabre",
-      "craftTime": 16,
-      "craftCost": 200,
-      "sellCost": 280,
-      "weaponType": 0,
-      "resourceKey": [
-        "ingot_iron",
-        "resource_bronze",
-        "resource_emerald"
-      ],
-      "amount": [
+        7,
         4,
         2,
         1
       ]
     },
     {
+      "Key": "sword_rapier",
+      "craftTime": 29,
+      "craftCost": 900,
+      "sellCost": 450,
+      "weaponType": 0,
+      "resourceKey": [
+        "ingot_mithril",
+        "gem_ruby",
+        "gem_emerald",
+        "gem_sapphire"
+      ],
+      "amount": [
+        8,
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "Key": "sword_sabre",
+      "craftTime": 35,
+      "craftCost": 1200,
+      "sellCost": 600,
+      "weaponType": 0,
+      "resourceKey": [
+        "ingot_mithril",
+        "gem_ruby",
+        "gem_emerald",
+        "gem_sapphire",
+        "resource_gold"
+      ],
+      "amount": [
+        10,
+        4,
+        3,
+        2,
+        5
+      ]
+    },
+    {
       "Key": "sword_broad",
-      "craftTime": 25,
-      "craftCost": 950,
-      "sellCost": 1880,
+      "craftTime": 9,
+      "craftCost": 200,
+      "sellCost": 100,
+      "weaponType": 1,
+      "resourceKey": [
+        "ingot_bronze",
+        "resource_iron"
+      ],
+      "amount": [
+        3,
+        1
+      ]
+    },
+    {
+      "Key": "sword_normal",
+      "craftTime": 13,
+      "craftCost": 300,
+      "sellCost": 150,
+      "weaponType": 1,
+      "resourceKey": [
+        "ingot_iron",
+        "resource_bronze"
+      ],
+      "amount": [
+        4,
+        2
+      ]
+    },
+    {
+      "Key": "sword_cutlass",
+      "craftTime": 18,
+      "craftCost": 420,
+      "sellCost": 210,
       "weaponType": 1,
       "resourceKey": [
         "ingot_silver",
+        "resource_gold",
+        "gem_emerald"
+      ],
+      "amount": [
+        5,
+        2,
+        1
+      ]
+    },
+    {
+      "Key": "sword_claymore",
+      "craftTime": 23,
+      "craftCost": 580,
+      "sellCost": 290,
+      "weaponType": 1,
+      "resourceKey": [
         "ingot_gold",
-        "resource_mithril",
+        "ingot_mithril",
+        "resource_amethyst",
         "gem_emerald"
       ],
       "amount": [
@@ -152,66 +207,19 @@
       ]
     },
     {
-      "Key": "sword_normal",
-      "craftTime": 35,
-      "craftCost": 4700,
-      "sellCost": 5600,
-      "weaponType": 1,
-      "resourceKey": [
-        "ingot_gold",
-        "ingot_mithril",
-        "resource_emerald",
-        "gem_emerald"
-      ],
-      "amount": [
-        8,
-        5,
-        3,
-        1
-      ]
-    },
-    {
-      "Key": "sword_cutlass",
-      "craftTime": 5,
-      "craftCost": 15,
-      "sellCost": 19,
-      "weaponType": 1,
-      "resourceKey": [
-        "ingot_copper",
-        "resource_iron"
-      ],
-      "amount": [
-        2,
-        1
-      ]
-    },
-    {
-      "Key": "sword_claymore",
-      "craftTime": 10,
-      "craftCost": 60,
-      "sellCost": 76,
-      "weaponType": 1,
-      "resourceKey": [
-        "ingot_bronze",
-        "resource_iron"
-      ],
-      "amount": [
-        3,
-        2
-      ]
-    },
-    {
       "Key": "sword_great",
-      "craftTime": 16,
-      "craftCost": 200,
-      "sellCost": 300,
+      "craftTime": 29,
+      "craftCost": 800,
+      "sellCost": 400,
       "weaponType": 1,
       "resourceKey": [
-        "ingot_iron",
-        "resource_iron",
-        "resource_bronze"
+        "ingot_mithril",
+        "gem_emerald",
+        "gem_sapphire",
+        "gem_amethyst"
       ],
       "amount": [
+        7,
         4,
         2,
         1
@@ -219,48 +227,75 @@
     },
     {
       "Key": "sword_twohander",
-      "craftTime": 25,
-      "craftCost": 950,
-      "sellCost": 2050,
+      "craftTime": 36,
+      "craftCost": 1100,
+      "sellCost": 550,
       "weaponType": 1,
       "resourceKey": [
-        "ingot_silver",
-        "ingot_gold",
-        "resource_mithril",
-        "gem_sapphire"
+        "ingot_mithril",
+        "gem_emerald",
+        "gem_sapphire",
+        "gem_amethyst",
+        "resource_mithril"
       ],
       "amount": [
-        6,
+        9,
+        3,
+        2,
+        1,
+        3
+      ]
+    },
+    {
+      "Key": "sword_twinblade",
+      "craftTime": 44,
+      "craftCost": 1450,
+      "sellCost": 725,
+      "weaponType": 1,
+      "resourceKey": [
+        "ingot_mithril",
+        "gem_ruby",
+        "gem_emerald",
+        "gem_sapphire",
+        "gem_amethyst"
+      ],
+      "amount": [
+        11,
+        4,
         3,
         2,
         1
       ]
     },
     {
-      "Key": "sword_twinblade",
-      "craftTime": 35,
-      "craftCost": 4800,
-      "sellCost": 5840,
+      "Key": "sword_katana",
+      "craftTime": 52,
+      "craftCost": 1900,
+      "sellCost": 950,
       "weaponType": 1,
       "resourceKey": [
-        "ingot_gold",
         "ingot_mithril",
-        "resource_mithril",
-        "gem_ruby"
+        "gem_ruby",
+        "gem_emerald",
+        "gem_sapphire",
+        "gem_amethyst",
+        "resource_gold"
       ],
       "amount": [
-        8,
+        13,
         5,
+        4,
         3,
-        1
+        2,
+        7
       ]
     },
     {
-      "Key": "sword_katana",
-      "craftTime": 5,
-      "craftCost": 15,
-      "sellCost": 19,
-      "weaponType": 1,
+      "Key": "mace_club",
+      "craftTime": 7,
+      "craftCost": 130,
+      "sellCost": 65,
+      "weaponType": 3,
       "resourceKey": [
         "ingot_copper",
         "resource_iron"
@@ -271,10 +306,10 @@
       ]
     },
     {
-      "Key": "mace_club",
+      "Key": "mace_spikeclub",
       "craftTime": 10,
-      "craftCost": 60,
-      "sellCost": 81,
+      "craftCost": 200,
+      "sellCost": 100,
       "weaponType": 3,
       "resourceKey": [
         "ingot_bronze",
@@ -286,86 +321,262 @@
       ]
     },
     {
-      "Key": "mace_spikeclub",
-      "craftTime": 16,
-      "craftCost": 200,
-      "sellCost": 320,
+      "Key": "mace_cudgel",
+      "craftTime": 14,
+      "craftCost": 280,
+      "sellCost": 140,
       "weaponType": 3,
       "resourceKey": [
         "ingot_iron",
-        "resource_iron",
+        "resource_silver",
         "resource_gold"
       ],
       "amount": [
         4,
-        2,
-        1
-      ]
-    },
-    {
-      "Key": "mace_cudgel",
-      "craftTime": 25,
-      "craftCost": 950,
-      "sellCost": 2300,
-      "weaponType": 3,
-      "resourceKey": [
-        "ingot_silver",
-        "ingot_gold",
-        "resource_gold",
-        "gem_amethyst"
-      ],
-      "amount": [
-        6,
-        3,
         2,
         1
       ]
     },
     {
       "Key": "mace_normal",
-      "craftTime": 35,
-      "craftCost": 4700,
-      "sellCost": 5820,
+      "craftTime": 18,
+      "craftCost": 380,
+      "sellCost": 190,
       "weaponType": 3,
       "resourceKey": [
+        "ingot_silver",
         "ingot_gold",
-        "ingot_mithril",
-        "resource_gold",
-        "gem_amethyst",
-        "gem_sapphire"
+        "gem_amethyst"
       ],
       "amount": [
-        8,
         5,
         3,
-        1,
         1
       ]
     },
     {
       "Key": "mace_flail",
-      "craftTime": 5,
-      "craftCost": 15,
-      "sellCost": 21,
+      "craftTime": 23,
+      "craftCost": 550,
+      "sellCost": 275,
       "weaponType": 3,
       "resourceKey": [
-        "ingot_copper",
-        "resource_silver"
+        "ingot_gold",
+        "ingot_mithril",
+        "resource_sapphire",
+        "gem_amethyst"
       ],
       "amount": [
+        6,
+        4,
         2,
         1
       ]
     },
     {
       "Key": "mace_morningstar",
-      "craftTime": 10,
-      "craftCost": 60,
-      "sellCost": 80,
+      "craftTime": 28,
+      "craftCost": 750,
+      "sellCost": 375,
       "weaponType": 3,
+      "resourceKey": [
+        "ingot_mithril",
+        "gem_amethyst",
+        "gem_ruby",
+        "gem_emerald"
+      ],
+      "amount": [
+        7,
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "Key": "mace_hammer",
+      "craftTime": 12,
+      "craftCost": 250,
+      "sellCost": 125,
+      "weaponType": 2,
+      "resourceKey": [
+        "ingot_iron",
+        "resource_gold"
+      ],
+      "amount": [
+        4,
+        1
+      ]
+    },
+    {
+      "Key": "mace_maul",
+      "craftTime": 16,
+      "craftCost": 350,
+      "sellCost": 175,
+      "weaponType": 2,
+      "resourceKey": [
+        "ingot_silver",
+        "resource_amethyst"
+      ],
+      "amount": [
+        5,
+        2
+      ]
+    },
+    {
+      "Key": "mace_greathammer",
+      "craftTime": 21,
+      "craftCost": 480,
+      "sellCost": 240,
+      "weaponType": 2,
+      "resourceKey": [
+        "ingot_gold",
+        "ingot_mithril",
+        "gem_sapphire"
+      ],
+      "amount": [
+        6,
+        3,
+        1
+      ]
+    },
+    {
+      "Key": "mace_warhammer",
+      "craftTime": 26,
+      "craftCost": 660,
+      "sellCost": 330,
+      "weaponType": 2,
+      "resourceKey": [
+        "ingot_mithril",
+        "gem_sapphire",
+        "gem_ruby",
+        "resource_mithril"
+      ],
+      "amount": [
+        7,
+        4,
+        2,
+        2
+      ]
+    },
+    {
+      "Key": "mace_great",
+      "craftTime": 33,
+      "craftCost": 900,
+      "sellCost": 450,
+      "weaponType": 2,
+      "resourceKey": [
+        "ingot_mithril",
+        "gem_sapphire",
+        "gem_ruby",
+        "gem_emerald",
+        "resource_gold"
+      ],
+      "amount": [
+        9,
+        3,
+        2,
+        1,
+        4
+      ]
+    },
+    {
+      "Key": "mace_hatchet",
+      "craftTime": 11,
+      "craftCost": 220,
+      "sellCost": 110,
+      "weaponType": 4,
       "resourceKey": [
         "ingot_bronze",
         "resource_silver"
+      ],
+      "amount": [
+        3,
+        1
+      ]
+    },
+    {
+      "Key": "mace_axe",
+      "craftTime": 15,
+      "craftCost": 320,
+      "sellCost": 160,
+      "weaponType": 4,
+      "resourceKey": [
+        "ingot_iron",
+        "resource_gold",
+        "resource_sapphire"
+      ],
+      "amount": [
+        4,
+        2,
+        1
+      ]
+    },
+    {
+      "Key": "mace_greataxe",
+      "craftTime": 20,
+      "craftCost": 450,
+      "sellCost": 225,
+      "weaponType": 4,
+      "resourceKey": [
+        "ingot_silver",
+        "ingot_gold",
+        "gem_emerald"
+      ],
+      "amount": [
+        5,
+        3,
+        1
+      ]
+    },
+    {
+      "Key": "mace_battleaxe",
+      "craftTime": 25,
+      "craftCost": 600,
+      "sellCost": 300,
+      "weaponType": 4,
+      "resourceKey": [
+        "ingot_gold",
+        "ingot_mithril",
+        "resource_mithril",
+        "gem_emerald"
+      ],
+      "amount": [
+        6,
+        4,
+        2,
+        1
+      ]
+    },
+    {
+      "Key": "mace_superaxe",
+      "craftTime": 31,
+      "craftCost": 850,
+      "sellCost": 425,
+      "weaponType": 4,
+      "resourceKey": [
+        "ingot_mithril",
+        "gem_emerald",
+        "gem_amethyst",
+        "gem_ruby",
+        "resource_sapphire"
+      ],
+      "amount": [
+        8,
+        3,
+        2,
+        1,
+        2
+      ]
+    },
+    {
+      "Key": "bow_short",
+      "craftTime": 9,
+      "craftCost": 160,
+      "sellCost": 80,
+      "weaponType": 6,
+      "resourceKey": [
+        "resource_iron",
+        "resource_bronze"
       ],
       "amount": [
         3,
@@ -373,14 +584,29 @@
       ]
     },
     {
-      "Key": "mace_hammer",
-      "craftTime": 16,
-      "craftCost": 200,
-      "sellCost": 320,
-      "weaponType": 2,
+      "Key": "bow_cross",
+      "craftTime": 13,
+      "craftCost": 240,
+      "sellCost": 120,
+      "weaponType": 6,
       "resourceKey": [
-        "ingot_iron",
-        "resource_silver",
+        "ingot_copper",
+        "resource_silver"
+      ],
+      "amount": [
+        3,
+        1
+      ]
+    },
+    {
+      "Key": "bow_self",
+      "craftTime": 17,
+      "craftCost": 320,
+      "sellCost": 160,
+      "weaponType": 6,
+      "resourceKey": [
+        "ingot_bronze",
+        "resource_iron",
         "resource_gold"
       ],
       "amount": [
@@ -390,341 +616,135 @@
       ]
     },
     {
-      "Key": "mace_maul",
-      "craftTime": 25,
-      "craftCost": 950,
-      "sellCost": 2380,
-      "weaponType": 2,
-      "resourceKey": [
-        "ingot_silver",
-        "ingot_gold",
-        "resource_gold",
-        "gem_sapphire"
-      ],
-      "amount": [
-        6,
-        3,
-        2,
-        1
-      ]
-    },
-    {
-      "Key": "mace_greathammer",
-      "craftTime": 35,
-      "craftCost": 4700,
-      "sellCost": 5900,
-      "weaponType": 2,
-      "resourceKey": [
-        "ingot_gold",
-        "ingot_mithril",
-        "resource_gold",
-        "gem_sapphire"
-      ],
-      "amount": [
-        8,
-        5,
-        3,
-        1
-      ]
-    },
-    {
-      "Key": "mace_warhammer",
-      "craftTime": 5,
-      "craftCost": 15,
-      "sellCost": 22,
-      "weaponType": 2,
-      "resourceKey": [
-        "ingot_copper",
-        "resource_bronze"
-      ],
-      "amount": [
-        2,
-        1
-      ]
-    },
-    {
-      "Key": "mace_great",
-      "craftTime": 10,
-      "craftCost": 60,
-      "sellCost": 85,
-      "weaponType": 2,
-      "resourceKey": [
-        "ingot_bronze",
-        "resource_bronze"
-      ],
-      "amount": [
-        3,
-        2
-      ]
-    },
-    {
-      "Key": "mace_hatchet",
-      "craftTime": 16,
-      "craftCost": 200,
-      "sellCost": 340,
-      "weaponType": 4,
-      "resourceKey": [
-        "ingot_iron",
-        "resource_silver",
-        "resource_iron"
-      ],
-      "amount": [
-        4,
-        2,
-        1
-      ]
-    },
-    {
-      "Key": "mace_axe",
-      "craftTime": 25,
-      "craftCost": 950,
-      "sellCost": 2400,
-      "weaponType": 4,
-      "resourceKey": [
-        "ingot_silver",
-        "ingot_gold",
-        "resource_iron",
-        "gem_sapphire"
-      ],
-      "amount": [
-        6,
-        3,
-        2,
-        1
-      ]
-    },
-    {
-      "Key": "mace_greataxe",
-      "craftTime": 35,
-      "craftCost": 4700,
-      "sellCost": 6050,
-      "weaponType": 4,
-      "resourceKey": [
-        "ingot_gold",
-        "ingot_mithril",
-        "resource_iron",
-        "gem_sapphire",
-        "gem_emerald"
-      ],
-      "amount": [
-        8,
-        5,
-        3,
-        1,
-        1
-      ]
-    },
-    {
-      "Key": "mace_battleaxe",
-      "craftTime": 5,
-      "craftCost": 15,
-      "sellCost": 21,
-      "weaponType": 4,
-      "resourceKey": [
-        "ingot_copper",
-        "resource_silver"
-      ],
-      "amount": [
-        2,
-        1
-      ]
-    },
-    {
-      "Key": "mace_superaxe",
-      "craftTime": 10,
-      "craftCost": 60,
-      "sellCost": 81,
-      "weaponType": 4,
-      "resourceKey": [
-        "ingot_bronze",
-        "resource_silver"
-      ],
-      "amount": [
-        3,
-        2
-      ]
-    },
-    {
-      "Key": "bow_short",
-      "craftTime": 16,
-      "craftCost": 200,
-      "sellCost": 325,
+      "Key": "bow_normal",
+      "craftTime": 21,
+      "craftCost": 450,
+      "sellCost": 225,
       "weaponType": 6,
       "resourceKey": [
         "ingot_iron",
         "resource_silver",
-        "resource_emerald"
-      ],
-      "amount": [
-        4,
-        2,
-        1
-      ]
-    },
-    {
-      "Key": "bow_cross",
-      "craftTime": 25,
-      "craftCost": 950,
-      "sellCost": 1950,
-      "weaponType": 6,
-      "resourceKey": [
-        "ingot_silver",
-        "ingot_gold",
-        "resource_emerald",
-        "gem_emerald"
-      ],
-      "amount": [
-        6,
-        3,
-        2,
-        1
-      ]
-    },
-    {
-      "Key": "bow_self",
-      "craftTime": 35,
-      "craftCost": 4700,
-      "sellCost": 5900,
-      "weaponType": 6,
-      "resourceKey": [
-        "ingot_gold",
-        "ingot_mithril",
-        "resource_emerald",
-        "gem_emerald",
         "gem_amethyst"
       ],
       "amount": [
-        8,
         5,
         3,
-        1,
-        1
-      ]
-    },
-    {
-      "Key": "bow_normal",
-      "craftTime": 5,
-      "craftCost": 15,
-      "sellCost": 18,
-      "weaponType": 6,
-      "resourceKey": [
-        "ingot_copper",
-        "resource_bronze"
-      ],
-      "amount": [
-        2,
         1
       ]
     },
     {
       "Key": "bow_reflex",
-      "craftTime": 10,
-      "craftCost": 60,
-      "sellCost": 77,
+      "craftTime": 26,
+      "craftCost": 600,
+      "sellCost": 300,
       "weaponType": 6,
       "resourceKey": [
-        "ingot_bronze",
-        "resource_copper"
+        "ingot_silver",
+        "ingot_gold",
+        "resource_mithril",
+        "gem_sapphire"
       ],
       "amount": [
-        3,
-        2
+        6,
+        4,
+        2,
+        1
       ]
     },
     {
       "Key": "bow_flat",
-      "craftTime": 16,
-      "craftCost": 200,
-      "sellCost": 290,
+      "craftTime": 31,
+      "craftCost": 800,
+      "sellCost": 400,
       "weaponType": 6,
       "resourceKey": [
-        "ingot_iron",
-        "resource_bronze",
-        "resource_silver"
+        "ingot_gold",
+        "ingot_mithril",
+        "gem_sapphire",
+        "gem_ruby"
       ],
       "amount": [
-        4,
+        7,
+        5,
         2,
         1
       ]
     },
     {
       "Key": "bow_long",
-      "craftTime": 25,
-      "craftCost": 950,
-      "sellCost": 1900,
+      "craftTime": 20,
+      "craftCost": 350,
+      "sellCost": 175,
       "weaponType": 5,
       "resourceKey": [
-        "ingot_silver",
-        "ingot_gold",
-        "resource_mithril",
-        "gem_ruby"
+        "ingot_iron",
+        "resource_gold"
       ],
       "amount": [
-        6,
-        3,
-        2,
+        4,
         1
       ]
     },
     {
       "Key": "bow_composite",
-      "craftTime": 35,
-      "craftCost": 4700,
-      "sellCost": 5640,
+      "craftTime": 24,
+      "craftCost": 480,
+      "sellCost": 240,
       "weaponType": 5,
       "resourceKey": [
-        "ingot_gold",
-        "ingot_mithril",
-        "resource_gold",
-        "gem_ruby"
+        "ingot_silver",
+        "resource_amethyst"
       ],
       "amount": [
-        8,
         5,
-        3,
-        1
+        2
       ]
     },
     {
       "Key": "bow_compound",
-      "craftTime": 5,
-      "craftCost": 15,
-      "sellCost": 18,
+      "craftTime": 29,
+      "craftCost": 650,
+      "sellCost": 325,
       "weaponType": 5,
       "resourceKey": [
-        "ingot_copper",
-        "resource_bronze"
+        "ingot_gold",
+        "ingot_mithril",
+        "gem_emerald"
       ],
       "amount": [
-        2,
+        6,
+        3,
         1
       ]
     },
     {
       "Key": "bow_great",
-      "craftTime": 10,
-      "craftCost": 60,
-      "sellCost": 77,
+      "craftTime": 34,
+      "craftCost": 880,
+      "sellCost": 440,
       "weaponType": 5,
       "resourceKey": [
-        "ingot_bronze",
-        "resource_copper"
+        "ingot_mithril",
+        "gem_emerald",
+        "gem_amethyst",
+        "resource_mithril"
       ],
       "amount": [
-        3,
+        8,
+        4,
+        2,
         2
       ]
     },
     {
       "Key": "bow_recurve",
-      "craftTime": 16,
-      "craftCost": 200,
-      "sellCost": 280,
+      "craftTime": 22,
+      "craftCost": 400,
+      "sellCost": 200,
       "weaponType": 5,
       "resourceKey": [
         "ingot_iron",
-        "resource_bronze",
+        "resource_silver",
         "resource_emerald"
       ],
       "amount": [
@@ -735,15 +755,15 @@
     },
     {
       "Key": "bow_war",
-      "craftTime": 25,
-      "craftCost": 950,
-      "sellCost": 1880,
+      "craftTime": 27,
+      "craftCost": 550,
+      "sellCost": 275,
       "weaponType": 5,
       "resourceKey": [
         "ingot_silver",
         "ingot_gold",
         "resource_mithril",
-        "gem_emerald"
+        "gem_ruby"
       ],
       "amount": [
         6,
@@ -754,581 +774,585 @@
     },
     {
       "Key": "bow_slingshot",
-      "craftTime": 35,
-      "craftCost": 4700,
-      "sellCost": 5600,
+      "craftTime": 32,
+      "craftCost": 700,
+      "sellCost": 350,
       "weaponType": 7,
       "resourceKey": [
         "ingot_gold",
         "ingot_mithril",
-        "resource_emerald",
+        "gem_ruby",
         "gem_emerald"
       ],
       "amount": [
-        8,
-        5,
-        3,
+        7,
+        4,
+        2,
         1
       ]
     },
     {
       "Key": "bow_pistol",
-      "craftTime": 5,
-      "craftCost": 15,
-      "sellCost": 19,
+      "craftTime": 38,
+      "craftCost": 900,
+      "sellCost": 450,
       "weaponType": 7,
       "resourceKey": [
-        "ingot_copper",
-        "resource_iron"
+        "ingot_mithril",
+        "gem_ruby",
+        "gem_emerald",
+        "gem_sapphire"
       ],
       "amount": [
+        8,
+        3,
         2,
         1
       ]
     },
     {
       "Key": "bow_blunderbuss",
-      "craftTime": 10,
-      "craftCost": 60,
-      "sellCost": 76,
+      "craftTime": 44,
+      "craftCost": 1150,
+      "sellCost": 575,
       "weaponType": 7,
       "resourceKey": [
-        "ingot_bronze",
-        "resource_iron"
+        "ingot_mithril",
+        "gem_ruby",
+        "gem_emerald",
+        "gem_sapphire",
+        "resource_gold"
       ],
       "amount": [
+        10,
+        4,
+        3,
+        2,
+        5
+      ]
+    },
+    {
+      "Key": "bow_rifle",
+      "craftTime": 50,
+      "craftCost": 1400,
+      "sellCost": 700,
+      "weaponType": 7,
+      "resourceKey": [
+        "ingot_mithril",
+        "gem_ruby",
+        "gem_emerald",
+        "gem_sapphire",
+        "gem_amethyst"
+      ],
+      "amount": [
+        12,
+        5,
+        4,
         3,
         2
       ]
     },
     {
-      "Key": "bow_rifle",
-      "craftTime": 16,
-      "craftCost": 200,
-      "sellCost": 300,
-      "weaponType": 7,
-      "resourceKey": [
-        "ingot_iron",
-        "resource_iron",
-        "resource_bronze"
-      ],
-      "amount": [
-        4,
-        2,
-        1
-      ]
-    },
-    {
       "Key": "plate_vest",
-      "craftTime": 25,
-      "craftCost": 950,
-      "sellCost": 2050,
+      "craftTime": 40,
+      "craftCost": 2500,
+      "sellCost": 1250,
       "weaponType": 8,
       "resourceKey": [
-        "ingot_silver",
-        "ingot_gold",
-        "resource_mithril",
-        "gem_sapphire"
+        "ingot_iron",
+        "resource_gold"
       ],
       "amount": [
-        6,
-        3,
-        2,
-        1
+        5,
+        3
       ]
     },
     {
       "Key": "plate_leather",
-      "craftTime": 35,
-      "craftCost": 4800,
-      "sellCost": 5840,
+      "craftTime": 45,
+      "craftCost": 3000,
+      "sellCost": 1500,
       "weaponType": 8,
       "resourceKey": [
-        "ingot_gold",
-        "ingot_mithril",
-        "resource_mithril",
-        "gem_ruby"
+        "ingot_silver",
+        "resource_amethyst"
       ],
       "amount": [
-        8,
-        5,
-        3,
-        1
+        6,
+        4
       ]
     },
     {
       "Key": "plate_breast",
-      "craftTime": 5,
-      "craftCost": 15,
-      "sellCost": 19,
+      "craftTime": 50,
+      "craftCost": 3500,
+      "sellCost": 1750,
       "weaponType": 8,
       "resourceKey": [
-        "ingot_copper",
-        "resource_iron"
+        "ingot_gold",
+        "resource_sapphire",
+        "gem_ruby"
       ],
       "amount": [
-        2,
+        7,
+        5,
         1
       ]
     },
     {
       "Key": "plate_light",
-      "craftTime": 10,
-      "craftCost": 60,
-      "sellCost": 81,
+      "craftTime": 57,
+      "craftCost": 4200,
+      "sellCost": 2100,
       "weaponType": 8,
       "resourceKey": [
-        "ingot_bronze",
-        "resource_iron"
+        "ingot_mithril",
+        "gem_ruby",
+        "gem_emerald"
       ],
       "amount": [
+        8,
         3,
         2
       ]
     },
     {
       "Key": "plate_heavy",
-      "craftTime": 16,
-      "craftCost": 200,
-      "sellCost": 320,
+      "craftTime": 48,
+      "craftCost": 3300,
+      "sellCost": 1650,
       "weaponType": 9,
       "resourceKey": [
-        "ingot_iron",
-        "resource_iron",
+        "ingot_silver",
         "resource_gold"
       ],
       "amount": [
-        4,
-        2,
-        1
+        6,
+        4
       ]
     },
     {
       "Key": "plate_normal",
-      "craftTime": 25,
-      "craftCost": 950,
-      "sellCost": 2300,
+      "craftTime": 55,
+      "craftCost": 4000,
+      "sellCost": 2000,
       "weaponType": 9,
       "resourceKey": [
-        "ingot_silver",
         "ingot_gold",
-        "resource_gold",
-        "gem_amethyst"
+        "resource_amethyst",
+        "gem_emerald"
       ],
       "amount": [
-        6,
-        3,
-        2,
+        7,
+        5,
         1
       ]
     },
     {
       "Key": "plate_knight",
-      "craftTime": 35,
-      "craftCost": 4700,
-      "sellCost": 5820,
+      "craftTime": 65,
+      "craftCost": 5000,
+      "sellCost": 2500,
       "weaponType": 9,
       "resourceKey": [
-        "ingot_gold",
         "ingot_mithril",
-        "resource_gold",
-        "gem_amethyst",
+        "gem_emerald",
         "gem_sapphire"
       ],
       "amount": [
-        8,
-        5,
-        3,
-        1,
-        1
-      ]
-    },
-    {
-      "Key": "plate_scalemail",
-      "craftTime": 5,
-      "craftCost": 15,
-      "sellCost": 21,
-      "weaponType": 10,
-      "resourceKey": [
-        "ingot_copper",
-        "resource_silver"
-      ],
-      "amount": [
-        2,
-        1
-      ]
-    },
-    {
-      "Key": "plate_chainmail",
-      "craftTime": 10,
-      "craftCost": 60,
-      "sellCost": 80,
-      "weaponType": 10,
-      "resourceKey": [
-        "ingot_bronze",
-        "resource_silver"
-      ],
-      "amount": [
-        3,
+        9,
+        4,
         2
       ]
     },
     {
-      "Key": "plate_ornate",
-      "craftTime": 16,
-      "craftCost": 200,
-      "sellCost": 320,
+      "Key": "plate_scalemail",
+      "craftTime": 52,
+      "craftCost": 3600,
+      "sellCost": 1800,
       "weaponType": 10,
       "resourceKey": [
-        "ingot_iron",
-        "resource_silver",
+        "ingot_gold",
         "resource_gold"
       ],
       "amount": [
-        4,
-        2,
+        7,
+        5
+      ]
+    },
+    {
+      "Key": "plate_chainmail",
+      "craftTime": 60,
+      "craftCost": 4400,
+      "sellCost": 2200,
+      "weaponType": 10,
+      "resourceKey": [
+        "ingot_mithril",
+        "resource_amethyst",
+        "gem_ruby"
+      ],
+      "amount": [
+        8,
+        6,
         1
       ]
     },
     {
-      "Key": "plate_silver",
-      "craftTime": 25,
-      "craftCost": 950,
-      "sellCost": 2380,
+      "Key": "plate_ornate",
+      "craftTime": 70,
+      "craftCost": 5400,
+      "sellCost": 2700,
       "weaponType": 10,
       "resourceKey": [
-        "ingot_silver",
-        "ingot_gold",
-        "resource_gold",
+        "ingot_mithril",
+        "gem_ruby",
+        "gem_emerald"
+      ],
+      "amount": [
+        10,
+        4,
+        2
+      ]
+    },
+    {
+      "Key": "plate_silver",
+      "craftTime": 80,
+      "craftCost": 6500,
+      "sellCost": 3250,
+      "weaponType": 10,
+      "resourceKey": [
+        "ingot_mithril",
+        "gem_ruby",
+        "gem_emerald",
         "gem_sapphire"
       ],
       "amount": [
-        6,
+        12,
+        5,
         3,
-        2,
         1
       ]
     },
     {
       "Key": "helmet_headband",
       "craftTime": 35,
-      "craftCost": 4700,
-      "sellCost": 5900,
+      "craftCost": 2300,
+      "sellCost": 1150,
       "weaponType": 11,
       "resourceKey": [
-        "ingot_gold",
-        "ingot_mithril",
-        "resource_gold",
-        "gem_sapphire"
+        "ingot_iron",
+        "resource_silver"
       ],
       "amount": [
-        8,
-        5,
-        3,
-        1
+        4,
+        2
       ]
     },
     {
       "Key": "helmet_light",
-      "craftTime": 5,
-      "craftCost": 15,
-      "sellCost": 22,
+      "craftTime": 40,
+      "craftCost": 2800,
+      "sellCost": 1400,
       "weaponType": 11,
       "resourceKey": [
-        "ingot_copper",
-        "resource_bronze"
+        "ingot_silver",
+        "resource_gold"
       ],
       "amount": [
-        2,
-        1
+        5,
+        3
       ]
     },
     {
       "Key": "helmet_cap",
-      "craftTime": 10,
-      "craftCost": 60,
-      "sellCost": 85,
+      "craftTime": 45,
+      "craftCost": 3200,
+      "sellCost": 1600,
       "weaponType": 11,
       "resourceKey": [
-        "ingot_bronze",
-        "resource_bronze"
+        "ingot_gold",
+        "resource_amethyst",
+        "gem_emerald"
       ],
       "amount": [
+        6,
+        4,
+        1
+      ]
+    },
+    {
+      "Key": "helmet_lighthelm",
+      "craftTime": 52,
+      "craftCost": 3900,
+      "sellCost": 1950,
+      "weaponType": 11,
+      "resourceKey": [
+        "ingot_mithril",
+        "gem_emerald",
+        "gem_sapphire"
+      ],
+      "amount": [
+        7,
         3,
         2
       ]
     },
     {
-      "Key": "helmet_lighthelm",
-      "craftTime": 16,
-      "craftCost": 200,
-      "sellCost": 340,
-      "weaponType": 11,
-      "resourceKey": [
-        "ingot_iron",
-        "resource_silver",
-        "resource_iron"
-      ],
-      "amount": [
-        4,
-        2,
-        1
-      ]
-    },
-    {
       "Key": "helmet_crown",
-      "craftTime": 25,
-      "craftCost": 950,
-      "sellCost": 2400,
+      "craftTime": 58,
+      "craftCost": 4600,
+      "sellCost": 2300,
       "weaponType": 11,
       "resourceKey": [
-        "ingot_silver",
-        "ingot_gold",
-        "resource_iron",
-        "gem_sapphire"
+        "ingot_mithril",
+        "gem_emerald",
+        "gem_sapphire",
+        "gem_amethyst"
       ],
       "amount": [
-        6,
+        9,
+        4,
         3,
-        2,
         1
       ]
     },
     {
       "Key": "helmet_mask",
-      "craftTime": 35,
-      "craftCost": 4700,
-      "sellCost": 6050,
+      "craftTime": 50,
+      "craftCost": 3500,
+      "sellCost": 1750,
       "weaponType": 12,
       "resourceKey": [
         "ingot_gold",
-        "ingot_mithril",
-        "resource_iron",
-        "gem_sapphire",
-        "gem_emerald"
+        "resource_gold"
       ],
       "amount": [
-        8,
-        5,
-        3,
-        1,
-        1
+        6,
+        4
       ]
     },
     {
       "Key": "helmet_iron",
-      "craftTime": 5,
-      "craftCost": 15,
-      "sellCost": 21,
+      "craftTime": 58,
+      "craftCost": 4300,
+      "sellCost": 2150,
       "weaponType": 12,
       "resourceKey": [
-        "ingot_copper",
-        "resource_silver"
+        "ingot_mithril",
+        "resource_sapphire",
+        "gem_ruby"
       ],
       "amount": [
-        2,
+        7,
+        5,
         1
       ]
     },
     {
       "Key": "helmet_knighthelm",
-      "craftTime": 10,
-      "craftCost": 60,
-      "sellCost": 81,
+      "craftTime": 68,
+      "craftCost": 5300,
+      "sellCost": 2650,
       "weaponType": 12,
       "resourceKey": [
-        "ingot_bronze",
-        "resource_silver"
+        "ingot_mithril",
+        "gem_ruby",
+        "gem_emerald"
       ],
       "amount": [
-        3,
+        9,
+        4,
         2
       ]
     },
     {
       "Key": "helmet_mailhelm",
-      "craftTime": 16,
-      "craftCost": 200,
-      "sellCost": 325,
+      "craftTime": 78,
+      "craftCost": 6400,
+      "sellCost": 3200,
       "weaponType": 12,
       "resourceKey": [
-        "ingot_iron",
-        "resource_silver",
-        "resource_emerald"
+        "ingot_mithril",
+        "gem_ruby",
+        "gem_emerald",
+        "gem_sapphire"
       ],
       "amount": [
-        4,
-        2,
+        11,
+        5,
+        3,
         1
       ]
     },
     {
       "Key": "helmet_greathelm",
-      "craftTime": 25,
-      "craftCost": 950,
-      "sellCost": 1950,
+      "craftTime": 90,
+      "craftCost": 7500,
+      "sellCost": 3750,
       "weaponType": 12,
       "resourceKey": [
-        "ingot_silver",
-        "ingot_gold",
-        "resource_emerald",
-        "gem_emerald"
+        "ingot_mithril",
+        "gem_ruby",
+        "gem_emerald",
+        "gem_sapphire",
+        "gem_amethyst"
       ],
       "amount": [
+        13,
         6,
-        3,
+        4,
         2,
         1
       ]
     },
     {
       "Key": "shield_wooden",
-      "craftTime": 35,
-      "craftCost": 4700,
-      "sellCost": 5900,
+      "craftTime": 37,
+      "craftCost": 2400,
+      "sellCost": 1200,
       "weaponType": 13,
       "resourceKey": [
-        "ingot_gold",
-        "ingot_mithril",
-        "resource_emerald",
-        "gem_emerald",
-        "gem_amethyst"
+        "ingot_iron",
+        "resource_gold"
       ],
       "amount": [
-        8,
-        5,
-        3,
-        1,
-        1
+        4,
+        3
       ]
     },
     {
       "Key": "shield_buckler",
-      "craftTime": 5,
-      "craftCost": 15,
-      "sellCost": 18,
+      "craftTime": 42,
+      "craftCost": 2900,
+      "sellCost": 1450,
       "weaponType": 13,
       "resourceKey": [
-        "ingot_copper",
-        "resource_bronze"
+        "ingot_silver",
+        "resource_amethyst"
       ],
       "amount": [
-        2,
-        1
+        5,
+        4
       ]
     },
     {
       "Key": "shield_spiked",
-      "craftTime": 10,
-      "craftCost": 60,
-      "sellCost": 77,
+      "craftTime": 47,
+      "craftCost": 3400,
+      "sellCost": 1700,
       "weaponType": 13,
       "resourceKey": [
-        "ingot_bronze",
-        "resource_copper"
+        "ingot_gold",
+        "resource_sapphire",
+        "gem_emerald"
       ],
       "amount": [
+        6,
+        4,
+        1
+      ]
+    },
+    {
+      "Key": "shield_mirror",
+      "craftTime": 54,
+      "craftCost": 4100,
+      "sellCost": 2050,
+      "weaponType": 13,
+      "resourceKey": [
+        "ingot_mithril",
+        "gem_emerald",
+        "gem_amethyst"
+      ],
+      "amount": [
+        7,
         3,
         2
       ]
     },
     {
-      "Key": "shield_mirror",
-      "craftTime": 16,
-      "craftCost": 200,
-      "sellCost": 290,
-      "weaponType": 13,
-      "resourceKey": [
-        "ingot_iron",
-        "resource_bronze",
-        "resource_silver"
-      ],
-      "amount": [
-        4,
-        2,
-        1
-      ]
-    },
-    {
       "Key": "shield_plank",
-      "craftTime": 25,
-      "craftCost": 950,
-      "sellCost": 1900,
+      "craftTime": 45,
+      "craftCost": 3200,
+      "sellCost": 1600,
       "weaponType": 14,
       "resourceKey": [
         "ingot_silver",
-        "ingot_gold",
-        "resource_mithril",
-        "gem_ruby"
+        "resource_gold"
       ],
       "amount": [
-        6,
-        3,
-        2,
-        1
+        5,
+        3
       ]
     },
     {
       "Key": "shield_kite",
-      "craftTime": 35,
-      "craftCost": 4700,
-      "sellCost": 5640,
+      "craftTime": 52,
+      "craftCost": 3900,
+      "sellCost": 1950,
       "weaponType": 14,
       "resourceKey": [
         "ingot_gold",
-        "ingot_mithril",
-        "resource_gold",
-        "gem_ruby"
+        "resource_amethyst",
+        "gem_sapphire"
       ],
       "amount": [
-        8,
-        5,
-        3,
+        6,
+        4,
         1
       ]
     },
     {
       "Key": "shield_iron",
-      "craftTime": 5,
-      "craftCost": 15,
-      "sellCost": 18,
+      "craftTime": 62,
+      "craftCost": 4900,
+      "sellCost": 2450,
       "weaponType": 14,
       "resourceKey": [
-        "ingot_copper",
-        "resource_bronze"
+        "ingot_mithril",
+        "gem_sapphire",
+        "gem_ruby"
       ],
       "amount": [
-        2,
-        1
-      ]
-    },
-    {
-      "Key": "shield_tower",
-      "craftTime": 10,
-      "craftCost": 60,
-      "sellCost": 77,
-      "weaponType": 14,
-      "resourceKey": [
-        "ingot_bronze",
-        "resource_copper"
-      ],
-      "amount": [
-        3,
+        8,
+        4,
         2
       ]
     },
     {
-      "Key": "shield_decorative",
-      "craftTime": 16,
-      "craftCost": 200,
-      "sellCost": 280,
+      "Key": "shield_tower",
+      "craftTime": 72,
+      "craftCost": 5900,
+      "sellCost": 2950,
       "weaponType": 14,
       "resourceKey": [
-        "ingot_iron",
-        "resource_bronze",
-        "resource_emerald"
+        "ingot_mithril",
+        "gem_sapphire",
+        "gem_ruby",
+        "gem_emerald"
       ],
       "amount": [
+        10,
+        5,
+        3,
+        1
+      ]
+    },
+    {
+      "Key": "shield_decorative",
+      "craftTime": 82,
+      "craftCost": 7000,
+      "sellCost": 3500,
+      "weaponType": 14,
+      "resourceKey": [
+        "ingot_mithril",
+        "gem_sapphire",
+        "gem_ruby",
+        "gem_emerald",
+        "gem_amethyst"
+      ],
+      "amount": [
+        12,
+        6,
         4,
         2,
         1
@@ -1336,431 +1360,515 @@
     },
     {
       "Key": "staff_wand",
-      "craftTime": 25,
-      "craftCost": 950,
-      "sellCost": 1880,
+      "craftTime": 90,
+      "craftCost": 12000,
+      "sellCost": 6000,
       "weaponType": 15,
       "resourceKey": [
-        "ingot_silver",
         "ingot_gold",
         "resource_mithril",
         "gem_emerald"
       ],
       "amount": [
-        6,
-        3,
-        2,
+        8,
+        5,
         1
       ]
     },
     {
       "Key": "staff_conduit",
-      "craftTime": 35,
-      "craftCost": 4700,
-      "sellCost": 5600,
+      "craftTime": 95,
+      "craftCost": 14000,
+      "sellCost": 7000,
       "weaponType": 15,
       "resourceKey": [
-        "ingot_gold",
         "ingot_mithril",
-        "resource_emerald",
-        "gem_emerald"
+        "gem_emerald",
+        "gem_sapphire"
       ],
       "amount": [
-        8,
-        5,
-        3,
-        1
+        10,
+        4,
+        2
       ]
     },
     {
       "Key": "staff_catalyst",
-      "craftTime": 5,
-      "craftCost": 15,
-      "sellCost": 19,
+      "craftTime": 100,
+      "craftCost": 16000,
+      "sellCost": 8000,
       "weaponType": 15,
       "resourceKey": [
-        "ingot_copper",
-        "resource_iron"
+        "ingot_mithril",
+        "gem_emerald",
+        "gem_sapphire",
+        "gem_amethyst"
       ],
       "amount": [
-        2,
+        12,
+        5,
+        3,
         1
       ]
     },
     {
       "Key": "staff_rod",
-      "craftTime": 10,
-      "craftCost": 60,
-      "sellCost": 76,
+      "craftTime": 105,
+      "craftCost": 18000,
+      "sellCost": 9000,
       "weaponType": 15,
       "resourceKey": [
-        "ingot_bronze",
-        "resource_iron"
+        "ingot_mithril",
+        "gem_ruby",
+        "gem_emerald",
+        "gem_sapphire",
+        "gem_amethyst"
       ],
       "amount": [
-        3,
-        2
-      ]
-    },
-    {
-      "Key": "staff_sceptre",
-      "craftTime": 16,
-      "craftCost": 200,
-      "sellCost": 300,
-      "weaponType": 15,
-      "resourceKey": [
-        "ingot_iron",
-        "resource_iron",
-        "resource_bronze"
-      ],
-      "amount": [
+        14,
+        6,
         4,
         2,
         1
       ]
     },
     {
+      "Key": "staff_sceptre",
+      "craftTime": 110,
+      "craftCost": 20000,
+      "sellCost": 10000,
+      "weaponType": 15,
+      "resourceKey": [
+        "ingot_mithril",
+        "gem_ruby",
+        "gem_emerald",
+        "gem_sapphire",
+        "gem_amethyst",
+        "resource_gold"
+      ],
+      "amount": [
+        16,
+        7,
+        5,
+        3,
+        2,
+        10
+      ]
+    },
+    {
       "Key": "staff_normal",
-      "craftTime": 25,
-      "craftCost": 950,
-      "sellCost": 2050,
+      "craftTime": 92,
+      "craftCost": 13000,
+      "sellCost": 6500,
       "weaponType": 16,
       "resourceKey": [
-        "ingot_silver",
         "ingot_gold",
         "resource_mithril",
         "gem_sapphire"
       ],
       "amount": [
+        9,
         6,
-        3,
-        2,
         1
       ]
     },
     {
       "Key": "staff_cane",
-      "craftTime": 35,
-      "craftCost": 4800,
-      "sellCost": 5840,
+      "craftTime": 98,
+      "craftCost": 15500,
+      "sellCost": 7750,
       "weaponType": 16,
       "resourceKey": [
-        "ingot_gold",
         "ingot_mithril",
-        "resource_mithril",
+        "gem_sapphire",
         "gem_ruby"
       ],
       "amount": [
-        8,
+        11,
         5,
-        3,
-        1
+        2
       ]
     },
     {
       "Key": "staff_short",
-      "craftTime": 5,
-      "craftCost": 15,
-      "sellCost": 19,
+      "craftTime": 104,
+      "craftCost": 18000,
+      "sellCost": 9000,
       "weaponType": 16,
       "resourceKey": [
-        "ingot_copper",
-        "resource_iron"
+        "ingot_mithril",
+        "gem_sapphire",
+        "gem_ruby",
+        "gem_emerald"
       ],
       "amount": [
-        2,
+        13,
+        6,
+        3,
         1
       ]
     },
     {
       "Key": "staff_quarter",
-      "craftTime": 10,
-      "craftCost": 60,
-      "sellCost": 81,
+      "craftTime": 110,
+      "craftCost": 20500,
+      "sellCost": 10250,
       "weaponType": 16,
       "resourceKey": [
-        "ingot_bronze",
-        "resource_iron"
+        "ingot_mithril",
+        "gem_ruby",
+        "gem_emerald",
+        "gem_sapphire",
+        "gem_amethyst"
       ],
       "amount": [
+        15,
+        7,
+        5,
         3,
-        2
+        1
       ]
     },
     {
       "Key": "staff_long",
-      "craftTime": 16,
-      "craftCost": 200,
-      "sellCost": 320,
+      "craftTime": 116,
+      "craftCost": 23000,
+      "sellCost": 11500,
       "weaponType": 16,
       "resourceKey": [
-        "ingot_iron",
-        "resource_iron",
-        "resource_gold"
+        "ingot_mithril",
+        "gem_ruby",
+        "gem_emerald",
+        "gem_sapphire",
+        "gem_amethyst",
+        "resource_mithril"
       ],
       "amount": [
+        17,
+        8,
+        6,
         4,
         2,
-        1
+        5
       ]
     },
     {
       "Key": "staff_great",
-      "craftTime": 25,
-      "craftCost": 950,
-      "sellCost": 2300,
+      "craftTime": 120,
+      "craftCost": 25500,
+      "sellCost": 12750,
       "weaponType": 16,
       "resourceKey": [
-        "ingot_silver",
-        "ingot_gold",
+        "ingot_mithril",
+        "gem_ruby",
+        "gem_emerald",
+        "gem_sapphire",
+        "gem_amethyst",
         "resource_gold",
-        "gem_amethyst"
+        "resource_mithril"
       ],
       "amount": [
-        6,
+        19,
+        9,
+        7,
+        5,
         3,
-        2,
-        1
+        12,
+        6
       ]
     },
     {
       "Key": "staff_war",
-      "craftTime": 35,
-      "craftCost": 4700,
-      "sellCost": 5820,
+      "craftTime": 120,
+      "craftCost": 28000,
+      "sellCost": 14000,
       "weaponType": 16,
       "resourceKey": [
-        "ingot_gold",
         "ingot_mithril",
-        "resource_gold",
+        "gem_ruby",
+        "gem_emerald",
+        "gem_sapphire",
         "gem_amethyst",
-        "gem_sapphire"
+        "resource_gold",
+        "resource_mithril",
+        "resource_bronze"
       ],
       "amount": [
+        20,
+        10,
         8,
-        5,
-        3,
-        1,
-        1
+        6,
+        4,
+        15,
+        8,
+        10
       ]
     },
     {
       "Key": "accessories_smallring",
-      "craftTime": 5,
-      "craftCost": 15,
-      "sellCost": 21,
+      "craftTime": 85,
+      "craftCost": 11500,
+      "sellCost": 5750,
       "weaponType": 17,
       "resourceKey": [
-        "ingot_copper",
-        "resource_silver"
+        "ingot_gold",
+        "resource_mithril",
+        "gem_ruby"
       ],
       "amount": [
-        2,
+        7,
+        4,
         1
       ]
     },
     {
       "Key": "accessories_goldring",
-      "craftTime": 10,
-      "craftCost": 60,
-      "sellCost": 80,
+      "craftTime": 90,
+      "craftCost": 13500,
+      "sellCost": 6750,
       "weaponType": 17,
       "resourceKey": [
-        "ingot_bronze",
-        "resource_silver"
+        "ingot_mithril",
+        "gem_ruby",
+        "gem_emerald"
       ],
       "amount": [
+        9,
         3,
         2
       ]
     },
     {
       "Key": "accessories_bigring",
-      "craftTime": 16,
-      "craftCost": 200,
-      "sellCost": 320,
+      "craftTime": 95,
+      "craftCost": 15500,
+      "sellCost": 7750,
       "weaponType": 17,
       "resourceKey": [
-        "ingot_iron",
-        "resource_silver",
-        "resource_gold"
+        "ingot_mithril",
+        "gem_ruby",
+        "gem_emerald",
+        "gem_sapphire"
       ],
       "amount": [
+        11,
         4,
-        2,
+        3,
         1
       ]
     },
     {
       "Key": "accessories_aquaring",
-      "craftTime": 25,
-      "craftCost": 950,
-      "sellCost": 2380,
+      "craftTime": 100,
+      "craftCost": 17500,
+      "sellCost": 8750,
       "weaponType": 17,
       "resourceKey": [
-        "ingot_silver",
-        "ingot_gold",
-        "resource_gold",
-        "gem_sapphire"
+        "ingot_mithril",
+        "gem_ruby",
+        "gem_emerald",
+        "gem_sapphire",
+        "gem_amethyst"
       ],
       "amount": [
-        6,
-        3,
+        13,
+        5,
+        4,
         2,
         1
       ]
     },
     {
       "Key": "accessories_rubyring",
-      "craftTime": 35,
-      "craftCost": 4700,
-      "sellCost": 5900,
+      "craftTime": 105,
+      "craftCost": 19500,
+      "sellCost": 9750,
       "weaponType": 17,
       "resourceKey": [
-        "ingot_gold",
         "ingot_mithril",
-        "resource_gold",
-        "gem_sapphire"
+        "gem_ruby",
+        "gem_emerald",
+        "gem_sapphire",
+        "gem_amethyst",
+        "resource_mithril"
       ],
       "amount": [
-        8,
+        15,
+        6,
         5,
         3,
-        1
+        2,
+        4
       ]
     },
     {
       "Key": "accessories_gemring",
-      "craftTime": 5,
-      "craftCost": 15,
-      "sellCost": 22,
+      "craftTime": 110,
+      "craftCost": 21500,
+      "sellCost": 10750,
       "weaponType": 17,
       "resourceKey": [
-        "ingot_copper",
-        "resource_bronze"
+        "ingot_mithril",
+        "gem_ruby",
+        "gem_emerald",
+        "gem_sapphire",
+        "gem_amethyst",
+        "resource_gold",
+        "resource_mithril"
       ],
       "amount": [
-        2,
-        1
+        17,
+        7,
+        6,
+        4,
+        3,
+        8,
+        5
       ]
     },
     {
       "Key": "accessories_ironamulet",
-      "craftTime": 10,
-      "craftCost": 60,
-      "sellCost": 85,
-      "weaponType": 18,
-      "resourceKey": [
-        "ingot_bronze",
-        "resource_bronze"
-      ],
-      "amount": [
-        3,
-        2
-      ]
-    },
-    {
-      "Key": "accessories_goldnecklace",
-      "craftTime": 16,
-      "craftCost": 200,
-      "sellCost": 340,
-      "weaponType": 18,
-      "resourceKey": [
-        "ingot_iron",
-        "resource_silver",
-        "resource_iron"
-      ],
-      "amount": [
-        4,
-        2,
-        1
-      ]
-    },
-    {
-      "Key": "accessories_aquaamulet",
-      "craftTime": 25,
-      "craftCost": 950,
-      "sellCost": 2400,
-      "weaponType": 18,
-      "resourceKey": [
-        "ingot_silver",
-        "ingot_gold",
-        "resource_iron",
-        "gem_sapphire"
-      ],
-      "amount": [
-        6,
-        3,
-        2,
-        1
-      ]
-    },
-    {
-      "Key": "accessories_bornamulet",
-      "craftTime": 35,
-      "craftCost": 4700,
-      "sellCost": 6050,
+      "craftTime": 88,
+      "craftCost": 12000,
+      "sellCost": 6000,
       "weaponType": 18,
       "resourceKey": [
         "ingot_gold",
-        "ingot_mithril",
-        "resource_iron",
-        "gem_sapphire",
+        "resource_mithril",
         "gem_emerald"
       ],
       "amount": [
         8,
         5,
+        1
+      ]
+    },
+    {
+      "Key": "accessories_goldnecklace",
+      "craftTime": 93,
+      "craftCost": 14000,
+      "sellCost": 7000,
+      "weaponType": 18,
+      "resourceKey": [
+        "ingot_mithril",
+        "gem_emerald",
+        "gem_sapphire"
+      ],
+      "amount": [
+        10,
+        4,
+        2
+      ]
+    },
+    {
+      "Key": "accessories_aquaamulet",
+      "craftTime": 98,
+      "craftCost": 16000,
+      "sellCost": 8000,
+      "weaponType": 18,
+      "resourceKey": [
+        "ingot_mithril",
+        "gem_emerald",
+        "gem_sapphire",
+        "gem_amethyst"
+      ],
+      "amount": [
+        12,
+        5,
         3,
-        1,
+        1
+      ]
+    },
+    {
+      "Key": "accessories_bornamulet",
+      "craftTime": 103,
+      "craftCost": 18000,
+      "sellCost": 9000,
+      "weaponType": 18,
+      "resourceKey": [
+        "ingot_mithril",
+        "gem_ruby",
+        "gem_emerald",
+        "gem_sapphire",
+        "gem_amethyst"
+      ],
+      "amount": [
+        14,
+        6,
+        4,
+        2,
         1
       ]
     },
     {
       "Key": "accessories_rubyamulet",
-      "craftTime": 5,
-      "craftCost": 15,
-      "sellCost": 21,
+      "craftTime": 108,
+      "craftCost": 20000,
+      "sellCost": 10000,
       "weaponType": 18,
       "resourceKey": [
-        "ingot_copper",
-        "resource_silver"
+        "ingot_mithril",
+        "gem_ruby",
+        "gem_emerald",
+        "gem_sapphire",
+        "gem_amethyst",
+        "resource_gold"
       ],
       "amount": [
+        16,
+        7,
+        5,
+        3,
         2,
-        1
+        10
       ]
     },
     {
       "Key": "accessories_gemamulet",
-      "craftTime": 10,
-      "craftCost": 60,
-      "sellCost": 81,
+      "craftTime": 113,
+      "craftCost": 22000,
+      "sellCost": 11000,
       "weaponType": 18,
       "resourceKey": [
-        "ingot_bronze",
-        "resource_silver"
+        "ingot_mithril",
+        "gem_ruby",
+        "gem_emerald",
+        "gem_sapphire",
+        "gem_amethyst",
+        "resource_mithril"
       ],
       "amount": [
+        18,
+        8,
+        6,
+        4,
         3,
-        2
+        6
       ]
     },
     {
       "Key": "accessories_pearamulet",
-      "craftTime": 16,
-      "craftCost": 200,
-      "sellCost": 325,
+      "craftTime": 118,
+      "craftCost": 24000,
+      "sellCost": 12000,
       "weaponType": 18,
       "resourceKey": [
-        "ingot_iron",
-        "resource_silver",
-        "resource_emerald"
+        "ingot_mithril",
+        "gem_ruby",
+        "gem_emerald",
+        "gem_sapphire",
+        "gem_amethyst",
+        "resource_gold",
+        "resource_mithril"
       ],
       "amount": [
+        20,
+        9,
+        7,
+        5,
         4,
-        2,
-        1
+        12,
+        7
       ]
     }
   ]

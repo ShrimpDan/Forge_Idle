@@ -53,7 +53,7 @@ public class InventoryPopup : BaseUI
                 valueType.text = "강화 레벨:";
                 value.text = $"{item.CurrentEnhanceLevel}";
                 desc += $"\n\n<color=#00c3ff><b>▶ Stats</b></color>\n";
-                desc += $"공격력: <b>{item.GetTotalAttack()}</b>\n";
+                desc += $"공격력: <b>{UIManager.FormatNumber(item.GetTotalAttack())}</b>\n";
                 desc += $"공격 간격: <b>{item.GetTotalInterval():F2}초</b>\n";
                 break;
 
