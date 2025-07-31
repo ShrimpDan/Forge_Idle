@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -31,13 +32,15 @@ public class ForgeTypeSaveSystem
         return Path.Combine(Application.persistentDataPath, $"forge_{forgeType.ToString().ToLower()}.json");
     }
 
-    public void SaveForgeType(Forge forge)
+    public void SaveForgeType(Forge forge, Action OnCompleted = null)
     {
         var data = forge.SaveToData();
         string path = GetSavePath(forge.ForgeType);
 
         string json = JsonUtility.ToJson(data, true);
         File.WriteAllText(path, json);
+
+        OnCompleted?.Invoke();
     }
 
     public void LoadForge(Forge forge)

@@ -74,7 +74,7 @@ public class GameManager : MonoSingleton<GameManager>
         CraftingManager = cmObj.AddComponent<CraftingManager>();
         CraftingManager.Init(Inventory, Forge);
 
-
+        LoadSceneManager.Instance.SetMainCamera(Camera.main.gameObject);
         DontDestroyOnLoad(cmObj);
     }
 

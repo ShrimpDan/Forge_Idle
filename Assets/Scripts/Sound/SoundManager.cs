@@ -41,6 +41,9 @@ public class SoundManager : MonoBehaviour
         bgmSource.loop = true;
         bgmSource.playOnAwake = false;
         bgmSource.spatialBlend = 0f;
+
+        bgmVolume = PlayerPrefs.GetFloat(PlayerPrefsKeys.BGM_KEY, 1f);
+        sfxVolume = PlayerPrefs.GetFloat(PlayerPrefsKeys.SFX_KEY, 1f);
     }
 
     /// <summary>
