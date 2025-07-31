@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 // RecruitManager.cs
 // AssistantFactory를 통해 생성한 제자 데이터를 UI에 표시합니다.
@@ -24,7 +25,12 @@ public class RecruitManager : MonoBehaviour
     {
         ClearCurrentDisplay();
 
-        var assistant = assistantFactory.CreateRandomTrainee();
+        var ownedKeys = GameManager.Instance.AssistantInventory.GetAll()
+            .Select(a => a.Key)
+            .Concat(GameManager.Instance.HeldCandidates.Select(a => a.Key))
+            .ToHashSet();
+
+        var assistant = assistantFactory.CreateSmartRandomTrainee(ownedKeys);
         if (assistant == null)
         {
             Debug.LogWarning("영입 가능한 제자가 없습니다.");

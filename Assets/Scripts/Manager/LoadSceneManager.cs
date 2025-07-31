@@ -46,6 +46,10 @@ public static class SceneName
 
 public class LoadSceneManager : MonoSingleton<LoadSceneManager>
 {
+    [Header("Loading Animation")]
+    [SerializeField] private Animator loadingAnim;
+    private int loadingHash = Animator.StringToHash("IsLoading");
+
     [Header("Fade Settings")]
     [SerializeField] private CanvasGroup loadingCanvas;
     [SerializeField] private AnimationCurve fadeOutCurve;
@@ -67,6 +71,7 @@ public class LoadSceneManager : MonoSingleton<LoadSceneManager>
     /// <param name="isAdditve">Additeve 모드 로딩 여부</param>
     public void LoadSceneAsync(SceneType type, bool isAdditve = false)
     {
+        loadingAnim.SetBool(loadingHash, true);
         StartCoroutine(LoadSceneCoroutine(SceneName.GetSceneByType(type), isAdditve));
     }
 
@@ -93,12 +98,14 @@ public class LoadSceneManager : MonoSingleton<LoadSceneManager>
 
     public void UnLoadScene(SceneType type)
     {
+        loadingAnim.SetBool(loadingHash, true);
         StartCoroutine(UnLoadSceneCoroutine(SceneName.GetSceneByType(type)));
     }
 
     // 오버로드: 콜백 추가 버전
     public void UnLoadScene(SceneType type, Action onComplete)
     {
+        loadingAnim.SetBool(loadingHash, true);
         StartCoroutine(UnLoadSceneCoroutine(SceneName.GetSceneByType(type), onComplete));
     }
 
@@ -106,6 +113,7 @@ public class LoadSceneManager : MonoSingleton<LoadSceneManager>
     {
         loadingCanvas.blocksRaycasts = true;
         loadingCanvas.alpha = 1;
+        loadingAnim.SetBool(loadingHash, true);
 
         AsyncOperation asyncOperation = SceneManager.UnloadSceneAsync(sceneName);
         yield return new WaitUntil(() => asyncOperation.isDone);
@@ -118,6 +126,8 @@ public class LoadSceneManager : MonoSingleton<LoadSceneManager>
 
     private IEnumerator UnLoadSceneCoroutine(string sceneName, Action onComplete)
     {
+        loadingAnim.SetBool(loadingHash, true);
+
         AsyncOperation op = SceneManager.UnloadSceneAsync(sceneName);
         while (!op.isDone)
             yield return null;
@@ -143,6 +153,7 @@ public class LoadSceneManager : MonoSingleton<LoadSceneManager>
 
         loadingCanvas.alpha = curve.Evaluate(1f);
         loadingCanvas.blocksRaycasts = blockRaycasts;
+        loadingAnim.SetBool(loadingHash, false);
     }
 
     private void EnsureMainCameraActive()
@@ -195,4 +206,8 @@ public class LoadSceneManager : MonoSingleton<LoadSceneManager>
             Debug.LogError("[LoadSceneManager] 인스펙터에 MainCamera 오브젝트가 할당 안됨!");
     }
 
+    public void SetMainCamera(GameObject cameraObject)
+    {
+        mainCameraObject = cameraObject;
+    }
 }

@@ -24,7 +24,7 @@ public class WeaponRecipeSystem
             UnlockedRecipeDict[type] = new List<string>();
         }
 
-        InitDefaultRecipes();
+        //InitDefaultRecipes();
     }
 
     public void InitDefaultRecipes()
@@ -34,7 +34,7 @@ public class WeaponRecipeSystem
             // NeedPoint 0 + 선행레시피 없음이면 최초 해금
             if (recipe.NeedPoint == 0 && string.IsNullOrEmpty(recipe.PrevRecipeKey))
             {
-                if (!UnlockedRecipeDict[recipe.Type].Contains(recipe.Key))
+                if (UnlockedRecipeDict.ContainsKey(recipe.Type) && !UnlockedRecipeDict[recipe.Type].Contains(recipe.Key))
                     UnlockedRecipeDict[recipe.Type].Add(recipe.Key);
             }
         }

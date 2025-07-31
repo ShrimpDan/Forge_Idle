@@ -36,7 +36,6 @@ public class RecruitPreviewManager : MonoBehaviour
     private bool isTransitioning = false;
     private int currentIndex = 0;
 
-    // 팩토리 초기화
     private void Start()
     {
         if (GameManager.Instance?.DataManager == null)
@@ -48,10 +47,15 @@ public class RecruitPreviewManager : MonoBehaviour
         assistantFactory = new AssistantFactory(GameManager.Instance.DataManager);
     }
 
-    // 랜덤/특화 제자 뽑기 시도 (보류 제자 존재 여부 확인 포함)
     public void TryRecruitCandidateByType(SpecializationType? type)
     {
         recruitFilter = type;
+
+        int requiredDia = type == null ? 500 : 750;
+        if (!GameManager.Instance.ForgeManager.UseDia(requiredDia))
+        {
+            return;
+        }
 
         if (GameManager.Instance.HeldCandidates.Count > 0)
         {
@@ -63,7 +67,8 @@ public class RecruitPreviewManager : MonoBehaviour
                     GameManager.Instance.SaveManager.SaveAll();
                     StartRecruit();
                 },
-                onCancel: () => { });
+                onCancel: () => { }
+            );
         }
         else
         {
@@ -71,7 +76,7 @@ public class RecruitPreviewManager : MonoBehaviour
         }
     }
 
-    // 실제로 제자 5명 생성 후 프리뷰 시작
+
     private void StartRecruit()
     {
         ClearActivePapers();
@@ -89,22 +94,15 @@ public class RecruitPreviewManager : MonoBehaviour
             .Concat(GameManager.Instance.HeldCandidates.Select(a => a.Key)));
 
         candidatePool.Clear();
-        int attempts = 0;
-        const int maxAttempts = 30;
 
-        while (candidatePool.Count < 5 && attempts < maxAttempts)
+        for (int i = 0; i < 5; i++)
         {
-            var candidate = recruitFilter == null
-                ? assistantFactory.CreateRandomTrainee(true)
-                : assistantFactory.CreateFixedTrainee(recruitFilter.Value, true);
-
-            if (candidate != null && !allExistingKeys.Contains(candidate.Key) &&
-                !candidatePool.Any(c => c.Key == candidate.Key))
+            var candidate = assistantFactory.CreateSmartRandomTrainee(allExistingKeys, recruitFilter);
+            if (candidate != null)
             {
                 candidatePool.Add(candidate);
+                allExistingKeys.Add(candidate.Key);
             }
-
-            attempts++;
         }
 
         if (candidatePool.Count == 0)
@@ -118,7 +116,6 @@ public class RecruitPreviewManager : MonoBehaviour
         ShowCurrentCandidate();
     }
 
-    // 현재 제자 후보를 화면에 표시
     private void ShowCurrentCandidate()
     {
         if (currentIndex < 0 || currentIndex >= candidatePool.Count)
@@ -157,7 +154,6 @@ public class RecruitPreviewManager : MonoBehaviour
         popup.ShowPopup(candidate);
     }
 
-    // 제자 종이 생성 및 애니메이션 재생
     private GameObject CreatePaper(AssistantInstance data, Action onEnterComplete = null)
     {
         var paper = Instantiate(paperPrefab, paperRoot);
@@ -172,7 +168,6 @@ public class RecruitPreviewManager : MonoBehaviour
         return paper;
     }
 
-    // 모든 종이 제거
     private void ClearActivePapers()
     {
         foreach (var paper in activePapers)
@@ -185,7 +180,6 @@ public class RecruitPreviewManager : MonoBehaviour
         currentPaperGO = null;
     }
 
-    // 제자 영입 확정
     public void ApproveCandidate()
     {
         if (isTransitioning) return;
@@ -225,8 +219,6 @@ public class RecruitPreviewManager : MonoBehaviour
         AdvanceToNextCandidate();
     }
 
-
-    // 제자 영입 거절
     public void RejectCandidate()
     {
         if (isTransitioning) return;
@@ -243,8 +235,6 @@ public class RecruitPreviewManager : MonoBehaviour
         AdvanceToNextCandidate();
     }
 
-
-    // 제자 보류 처리
     public void HoldCandidate()
     {
         if (isTransitioning) return;
@@ -293,8 +283,6 @@ public class RecruitPreviewManager : MonoBehaviour
         recruitUI.SetActive(false);
     }
 
-
-    // 보류 제자 프리뷰 호출
     public void ShowSingleCandidateFromHeld(AssistantInstance held)
     {
         isFromHeldList = true;
@@ -317,7 +305,6 @@ public class RecruitPreviewManager : MonoBehaviour
         SetButtonsInteractable(false);
     }
 
-    // UI 상태 복귀
     private void ReturnToProperUI()
     {
         popup.HidePopup();
@@ -336,7 +323,6 @@ public class RecruitPreviewManager : MonoBehaviour
         currentHeldInstance = null;
     }
 
-    // 버튼 활성화 상태 일괄 설정
     private void SetButtonsInteractable(bool interactable)
     {
         btnApprove.interactable = interactable;
@@ -344,7 +330,6 @@ public class RecruitPreviewManager : MonoBehaviour
         btnHold.interactable = interactable;
     }
 
-    // 버튼 이벤트 (랜덤/특화별)
     public void OnClickRecruitRandom() => TryRecruitCandidateByType(null);
     public void OnClickRecruitCrafting() => TryRecruitCandidateByType(SpecializationType.Crafting);
     public void OnClickRecruitMining() => TryRecruitCandidateByType(SpecializationType.Mining);

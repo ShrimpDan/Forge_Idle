@@ -8,6 +8,7 @@ public class ForgeSkillSystem : MonoBehaviour
     private ForgeManager forgeManager;
     private SkillManager skillManager;
     public SkillInstance[] ActiveSkills { get; private set; } = new SkillInstance[3];
+    private List<Coroutine> activeCoroutines = new List<Coroutine>();
 
     public void Init(ForgeManager forgeManager, SkillManager skillManager)
     {
@@ -54,15 +55,42 @@ public class ForgeSkillSystem : MonoBehaviour
         SkillInstance skill = ActiveSkills[idx];
         if (skill == null || skill.IsCoolDown) return;
 
-        StartCoroutine(SkillEffectCoroutine(skill));
+        Coroutine effectCoroutine = null;
+        effectCoroutine = StartCoroutine(SkillEffectCoroutine(skill, effectCoroutine));
+        activeCoroutines.Add(effectCoroutine);
+
         StartCoroutine(SkillCooldownCoroutine(idx));
     }
 
-    private IEnumerator SkillEffectCoroutine(SkillInstance skill)
+    public void StopAllSkillEffectCoroutine()
+    {
+        foreach (var coroutine in activeCoroutines)
+        {
+            if (coroutine != null)
+            {
+                StopCoroutine(coroutine);
+            }
+        }
+
+        foreach (var skill in ActiveSkills)
+        {
+            if (skill != null) // null 스킬 방지
+            {
+                forgeManager.CurrentForge.StatHandler.SetSkillEffect(skill.SkillData.Type, skill.GetValue(), false);
+            }
+        }
+
+        activeCoroutines.Clear();
+    }
+
+    private IEnumerator SkillEffectCoroutine(SkillInstance skill, Coroutine coroutine)
     {
         forgeManager.CurrentForge.StatHandler.SetSkillEffect(skill.SkillData.Type, skill.GetValue(), true);
         yield return WaitForSecondsCache.Wait(skill.GetDuration());
         forgeManager.CurrentForge.StatHandler.SetSkillEffect(skill.SkillData.Type, skill.GetValue(), false);
+
+        if (activeCoroutines.Contains(coroutine))
+            activeCoroutines.Remove(coroutine);
     }
 
     private IEnumerator SkillCooldownCoroutine(int idx)
@@ -91,7 +119,7 @@ public class ForgeSkillSystem : MonoBehaviour
     {
         List<ActiveSkillSaveData> activeSkills = new List<ActiveSkillSaveData>();
 
-        for(int i = 0; i < ActiveSkills.Length; i++)
+        for (int i = 0; i < ActiveSkills.Length; i++)
         {
             SkillInstance skill = ActiveSkills[i];
 

@@ -151,7 +151,7 @@ public class UpgradeWeaponWindow : BaseUI
             ResetUpgradePanel();
             return;
         }
-        inputWeaponIcon.sprite = IconLoader.GetIconByPath(selectedWeapon.Data.IconPath);
+        inputWeaponIcon.sprite = IconLoader.GetIconByKey(selectedWeapon.Data.ItemKey);
         inputWeaponIcon.enabled = true;
         inputWeaponName.text = selectedWeapon.Data.Name;
 
@@ -298,7 +298,7 @@ public class UpgradeWeaponWindow : BaseUI
             return;
         }
 
-        inputWeaponIconGem.sprite = IconLoader.GetIconByPath(selectedGemWeapon.Data.IconPath);
+        inputWeaponIconGem.sprite = IconLoader.GetIconByKey(selectedGemWeapon.Data.ItemKey);
         inputWeaponIconGem.enabled = true;
         inputWeaponNameGem.text = selectedGemWeapon.Data.Name;
 

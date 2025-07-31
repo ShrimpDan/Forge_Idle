@@ -75,12 +75,22 @@ public static class IconLoader
         foreach (string path in spriteSheetPaths)
         {
             Sprite[] sprites = Resources.LoadAll<Sprite>(path);
-            foreach (Sprite sprite in sprites)
+
+            if (sprites.Length > 0)
             {
-                iconDict[$"{path}/{sprite.name}"] = sprite;
+                foreach (Sprite sprite in sprites)
+                {
+                    if (iconDict.ContainsKey(sprite.name))
+                    {
+                        Debug.LogWarning($"'{sprite.name}' 이름의 스프라이트가 이미 존재하여 덮어씁니다. 시트 간 이름이 중복되지 않도록 확인해주세요.");
+                    }
+                    iconDict[sprite.name] = sprite;
+                    iconDict[$"{path}/{sprite.name}"] = sprite;
+                }
             }
         }
     }
+
 
     public static void ClearDict()
     {

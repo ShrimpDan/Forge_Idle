@@ -10,8 +10,7 @@ public class SettingWindow : BaseUI
     [SerializeField] private Slider sfxSlider;
     [SerializeField] Button exitBtn;
 
-    public const string BGM_KEY = "BGM_KEY";
-    public const string SFX_KEY = "SFX_KEY";
+    
 
     public override void Init(GameManager gameManager, UIManager uIManager)
     {
@@ -32,14 +31,14 @@ public class SettingWindow : BaseUI
     {
         base.Open();
 
-        bgmSlider.value = PlayerPrefs.GetFloat(BGM_KEY, 1f);
-        sfxSlider.value = PlayerPrefs.GetFloat(SFX_KEY, 1f);
+        bgmSlider.value = PlayerPrefs.GetFloat(PlayerPrefsKeys.BGM_KEY, 1f);
+        sfxSlider.value = PlayerPrefs.GetFloat(PlayerPrefsKeys.SFX_KEY, 1f);
     }
 
     public override void Close()
     {
-        PlayerPrefs.SetFloat(BGM_KEY, bgmSlider.value);
-        PlayerPrefs.SetFloat(SFX_KEY, sfxSlider.value);
+        PlayerPrefs.SetFloat(PlayerPrefsKeys.BGM_KEY, bgmSlider.value);
+        PlayerPrefs.SetFloat(PlayerPrefsKeys.SFX_KEY, sfxSlider.value);
 
         base.Close();
     }

@@ -21,10 +21,16 @@ public class ForgeInventorySlot : MonoBehaviour
         if (slotBtn == null)
             slotBtn = gameObject.AddComponent<Button>();
 
-        icon.sprite = item?.Data != null ? IconLoader.GetIconByKey(item.ItemKey) : null;
+        if (item.Data.ItemType == ItemType.Weapon)
+            icon.sprite = item?.Data != null ? IconLoader.GetIconByKey(item.ItemKey) : null;
+        
+        else
+            icon.sprite = item?.Data != null ? IconLoader.GetIconByPath(item.Data.IconPath) : null;
+        
+        
         icon.enabled = (icon.sprite != null);
 
-        countText.text = (item != null) ? item.Quantity.ToString() : "";
+        countText.text = (item != null) ? item.Data.Name.ToString() : "";
 
         if (uIManager == null)
             uIManager = GameManager.Instance.UIManager;
