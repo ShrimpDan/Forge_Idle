@@ -95,7 +95,7 @@ public class TutorialManager : MonoBehaviour
       
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
         ClickBlocker.OnBlockClick -= HandleClickBlock;
         ForgeTab.onClickButton -= HandleButtonClick;
