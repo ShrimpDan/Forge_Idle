@@ -93,22 +93,18 @@ public class RecruitPreviewManager : MonoBehaviour
         candidatePool.Clear();
         int attempts = 0;
         const int maxAttempts = 30;
-        /*
+
         while (candidatePool.Count < 5 && attempts < maxAttempts)
         {
-            var candidate = recruitFilter == null
-                ? assistantFactory.CreateSmartRandomTrainee(true)
-                : assistantFactory.CreateFixedTrainee(recruitFilter.Value, true);
-
-            if (candidate != null && !allExistingKeys.Contains(candidate.Key) &&
-                !candidatePool.Any(c => c.Key == candidate.Key))
+            var candidate = assistantFactory.CreateSmartRandomTrainee(allExistingKeys, recruitFilter);
+            if (candidate != null && !allExistingKeys.Contains(candidate.Key))
             {
                 candidatePool.Add(candidate);
+                allExistingKeys.Add(candidate.Key);
             }
 
             attempts++;
         }
-         */
 
         if (candidatePool.Count == 0)
         {
@@ -120,6 +116,7 @@ public class RecruitPreviewManager : MonoBehaviour
 
         ShowCurrentCandidate();
     }
+
 
     // 현재 제자 후보를 화면에 표시
     private void ShowCurrentCandidate()
