@@ -14,14 +14,14 @@ public class Forge_Inventory_Popup : BaseUI
     private Action<ItemInstance> resourceSelectCallback;
     private Action<AssistantInstance> assistantSelectCallback;
 
-    public override void Init(GameManager gameManager, UIManager uiManager)
+    public override void Init(GameManager gameManager, UIManager uIManager)
     {
-        base.Init(gameManager, uiManager);
+        base.Init(gameManager, uIManager);
 
         exitBtn.onClick.RemoveAllListeners();
         exitBtn.onClick.AddListener(() => uIManager.CloseUI(UIName.Forge_Inventory_Popup));
 
-        inventoryTab.Init(gameManager, uiManager);
+        inventoryTab.Init(gameManager, uIManager);
         ApplyCallbacks();
     }
 

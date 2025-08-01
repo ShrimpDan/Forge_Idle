@@ -44,6 +44,9 @@ public class AssistantTab : BaseTab
     {
         base.Init(gameManager, uIManager);
 
+
+
+
         for (int i = 0; i < tabButtons.Length; i++)
         {
             int index = i;
@@ -62,6 +65,12 @@ public class AssistantTab : BaseTab
         assistantManager = gameManager.AssistantManager;
         forgeManager = gameManager.ForgeManager;
 
+        if (assistantManager == null || forgeManager == null)
+        {
+            Debug.LogWarning("[AssistantTab] Manager가 아직 초기화되지 않았습니다.");
+            return;
+        }
+
         craftAssi.Init(uIManager);
         sellingAssi.Init(uIManager);
 
@@ -71,6 +80,15 @@ public class AssistantTab : BaseTab
     public override void OpenTab()
     {
         base.OpenTab();
+
+        if (assistantManager == null || forgeManager == null)
+        {
+            assistantManager = GameManager.Instance.AssistantManager;
+            forgeManager = GameManager.Instance.ForgeManager;
+
+            if (assistantManager == null || forgeManager == null)
+                return; // 아직 초기화 안 됐으면 그냥 빠짐
+        }
 
         SetAssistant();
         RefreshSlots();

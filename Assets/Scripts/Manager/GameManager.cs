@@ -52,22 +52,24 @@ public class GameManager : MonoSingleton<GameManager>
             DailyQuestManager.Init(this);
         }
 
-        if (AssistantManager)
-            AssistantManager.Init(this);
 
         if (ForgeManager)
             ForgeManager.Init(this);
 
-        if (UIManager)
-            UIManager.Init(this);
 
-        if (TutorialManager)
-            TutorialManager.Init(this);
+        if (AssistantManager)
+            AssistantManager.Init(this);
+
 
         if (CollectionManager)
             CollectionManager.Init(this);
 
+        if (UIManager)
+            UIManager.Init(this);
 
+
+        if (TutorialManager)
+            TutorialManager.Init(this);
 
         // CraftingManager 동적 생성 및 초기화
         var cmObj = new GameObject("CraftingManager");
@@ -100,6 +102,8 @@ public class GameManager : MonoSingleton<GameManager>
         SaveManager.LoadAll();
 
         InvokeRepeating(nameof(ProcessWageWrapper), 5f, 5f);
+
+
 
         SoundManager.Instance.Play("MainBGM");
     }

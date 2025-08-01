@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -11,8 +11,6 @@ public class InteractionObjectHandler : MonoBehaviour, IPointerClickHandler, IPo
 
 
     public ButtonType Type => type;
-    public static event Action<GameObject> OnPointerClicked;
-
 
     void Start()
     {
@@ -41,7 +39,7 @@ public class InteractionObjectHandler : MonoBehaviour, IPointerClickHandler, IPo
                 uIManager.OpenUI<RefineSystemWindow>(UIName.GetUINameByType(type));
                 break;
         }
-        OnPointerClicked?.Invoke(this.gameObject); //전달
+       
     }
 
     public void OnPointerDown(PointerEventData eventData)

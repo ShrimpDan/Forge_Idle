@@ -138,7 +138,7 @@ public class CustomerManager : MonoBehaviour
         this.forge = forge;
 
         StartCoroutine(SpawnNormalLoop());
-        StartCoroutine(SpawnNuisanceLoop());
+       
     }
 
     public void StopSpawnCustomer()
@@ -149,8 +149,6 @@ public class CustomerManager : MonoBehaviour
 
     private IEnumerator SpawnNormalLoop()
     {
-
-
         while (true)
         {
             yield return WaitForSecondsCache.Wait(forge.StatHandler.FinalCustomerSpawnInterval);
@@ -171,6 +169,12 @@ public class CustomerManager : MonoBehaviour
             }
         }
 
+
+    }
+
+    public void EndTutorial()
+    {
+        StartCoroutine(SpawnNuisanceLoop());
     }
 
 

@@ -86,4 +86,6 @@ public class Forge : MonoBehaviour
             LoadSceneManager.Instance.UnLoadScene(SceneType);
         });
     }
+
+    
 }

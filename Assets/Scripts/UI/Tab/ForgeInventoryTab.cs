@@ -23,15 +23,15 @@ public class ForgeInventoryTab : MonoBehaviour
     private Action<AssistantInstance> assistantSlotCallback;
 
     private GameManager gameManager;
-    private UIManager uiManager;
+    private UIManager uIManager;
 
     private enum TabType { Weapon, Gem, Resource, Trainee }
     private TabType curTab = TabType.Weapon;
 
-    public void Init(GameManager gameManager, UIManager uiManager)
+    public void Init(GameManager gameManager, UIManager uIManager)
     {
         this.gameManager = gameManager;
-        this.uiManager = uiManager;
+        this.uIManager = uIManager;
 
         equipButton.onClick.RemoveAllListeners();
         equipButton.onClick.AddListener(() => SwitchTab(TabType.Weapon));
@@ -107,8 +107,8 @@ public class ForgeInventoryTab : MonoBehaviour
         slot.Init(item, i =>
         {
             callback?.Invoke(i);
-            if (uiManager != null)
-                uiManager.CloseUI(UIName.Forge_Inventory_Popup);
+            if (uIManager != null)
+                uIManager.CloseUI(UIName.Forge_Inventory_Popup);
         });
     }
 }
