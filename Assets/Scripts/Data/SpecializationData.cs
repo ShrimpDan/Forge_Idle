@@ -4,29 +4,10 @@ using UnityEngine;
 [System.Serializable]
 public class SpecializationData
 {
-    /// <summary>
-    /// 키 값
-    /// </summary>
     public string Key;
-
-    /// <summary>
-    /// 티어
-    /// </summary>
     public int tier;
-
-    /// <summary>
-    /// 특화 타입
-    /// </summary>
     public SpecializationType specializationType;
-
-    /// <summary>
-    /// 스탯 이름들
-    /// </summary>
     public List<string> statNames;
-
-    /// <summary>
-    /// 각 이름에 대한 값
-    /// </summary>
     public List<float> statValues;
 }
 
@@ -60,14 +41,15 @@ public class SpecializationDataLoader
     }
 
     public SpecializationData GetByTierAndType(int tier, SpecializationType type)
-{
-    foreach (var data in DataList)
     {
-        if (data.tier == tier && data.specializationType == type)
+        foreach (var data in DataList)
         {
-            return data;
+            if (data.tier == tier && data.specializationType == type)
+            {
+                return data;
+            }
         }
+        return null;
     }
-    return null;
 }
-}
+

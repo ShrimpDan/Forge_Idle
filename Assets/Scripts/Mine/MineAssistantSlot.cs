@@ -3,21 +3,23 @@ using System;
 [Serializable]
 public class MineAssistantSlot
 {
-    public AssistantInstance AssignedAssistant;
-    public DateTime AssignedTime;
-
+    public AssistantInstance AssignedAssistant { get; private set; }
+    public DateTime AssignedTime { get; set; }
     public bool IsAssigned => AssignedAssistant != null;
+    public void Assign(AssistantInstance assistant, DateTime assignedTime)
+    {
+        AssignedAssistant = assistant;
+        AssignedTime = assignedTime;
+    }
 
     public void Assign(AssistantInstance assistant)
     {
-        AssignedAssistant = assistant;
-        AssignedTime = DateTime.Now;
+        Assign(assistant, DateTime.Now);
     }
 
     public void Unassign()
     {
-        if (IsAssigned && AssignedAssistant != null)
-            AssignedAssistant.IsInUse = false;
         AssignedAssistant = null;
+        AssignedTime = DateTime.MinValue;
     }
 }
