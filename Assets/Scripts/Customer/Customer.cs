@@ -71,6 +71,11 @@ public abstract class Customer : MonoBehaviour
     //풀링
     private GameObject sourcePrefab;
 
+    [Header("OrderInfo")]
+    [SerializeField] SpriteRenderer icon;
+    [SerializeField] GameObject orderBubble;
+
+
     public void Init(CustomerManager customerManager, CustomerData _customerData, BuyPoint _buyPoint)
     {
         this.customerManager = customerManager;
@@ -85,7 +90,7 @@ public abstract class Customer : MonoBehaviour
     {
         rigid2D = GetComponent<Rigidbody2D>();
         animator = GetComponentInChildren<Animator>();
-       
+
         spriteLibrary = GetComponentInChildren<SpriteLibrary>();
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         speech = GetComponentInChildren<CustomerSpeechBubble>();
@@ -94,7 +99,7 @@ public abstract class Customer : MonoBehaviour
 
     protected virtual void Start()
     {
-        
+
     }
 
     protected virtual void OnEnable()
@@ -104,7 +109,7 @@ public abstract class Customer : MonoBehaviour
             StopCoroutine(customerFlowCoroutine);
         }
         customerFlowCoroutine = StartCoroutine(CustomerFlow());
-
+        orderBubble.SetActive(false);
     }
 
 
@@ -130,7 +135,7 @@ public abstract class Customer : MonoBehaviour
 
     public void SetSourcePrefab(GameObject prefab)
     {
-        this.sourcePrefab = prefab; 
+        this.sourcePrefab = prefab;
     }
 
     protected virtual IEnumerator CustomerFlow()
@@ -141,7 +146,7 @@ public abstract class Customer : MonoBehaviour
         yield return JoinQueue();
         yield return WaitMyTurn();
         yield return PerformPurChase();
-        
+
 
     }
 
@@ -181,7 +186,7 @@ public abstract class Customer : MonoBehaviour
         state = CustomerState.InQueue;
 
         buyPoint.CustomerIn(this);
-        
+
         customerManager.CustomerEvent?.RaiseCustomerArrived(this); //이벤트 연결
         yield return null;
 
@@ -206,8 +211,8 @@ public abstract class Customer : MonoBehaviour
     {
         state = CustomerState.WaitintTurn;
         if (RandomChance() == true)
-        { 
-        speech.Show("ThinkAnimation");
+        {
+            speech.Show("ThinkAnimation");
         }
         if (StopTime != null)
         {
@@ -224,7 +229,8 @@ public abstract class Customer : MonoBehaviour
     protected virtual IEnumerator PerformPurChase()
     {
         state = CustomerState.Purchasing;
-        
+
+        orderBubble.SetActive(false);
         speech.Show("Happy");
         Interact();
         yield return WaitForSecondsCache.Wait(1f);
@@ -266,7 +272,7 @@ public abstract class Customer : MonoBehaviour
             else
             {
                 spriteRenderer.flipX = false; // → 오른쪽이면 flip
-            }   
+            }
             yield return new WaitForFixedUpdate();
         }
         rigid2D.velocity = Vector2.zero; // 안전
@@ -301,7 +307,7 @@ public abstract class Customer : MonoBehaviour
             StopCoroutine(StopTime);
             StopTime = null;
         }
-        
+
     }
 
     public void ChangeSpriteLibrary(SpriteLibraryAsset asset)
@@ -336,7 +342,7 @@ public abstract class Customer : MonoBehaviour
 
     private bool RandomChance() //랜덤으로 값 뽑아낼때 사용
     {
-        int dice = Random.Range(0,10);
+        int dice = Random.Range(0, 10);
         if (dice > 5)
         {
             return true;
@@ -345,5 +351,14 @@ public abstract class Customer : MonoBehaviour
         return false;
 
     }
-  
+
+    public void SetOrderBubble(Sprite icon)
+    {
+        if (icon == null) orderBubble.SetActive(false);
+
+        speech.Hide();
+        this.icon.sprite = icon;
+        orderBubble.SetActive(true);
+    }
+    
 }

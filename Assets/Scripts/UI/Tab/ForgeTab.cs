@@ -9,7 +9,6 @@ public class ForgeTab : BaseTab
 
 
     private ForgeManager forgeManager;
-    [SerializeField] private Image weaponIcon;
     [SerializeField] private Image progressFill;
     
     [SerializeField] private Button slideTabBtn;
@@ -39,9 +38,6 @@ public class ForgeTab : BaseTab
         base.Init(gameManager, uIManager);
 
         forgeManager = gameManager.ForgeManager;
-
-        if (forgeManager != null)
-            forgeManager.Events.OnCraftStarted += SetWeaponIcon;
 
         if (arrowTr == null)
             arrowTr = slideTabBtn.transform.GetChild(0);
@@ -90,11 +86,6 @@ public class ForgeTab : BaseTab
             forgeManager.CurrentForge.SetForgeMap(false);
             forgeManager.Events.OnCraftProgress -= UpdateProgress;
         }
-    }
-
-    public void SetWeaponIcon(Sprite icon)
-    {
-        weaponIcon.sprite = icon;
     }
 
     public void UpdateProgress(float curTime, float totalTime)

@@ -73,8 +73,6 @@ public class WeaponHandler : MonoBehaviour
     {
         while (attackQueue.Count > 0 && dungeonManager.IsRunning)
         {
-            yield return WaitForSecondsCache.Wait(attackDelay);
-
             var slot = attackQueue.Peek();
             Monster monster = monsterHandler.GetCurrentMonster();
             if (slot.IsReady && monster != null)
@@ -84,6 +82,8 @@ public class WeaponHandler : MonoBehaviour
                 slot.StartCooldown();
                 StartCoroutine(WaitAndRequeue(slot));
             }
+
+            yield return WaitForSecondsCache.Wait(attackDelay);
         }
 
         isAttack = false;
@@ -117,7 +117,7 @@ public class WeaponHandler : MonoBehaviour
                 Destroy(go);
             });
 
-        go.transform.DORotate(new Vector3(0, 0, Random.Range(minRotation, maxRotation)), 1f, RotateMode.FastBeyond360);
+        go.transform.DORotate(new Vector3(0, 0, Random.Range(minRotation, maxRotation)), duration, RotateMode.FastBeyond360);
     }
 
     private void DamageToMonster(float damage, Monster monster)

@@ -1,7 +1,6 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.UIElements.Experimental;
 
 public class InventoryContext
 {
@@ -80,9 +79,12 @@ public class InventoryPopup : BaseUI
         var btnName = go.GetComponentInChildren<TextMeshProUGUI>();
 
         if (!item.IsEquipped)
-            btnName.text = "Equip";
+        {
+            btnName.text = "장착";
+            equipBtn.interactable = gameManager.Inventory.CanEquip();
+        }
         else
-            btnName.text = "UnEquip";
+            btnName.text = "해제";
 
         equipBtn.onClick.AddListener(SetEquip);
     }
