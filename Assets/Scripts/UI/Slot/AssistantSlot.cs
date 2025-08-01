@@ -12,8 +12,16 @@ public class AssistantSlot : MonoBehaviour
     [SerializeField] private GameObject equippedIndicator;
     [SerializeField] private GameObject firedIndicator;
     private Action<AssistantInstance> clickCallback;
-
     private bool preventPopup = false;
+
+    // ▼ 등급 아이콘용 필드 추가 (Inspector에서 할당)
+    [Header("Rank Icon")]
+    [SerializeField] private Image rankIconImage;
+    [SerializeField] private Sprite rankN;
+    [SerializeField] private Sprite rankR;
+    [SerializeField] private Sprite rankSR;
+    [SerializeField] private Sprite rankSSR;
+    [SerializeField] private Sprite rankUR;
 
     public void Init(AssistantInstance data, Action<AssistantInstance> onClick, bool preventPopup = false)
     {
@@ -45,16 +53,31 @@ public class AssistantSlot : MonoBehaviour
 
         if (uIManager == null)
             uIManager = GameManager.Instance.UIManager;
+
+        // 등급 아이콘 표시
+        SetRankIcon(data?.grade);
     }
 
+    private void SetRankIcon(string grade)
+    {
+        if (rankIconImage == null) return;
+        switch (grade)
+        {
+            case "N": rankIconImage.sprite = rankN; break;
+            case "R": rankIconImage.sprite = rankR; break;
+            case "SR": rankIconImage.sprite = rankSR; break;
+            case "SSR": rankIconImage.sprite = rankSSR; break;
+            case "UR": rankIconImage.sprite = rankUR; break;
+            default: rankIconImage.sprite = null; break;
+        }
+        rankIconImage.enabled = rankIconImage.sprite != null;
+    }
 
     private void OnClickSlot()
     {
         SoundManager.Instance.Play("ClickSound");
-
         clickCallback?.Invoke(AssistantData);
 
-        // 다른곳에서 안킴
         if (AssistantData == null || preventPopup) return;
 
         var ui = uIManager.OpenUI<AssistantPopup>(UIName.AssistantPopup);
@@ -79,5 +102,8 @@ public class AssistantSlot : MonoBehaviour
 
         if (canvasGroup != null)
             canvasGroup.alpha = isFired ? 0.5f : 1f;
+
+        // 상태 갱신시 등급도 다시 표시
+        SetRankIcon(AssistantData?.grade);
     }
 }
