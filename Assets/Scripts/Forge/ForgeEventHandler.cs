@@ -9,7 +9,6 @@ public class ForgeEventHandler
     public event Action<int> OnTotalFameChanged;
     public event Action<int> OnLevelChanged;
     public event Action<float, float> OnCraftProgress;
-    public event Action<Sprite> OnCraftStarted;
 
     // 스킬 관련 이벤트
     public event Action<int, SkillInstance> OnSkillChanged;
@@ -23,7 +22,6 @@ public class ForgeEventHandler
     public void RaiseTotalFameChanged(int totalFame) => OnTotalFameChanged?.Invoke(totalFame);
     public void RaiseLevelChanged(int level) => OnLevelChanged?.Invoke(level);
     public void RaiseCraftProgress(float curTime, float totalTime) => OnCraftProgress?.Invoke(curTime, totalTime);
-    public void RaiseCraftStarted(Sprite icon) => OnCraftStarted?.Invoke(icon);
     public void RaiseSkillChanged(int idx, SkillInstance skill) => OnSkillChanged?.Invoke(idx, skill);
     public void RaiseSkillCoolDownStarted(int idx, float curCooldown) => OnSkillCooldownStarted?.Invoke(idx, curCooldown);
     public void RaiseSkillCooldownUpdate(int idx, float curCooldown, float maxCooldown) => OnSkillCooldownUpdate?.Invoke(idx, curCooldown, maxCooldown);
