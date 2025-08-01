@@ -29,7 +29,6 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 2307334957082619652}
   - {fileID: 2831082421382340693}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -50,6 +49,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e0bf84051c2dd443b3d8f4eecefd2cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  RootPanel: {fileID: 0}
   panel: {fileID: 7339872389912943328}
   slotParent: {fileID: 5047972668249139384}
   slotPrefabs: {fileID: 13179904681814738, guid: dfb583d98abc2c74c955cf2353fb960f, type: 3}
@@ -86,11 +86,11 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7176718249520205564}
-  m_Father: {fileID: 7700627369497711707}
+  m_Father: {fileID: 2831082421382340693}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 413, y: 607}
+  m_AnchoredPosition: {x: 63, y: 57}
   m_SizeDelta: {x: 130, y: 130}
   m_Pivot: {x: 1, y: 1}
 --- !u!222 &6879234707686420412
@@ -400,6 +400,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5047972668249139384}
+  - {fileID: 2307334957082619652}
   m_Father: {fileID: 7700627369497711707}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
