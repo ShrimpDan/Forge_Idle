@@ -16,10 +16,12 @@ public class RefineListSlot : MonoBehaviour
     {
         itemData = data;
         onClick = onClickCallback;
+
         if (icon != null)
-            icon.sprite = IconLoader.GetIcon(data.ItemType, data.ItemKey); // Å¸ÀÔ, Å° ±â¹Ý
+            icon.sprite = IconLoader.GetIcon(data.ItemType, data.ItemKey); // Å¸ï¿½ï¿½, Å° ï¿½ï¿½ï¿½
         if (itemName != null)
             itemName.text = data.Name;
+
         if (selectButton != null)
         {
             selectButton.onClick.RemoveAllListeners();

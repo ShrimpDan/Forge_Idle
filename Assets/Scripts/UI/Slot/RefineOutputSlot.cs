@@ -11,7 +11,9 @@ public class RefineOutputSlot : MonoBehaviour
     public void Set(ItemData data)
     {
         if (icon != null)
-            icon.sprite = data != null ? IconLoader.GetIcon(data.ItemType, data.ItemKey) : null;
+
+        icon.sprite = data != null ? IconLoader.GetIcon(data.ItemType, data.ItemKey) : null;
+
         if (itemName != null)
             itemName.text = data != null ? data.Name : "";
         if (description != null)

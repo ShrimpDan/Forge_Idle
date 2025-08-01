@@ -17,18 +17,15 @@ public class Gem_Weapon_Popup : BaseUI
     private List<GameObject> slotInstances = new();
 
     private DataManager dataManager;
-    private GameManager gameManager;
-    private UIManager uiManager;
 
-    public override void Init(GameManager gameManager, UIManager uiManager)
+    public override void Init(GameManager gameManager, UIManager uIManager)
     {
-        base.Init(gameManager, uiManager);
-        this.gameManager = gameManager;
-        this.uiManager = uiManager;
+        base.Init(gameManager, uIManager);
+
         this.dataManager = gameManager.DataManager;
 
         exitButton.onClick.RemoveAllListeners();
-        exitButton.onClick.AddListener(() => uiManager.CloseUI(UIName.Gem_Weapon_Popup));
+        exitButton.onClick.AddListener(() => uIManager.CloseUI(UIName.Gem_Weapon_Popup));
     }
 
     public void SetWeaponSelectCallback(Action<ItemInstance> callback)
@@ -67,7 +64,7 @@ public class Gem_Weapon_Popup : BaseUI
                 slot.Init(weapon, (w) =>
                 {
                     weaponSelectCallback?.Invoke(w);
-                    uiManager.CloseUI(UIName.Gem_Weapon_Popup);
+                    uIManager.CloseUI(UIName.Gem_Weapon_Popup);
                 });
             }
             else
@@ -122,7 +119,7 @@ public class Gem_Weapon_Popup : BaseUI
                 btn.onClick.AddListener(() =>
                 {
                     weaponSelectCallback?.Invoke(weapon);
-                    uiManager.CloseUI(UIName.Gem_Weapon_Popup);
+                    uIManager.CloseUI(UIName.Gem_Weapon_Popup);
                 });
             }
         }

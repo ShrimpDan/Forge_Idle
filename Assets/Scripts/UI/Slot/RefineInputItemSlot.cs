@@ -15,6 +15,7 @@ public class RefineInputItemSlot : MonoBehaviour
     {
         icon.sprite = (item != null) ? IconLoader.GetIcon(item.ItemType, item.ItemKey) : null;
         icon.enabled = icon.sprite != null;
+
         itemName.text = item != null ? item.Name : "";
         amountText.text = $"{owned}/{required}";
 
