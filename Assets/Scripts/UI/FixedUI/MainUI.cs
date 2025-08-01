@@ -28,9 +28,6 @@ public class MainUI : BaseUI
     [SerializeField] private TextMeshProUGUI goldText;
     [SerializeField] private TextMeshProUGUI diaText;
 
-    [Header("Top Button")]
-    [SerializeField] private Button levelButton;
-
     public static event Action<string> onUIClose;
     public static event Action<string> onTabClick;
     public override UIType UIType => UIType.Fixed;
@@ -58,13 +55,6 @@ public class MainUI : BaseUI
                 SwitchTab(index);
             });
         }
-
-        levelButton.onClick.AddListener(() =>
-        {
-            SoundManager.Instance.Play("SFX_SystemClick");
-            uIManager.OpenUI<CollectionUI>(UIName.GetUINameByType(ButtonType.Collection));
-
-        });
 
         OnEnable();
     }

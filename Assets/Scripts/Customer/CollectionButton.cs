@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class CollectionButton : MonoBehaviour
@@ -14,6 +12,6 @@ public class CollectionButton : MonoBehaviour
 
     private void OpenCollectionPopup()
     {
-        GameManager.Instance.UIManager.OpenUI<BaseUI>(UIName.CollectionPopup);
+        GameManager.Instance.UIManager.OpenUI<BaseUI>(UIName.CollectionWindow);
     }
 }

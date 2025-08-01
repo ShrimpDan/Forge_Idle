@@ -22,7 +22,7 @@ public class DailyQuestUI : MonoBehaviour
         questNameText.text = loader.data.title;
         questInfo.text = loader.data.questInfo;
         questProgressText.text = $"{loader.currentAmount} / {loader.data.goalAmount}";
-        questRewardText.text = $"다이아 : {loader.data.rewardCount}";
+        questRewardText.text = $"{loader.data.rewardCount}";
 
         Button btn = claimButton.GetComponent<Button>();
         btn.onClick.RemoveAllListeners();
