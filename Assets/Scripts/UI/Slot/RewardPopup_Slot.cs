@@ -13,9 +13,26 @@ public class RewardPopup_Slot : MonoBehaviour
     public void Init(ItemData itemData, int count)
     {
         itemKey = itemData.ItemKey;
-        icon.sprite = IconLoader.GetIconByPath(itemData.IconPath);
         quantity = count;
         quantityText.text = quantity.ToString();
+
+        Sprite iconSprite = null;
+
+        if (!string.IsNullOrEmpty(itemData.IconPath))
+            iconSprite = IconLoader.GetIconByPath(itemData.IconPath);
+
+        if (iconSprite == null && !string.IsNullOrEmpty(itemKey))
+            iconSprite = IconLoader.GetIconByKey(itemKey);
+
+        if (iconSprite == null)
+            iconSprite = IconLoader.GetIcon(itemData.ItemType, itemKey);
+
+        if (iconSprite == null)
+            iconSprite = IconLoader.GetIconByPath("Icons/Empty");
+
+        icon.sprite = iconSprite;
+
+        if (icon != null) icon.color = Color.white;
     }
 
     public void Add(int count)

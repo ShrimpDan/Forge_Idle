@@ -15,7 +15,7 @@ public class RewardPopup : BaseUI
     [SerializeField] private GameObject rewardSlotPrefab;
     [SerializeField] private TextMeshProUGUI titleText;
     [SerializeField] private Button overlayButton;
-    [SerializeField] private Image titleIcon; // �ν����Ϳ� TitleIcon ���
+    [SerializeField] private Image titleIcon;
 
     private List<RewardPopup_Slot> slots = new();
 
@@ -55,7 +55,7 @@ public class RewardPopup : BaseUI
         if (exitTitle != null)
             UIEffect.TextScaleEffect(exitTitle.GetComponentInChildren<TMP_Text>(), exitTitleScale, exitTitleAnimDuration);
 
-        PlayTitleIconGlow(); // ȿ�� �ߵ�
+        PlayTitleIconGlow();
 
         gameObject.SetActive(true);
     }
@@ -88,20 +88,15 @@ public class RewardPopup : BaseUI
         gameObject.SetActive(true);
     }
 
-    // Ÿ��Ʋ ������ ������ ȿ��
     private void PlayTitleIconGlow()
     {
         if (titleIcon == null) return;
 
-        titleIcon.color = new Color(1f, 0.97f, 0.45f, 0.0f); // ���� �����, ����
+        titleIcon.color = new Color(1f, 0.97f, 0.45f, 1f);
         titleIcon.transform.localScale = Vector3.one * 1.15f;
 
         titleIcon.DOFade(0.85f, 0.15f).From(0f).SetEase(Ease.OutQuad);
-        titleIcon.transform.DOScale(1.04f, 0.18f).SetLoops(2, LoopType.Yoyo).SetEase(Ease.OutBack)
-            .OnComplete(() =>
-            {
-                titleIcon.DOFade(0f, 0.5f).SetDelay(0.22f);
-            });
+        titleIcon.transform.DOScale(1.04f, 0.18f).SetLoops(2, LoopType.Yoyo).SetEase(Ease.OutBack);
     }
 
     public override void Open()
@@ -116,17 +111,18 @@ public class RewardPopup : BaseUI
     public override void Close()
     {
         UIEffect.PopupCloseEffect(popupPanel, closeDuration);
+        gameObject.SetActive(false);
     }
 
     private void Awake()
     {
         if (exitTitle != null)
-            exitTitle.onClick.AddListener(() => uiManager?.CloseUI("RewardPopup"));
+            exitTitle.onClick.AddListener(() => ClosePopup());
 
         if (overlayButton != null)
         {
             overlayButton.onClick.RemoveAllListeners();
-            overlayButton.onClick.AddListener(() => uiManager?.CloseUI("RewardPopup"));
+            overlayButton.onClick.AddListener(() => ClosePopup());
         }
 
         if (popupPanel != null)
@@ -134,7 +130,65 @@ public class RewardPopup : BaseUI
             var btn = popupPanel.GetComponent<Button>();
             if (btn == null)
                 btn = popupPanel.gameObject.AddComponent<Button>();
-            btn.onClick.AddListener(() => uiManager?.CloseUI("RewardPopup"));
+            btn.onClick.AddListener(() => ClosePopup());
+        }
+    }
+    public void ShowWithoutManager(List<(string itemKey, int count)> rewardList, ItemDataLoader itemLoader, string title = "획득 보상")
+    {
+        if (titleText != null)
+            titleText.text = title;
+
+        foreach (Transform child in rewardRoot)
+            Destroy(child.gameObject);
+        slots.Clear();
+
+        foreach (var reward in rewardList)
+        {
+            var itemData = itemLoader.GetItemByKey(reward.itemKey);
+            if (itemData == null) continue;
+            var go = Instantiate(rewardSlotPrefab, rewardRoot);
+            var slot = go.GetComponent<RewardPopup_Slot>();
+            slot.Init(itemData, reward.count);
+            slots.Add(slot);
+        }
+
+        if (overlayButton != null)
+        {
+            overlayButton.onClick.RemoveAllListeners();
+            overlayButton.onClick.AddListener(() => ClosePopup());
+        }
+        if (popupPanel != null)
+        {
+            var btn = popupPanel.GetComponent<Button>();
+            if (btn == null)
+                btn = popupPanel.gameObject.AddComponent<Button>();
+            btn.onClick.RemoveAllListeners();
+            btn.onClick.AddListener(() => ClosePopup());
+        }
+        if (exitTitle != null)
+        {
+            exitTitle.onClick.RemoveAllListeners();
+            exitTitle.onClick.AddListener(() => ClosePopup());
+        }
+
+        UIEffect.PopupOpenEffect(popupPanel, openDuration);
+
+        if (exitTitle != null)
+            UIEffect.TextScaleEffect(exitTitle.GetComponentInChildren<TMP_Text>(), exitTitleScale, exitTitleAnimDuration);
+
+        PlayTitleIconGlow();
+        gameObject.SetActive(true);
+    }
+
+    private void ClosePopup()
+    {
+        if (uiManager != null)
+        {
+            uiManager.CloseUI(UIName.RewardPopup);
+        }
+        else
+        {
+            gameObject.SetActive(false);
         }
     }
 }
