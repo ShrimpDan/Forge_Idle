@@ -80,6 +80,14 @@ public class AssistantManager : MonoBehaviour
 
     public void RecruitSingle(SpecializationType? type = null)
     {
+        if (!canRecruit)
+        {
+            Debug.LogWarning("[AssistantManager] RecruitSingle 호출이 차단됨 (이미 진행 중)");
+            return;
+        }
+
+        currentBatch.Clear();
+
         AssistantController.ResetSoundOnce();
 
         HandleSingleRecruit(() => {
