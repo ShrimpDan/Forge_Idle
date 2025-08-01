@@ -93,11 +93,11 @@ public class RecruitPreviewManager : MonoBehaviour
         candidatePool.Clear();
         int attempts = 0;
         const int maxAttempts = 30;
-
+        /*
         while (candidatePool.Count < 5 && attempts < maxAttempts)
         {
             var candidate = recruitFilter == null
-                ? assistantFactory.CreateRandomTrainee(true)
+                ? assistantFactory.CreateSmartRandomTrainee(true)
                 : assistantFactory.CreateFixedTrainee(recruitFilter.Value, true);
 
             if (candidate != null && !allExistingKeys.Contains(candidate.Key) &&
@@ -108,6 +108,7 @@ public class RecruitPreviewManager : MonoBehaviour
 
             attempts++;
         }
+         */
 
         if (candidatePool.Count == 0)
         {
