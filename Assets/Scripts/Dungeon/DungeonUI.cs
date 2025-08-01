@@ -8,6 +8,7 @@ public class DungeonUI : MonoBehaviour
     private DungeonManager dungeonManager;
 
     [Header("Battle Info UI")]
+    [SerializeField] private TextMeshProUGUI titleText;
     [SerializeField] private Image timeFill;
     [SerializeField] private TextMeshProUGUI timeText;
     [SerializeField] private TextMeshProUGUI monsterText;
@@ -41,6 +42,8 @@ public class DungeonUI : MonoBehaviour
             blockRay.enabled = false;
         });
         confirmBtn.onClick.AddListener(() => dungeonManager.BackToMain());
+
+        titleText.text = dungeonManager.DungeonData.DungeonName;
     }
 
     public void UpdateTimerUI(float current, float max)

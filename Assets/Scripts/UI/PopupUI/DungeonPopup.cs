@@ -10,6 +10,7 @@ public class DungeonPopup : MonoBehaviour
     [SerializeField] private TextMeshProUGUI clearText;
     [SerializeField] private Button confirmButton;
 
+    [SerializeField] private TextMeshProUGUI rewardFameText;
     [SerializeField] private Transform rewardRoot;
     [SerializeField] private GameObject rewardSlotPrefab;
 
@@ -23,10 +24,12 @@ public class DungeonPopup : MonoBehaviour
         if (isClear)
         {
             clearText.text = "던전 클리어 !!";
+            rewardFameText.text = $"명성치: +{dungeonManager.DungeonData.RewardFame}";
         }
         else
         {
             clearText.text = "클리어 실패...";
+            rewardFameText.text = $"명성치: -";
         }
 
         confirmButton.onClick.RemoveAllListeners();

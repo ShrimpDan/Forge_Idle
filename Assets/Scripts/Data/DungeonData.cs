@@ -6,6 +6,7 @@ public class DungeonData
 {
     public string Key;
     public string DungeonName;
+    public int RewardFame;
     public float MonsterHp;
     public float BossHp;
     public float Duration;
