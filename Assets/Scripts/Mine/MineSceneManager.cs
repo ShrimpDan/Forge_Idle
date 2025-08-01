@@ -27,6 +27,7 @@ public class MineGroup
             slots.RemoveRange(slotUIs.Count, slots.Count - slotUIs.Count);
     }
 }
+
 public class MineSceneManager : MonoBehaviour
 {
     public GameObject mineAssistantPrefab;
@@ -40,8 +41,6 @@ public class MineSceneManager : MonoBehaviour
     public TMP_Text minedAmountText;
     public Camera mineCamera;
     public Transform popupRoot;
-    public LackPopup lackPopupPrefab;
-    public Transform lackpopupRoot;
 
     private List<List<GameObject>> spawnedAssistants;
     private AssistantInventory assistantInventory;
@@ -67,6 +66,7 @@ public class MineSceneManager : MonoBehaviour
     private void Start()
     {
         if (GameManager.Instance?.AssistantManager?.AssistantInventory == null) return;
+
         assistantInventory = GameManager.Instance.AssistantManager.AssistantInventory;
 
         mineLoader = new MineLoader();
@@ -101,7 +101,7 @@ public class MineSceneManager : MonoBehaviour
         MineResourceCollectManager.Instance.SetCurrentMineGroupIndex(currentMineIndex);
 
         if (collectButton != null)
-            collectButton.onClick.AddListener(OnCollectButton);
+            collectButton.onClick.AddListener(OnCollectAllButton);
 
         if (miningUIPanel != null)
             miningUIPanel.SetActive(true);
@@ -145,8 +145,8 @@ public class MineSceneManager : MonoBehaviour
             cameraTouchDrag.enabled = true;
             cameraTouchDrag.enableZoom = true;
         }
-        if (miningUIPanel != null) miningUIPanel.SetActive(false);
 
+        if (miningUIPanel != null) miningUIPanel.SetActive(false);
         SetActiveMine(idx);
     }
 
@@ -196,10 +196,10 @@ public class MineSceneManager : MonoBehaviour
         }, true);
     }
 
-    public void OnCollectButton()
+    // 전체 자원 수령 버튼 → 한 번에 모든 마인 자원 수령
+    public void OnCollectAllButton()
     {
-        var group = mineGroups[currentMineIndex];
-        MineResourceCollectManager.Instance.CollectResources(group, lackPopupPrefab, lackpopupRoot);
+        MineResourceCollectManager.Instance.CollectAllResources();
         MineResourceCollectManager.Instance.UpdateExpectedMiningAmount();
     }
 
@@ -385,4 +385,3 @@ public class MineSceneManager : MonoBehaviour
                 slot.Unassign();
     }
 }
-

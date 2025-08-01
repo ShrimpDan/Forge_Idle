@@ -1,7 +1,7 @@
-using System;
 using System.Collections.Generic;
-using UnityEngine;
+using System;
 using TMPro;
+using UnityEngine;
 
 public class MineResourceCollectManager : MonoBehaviour
 {
@@ -14,6 +14,11 @@ public class MineResourceCollectManager : MonoBehaviour
     [SerializeField] private float updateInterval = 1.0f;
     private float timer = 0f;
 
+    [Header("UI Prefabs (Inspector에서 할당 필수!)")]
+    [SerializeField] private GameObject rewardPopupPrefab;
+    [SerializeField] private LackPopup lackPopupPrefab;
+    [SerializeField] private Transform lackpopupRoot;
+
     private void Awake()
     {
         if (Instance == null) Instance = this;
@@ -23,17 +28,14 @@ public class MineResourceCollectManager : MonoBehaviour
     private void Update()
     {
         timer += Time.deltaTime;
-        if (timer > updateInterval)
+        if (timer >= updateInterval)
         {
             timer = 0f;
             UpdateExpectedMiningAmount();
         }
     }
 
-    public void SetMineGroups(List<MineGroup> groups)
-    {
-        mineGroups = groups;
-    }
+    public void SetMineGroups(List<MineGroup> groups) => mineGroups = groups;
 
     public void SetCurrentMineGroupIndex(int idx)
     {
@@ -41,155 +43,163 @@ public class MineResourceCollectManager : MonoBehaviour
         UpdateExpectedMiningAmount();
     }
 
-    public void SetMinedAmountText(TMP_Text text)
-    {
-        minedAmountText = text;
-    }
+    public void SetMinedAmountText(TMP_Text text) => minedAmountText = text;
 
+    // 전체 마인 자원 총합 UI 표시
     public void UpdateExpectedMiningAmount()
     {
-        if (mineGroups == null || minedAmountText == null) return;
-        if (currentMineGroupIndex < 0 || currentMineGroupIndex >= mineGroups.Count) return;
-        var group = mineGroups[currentMineGroupIndex];
-        minedAmountText.text = GetExpectedResourcesText(group);
-    }
+        if (mineGroups == null || mineGroups.Count == 0) return;
 
-    public void CollectResources(MineGroup group, LackPopup lackPopupPrefab = null, Transform lackpopupRoot = null, UIManager uiManager = null)
-    {
-        if (group == null || group.mineManager == null || group.mineManager.Mine == null) return;
-
-        var resourceDict = CalculateMiningAmount(group, useRandom: true, out float hours);
-
-        if (hours <= 0.01f)
-        {
-            if (lackPopupPrefab != null && lackpopupRoot != null)
-            {
-                var popup = GameObject.Instantiate(lackPopupPrefab, lackpopupRoot);
-                popup.Init(GameManager.Instance, uiManager);
-                popup.ShowCustom("수령할 수 있는 시간이 부족합니다.");
-            }
-            if (minedAmountText != null)
-                minedAmountText.text = "";
-            return;
-        }
-
-        List<(ItemData item, int count)> rewardList = new List<(ItemData, int)>();
-        System.Text.StringBuilder sb = new System.Text.StringBuilder();
-
-        foreach (var pair in resourceDict)
-        {
-            int amountInt = Mathf.FloorToInt(pair.Value);
-            if (amountInt > 0)
-            {
-                ItemData item = GameManager.Instance.DataManager.ItemLoader.GetItemByKey(pair.Key);
-                if (item != null)
-                {
-                    GameManager.Instance.Inventory.AddItem(item, amountInt);
-                    sb.AppendLine($"{item.Name} x {amountInt}");
-                    rewardList.Add((item, amountInt));
-                }
-            }
-        }
-
-        if (rewardList.Count == 0)
-        {
-            if (lackPopupPrefab != null && lackpopupRoot != null)
-            {
-                var popup = GameObject.Instantiate(lackPopupPrefab, lackpopupRoot);
-                popup.Init(GameManager.Instance, uiManager);
-                popup.Show(LackType.Resource);
-            }
-            if (minedAmountText != null)
-                minedAmountText.text = "";
-            return;
-        }
-
-        var popupObj = GameObject.Find("RewardPopup");
-        if (popupObj != null)
-        {
-            var popup = popupObj.GetComponent<RewardPopup>();
-            if (popup != null)
-                popup.Show(ToRewardDict(rewardList), "획득 보상");
-        }
+        string expectedText = GetAllExpectedResourcesText();
 
         if (minedAmountText != null)
-            minedAmountText.text = sb.ToString();
-
-        group.lastCollectTime = DateTime.Now;
-        foreach (var slot in group.mineManager.Slots)
-            if (slot.IsAssigned) slot.AssignedTime = group.lastCollectTime;
+            minedAmountText.text = string.IsNullOrEmpty(expectedText) ? "채굴 중..." : expectedText;
     }
 
-    private Dictionary<ItemData, int> ToRewardDict(List<(ItemData item, int count)> list)
+    // 전체 마인 예상 채굴 자원 합산
+    private string GetAllExpectedResourcesText()
     {
-        var dict = new Dictionary<ItemData, int>();
-        foreach (var t in list)
+        var totalResourceDict = new Dictionary<string, float>();
+        foreach (var group in mineGroups)
         {
-            if (t.item == null) continue;
-            if (dict.ContainsKey(t.item)) dict[t.item] += t.count;
-            else dict.Add(t.item, t.count);
+            var resourceDict = CalculateMiningAmount(group, false, out _);
+            foreach (var pair in resourceDict)
+            {
+                if (!totalResourceDict.ContainsKey(pair.Key))
+                    totalResourceDict[pair.Key] = 0f;
+                totalResourceDict[pair.Key] += pair.Value;
+            }
         }
-        return dict;
-    }
 
-    public string GetExpectedResourcesText(MineGroup group)
-    {
-        var resourceDict = CalculateMiningAmount(group, useRandom: false, out _);
-        System.Text.StringBuilder sb = new System.Text.StringBuilder();
-        foreach (var pair in resourceDict)
+        var sb = new System.Text.StringBuilder();
+        foreach (var pair in totalResourceDict)
         {
             int amountInt = Mathf.FloorToInt(pair.Value);
             if (amountInt > 0)
             {
                 ItemData item = GameManager.Instance.DataManager.ItemLoader.GetItemByKey(pair.Key);
-                sb.AppendLine(item != null
-                    ? $"{item.Name} x {amountInt}"
-                    : $"{pair.Key} x {amountInt}");
+                sb.AppendLine(item != null ? $"{item.Name} x {amountInt}" : $"{pair.Key} x {amountInt}");
             }
         }
         return sb.ToString();
     }
 
-    private Dictionary<string, float> CalculateMiningAmount(MineGroup group, bool useRandom, out float hours)
+    // 전체 마인 자원 한 번에 수령
+    public void CollectAllResources()
     {
-        hours = 0f;
-        if (group == null || group.mineManager == null || group.mineManager.Mine == null)
-            return new Dictionary<string, float>();
+        if (mineGroups == null || mineGroups.Count == 0) return;
 
-        DateTime now = DateTime.Now;
-        DateTime lastCollect = group.lastCollectTime;
-        hours = (float)(now - lastCollect).TotalHours;
+        var totalRewardList = new List<(string itemKey, int count)>();
+        foreach (var group in mineGroups)
+        {
+            var resourceDict = CalculateMiningAmount(group, true, out float totalHours);
+
+            // 1초 미만은 수집 불가
+            if (totalHours < (1.0f / 3600f)) continue;
+
+            foreach (var pair in resourceDict)
+            {
+                int amountInt = Mathf.FloorToInt(pair.Value);
+                if (amountInt > 0)
+                {
+                    totalRewardList.Add((pair.Key, amountInt));
+                    var item = GameManager.Instance.DataManager.ItemLoader.GetItemByKey(pair.Key);
+                    if (item != null)
+                        GameManager.Instance.Inventory.AddItem(item, amountInt);
+                }
+            }
+
+            group.lastCollectTime = DateTime.Now;
+            foreach (var slot in group.slots)
+            {
+                if (slot.IsAssigned)
+                    slot.AssignedTime = group.lastCollectTime;
+            }
+        }
+
+        if (totalRewardList.Count == 0)
+        {
+            ShowLackPopup(LackType.Resource);
+            return;
+        }
+
+        if (rewardPopupPrefab && lackpopupRoot)
+        {
+            var popupObj = Instantiate(rewardPopupPrefab, lackpopupRoot);
+            var popup = popupObj.GetComponent<RewardPopup>();
+            popup.ShowWithoutManager(
+                totalRewardList,
+                GameManager.Instance.DataManager.ItemLoader,
+                "채광 보상"
+            );
+        }
+        UpdateExpectedMiningAmount();
+    }
+
+    private void ShowLackPopup(string msg)
+    {
+        if (lackPopupPrefab && lackpopupRoot)
+        {
+            var lackPopup = Instantiate(lackPopupPrefab, lackpopupRoot);
+            lackPopup.Init(GameManager.Instance, null);
+            lackPopup.ShowCustom(msg);
+        }
+    }
+
+    private void ShowLackPopup(LackType type)
+    {
+        if (lackPopupPrefab && lackpopupRoot)
+        {
+            var lackPopup = Instantiate(lackPopupPrefab, lackpopupRoot);
+            lackPopup.Init(GameManager.Instance, null);
+            lackPopup.Show(type);
+        }
+    }
+
+    // 기존 단일 마인 채굴 계산(외부에도 필요)
+    public Dictionary<string, float> CalculateMiningAmount(MineGroup group, bool useRandom, out float totalHours)
+    {
+        totalHours = 0f;
+        var resourceDict = new Dictionary<string, float>();
+        if (group == null || group.mineManager == null || group.mineManager.Mine == null)
+            return resourceDict;
 
         MineData mineData = group.mineManager.Mine;
         var resourceTypes = mineData.RewardMineralKeys ?? new List<string>();
-        int minAmount = mineData.CollectMin;
-        int maxAmount = mineData.CollectMax;
-        float basePerHour = mineData.CollectRatePerHour;
-
-        Dictionary<string, float> resourceDict = new Dictionary<string, float>();
         foreach (string resKey in resourceTypes)
             resourceDict[resKey] = 0f;
 
-        foreach (var slot in group.mineManager.Slots)
+        DateTime now = DateTime.Now;
+        totalHours = (float)(now - group.lastCollectTime).TotalHours;
+        if (totalHours <= 0) return resourceDict;
+
+        foreach (var slot in group.slots)
         {
             if (!slot.IsAssigned || slot.AssignedAssistant == null)
                 continue;
 
             AssistantInstance assistant = slot.AssignedAssistant;
+
             float gradeMultiplier = GetGradeMultiplier(assistant.grade);
             float specMultiplier = GetMineSpecMultiplier(assistant);
+            float personalityMultiplier = GetPersonalityMiningMultiplier(assistant);
+            float totalMultiplier = gradeMultiplier * specMultiplier * personalityMultiplier;
 
-            DateTime assignedTime = slot.AssignedTime;
-            float elapsedHour = Mathf.Min(hours, (float)(now - assignedTime).TotalHours);
-
-            if (elapsedHour <= 0f)
-                continue;
+            float elapsedHour = Mathf.Min(totalHours, (float)(now - slot.AssignedTime).TotalHours);
+            if (elapsedHour <= 0) continue;
 
             foreach (string resKey in resourceTypes)
             {
-                int amount = useRandom ? UnityEngine.Random.Range(minAmount, maxAmount + 1) : (minAmount + maxAmount) / 2;
-                float resource = basePerHour * amount * gradeMultiplier * specMultiplier * elapsedHour;
-                resourceDict[resKey] += resource;
+                float randomAmountFactor = useRandom
+                    ? UnityEngine.Random.Range(mineData.CollectMin, mineData.CollectMax + 1)
+                    : (mineData.CollectMin + mineData.CollectMax) / 2.0f;
+
+                float collectedAmount = mineData.CollectRatePerHour
+                                        * randomAmountFactor
+                                        * elapsedHour
+                                        * totalMultiplier;
+
+                resourceDict[resKey] += collectedAmount;
             }
         }
         return resourceDict;
@@ -203,7 +213,6 @@ public class MineResourceCollectManager : MonoBehaviour
             case "SSR": return 1.3f;
             case "SR": return 1.2f;
             case "R": return 1.1f;
-            case "N": return 1.0f;
             default: return 1.0f;
         }
     }
@@ -213,11 +222,15 @@ public class MineResourceCollectManager : MonoBehaviour
         if (assistant == null || assistant.Multipliers == null) return 1.0f;
         foreach (var m in assistant.Multipliers)
         {
-            if (!string.IsNullOrEmpty(m.AbilityName) &&
-                (m.AbilityName.ToLower().Contains("mine") || m.AbilityName.Contains("채광")))
+            if (!string.IsNullOrEmpty(m.AbilityName) && m.AbilityName.ToLower().Contains("mine"))
                 return m.Multiplier;
         }
         return 1.0f;
     }
-}
 
+    private float GetPersonalityMiningMultiplier(AssistantInstance assistant)
+    {
+        if (assistant?.Personality == null) return 1.0f;
+        return assistant.Personality.miningMultiplier;
+    }
+}
