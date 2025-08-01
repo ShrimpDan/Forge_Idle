@@ -27,7 +27,8 @@ public class GameManager : MonoSingleton<GameManager>
 
     public DailyQuestManager DailyQuestManager { get; private set; }
 
-    
+    public WageCountdownUI WageCountdownUI { get; private set; }
+
 
     protected override void Awake()
     {
@@ -38,6 +39,7 @@ public class GameManager : MonoSingleton<GameManager>
         DungeonSystem = new DungeonSystem(this);
         WageProcessor = new WageProcessor(this);
         SkillManager = new SkillManager(DataManager.SkillDataLoader);
+        WageCountdownUI = FindObjectOfType<WageCountdownUI>();
 
         ForgeManager = GetComponentInChildren<ForgeManager>();
         AssistantManager = FindObjectOfType<AssistantManager>();
@@ -100,9 +102,6 @@ public class GameManager : MonoSingleton<GameManager>
         SaveManager.RegisterSaveHandler(new ForgeSaveHandeler(ForgeManager));
 
         SaveManager.LoadAll();
-
-        InvokeRepeating(nameof(ProcessWageWrapper), 5f, 5f);
-
 
 
         SoundManager.Instance.Play("MainBGM");
