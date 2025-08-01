@@ -45,6 +45,30 @@ public class WageProcessor
                     Debug.Log($"[시급] {assi.Name} 착용 해제됨 (탈주 처리)");
                 }
 
+                var mineSceneManager = GameObject.FindObjectOfType<MineSceneManager>();
+                if (mineSceneManager != null)
+                {
+                    var mineGroups = mineSceneManager.mineGroups;
+                    for (int mineIdx = 0; mineIdx < mineGroups.Count; ++mineIdx)
+                    {
+                        var group = mineGroups[mineIdx];
+                        for (int slotIdx = 0; slotIdx < group.slots.Count; ++slotIdx)
+                        {
+                            var slot = group.slots[slotIdx];
+                            if (slot.IsAssigned && slot.AssignedAssistant == assi)
+                            {
+                                slot.Unassign();
+                                var slotUI = group.slotUIs[slotIdx];
+                                slotUI.AssignAssistant(null);
+                                mineSceneManager.ClearSlotAssistant(mineIdx, slotUI);
+
+                                Debug.Log($"[시급] {assi.Name} 광산 배치 해제됨 (탈주 처리)");
+                                break;
+                            }
+                        }
+                    }
+                }
+
                 Debug.LogWarning($"[시급] {assi.Name} 시급 {assi.Wage}G 지급 실패 → 제자가 탈주 처리됨");
 
                 var assistantTab = GameObject.FindObjectOfType<AssistantTab>();

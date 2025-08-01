@@ -108,22 +108,13 @@ public class GameManager : MonoSingleton<GameManager>
     }
 
     /// <summary>
-    /// 해고되지 않은 모든 제자에게 시급을 지급.
-    /// 지급 실패 시 IsFired = true 처리.
-    /// 전체 지급 총합을 디버그 로그에 출력.
-    /// </summary>
-    private void ProcessWageWrapper()
-    {
-        WageProcessor.ProcessHourlyWage();
-    }
-
-    /// <summary>
     /// 강제로 시급 차감을 즉시 실행합니다.
     /// </summary>
     [ContextMenu("강제 시급 차감 실행")]
     public void DebugWageTick()
     {
         WageProcessor.ProcessHourlyWage();
+        WageCountdownUI?.ResetTimer();
     }
 
 
