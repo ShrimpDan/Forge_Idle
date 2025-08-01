@@ -55,6 +55,12 @@ public class RecruitPreviewManager : MonoBehaviour
     {
         recruitFilter = type;
 
+        int requiredDia = (type == null) ? 500 : 750;
+        if (!GameManager.Instance.ForgeManager.UseDia(requiredDia))
+        {
+            return;
+        }
+
         if (GameManager.Instance.HeldCandidates.Count > 0)
         {
             confirmPopup.Show(
