@@ -34,8 +34,6 @@ public class CraftWeaponWindow : BaseUI
     private float lastTabDragEndTime = -100f;
     private float tabClickCooldown = 0.25f;
 
-    private GameManager gameManager;
-    private UIManager uIManager;
     private ItemDataLoader itemLoader;
     private CraftingDataLoader craftingLoader;
 

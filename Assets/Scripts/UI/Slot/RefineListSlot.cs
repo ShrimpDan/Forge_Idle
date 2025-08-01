@@ -16,12 +16,17 @@ public class RefineListSlot : MonoBehaviour
     {
         itemData = data;
         onClick = onClickCallback;
-        if (icon != null) icon.sprite = IconLoader.GetIconByPath(data.IconPath);
-        if (itemName != null) itemName.text = data.Name;
+
+        if (icon != null)
+            icon.sprite = IconLoader.GetIcon(data.ItemType, data.ItemKey); // Ÿ��, Ű ���
+        if (itemName != null)
+            itemName.text = data.Name;
+
         if (selectButton != null)
         {
             selectButton.onClick.RemoveAllListeners();
             selectButton.onClick.AddListener(() => onClick?.Invoke());
         }
     }
+
 }

@@ -16,6 +16,8 @@ public class MineAssistantSlot
 
     public void Unassign()
     {
+        if (IsAssigned && AssignedAssistant != null)
+            AssignedAssistant.IsInUse = false;
         AssignedAssistant = null;
     }
 }

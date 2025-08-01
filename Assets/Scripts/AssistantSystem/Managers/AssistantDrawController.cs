@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class AssistantDrawController : MonoBehaviour
@@ -81,13 +82,17 @@ public class AssistantDrawController : MonoBehaviour
         isSpreadingCards = true;
         isFlippingCards = false;
 
+        var ownedKeys = GameManager.Instance.AssistantInventory.GetAll()
+            .Select(a => a.Key)
+            .Concat(GameManager.Instance.HeldCandidates.Select(a => a.Key))
+            .ToHashSet();
+
         for (int i = 0; i < count; i++)
         {
-            var data = fixedType == null
-                ? factory.CreateRandomTrainee(true)
-                : factory.CreateFixedTrainee(fixedType.Value, true);
-
+            var data = factory.CreateSmartRandomTrainee(ownedKeys, fixedType);
             if (data == null) continue;
+
+            ownedKeys.Add(data.Key);
 
             var card = spawner.SpawnMiniCard(data, i);
             spawnedCards.Add(card);

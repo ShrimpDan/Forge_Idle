@@ -2,14 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using DG.Tweening.Core.Easing;
 using TMPro;
-using Unity.VisualScripting;
-using UnityEditor.Experimental.RestService;
 using UnityEngine;
-using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
-using static UnityEngine.Rendering.DebugUI.Table;
 
 public class DailyQuestManager : MonoBehaviour
 {

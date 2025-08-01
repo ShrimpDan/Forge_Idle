@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class AssistantManager : MonoBehaviour
@@ -40,7 +41,7 @@ public class AssistantManager : MonoBehaviour
     public void Init(GameManager gameManager)
     {
         this.gameManager = gameManager;
-        
+
         inventory = new AssistantInventory(gameManager.ForgeManager);
         factory = new AssistantFactory(gameManager.DataManager);
         spawner = new AssistantCardSpawner(
@@ -77,19 +78,16 @@ public class AssistantManager : MonoBehaviour
         Debug.Log("<color=red>[AssistantManager] 제자 전체 초기화 및 저장 삭제 완료</color>");
     }
 
-    // 단일 뽑기 처리 (외부에서 호출)
     public void RecruitSingle(SpecializationType? type = null)
     {
         AssistantController.ResetSoundOnce();
 
-        HandleSingleRecruit(() =>
-            type == null
-                ? factory.CreateRandomTrainee()
-                : factory.CreateFixedTrainee(type.Value)
-        );
+        HandleSingleRecruit(() => {
+            var ownedKeys = inventory.GetAll().Select(a => a.Key).ToHashSet();
+            return factory.CreateSmartRandomTrainee(ownedKeys, type);
+        });
     }
 
-    // 다중 뽑기 처리
     public void RecruitMultiple(int count, SpecializationType? type = null)
     {
         if (!canRecruit) return;
@@ -97,7 +95,6 @@ public class AssistantManager : MonoBehaviour
         drawController.StartMultipleRecruit(count, type);
     }
 
-    // 내부 처리 함수
     private void HandleSingleRecruit(System.Func<AssistantInstance> recruitFunc)
     {
         if (!canRecruit) return;
@@ -120,14 +117,12 @@ public class AssistantManager : MonoBehaviour
         ConfirmTrainee(data);
     }
 
-    // 외부에서 제자 등록
     public void ConfirmTrainee(AssistantInstance data)
     {
         currentBatch.Add(data);
         inventory.Add(data);
     }
 
-    // 외부에서 제자 제거
     public void RemoveTrainee(GameObject obj, AssistantInstance data)
     {
         inventory.Remove(data);
@@ -138,7 +133,6 @@ public class AssistantManager : MonoBehaviour
             backgroundPanel.SetActive(false);
     }
 
-    // 디버그 / 데이터 접근
     public void DebugPrintAllAssistant() => inventory.DebugPrint();
     public List<AssistantInstance> GetAllAssistant() => inventory.GetAll();
     public List<AssistantInstance> GetAssistantByType(SpecializationType type) => inventory.GetBySpecialization(type);

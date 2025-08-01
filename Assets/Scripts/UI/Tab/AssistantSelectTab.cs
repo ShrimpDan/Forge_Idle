@@ -23,6 +23,8 @@ public class AssistantSelectTab : MonoBehaviour
     private List<GameObject> miningPool = new();
     private List<GameObject> sellPool = new();
 
+    private bool mineSceneAssign = false; // 마인씬에서 어시스턴트 할당할 때만 true
+
     public void Init(AssistantInventory inventory)
     {
         assistantInventory = inventory;
@@ -35,9 +37,13 @@ public class AssistantSelectTab : MonoBehaviour
         SwitchTab(TabType.Craft); // 기본탭
     }
 
-    public void OpenForSelection(Action<AssistantInstance> callback, bool preventPopup = false)
+    /// <summary>
+    /// isMineOrQuestAssign: 마인씬 팝업인지 여부 (true: 마인씬 등에서 사용중/장착/임무 중인 어시스턴트는 노출 안함)
+    /// </summary>
+    public void OpenForSelection(Action<AssistantInstance> callback, bool isMineOrQuestAssign = false)
     {
         selectCallback = callback;
+        mineSceneAssign = isMineOrQuestAssign;
         RefreshAllTabs();
         SwitchTab(curTab);
     }
@@ -61,7 +67,14 @@ public class AssistantSelectTab : MonoBehaviour
     {
         foreach (var go in pool) go.SetActive(false);
 
-        var assistants = assistantInventory?.GetBySpecialization(type) ?? new List<AssistantInstance>();
+        List<AssistantInstance> assistants;
+
+        // 마인씬에서 할당할 때는 GetAvailableForMine()로 필터 후 해당 타입만
+        if (mineSceneAssign)
+            assistants = assistantInventory?.GetAvailableForMine().FindAll(a => a.Specialization == type) ?? new List<AssistantInstance>();
+        else
+            assistants = assistantInventory?.GetBySpecialization(type) ?? new List<AssistantInstance>();
+
         int idx = 0;
         foreach (var assistant in assistants)
         {
@@ -92,6 +105,4 @@ public class AssistantSelectTab : MonoBehaviour
         for (int i = idx; i < pool.Count; i++)
             pool[i].SetActive(false);
     }
-
-
 }

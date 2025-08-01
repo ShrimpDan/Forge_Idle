@@ -38,7 +38,7 @@ public class RecipeSlot : MonoBehaviour
         var itemData = itemLoader?.GetItemByKey(data.ItemKey);
         // 아이콘 불러오기: data.ItemKey를 key로 활용
         Sprite iconSprite = (itemData != null)
-            ? IconLoader.GetIcon(itemData.ItemType, data.ItemKey)
+            ? IconLoader.GetIconByKey(data.ItemKey)
             : null;
 
         if (itemData != null && iconSprite == null)
@@ -56,7 +56,23 @@ public class RecipeSlot : MonoBehaviour
         foreach (Transform child in requiredListRoot)
             Destroy(child.gameObject);
 
-        foreach (var req in data.RequiredResources)
+        SetRequireResourceSlot();
+
+        selectButton.interactable = true;
+        selectButton.onClick.RemoveAllListeners();
+        selectButton.onClick.AddListener(OnSelectButtonClicked);
+    }
+
+    private void SetRequireResourceSlot()
+    {
+        if (craftingData == null) return;
+
+        foreach (Transform child in requiredListRoot)
+        {
+            Destroy(child.gameObject);
+        }
+        
+        foreach (var req in craftingData.RequiredResources)
         {
             if (resourceSlotPrefab == null) continue;
             var go = Instantiate(resourceSlotPrefab, requiredListRoot);
@@ -64,22 +80,18 @@ public class RecipeSlot : MonoBehaviour
             if (slot == null) continue;
             var resItem = itemLoader?.GetItemByKey(req.ResourceKey);
             Sprite reqIconSprite = (resItem != null)
-                ? IconLoader.GetIcon(resItem.ItemType, req.ResourceKey)
+                ? IconLoader.GetIcon(resItem.ItemType, resItem.ItemKey)
                 : null;
 
             int owned = inventory?.ResourceList?.Find(x => x.ItemKey == req.ResourceKey)?.Quantity ?? 0;
             slot.Set(reqIconSprite, owned, req.Amount);
         }
-
-        selectButton.interactable = true;
-        selectButton.onClick.RemoveAllListeners();
-        selectButton.onClick.AddListener(OnSelectButtonClicked);
     }
-
 
     private void OnSelectButtonClicked()
     {
         onSelectCallback?.Invoke();
+        SetRequireResourceSlot();
     }
 
     private void Reset()
