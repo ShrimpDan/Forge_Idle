@@ -29,6 +29,7 @@ public class DungeonSlot : MonoBehaviour
 
     private void StartDungeon()
     {
+        gameManager.UIManager.CloseUI(UIName.DungeonWindow);
         gameManager.DungeonSystem.EnterDungeon(dungeonData);
     }
 }
