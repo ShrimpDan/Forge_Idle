@@ -14,6 +14,9 @@ public class AssistantTab : BaseTab
     [SerializeField] private Color selectedColor = Color.white;
     [SerializeField] private Color defaultColor;
 
+    [Header("Dismiss UI")]
+    [SerializeField] private Button dismissButton;
+
     [Header("Wage UI")]
     [SerializeField] private GameObject wagePopup;
     [SerializeField] private Button wageButton;
@@ -40,12 +43,11 @@ public class AssistantTab : BaseTab
     private Queue<GameObject> pooledSlots = new Queue<GameObject>();
     private List<GameObject> activeSlots = new List<GameObject>();
 
+    private bool isDismissMode = false;
+
     public override void Init(GameManager gameManager, UIManager uIManager)
     {
         base.Init(gameManager, uIManager);
-
-
-
 
         for (int i = 0; i < tabButtons.Length; i++)
         {
@@ -59,6 +61,7 @@ public class AssistantTab : BaseTab
 
         wageButton.onClick.AddListener(OnClickWageButton);
         wageCloseButton.onClick.AddListener(OnClickCloseWagePopup);
+        dismissButton.onClick.AddListener(OnClickDismissButton);
 
         SwitchTab(0);
 
@@ -263,4 +266,25 @@ public class AssistantTab : BaseTab
 
         wagePopup.SetActive(false);
     }
+
+    private void OnClickDismissButton()
+    {
+        SoundManager.Instance?.Play("ClickSound");
+
+        if (DismissManager.Instance == null) return;
+
+        isDismissMode = !isDismissMode;
+
+        if (isDismissMode)
+        {
+            DismissManager.Instance.EnterDismissMode();
+            dismissButton.image.color = selectedColor;
+        }
+        else
+        {
+            DismissManager.Instance.OnClickDismissConfirm();
+            dismissButton.image.color = defaultColor;
+        }
+    }
+
 }
