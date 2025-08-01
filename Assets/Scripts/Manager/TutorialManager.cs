@@ -382,6 +382,9 @@ public class TutorialManager : MonoBehaviour
                 ClickBlockerOn();
                 break;
             case 47:
+                ShowTextWithTyping("이제 다시 대장간으로 돌아가 볼까요??");
+                break;
+            case 48:
                 ShowTextWithTyping("자! 기본적인 운영 방법은 전부 설명드렸어요!! 대장간을 잘 운영하셔서 부자되세요!!");
                 EndTutorial();
                 break;
@@ -621,7 +624,7 @@ public class TutorialManager : MonoBehaviour
         {
             OnStepClear();
         }
-        else if (tabName == "Forge_Tab" && (tutorialStep == 35 || tutorialStep == 46))
+        else if (tabName == "Forge_Tab" && (tutorialStep == 35 || tutorialStep == 47))
         {
             OnStepClear();
         }
