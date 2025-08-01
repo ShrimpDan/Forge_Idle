@@ -23,7 +23,7 @@ public class WagePopup : MonoBehaviour
                 totalWage += trainee.Wage;
         }
 
-        wageText.text = $"{UIManager.FormatNumber(totalWage)} G";
+        wageText.text = $"{UIManager.FormatNumber(totalWage)}";
     }
 
     public void Close()
