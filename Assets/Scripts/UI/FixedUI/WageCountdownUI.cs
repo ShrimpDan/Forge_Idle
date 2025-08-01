@@ -5,7 +5,7 @@ using UnityEngine;
 public class WageCountdownUI : MonoBehaviour
 {
     [SerializeField] private TMP_Text countdownText;
-    [SerializeField] private float intervalSeconds = 10f;
+    [SerializeField] private float intervalSeconds = 60f;
 
     private float timer;
     private Coroutine countdownRoutine;
@@ -47,5 +47,10 @@ public class WageCountdownUI : MonoBehaviour
     {
         if (countdownText != null)
             countdownText.text = $"시급 : {seconds}s";
+    }
+
+    public void ResetTimer()
+    {
+        StartCountdown();
     }
 }
