@@ -118,7 +118,7 @@ public class DailyQuestManager : MonoBehaviour
         {
             return;
         }
-        if (loader.isCompleted || !loader.isAccepted)
+        if (loader.isCompleted)
         {
             return;
         }

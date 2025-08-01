@@ -15,7 +15,7 @@ public class DailyQuestLoader
     {
         this.data = data;
         this.currentAmount = 0;
-        this.isAccepted = false;
+        this.isAccepted = true;
         this.isRewardClaimed = false;
     }
 }
