@@ -3,7 +3,6 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections;
 using System.Collections.Generic;
-using System;
 
 public class UpgradeWeaponWindow : BaseUI
 {
@@ -50,17 +49,15 @@ public class UpgradeWeaponWindow : BaseUI
     private ItemInstance[] equippedGems = new ItemInstance[4];
 
     private DataManager dataManager;
-    private UIManager uiManager;
 
-    public override void Init(GameManager gameManager, UIManager uiManager)
+    public override void Init(GameManager gameManager, UIManager uIManager)
     {
-        base.Init(gameManager, uiManager);
-        this.uiManager = uiManager;
+        base.Init(gameManager, uIManager);
         dataManager = gameManager.DataManager;
 
         // 종료
         exitButton.onClick.RemoveAllListeners();
-        exitButton.onClick.AddListener(() => uiManager.CloseUI(UIName.UpgradeWeaponWindow));
+        exitButton.onClick.AddListener(() => uIManager.CloseUI(UIName.UpgradeWeaponWindow));
 
         // 탭
         upgradeTabBtn.onClick.RemoveAllListeners();
@@ -119,7 +116,7 @@ public class UpgradeWeaponWindow : BaseUI
     //강화 시스템
     private void OpenWeaponInventory()
     {
-        var popup = uiManager.OpenUI<Forge_Inventory_Popup>(UIName.Forge_Inventory_Popup);
+        var popup = uIManager.OpenUI<Forge_Inventory_Popup>(UIName.Forge_Inventory_Popup);
         popup.SetWeaponSelectCallback(OnWeaponSelected);
     }
 
@@ -242,7 +239,7 @@ public class UpgradeWeaponWindow : BaseUI
     //젬 시스템
     private void OpenGemWeaponPopup()
     {
-        var popup = uiManager.OpenUI<Gem_Weapon_Popup>(UIName.Gem_Weapon_Popup);
+        var popup = uIManager.OpenUI<Gem_Weapon_Popup>(UIName.Gem_Weapon_Popup);
         popup.SetWeaponSelectCallback(OnGemWeaponSelected);
     }
 
@@ -331,7 +328,7 @@ public class UpgradeWeaponWindow : BaseUI
 
         if (equippedGems[idx] == null)
         {
-            var popup = uiManager.OpenUI<Forge_Inventory_Popup>(UIName.Forge_Inventory_Popup);
+            var popup = uIManager.OpenUI<Forge_Inventory_Popup>(UIName.Forge_Inventory_Popup);
             popup.SetGemSelectCallback((gem) => OnGemSelected(idx, gem));
         }
         else
