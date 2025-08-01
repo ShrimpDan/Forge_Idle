@@ -14,7 +14,7 @@ public class AssistantSlot : MonoBehaviour
     private Action<AssistantInstance> clickCallback;
     private bool preventPopup = false;
 
-    // ▼ 등급 아이콘용 필드 추가 (Inspector에서 할당)
+    
     [Header("Rank Icon")]
     [SerializeField] private Image rankIconImage;
     [SerializeField] private Sprite rankN;

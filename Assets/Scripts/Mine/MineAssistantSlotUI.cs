@@ -10,7 +10,6 @@ public class MineAssistantSlotUI : MonoBehaviour
     public Image iconImage;
     public Button slotButton;
 
-    // ▼ 등급 아이콘용 필드 추가 (Inspector에서 할당)
     [Header("Rank Icon")]
     [SerializeField] private Image rankIconImage;
     [SerializeField] private Sprite rankN;
@@ -93,7 +92,6 @@ public class MineAssistantSlotUI : MonoBehaviour
             slotButton.onClick.RemoveAllListeners();
             slotButton.onClick.AddListener(() => onClick?.Invoke(assistant));
         }
-        // 임시 슬롯에도 등급 표시
         SetRankIcon(assistant?.grade);
     }
 
