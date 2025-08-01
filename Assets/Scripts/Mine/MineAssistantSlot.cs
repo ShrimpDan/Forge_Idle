@@ -3,21 +3,26 @@ using System;
 [Serializable]
 public class MineAssistantSlot
 {
-    public AssistantInstance AssignedAssistant;
-    public DateTime AssignedTime;
-
+    public AssistantInstance AssignedAssistant { get; private set; }
+    public DateTime AssignedTime { get; set; }
     public bool IsAssigned => AssignedAssistant != null;
 
-    public void Assign(AssistantInstance assistant)
+    // 기존 시그니처
+    public void Assign(AssistantInstance assistant, DateTime assignedTime)
     {
         AssignedAssistant = assistant;
-        AssignedTime = DateTime.Now;
+        AssignedTime = assignedTime;
+    }
+
+    // 추가: 단일 파라미터 오버로드
+    public void Assign(AssistantInstance assistant)
+    {
+        Assign(assistant, DateTime.Now);
     }
 
     public void Unassign()
     {
-        if (IsAssigned && AssignedAssistant != null)
-            AssignedAssistant.IsInUse = false;
         AssignedAssistant = null;
+        AssignedTime = DateTime.MinValue;
     }
 }
