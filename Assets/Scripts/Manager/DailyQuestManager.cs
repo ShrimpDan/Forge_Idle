@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using TMPro;
 using UnityEngine;
@@ -8,6 +9,13 @@ using UnityEngine.UI;
 
 public class DailyQuestManager : MonoBehaviour
 {
+    #region 제이슨 저장정보
+
+    private const string SaveFileName = "dailyQuest.json";
+    private string SavePath => Path.Combine(Application.persistentDataPath, SaveFileName);
+
+    #endregion
+
 
     #region  모든퀘스트 관련정보
     private int maxQuestClearCount = 5;
@@ -41,34 +49,22 @@ public class DailyQuestManager : MonoBehaviour
     public void Init(GameManager gm)
     {
         gameManager = gm;
-       
-       
-        activeQuests = new List<DailyQuestData>();
-        RandomPickQuest();
+        slotController?.Init(this);
 
-        Debug.Log($"랜덤 퀘스트 개수: {activeQuestDic.Count}"); // 데이터가 잘 들어갔는지 확인
-
-        CheckDailyReset();
-
-        if (PlayerPrefs.HasKey(lastDateKey))
+        if (LoadQuests())
         {
-            lastResetTime = DateTime.Parse(PlayerPrefs.GetString(lastDateKey));
+            // 하루 지났으면 퀘스트 리셋
+            if (IsResetNeeded())
+            {
+                ResetQuests(); // 수정
+            }
         }
         else
         {
-            lastResetTime = TimeManager.Instance.Now(); ;
-            PlayerPrefs.SetString(lastDateKey, lastResetTime.ToString());
+            // 저장된 데이터 없으면 새 퀘스트 생성
+            ResetQuests(); // 수정
         }
 
-        if (slotController != null)
-        {
-            Debug.Log("SlotController Init 호출됨");
-            slotController.Init(this);
-        }
-        else
-        {
-            Debug.Log("SlotController 호출 안됨");
-        }
     }
 
     private void Start()
@@ -79,9 +75,40 @@ public class DailyQuestManager : MonoBehaviour
 
     private void Update()
     {
-        CheckDailyReset();
+        if (IsResetNeeded()) // 하루가 지났으면 리셋
+        {
+            ResetQuests();
+        }
     }
 
+    public void SaveQuests()
+    {
+        DailyQuestSaveWrapper wrapper = new DailyQuestSaveWrapper();
+        wrapper.lastResetTime = lastResetTime.ToString(); //시간 저장
+
+
+        foreach (var loader in activeQuestDic.Values)
+        {
+            wrapper.quests.Add(new DailyQuestSaveData
+            {
+                questId = loader.data.questId,
+                currentAmount = loader.currentAmount,
+                isAccepted = loader.isAccepted,
+                isRewardClaimed = loader.isRewardClaimed
+
+            });
+
+        }
+
+        string json = JsonUtility.ToJson(wrapper, true);
+        File.WriteAllText(SavePath, json);
+    }
+
+    private bool IsResetNeeded()
+    {
+        DateTime now = TimeManager.Instance.Now();
+        return now.Date > lastResetTime.Date;
+    }
 
 
     public void ProgressQuest(string questId, int amount) // 외부에서 퀘스트 호출해야 증가 
@@ -98,6 +125,39 @@ public class DailyQuestManager : MonoBehaviour
 
         loader.currentAmount = Mathf.Min(loader.currentAmount + amount, loader.data.goalAmount);
         RefreshUI();
+    }
+
+    private bool LoadQuests()
+    {
+        if (!File.Exists(SavePath))
+            return false;
+
+        string json = File.ReadAllText(SavePath);
+        DailyQuestSaveWrapper wrapper = JsonUtility.FromJson<DailyQuestSaveWrapper>(json);
+        if (wrapper == null)
+        { 
+            return false;
+        }
+
+        activeQuestDic.Clear();
+        foreach (var saved in wrapper.quests)
+        {
+            var data = allQuests.FirstOrDefault(q => q.questId == saved.questId);
+            if (data == null) continue;
+
+            DailyQuestLoader loader = new DailyQuestLoader(data)
+            {
+                
+                
+                currentAmount = saved.currentAmount,
+                isAccepted = saved.isAccepted,
+                isRewardClaimed = saved.isRewardClaimed
+            };
+            activeQuestDic.Add(saved.questId, loader);
+        }
+
+        lastResetTime = DateTime.Parse(wrapper.lastResetTime);
+        return true;
     }
 
     public void ClaimReward(string questId)
@@ -117,6 +177,8 @@ public class DailyQuestManager : MonoBehaviour
         curQuestCount++;
         gameManager.ForgeManager.AddDia(loader.data.rewardCount);
         RefreshUI();
+
+        SaveQuests();
     }
 
 
@@ -138,6 +200,7 @@ public class DailyQuestManager : MonoBehaviour
         while(activeQuestDic.Count <maxQuestClearCount)
         { 
             int randomIndex = UnityEngine.Random.Range(0, allQuests.Count);
+
             var data = allQuests[randomIndex];
 
             if (activeQuestDic.ContainsKey(data.questId))
@@ -183,35 +246,7 @@ public class DailyQuestManager : MonoBehaviour
         slotController?.Refresh();
         UpdateTotalQuestProgressUI();
     }
-
- 
-    private void CheckDailyReset()
-    {
-        if (isResetting) return; // 초기화 중 중복 실행 방지
-
-
-        //DateTime now = DateTime.Now; 로컬시간 사용 뺌
-        DateTime now = TimeManager.Instance.Now();
       
-
-      
-        //NTP서버 
-
-
-        if (resetTime > lastResetTime && now >= resetTime)
-        {
-            Debug.Log("[DailyQuestManager] 날짜 변경됨 - 퀘스트 갱신");
-            ResetQuests();
-            RefreshUI();
-
-            
-            lastResetTime = now;
-            PlayerPrefs.SetString("DailyQuest_LastReset", lastResetTime.ToString());
-            PlayerPrefs.Save();
-
-
-        }
-    }
 
     private void ResetQuests()
     {
@@ -219,7 +254,9 @@ public class DailyQuestManager : MonoBehaviour
         curQuestCount = 0;
         isAllClear = false;
 
-        RandomPickQuest();   // 새로운 퀘스트 뽑기
+        RandomPickQuest();
+        lastResetTime = TimeManager.Instance.Now();
+        SaveQuests();
         RefreshUI();
     }
 
