@@ -43,7 +43,8 @@ public class Monster : MonoBehaviour
         if (currentHp <= 0)
         {
             monsterHandler.ClearCurrentMonster();
-            StartCoroutine(DeathCoroutine());
+            animator.SetTrigger(deathHash);
+            SoundManager.Instance.Play("SFX_BattleMonsterDie");
         }
     }
 
@@ -52,14 +53,8 @@ public class Monster : MonoBehaviour
         hpFill.fillAmount = currentHp / maxHp;
     }
 
-    IEnumerator DeathCoroutine()
+    public void EndDeathAnim()
     {
-        animator.SetTrigger(deathHash);
-
-        SoundManager.Instance.Play("SFX_BattleMonsterDie");
-
-        yield return WaitForSecondsCache.Wait(0.5f);
-
         OnDeath?.Invoke();
         Destroy(gameObject);
     }

@@ -91,7 +91,7 @@ public class TutorialManager : MonoBehaviour
         PlayerPrefs.SetInt("TutorialDone", 0);
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
         ClickBlocker.OnBlockClick -= HandleClickBlock;
         ForgeTab.onClickButton -= HandleButtonClick;

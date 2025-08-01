@@ -77,7 +77,7 @@ public class MonsterHandler : MonoBehaviour
 
         Monster monster = monstersQueue.Dequeue();
         monster.gameObject.SetActive(true);
-        monster.transform.DOMoveX(monsterPos.position.x, 0.5f).SetEase(Ease.OutBack).OnComplete(() => currentMonster = monster);
+        monster.transform.DOMoveX(monsterPos.position.x, 0.3f).SetEase(Ease.OutBack).OnComplete(() => currentMonster = monster);
     }
 
     private void HandleMonsterDeath()
