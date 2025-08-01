@@ -134,6 +134,7 @@ public class ForgeManager : MonoBehaviour
             CurrentFame -= MaxFame;
             MaxFame = (int)(MaxFame * 1.25f);
 
+            AddPoint(5);
             Events.RaiseLevelChanged(Level);
         }
 
