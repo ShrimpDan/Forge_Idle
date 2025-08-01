@@ -107,6 +107,8 @@ public class MineSceneManager : MonoBehaviour
             miningUIPanel.SetActive(true);
 
         ShowMineDetailMap();
+        RemoveFiredAssistantsFromMine();
+        RemoveEquippedAssistantsFromMineOnly();
     }
 
     private void SetAllInactive()
@@ -236,7 +238,7 @@ public class MineSceneManager : MonoBehaviour
         };
     }
 
-    void ClearSlotAssistant(int mineIdx, MineAssistantSlotUI slotUI)
+    public void ClearSlotAssistant(int mineIdx, MineAssistantSlotUI slotUI)
     {
         var objRef = slotUI.GetComponent<MineAssistantSlotUIObjectRef>();
         if (objRef != null && objRef.spawnedObject != null)
@@ -384,4 +386,48 @@ public class MineSceneManager : MonoBehaviour
             foreach (var slot in group.slots)
                 slot.Unassign();
     }
+
+    private void RemoveFiredAssistantsFromMine()
+    {
+        foreach (var group in mineGroups)
+        {
+            for (int i = 0; i < group.slots.Count; i++)
+            {
+                var slot = group.slots[i];
+                var assi = slot.AssignedAssistant;
+
+                if (slot.IsAssigned && assi != null && assi.IsFired)
+                {
+                    slot.Unassign();
+                    group.slotUIs[i].AssignAssistant(null);
+                    ClearSlotAssistant(mineGroups.IndexOf(group), group.slotUIs[i]);
+
+                    Debug.Log($"[광산] 탈주한 제자 {assi.Name} 자동 해제됨");
+                }
+            }
+        }
+    }
+
+    private void RemoveEquippedAssistantsFromMineOnly()
+    {
+        for (int groupIdx = 0; groupIdx < mineGroups.Count; ++groupIdx)
+        {
+            var group = mineGroups[groupIdx];
+            for (int slotIdx = 0; slotIdx < group.slots.Count; ++slotIdx)
+            {
+                var slot = group.slots[slotIdx];
+                var assi = slot.AssignedAssistant;
+
+                if (slot.IsAssigned && assi != null && assi.IsEquipped)
+                {
+                    slot.Unassign();
+                    group.slotUIs[slotIdx].AssignAssistant(null);
+                    ClearSlotAssistant(groupIdx, group.slotUIs[slotIdx]);
+
+                    Debug.Log($"[광산] 착용 중인 제자 {assi.Name} → 광산에서 해제됨");
+                }
+            }
+        }
+    }
+
 }

@@ -88,6 +88,7 @@ public class DungeonManager : MonoBehaviour
         SoundManager.Instance.Play("SFX_BattleDungeonGiveUp01");
 
         RewardHandler.ApplyReward();
+        GameManager.ForgeManager.AddFame(DungeonData.RewardFame);
         GameManager.DungeonSystem.ExitDungeon();
         LoadSceneManager.Instance.UnLoadScene(SceneType.Dungeon);
     }

@@ -74,6 +74,7 @@ public class Forge : MonoBehaviour
     public void SetForgeMap(bool isAcitve)
     {
         forgeMap.SetActive(isAcitve);
+        blackSmith.SetEnable(isAcitve);
     }
 
     public void ExitForge()

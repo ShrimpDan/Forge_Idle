@@ -448,12 +448,12 @@ MonoBehaviour:
   projectilePrefab: {fileID: 739838596868819789, guid: 82100b3550cc681488ad5b722234941a, type: 3}
   weaponPivot: {fileID: 959536061}
   monsterPos: {fileID: 1713915716}
-  attackDelay: 0.5
+  attackDelay: 0.3
   maxJumpPower: 4.5
   minJumpPower: 2.5
   maxRotation: 540
   minRotation: 900
-  duration: 1
+  duration: 0.5
   animator: {fileID: 4547605759530351991}
 --- !u!1 &2016897406
 GameObject:
@@ -497,7 +497,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2066372914}
   - component: {fileID: 2066372913}
-  - component: {fileID: 2066372912}
   - component: {fileID: 2066372911}
   m_Layer: 0
   m_Name: MainCamera
@@ -550,14 +549,6 @@ MonoBehaviour:
     mipBias: 0
     varianceClampScale: 0.9
     contrastAdaptiveSharpening: 0
---- !u!81 &2066372912
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2066372910}
-  m_Enabled: 1
 --- !u!20 &2066372913
 Camera:
   m_ObjectHideFlags: 0

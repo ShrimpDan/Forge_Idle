@@ -27,7 +27,8 @@ public class GameManager : MonoSingleton<GameManager>
 
     public DailyQuestManager DailyQuestManager { get; private set; }
 
-    
+    public WageCountdownUI WageCountdownUI { get; private set; }
+
 
     protected override void Awake()
     {
@@ -38,6 +39,7 @@ public class GameManager : MonoSingleton<GameManager>
         DungeonSystem = new DungeonSystem(this);
         WageProcessor = new WageProcessor(this);
         SkillManager = new SkillManager(DataManager.SkillDataLoader);
+        WageCountdownUI = FindObjectOfType<WageCountdownUI>();
 
         ForgeManager = GetComponentInChildren<ForgeManager>();
         AssistantManager = FindObjectOfType<AssistantManager>();
@@ -101,21 +103,8 @@ public class GameManager : MonoSingleton<GameManager>
 
         SaveManager.LoadAll();
 
-        InvokeRepeating(nameof(ProcessWageWrapper), 5f, 5f);
-
-
 
         SoundManager.Instance.Play("MainBGM");
-    }
-
-    /// <summary>
-    /// 해고되지 않은 모든 제자에게 시급을 지급.
-    /// 지급 실패 시 IsFired = true 처리.
-    /// 전체 지급 총합을 디버그 로그에 출력.
-    /// </summary>
-    private void ProcessWageWrapper()
-    {
-        WageProcessor.ProcessHourlyWage();
     }
 
     /// <summary>
@@ -125,6 +114,7 @@ public class GameManager : MonoSingleton<GameManager>
     public void DebugWageTick()
     {
         WageProcessor.ProcessHourlyWage();
+        WageCountdownUI?.ResetTimer();
     }
 
 
