@@ -38,7 +38,6 @@ public class MineSceneManager : MonoBehaviour
     public List<CameraLimit> cameraLimits;
     public GameObject miningUIPanel;
     public Button collectButton;
-    public TMP_Text minedAmountText;
     public Camera mineCamera;
     public Transform popupRoot;
 
@@ -47,6 +46,11 @@ public class MineSceneManager : MonoBehaviour
     private MineLoader mineLoader;
     private int currentMineIndex = 0;
     private MineSaveHandler mineSaveHandler;
+
+    [Header("UI Roots & Prefabs")]
+    public Transform amountRoot;
+    public GameObject itemAmountSlotPrefab;
+
 
     private void Awake()
     {
@@ -65,6 +69,8 @@ public class MineSceneManager : MonoBehaviour
 
     private void Start()
     {
+        
+
         if (GameManager.Instance?.AssistantManager?.AssistantInventory == null) return;
 
         assistantInventory = GameManager.Instance.AssistantManager.AssistantInventory;
@@ -97,7 +103,6 @@ public class MineSceneManager : MonoBehaviour
         mineSaveHandler.Load();
 
         MineResourceCollectManager.Instance.SetMineGroups(mineGroups);
-        MineResourceCollectManager.Instance.SetMinedAmountText(minedAmountText);
         MineResourceCollectManager.Instance.SetCurrentMineGroupIndex(currentMineIndex);
 
         if (collectButton != null)
