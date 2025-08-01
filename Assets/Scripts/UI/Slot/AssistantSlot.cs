@@ -11,9 +11,13 @@ public class AssistantSlot : MonoBehaviour
     [SerializeField] private Button slotBtn;
     [SerializeField] private GameObject equippedIndicator;
     [SerializeField] private GameObject firedIndicator;
+    [SerializeField] private Image checkmark;
+
     private Action<AssistantInstance> clickCallback;
 
     private bool preventPopup = false;
+
+    private bool isSelected = false;
 
     public void Init(AssistantInstance data, Action<AssistantInstance> onClick, bool preventPopup = false)
     {
@@ -45,6 +49,9 @@ public class AssistantSlot : MonoBehaviour
 
         if (uIManager == null)
             uIManager = GameManager.Instance.UIManager;
+
+        if (checkmark != null)
+            checkmark.gameObject.SetActive(false);
     }
 
 
@@ -80,4 +87,13 @@ public class AssistantSlot : MonoBehaviour
         if (canvasGroup != null)
             canvasGroup.alpha = isFired ? 0.5f : 1f;
     }
+
+    public void SetSelected(bool selected)
+    {
+        isSelected = selected;
+        if (checkmark != null)
+            checkmark.gameObject.SetActive(selected);
+    }
+
+    public bool IsSelected() => isSelected;
 }
