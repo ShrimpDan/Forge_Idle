@@ -3,11 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-using System;
-using System.Collections.Generic;
-using UnityEngine;
-using TMPro;
-
 public class MineResourceCollectManager : MonoBehaviour
 {
     public static MineResourceCollectManager Instance;
