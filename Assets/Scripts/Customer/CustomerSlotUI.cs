@@ -1,4 +1,5 @@
-﻿using TMPro;
+﻿using Assets.PixelFantasy.PixelHeroes.Common.Scripts.UI;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 public class CustomerSlotUI : MonoBehaviour
@@ -7,6 +8,8 @@ public class CustomerSlotUI : MonoBehaviour
     [SerializeField] private Sprite silhouetteSprite; //실루엣
     [SerializeField] private Image gaugeBar;
     [SerializeField] private TextMeshProUGUI progressText;
+
+    private Button btn;
     
 
 
@@ -17,6 +20,7 @@ public class CustomerSlotUI : MonoBehaviour
         this.data = data;
         this.collectionData = collectionData;
         bool isDiscovered = GameManager.Instance.CollectionManager.IsDiscovered(data);
+        btn = GetComponent<Button>();
 
         UpdateState(isDiscovered);
     }
@@ -33,9 +37,14 @@ public class CustomerSlotUI : MonoBehaviour
 
         if (discovered)
         {
-          
+
             image.sprite = IconLoader.GetIconByPath(data.iconPath);
             image.color = Color.white;
+            btn.onClick.AddListener(() =>
+            {
+                GameManager.Instance.UIManager.OpenUI<CollectionPopup>(UIName.CollectionPopup).SetPopup(data);
+
+            });
         }
         else
         {

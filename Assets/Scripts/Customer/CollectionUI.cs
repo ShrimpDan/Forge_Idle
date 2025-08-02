@@ -10,6 +10,8 @@ public class CollectionUI : BaseUI
     [SerializeField] private GameObject slotPrefabs;
     [SerializeField] private Button exitBtn;
 
+    private Button slotButton;
+
 
     private readonly List<CustomerSlotUI> slots = new();    // 슬롯 참조(파괴 시 정리)
 
@@ -53,10 +55,19 @@ public class CollectionUI : BaseUI
             var go = Instantiate(slotPrefabs, slotParent);
             var slot = go.GetComponent<CustomerSlotUI>();
 
+           
+
             var collectionData = GameManager.Instance.CollectionManager.GetCollectionData(data.Key);
             slot.Initialize(data, collectionData);
 
             slots.Add(slot);
         }
+    }
+
+    private void IsNotFound()
+    { 
+        
+
+
     }
 }
