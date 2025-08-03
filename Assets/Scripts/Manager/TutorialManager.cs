@@ -207,7 +207,6 @@ public class TutorialManager : MonoBehaviour
                 topHalfBlocker.SetActive(false);
                 ShowTextWithTyping("제작을 해주세요!!");
                 ClickBlockerOn();
-
                 break;
             case 13:
                 AllEffectOff();
@@ -215,8 +214,7 @@ public class TutorialManager : MonoBehaviour
                 break;
             case 14:
                 tutorialPanel.SetActive(true);
-                ShowTextWithTyping("제작이 끝나면 자동으로 인벤토리에 무기가 들어가요!! 그리고 손님이 이제 올꺼에요!!");
-                ClickBlockerOn();
+                ShowTextWithTyping("제작이 끝나면 자동으로 인벤토리에 무기가 들어가요!! 그리고 손님이 이제 올꺼에요!! 창을 닫아볼까요?");
                 break;
             case 15:
                 ShowTextWithTyping("손님은 일반손님,단골손님, 진상손님이 있어요!! 진상손님은 클릭해서 쫒아내야해요!!\n단골손님은 방문시 클릭하면 컬렉션에 등록되요!!");
@@ -648,10 +646,12 @@ public class TutorialManager : MonoBehaviour
         {
             OnStepClear();
         }
-        else if (uiName == UIName.CraftWeaponWindow && tutorialStep == 13)
+        
+        else if (uiName == UIName.CraftWeaponWindow && tutorialStep == 14)
         {
             OnStepClear();
         }
+        
         else if (uiName == UIName.CollectionWindow && tutorialStep == 17)
         {
             OnStepClear();
