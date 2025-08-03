@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using DG.Tweening.Core.Easing;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;

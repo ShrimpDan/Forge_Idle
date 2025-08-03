@@ -138,4 +138,9 @@ public class DismissManager : MonoBehaviour
         if (!allRegisteredSlots.Contains(slot))
             allRegisteredSlots.Add(slot);
     }
+
+    public IEnumerable<AssistantSlot> GetSelectedSlots()
+    {
+        return selectedSlots;
+    }
 }
