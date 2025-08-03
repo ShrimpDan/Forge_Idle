@@ -225,8 +225,8 @@ public class TutorialManager : MonoBehaviour
             case 16:
                 effect.HighLightOn();
                 arrowIcon.SetActive(true);
-                HighlightPos(-400, 834);
-                ShowTextWithTyping("컬렉션은 레벨 버튼을 누르면 확인할수 있어요!!");
+                HighlightPos(511, 500);
+                ShowTextWithTyping("컬렉션 북을 클릭하시면 컬렉션북을 열수 있어요!!");
                 break;
             case 17:
                 AllEffectOff();
