@@ -4,6 +4,8 @@ using TMPro;
 
 public class WagePopup : MonoBehaviour
 {
+    [SerializeField] private AssistantTab assistantTab;
+
     [SerializeField] private TMP_Text wageText;
     [SerializeField] private Button closeButton;
 
@@ -29,6 +31,10 @@ public class WagePopup : MonoBehaviour
     public void Close()
     {
         gameObject.SetActive(false);
-        transform.parent.Find("DimBackground")?.gameObject.SetActive(false); 
+        transform.parent.Find("DimBackground")?.gameObject.SetActive(false);
+
+        DismissManager.Instance?.SetDismissMode(false);
+
+        assistantTab?.RefreshSlots();
     }
 }

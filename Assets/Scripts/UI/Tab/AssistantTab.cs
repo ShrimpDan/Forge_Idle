@@ -11,6 +11,7 @@ public class AssistantTab : BaseTab
 
     [Header("Tab Buttons")]
     [SerializeField] private Button[] tabButtons;
+
     [SerializeField] private Color selectedColor = Color.white;
     [SerializeField] private Color defaultColor;
 
@@ -78,6 +79,8 @@ public class AssistantTab : BaseTab
         sellingAssi.Init(uIManager);
 
         wagePopup.SetActive(false);
+
+        DismissManager.Instance?.SetDismissMode(false);
     }
 
     public override void OpenTab()
@@ -90,7 +93,7 @@ public class AssistantTab : BaseTab
             forgeManager = GameManager.Instance.ForgeManager;
 
             if (assistantManager == null || forgeManager == null)
-                return; // 아직 초기화 안 됐으면 그냥 빠짐
+                return;
         }
 
         SetAssistant();
@@ -163,7 +166,7 @@ public class AssistantTab : BaseTab
         return Instantiate(assiSlotPrefab);
     }
 
-    private void SetAssistant()
+    public void SetAssistant()
     {
         foreach (var key in forgeManager.EquippedAssistant[forgeManager.CurrentForge.ForgeType].Keys)
         {
@@ -198,7 +201,7 @@ public class AssistantTab : BaseTab
             ClearStat(parent);
 
             AssistantInstance assi = forgeManager.EquippedAssistant[forgeManager.CurrentForge.ForgeType][type];
-            if (assi != null)
+            if (assi != null && !assi.IsFired)
             {
                 foreach (var stat in assi.Multipliers)
                 {
@@ -208,13 +211,16 @@ public class AssistantTab : BaseTab
                         tmp.text = stat.AbilityName;
 
                         float percent = (stat.Multiplier - 1f) * 100f;
-                        string sign = percent >= 0 ? "+" : "";
-                        tmp.text += $"\n{sign}{percent:F0}%";
+                        string display = percent > 0 ? $"+{percent:F0}%" : "0%";
+
+                        tmp.text += $"\n{display}";
                     }
                 }
             }
         }
     }
+
+
 
     private void ClearStat(Transform parent)
     {
@@ -271,20 +277,8 @@ public class AssistantTab : BaseTab
     {
         SoundManager.Instance?.Play("ClickSound");
 
-        if (DismissManager.Instance == null) return;
-
         isDismissMode = !isDismissMode;
 
-        if (isDismissMode)
-        {
-            DismissManager.Instance.EnterDismissMode();
-            dismissButton.image.color = selectedColor;
-        }
-        else
-        {
-            DismissManager.Instance.OnClickDismissConfirm();
-            dismissButton.image.color = defaultColor;
-        }
+        DismissManager.Instance?.SetDismissMode(isDismissMode);
     }
-
 }

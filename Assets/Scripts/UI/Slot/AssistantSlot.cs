@@ -22,20 +22,17 @@ public class AssistantSlot : MonoBehaviour
 
     public event Action OnClicked;
 
-    private void OnEnable()
-    {
-        if (DismissManager.Instance != null)
-            DismissManager.Instance.RegisterSlot(this);
-    }
-
     public void Init(AssistantInstance data, Action<AssistantInstance> onClick, bool preventPopup = false)
     {
         AssistantData = data;
         clickCallback = onClick;
         this.preventPopup = preventPopup;
 
-        slotBtn.onClick.RemoveAllListeners();
-        slotBtn.onClick.AddListener(OnClickSlot);
+        if (slotBtn != null)
+        {
+            slotBtn.onClick.RemoveAllListeners();
+            slotBtn.onClick.AddListener(OnClickSlot);
+        }
 
         UpdateVisuals();
 
@@ -50,11 +47,13 @@ public class AssistantSlot : MonoBehaviour
     {
         SoundManager.Instance.Play("ClickSound");
 
-        OnClicked?.Invoke();
-
         if (DismissManager.Instance != null && DismissManager.Instance.IsDismissMode())
+        {
+            DismissManager.Instance.ToggleSelect(this);
             return;
+        }
 
+        OnClicked?.Invoke();
         clickCallback?.Invoke(AssistantData);
 
         if (AssistantData == null || preventPopup) return;
@@ -62,7 +61,6 @@ public class AssistantSlot : MonoBehaviour
         var popup = uIManager.OpenUI<AssistantPopup>(UIName.AssistantPopup);
         popup.SetAssistant(AssistantData);
     }
-
 
     public void RefreshEquippedState()
     {
@@ -101,6 +99,7 @@ public class AssistantSlot : MonoBehaviour
     public void SetSelected(bool selected)
     {
         isSelected = selected;
+
         if (checkmark != null)
             checkmark.gameObject.SetActive(selected);
     }
@@ -110,9 +109,6 @@ public class AssistantSlot : MonoBehaviour
     public void SetDismissMode(bool value)
     {
         isDismissMode = value;
-
-        if (!value)
-            SetSelected(false);
     }
 
     public void SetSelectedForDismiss(bool selected)

@@ -1,29 +1,20 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Linq;
 
 public class DismissManager : MonoBehaviour
 {
     public static DismissManager Instance { get; private set; }
 
-    [Header("Dismiss UI")]
-    [SerializeField] private GameObject dismissPopup;
-    [SerializeField] private Transform slotParent;
-
-    [Header("Dismiss Button & Color")]
     [SerializeField] private Button dismissButton;
     [SerializeField] private Color dismissActiveColor = Color.white;
-    [SerializeField] private Color dismissInactiveColor = new Color(1f, 1f, 1f, 0.4f);
-
-    private AssistantManager assistantManager;
-    private AssistantSaveHandler saveHandler;
-
-    private List<AssistantSlot> allSlots = new List<AssistantSlot>();
-    private HashSet<AssistantSlot> selectedSlots = new HashSet<AssistantSlot>();
+    [SerializeField] private Color dismissInactiveColor = new Color32(200, 200, 200, 255);
+    [SerializeField] private GameObject dismissPopup;
 
     private bool isDismissMode = false;
 
+    private HashSet<AssistantSlot> selectedSlots = new();
+    private List<AssistantSlot> allRegisteredSlots = new();
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -31,133 +22,120 @@ public class DismissManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
-        UpdateDismissButtonColor();
+        if (dismissButton != null)
+            dismissButton.onClick.AddListener(OnClickDismissButton);
     }
 
-    public void Init(AssistantManager manager, AssistantSaveHandler saveHandler)
+    private void Start()
     {
-        this.assistantManager = manager;
-        this.saveHandler = saveHandler;
-        dismissPopup.SetActive(false);
-
-        ExitDismissMode();
+        ApplyColorByMode();
     }
 
-    public void EnterDismissMode()
-    {
-        isDismissMode = true;
-        selectedSlots.Clear();
-
-        foreach (var slot in allSlots)
-        {
-            slot.SetDismissMode(true);
-            slot.SetSelectedForDismiss(false);
-        }
-
-        UpdateDismissButtonColor();
-    }
-
-    public void ExitDismissMode()
-    {
-        isDismissMode = false;
-        selectedSlots.Clear();
-
-        foreach (var slot in allSlots)
-        {
-            slot.SetDismissMode(false);
-            slot.SetSelectedForDismiss(false);
-        }
-
-        dismissPopup.SetActive(false);
-        UpdateDismissButtonColor();
-    }
-
-    public void ToggleDismissMode()
+    private void OnClickDismissButton()
     {
         if (isDismissMode)
-            ExitDismissMode();
+        {
+            if (selectedSlots.Count == 0)
+            {
+                isDismissMode = false;
+                ApplyColorByMode();
+
+                foreach (var slot in allRegisteredSlots)
+                {
+                    slot.SetDismissMode(false);
+                    slot.SetSelected(false);
+                }
+
+                selectedSlots.Clear();
+            }
+            else
+            {
+                if (dismissPopup != null)
+                    dismissPopup.SetActive(true);
+            }
+        }
         else
-            EnterDismissMode();
+        {
+            isDismissMode = true;
+            ApplyColorByMode();
+
+            foreach (var slot in allRegisteredSlots)
+            {
+                slot.SetDismissMode(true);
+                slot.SetSelected(false);
+            }
+
+            selectedSlots.Clear();
+        }
     }
 
-    private void UpdateDismissButtonColor()
+
+    public void SetDismissMode(bool on)
+    {
+        isDismissMode = on;
+        ApplyColorByMode();
+
+        foreach (var slot in allRegisteredSlots)
+        {
+            slot.SetDismissMode(on);
+
+            if (!on)
+                slot.SetSelected(false);
+        }
+
+        selectedSlots.Clear();
+    }
+
+    private void ApplyColorByMode()
     {
         if (dismissButton != null)
         {
-            dismissButton.image.color = isDismissMode ? dismissActiveColor : dismissInactiveColor;
+            ColorBlock cb = dismissButton.colors;
+
+            if (isDismissMode)
+            {
+                cb.normalColor = Color.white;
+                cb.highlightedColor = Color.white;
+                cb.pressedColor = new Color(0.9f, 0.9f, 0.9f);
+                cb.selectedColor = Color.white;
+            }
+            else
+            {
+                cb.normalColor = dismissInactiveColor;
+                cb.highlightedColor = dismissInactiveColor;
+                cb.pressedColor = dismissInactiveColor;
+                cb.selectedColor = dismissInactiveColor;
+            }
+
+            cb.colorMultiplier = 1;
+            dismissButton.colors = cb;
+        }
+    }
+
+    public bool IsDismissMode() => isDismissMode;
+    public void ToggleSelect(AssistantSlot slot)
+    {
+        if (!isDismissMode) return;
+
+        if (selectedSlots.Contains(slot))
+        {
+            selectedSlots.Remove(slot);
+            slot.SetSelected(false);
+        }
+        else
+        {
+            selectedSlots.Add(slot);
+            slot.SetSelected(true);
         }
     }
 
     public void RegisterSlot(AssistantSlot slot)
     {
-        if (!allSlots.Contains(slot))
-        {
-            allSlots.Add(slot);
-
-            slot.OnClicked += () =>
-            {
-                if (!isDismissMode) return;
-
-                if (selectedSlots.Contains(slot))
-                {
-                    DeselectSlot(slot);
-                    slot.SetSelectedForDismiss(false);
-                }
-                else
-                {
-                    SelectSlot(slot);
-                    slot.SetSelectedForDismiss(true);
-                }
-            };
-        }
-    }
-
-    public void OnClickDismissConfirm()
-    {
-        if (selectedSlots.Count == 0)
-        {
-            Debug.Log("[DismissManager] 해고할 제자를 선택해주세요.");
-            return;
-        }
-
-        dismissPopup.SetActive(true);
-    }
-
-    public void OnClickDismissCancel()
-    {
-        dismissPopup.SetActive(false);
-        ExitDismissMode();
-    }
-
-    public void OnClickDismissConfirmYes()
-    {
-        foreach (var slot in selectedSlots.ToList())
-        {
-            AssistantInstance assistant = slot.Assistant;
-            assistantManager.AssistantInventory.Remove(assistant);
-        }
-
-        saveHandler.Save();
-        ExitDismissMode();
-    }
-
-    public bool IsDismissMode()
-    {
-        return isDismissMode;
-    }
-
-    public void SelectSlot(AssistantSlot slot)
-    {
-        if (slot != null)
-            selectedSlots.Add(slot);
-    }
-
-    public void DeselectSlot(AssistantSlot slot)
-    {
-        if (slot != null)
-            selectedSlots.Remove(slot);
+        if (!allRegisteredSlots.Contains(slot))
+            allRegisteredSlots.Add(slot);
     }
 }
