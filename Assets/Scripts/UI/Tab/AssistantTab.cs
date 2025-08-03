@@ -199,12 +199,14 @@ public class AssistantTab : BaseTab
             {
                 foreach (var stat in assi.Multipliers)
                 {
+                    if (stat.Multiplier == 0) continue;
+                    
                     GameObject obj = Instantiate(bonusStatPrefab, parent);
                     if (obj.TryGetComponent(out TextMeshProUGUI tmp))
                     {
                         tmp.text = stat.AbilityName;
 
-                        float percent = (stat.Multiplier - 1f) * 100f;
+                        float percent = stat.Multiplier * 100f;
                         string sign = percent >= 0 ? "+" : "";
                         tmp.text += $"\n{sign}{percent:F0}%";
                     }

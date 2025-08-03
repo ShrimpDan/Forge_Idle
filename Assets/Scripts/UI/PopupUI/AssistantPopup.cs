@@ -60,6 +60,7 @@ public class AssistantPopup : BaseUI
         // 아이콘, 텍스트
         icon.sprite = IconLoader.GetIconByPath(data.IconPath);
         assiName.text = data.Name;
+        typeIcon.sprite = IconLoader.GetIconByPath($"Icons/Specializations/{data.Specialization}");
         assiType.text = FusionSlotView.GetKoreanSpecialization(data.Specialization);
 
         // 옵션 초기화
@@ -82,6 +83,8 @@ public class AssistantPopup : BaseUI
         {
             foreach (var option in data.Multipliers)
             {
+                if (option.Multiplier == 0) continue;
+
                 GameObject obj = Instantiate(optionTextPrefab, optionRoot);
                 var optionText = obj.GetComponent<TextMeshProUGUI>();
 

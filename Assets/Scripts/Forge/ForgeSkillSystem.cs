@@ -60,7 +60,7 @@ public class ForgeSkillSystem : MonoBehaviour
         activeCoroutines.Add(effectCoroutine);
 
         StartCoroutine(SkillCooldownCoroutine(idx));
-        forgeManager.CurrentForge.BlackSmith.PlaySkillEffect(skill.SkillData.Name);
+        forgeManager.CurrentForge.BlackSmith.PlayTextEffect(skill.SkillData.Name);
     }
 
     public void StopAllSkillEffectCoroutine()

@@ -57,7 +57,8 @@ public class TutorialManager : MonoBehaviour
         if (PlayerPrefs.GetInt("TutorialDone", 0) == 1)
         {
             isTurtorialMode = false;
-            tutorialPanel.SetActive(false);
+            Destroy(gameObject);
+            //tutorialPanel.SetActive(false);
             return;
         }
         PlayerPrefs.SetInt("TutorialDone", 0); // Test

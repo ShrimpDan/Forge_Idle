@@ -128,6 +128,7 @@ public class WeaponSellingSystem : MonoBehaviour
         if (chance <= forge.StatHandler.FinalPerfectCr3aftingChance)
         {
             // 대성공 시 효과도 추가
+            forge.BlackSmith.PlayTextEffect("대성공!!");
             return price * 2;
         }
 
