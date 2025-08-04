@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
+// --- 저장 핸들러 (외부에서 호출) ---
 public class MineSaveHandler : ISaveHandler
 {
     private MineSceneManager mineSceneManager;
@@ -16,31 +17,30 @@ public class MineSaveHandler : ISaveHandler
     public void Delete() => MineSaveSystem.Delete(mineSceneManager);
 }
 
-
+// --- 저장 데이터 구조 ---
 [System.Serializable]
 public class MineSlotSaveData
 {
-    public string AssistantKey;   // 등록된 어시스턴트의 Key 
-    public string AssignedTime;   // 등록 시각
+    public string AssistantKey;
+    public string AssignedTime;
 }
 
 [System.Serializable]
 public class MineGroupSaveData
 {
-    public string MineKey; // group key
+    public string MineKey;
     public List<MineSlotSaveData> Slots = new List<MineSlotSaveData>();
-    public string LastCollectTime; // 마지막으로 리소스를 수령한 시각
+    public string LastCollectTime;
 }
 
 [System.Serializable]
 public class MineSaveData
 {
     public List<MineGroupSaveData> Groups = new List<MineGroupSaveData>();
+    public List<bool> UnlockedMines = new List<bool>(); // 해금 상태 추가
 }
 
-
-
-
+// --- 저장/로드/삭제 시스템 ---
 public class MineSaveSystem
 {
     private static string SavePath => Path.Combine(Application.persistentDataPath, "mine_save.json");
@@ -59,7 +59,6 @@ public class MineSaveSystem
             mineSceneManager.LoadFromSaveData(null);
             return;
         }
-
         string json = File.ReadAllText(SavePath);
         var saveData = JsonUtility.FromJson<MineSaveData>(json);
         mineSceneManager.LoadFromSaveData(saveData);
@@ -70,7 +69,8 @@ public class MineSaveSystem
         if (File.Exists(SavePath))
         {
             File.Delete(SavePath);
-            mineSceneManager.ClearAllSlots(); // 필요한 초기화 메서드
+            mineSceneManager.ClearAllSlots();
+            mineSceneManager.ResetUnlockedMines(); // 해금 상태도 초기화
         }
     }
 }
