@@ -29,7 +29,14 @@ public class DungeonSlot : MonoBehaviour
 
     private void StartDungeon()
     {
-        gameManager.UIManager.CloseUI(UIName.DungeonWindow);
-        gameManager.DungeonSystem.EnterDungeon(dungeonData);
+        if (gameManager.Inventory.IsEquippedWeapon())
+        {
+            gameManager.UIManager.CloseUI(UIName.DungeonWindow);
+            gameManager.DungeonSystem.EnterDungeon(dungeonData);
+            return;
+        }
+
+        var ui = gameManager.UIManager.OpenUI<LackPopup>(UIName.LackPopup);
+        ui.ShowCustom("무기를 장착해주세요.");
     }
 }

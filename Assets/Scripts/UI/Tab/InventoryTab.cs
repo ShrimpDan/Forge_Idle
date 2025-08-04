@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,6 +10,7 @@ public class InventoryTab : BaseTab
     [SerializeField] private Button[] tabButtons;
     [SerializeField] private Color selectedColor = Color.white;
     [SerializeField] private Color defaultColor;
+    [SerializeField] private Button decompositionBtn;
 
     [Header("Tab Panels")]
     [SerializeField] private GameObject[] tabPanels;
@@ -51,6 +51,8 @@ public class InventoryTab : BaseTab
     {
         base.OpenTab();
 
+        decompositionBtn.onClick.AddListener(ClickDecompositionBtn);
+        
         inventory.OnItemAdded += Refresh;
         inventory.OnItemEquipped += OnItemEquipped;
         inventory.OnItemUnEquipped += OnItemUnEquipped;
@@ -60,6 +62,8 @@ public class InventoryTab : BaseTab
     public override void CloseTab()
     {
         base.CloseTab();
+
+        decompositionBtn.onClick.RemoveListener(ClickDecompositionBtn);
 
         inventory.OnItemAdded -= Refresh;
         inventory.OnItemEquipped -= OnItemEquipped;
@@ -150,5 +154,11 @@ public class InventoryTab : BaseTab
                 break;
             }
         }
+    }
+
+    private void ClickDecompositionBtn()
+    {
+        var ui = uIManager.OpenUI<DecompositionWindow>(UIName.DecompositionWindow);
+        ui.SetUI(this);
     }
 }

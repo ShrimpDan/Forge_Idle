@@ -352,7 +352,7 @@ public class TutorialManager : MonoBehaviour
                 shopTab.AllButtonON(); //모든 버튼 활성화
                 ShowTextWithTyping("이번엔 제자뽑기를 해볼꺼에요!!\n 다이아를 지급해 드릴께요!!\n제자뽑기 창으로 가볼께요!!");
                 GameManager.Instance.ForgeManager.AddDia(500);
-                GameManager.Instance.ForgeManager.AddGold(2000);
+                GameManager.Instance.ForgeManager.AddGold(10000);
                 HighlightPos(-204, -706);
                 effect.HideHighlight();
                 break;
@@ -389,22 +389,16 @@ public class TutorialManager : MonoBehaviour
                 ShowTextWithTyping("이제 다시 대장간으로 돌아가 볼까요??");
                 break;
             case 48:
-                ShowTextWithTyping("자! 기본적인 운영 방법은 전부 설명드렸어요!! 대장간을 잘 운영하셔서 부자되세요!!");
+                ShowTextWithTyping("자! 기본적인 운영 방법은 전부 설명드렸어요!! 대장간을 잘 운영하셔서 부자되세요!!\n튜토리얼 보상으로 다이아 5000개랑 10000골드를 드릴께요!!");
+                GameManager.Instance.ForgeManager.AddDia(5000);
+                GameManager.Instance.ForgeManager.AddGold(10000);
                 ClickBlockerOn();
 
                 break;
             case 49:
                 EndTutorial();
                 break;
-
-
-
         }
-
-
-
-
-
 
     }
 
