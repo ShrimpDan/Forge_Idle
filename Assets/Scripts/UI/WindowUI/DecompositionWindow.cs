@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -135,7 +136,8 @@ public class DecompositionWindow : BaseUI
     {
         foreach (Transform child in decompositionRoot)
         {
-            Destroy(child.gameObject);
+            child.gameObject.SetActive(false);
+            pooledSlots.Enqueue(child.gameObject);
         }
 
         foreach (var resourceKey in resultDict.Keys)
