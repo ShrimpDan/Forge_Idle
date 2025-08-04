@@ -385,6 +385,10 @@ public class TutorialManager : MonoBehaviour
                 break;
             case 48:
                 ShowTextWithTyping("자! 기본적인 운영 방법은 전부 설명드렸어요!! 대장간을 잘 운영하셔서 부자되세요!!");
+                ClickBlockerOn();
+
+                break;
+            case 49:
                 EndTutorial();
                 break;
 
