@@ -34,7 +34,7 @@ public class Monster : MonoBehaviour
 
     public void TakeDamage(float amount)
     {
-        animator.SetTrigger(hitHash);
+        if(currentHp > 0) animator.SetTrigger(hitHash);
 
         SoundManager.Instance.Play("SFX_BattleMonsterHit");
 
