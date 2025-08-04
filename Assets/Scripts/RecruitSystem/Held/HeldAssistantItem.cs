@@ -63,7 +63,7 @@ public class HeldAssistantItem : MonoBehaviour
         rankIconImage.enabled = rankIconImage.sprite != null;
     }
 
-    // 클릭 시 호출 -> HeldListButtonHandler로 전달
+    // 클릭 시 호출 -> HeldListButtonHandler로 전달,
     private void OnClick()
     {
         listButtonHandler.OnClickHeldAssistant(assistantData);

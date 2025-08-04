@@ -49,6 +49,7 @@ public class MineGroup
 
 public class MineSceneManager : MonoBehaviour
 {
+
     public GameObject mineAssistantPrefab;
     public List<MineGroup> mineGroups;
     public GameObject mineDetailMap;
@@ -66,6 +67,8 @@ public class MineSceneManager : MonoBehaviour
     [SerializeField] private Transform GoldMithrillRoot;
     [SerializeField] private Transform GemRoot;
     [SerializeField] private GameObject mineBlockPrefab;
+    [SerializeField] private LackPopup lackPopupPrefab;
+    [SerializeField] private Transform lackPopupRoot;
 
     private List<bool> unlockedMines = new List<bool>();
     private List<List<GameObject>> spawnedAssistants;
@@ -73,6 +76,7 @@ public class MineSceneManager : MonoBehaviour
     private MineLoader mineLoader;
     private int currentMineIndex = 0;
     private MineSaveHandler mineSaveHandler;
+    private SoundManager soundManager;
 
     [Header("UI Roots & Prefabs")]
     public Transform amountRoot;
@@ -81,6 +85,7 @@ public class MineSceneManager : MonoBehaviour
 
     private void Awake()
     {
+        soundManager = SoundManager.Instance;
         mineSaveHandler = new MineSaveHandler(this);
         SceneCameraState.IsMineSceneActive = true;
         SetMainUIClickable(false);
@@ -184,11 +189,23 @@ public class MineSceneManager : MonoBehaviour
     // 해금 시도
     public void TryUnlockMine(int idx)
     {
+        SoundManager.Instance?.Play("Click");
+
         if (idx < 1 || idx >= unlockedMines.Count) return;
         if (unlockedMines[idx]) return;
         if (!unlockedMines[idx - 1]) return;
 
         int cost = mineUnlockGoldCosts[idx - 1];
+        int playerGold = GameManager.Instance.ForgeManager.Gold;
+
+        // 골드 부족시 LackPopup 호출
+        if (playerGold < cost)
+        {
+            ShowLackPopup(LackType.Gold);
+            return;
+        }
+
+        // 골드 충분하면 해금
         if (GameManager.Instance.ForgeManager.UseGold(cost))
         {
             unlockedMines[idx] = true;
@@ -196,6 +213,17 @@ public class MineSceneManager : MonoBehaviour
             mineSaveHandler.Save();
         }
     }
+
+    private void ShowLackPopup(LackType type)
+    {
+        if (lackPopupPrefab && lackPopupRoot)
+        {
+            var lackPopup = Instantiate(lackPopupPrefab, lackPopupRoot);
+            lackPopup.Init(GameManager.Instance, null); // uIManager 없으면 null
+            lackPopup.Show(type);
+        }
+    }
+
 
     // 세이브/로드 + 해금 상태 저장
     public MineSaveData ToSaveData()
