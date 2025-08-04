@@ -49,7 +49,7 @@ public class InventoryManager
             case ItemType.Resource:
                 AddOrMergeItem(ResourceList, item, amount);
                 break;
-            case ItemType.Ingot:          
+            case ItemType.Ingot:
                 AddOrMergeItem(ResourceList, item, amount);
                 break;
         }
@@ -348,6 +348,17 @@ public class InventoryManager
         {
             EquippedWeaponDict[i] = null;
         }
+    }
+
+    public bool CanEquip()
+    {
+        foreach (var item in EquippedWeaponDict.Values)
+        {
+            if (item == null)
+                return true;
+        }
+
+        return false;
     }
     #endregion
 }

@@ -65,7 +65,11 @@ public static class IconLoader
         if (iconDict.TryGetValue(key, out Sprite icon))
             return icon;
 
-        return null;
+        string path = $"Icons/{key}";
+        Sprite newIcon = Resources.Load<Sprite>(path);
+        iconDict[path] = newIcon;
+
+        return newIcon;
     }
     private static void LoadAllWeaponArmorAndResourceSprites()
     {

@@ -59,10 +59,10 @@ public class BlackSmith : MonoBehaviour
         soundManager.Play("SFX_ForgeCraft");
     }
 
-    public void PlaySkillEffect(string skillName)
+    public void PlayTextEffect(string text)
     {
         TextMeshPro skillText = Instantiate(skillTextPrefab, skillTextRoot);
-        skillText.text = $"{skillName}!!";
+        skillText.text = $"{text}!!";
 
         Vector3 initialScale = skillText.transform.localScale;
         Vector3 targetScale = initialScale * 1.5f;

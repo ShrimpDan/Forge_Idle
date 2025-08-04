@@ -10,6 +10,14 @@ public class MineAssistantSlotUI : MonoBehaviour
     public Image iconImage;
     public Button slotButton;
 
+    [Header("Rank Icon")]
+    [SerializeField] private Image rankIconImage;
+    [SerializeField] private Sprite rankN;
+    [SerializeField] private Sprite rankR;
+    [SerializeField] private Sprite rankSR;
+    [SerializeField] private Sprite rankSSR;
+    [SerializeField] private Sprite rankUR;
+
     public Action<MineAssistantSlotUI> OnSlotClicked;
 
     public bool IsSceneSlot() => slot != null;
@@ -60,11 +68,15 @@ public class MineAssistantSlotUI : MonoBehaviour
             var icon = IconLoader.GetIconByPath(slot.AssignedAssistant.IconPath);
             iconImage.sprite = icon;
             iconImage.enabled = true;
+            // 등급 아이콘 표시
+            SetRankIcon(slot.AssignedAssistant.grade);
         }
         else if (iconImage != null)
         {
             iconImage.sprite = null;
             iconImage.enabled = false;
+            // 등급 아이콘 비활성화
+            if (rankIconImage != null) rankIconImage.enabled = false;
         }
     }
 
@@ -80,5 +92,21 @@ public class MineAssistantSlotUI : MonoBehaviour
             slotButton.onClick.RemoveAllListeners();
             slotButton.onClick.AddListener(() => onClick?.Invoke(assistant));
         }
+        SetRankIcon(assistant?.grade);
+    }
+
+    private void SetRankIcon(string grade)
+    {
+        if (rankIconImage == null) return;
+        switch (grade)
+        {
+            case "N": rankIconImage.sprite = rankN; break;
+            case "R": rankIconImage.sprite = rankR; break;
+            case "SR": rankIconImage.sprite = rankSR; break;
+            case "SSR": rankIconImage.sprite = rankSSR; break;
+            case "UR": rankIconImage.sprite = rankUR; break;
+            default: rankIconImage.sprite = null; break;
+        }
+        rankIconImage.enabled = rankIconImage.sprite != null;
     }
 }

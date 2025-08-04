@@ -20,7 +20,7 @@ public class CollectionPopup : BaseUI
         exitBtn.onClick.AddListener(() => uIManager.CloseUI(UIName.CollectionPopup));
     }
 
-    public void SetPopup(RegularCustomerData data)
+    public void SetPopup(RegularCustomerData data) //데이터 넘겨 받는곳
     {
         nameText.text = data.customerName;
         rarityText.text = GetStringByRarity(data.rarity);

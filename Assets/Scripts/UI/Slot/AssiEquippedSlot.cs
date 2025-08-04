@@ -43,6 +43,6 @@ public class AssiEquippedSlot : MonoBehaviour
     public void UnEquipAssistant()
     {
         EquippedAssi = null;
-        icon.sprite = null;
+        icon.sprite = IconLoader.GetIconByPath(null);
     }
 }

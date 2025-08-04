@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -7,6 +8,8 @@ using UnityEngine.VFX;
 
 public class CollectionBookManager : MonoBehaviour
 {
+    
+
     private GameManager gameManager;
     private DataManager dataManager;
 
@@ -17,6 +20,9 @@ public class CollectionBookManager : MonoBehaviour
     private Dictionary<CustomerJob, List<RegularCustomerData>> regularDic = new Dictionary<CustomerJob, List<RegularCustomerData>>();
 
     private Dictionary<string, CustomerCollectionData> collectionDict = new Dictionary<string, CustomerCollectionData>();
+
+    private string SavePath => Path.Combine(Application.persistentDataPath, "collection_save.json");
+
 
     public void Init(GameManager gm)
     {
@@ -76,8 +82,7 @@ public class CollectionBookManager : MonoBehaviour
                 list.Add(data);
             }
         }
-
-        Debug.Log("StopPoint");
+        LoadCollectionData();
     }
 
 
@@ -95,7 +100,7 @@ public class CollectionBookManager : MonoBehaviour
         discovered.Add(data);
         OnCustomerDiscovered?.Invoke(data);
 
-        //나중에 여기 Save()추가
+        SaveCollectionData();
     }
 
     public void Discover(CustomerJob job, CustomerRarity rarity)
@@ -179,9 +184,12 @@ public class CollectionBookManager : MonoBehaviour
                 data.isEffectUnlocked = true;    
 
             }
-
+            SaveCollectionData();
         }
     }
+
+
+
 
     public float GetTotalGoldBounsForJob(CustomerJob job)
     {
@@ -208,5 +216,57 @@ public class CollectionBookManager : MonoBehaviour
         return null;
     }
 
-    
+
+
+    private void SaveCollectionData()
+    {
+        CollectionSaveDataList saveDataList = new CollectionSaveDataList();
+
+        foreach (var pair in collectionDict)
+        {
+            var data = pair.Value;
+            var saveData = new CollectionSaveData
+            {
+                collectionkey = pair.Key,
+                visitedCount = data.visitedCount,
+                isDiscovered = discovered.Contains(data.collectionData),
+                isEffectUnlocked = data.isEffectUnlocked
+            };
+            saveDataList.collectionDataList.Add(saveData);
+        }
+
+        string json = JsonUtility.ToJson(saveDataList, true);
+        File.WriteAllText(SavePath, json);
+
+    }
+
+
+    private void LoadCollectionData()
+    {
+        if (!File.Exists(SavePath)) return;
+
+        string json = File.ReadAllText(SavePath);
+        CollectionSaveDataList saveDataList = JsonUtility.FromJson<CollectionSaveDataList>(json);
+
+        foreach (var saveData in saveDataList.collectionDataList)
+        {
+            if (collectionDict.TryGetValue(saveData.collectionkey, out var data))
+            {
+                data.visitedCount = saveData.visitedCount;
+                data.isEffectUnlocked = saveData.isEffectUnlocked;
+
+                if (saveData.isDiscovered)
+                {
+                    discovered.Add(data.collectionData);
+                }
+            }
+        }
+
+    }
+
+    private void OnApplicationQuit()
+    {
+        SaveCollectionData(); 
+    }
+
 }

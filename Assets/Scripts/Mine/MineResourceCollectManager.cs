@@ -7,7 +7,10 @@ public class MineResourceCollectManager : MonoBehaviour
 {
     public static MineResourceCollectManager Instance;
 
-    private TMP_Text minedAmountText;
+    [Header("UI Roots & Prefabs")]
+    [SerializeField] private Transform amountRoot;
+    [SerializeField] private GameObject itemAmountSlotPrefab;
+
     private List<MineGroup> mineGroups;
     private int currentMineGroupIndex = 0;
 
@@ -43,17 +46,57 @@ public class MineResourceCollectManager : MonoBehaviour
         UpdateExpectedMiningAmount();
     }
 
-    public void SetMinedAmountText(TMP_Text text) => minedAmountText = text;
-
-    // 전체 마인 자원 총합 UI 표시
     public void UpdateExpectedMiningAmount()
     {
-        if (mineGroups == null || mineGroups.Count == 0) return;
+        if (mineGroups == null || amountRoot == null || itemAmountSlotPrefab == null) return;
 
-        string expectedText = GetAllExpectedResourcesText();
+        foreach (Transform child in amountRoot)
+            GameObject.Destroy(child.gameObject);
 
-        if (minedAmountText != null)
-            minedAmountText.text = string.IsNullOrEmpty(expectedText) ? "채굴 중..." : expectedText;
+        var totalResourceDict = new Dictionary<string, float>();
+        foreach (var group in mineGroups)
+        {
+            var resourceDict = CalculateMiningAmount(group, false, out _);
+            foreach (var pair in resourceDict)
+            {
+                if (!totalResourceDict.ContainsKey(pair.Key))
+                    totalResourceDict[pair.Key] = 0f;
+                totalResourceDict[pair.Key] += pair.Value;
+            }
+        }
+
+        foreach (var pair in totalResourceDict)
+        {
+            int amountInt = Mathf.FloorToInt(pair.Value);
+            if (amountInt > 0)
+            {
+                var go = GameObject.Instantiate(itemAmountSlotPrefab, amountRoot);
+                var iconImg = go.transform.Find("Icon").GetComponent<UnityEngine.UI.Image>();
+                var amountText = go.transform.Find("Amount").GetComponent<TMPro.TMP_Text>();
+                var item = GameManager.Instance.DataManager.ItemLoader.GetItemByKey(pair.Key);
+
+                // 숫자 세팅
+                if (amountText != null)
+                    amountText.text = amountInt.ToString();
+
+                // 아이콘 세팅
+                if (iconImg != null && item != null)
+                {
+                    Sprite iconSprite = null;
+                    if (!string.IsNullOrEmpty(item.IconPath))
+                        iconSprite = IconLoader.GetIconByPath(item.IconPath);
+                    if (iconSprite == null && !string.IsNullOrEmpty(item.ItemKey))
+                        iconSprite = IconLoader.GetIconByKey(item.ItemKey);
+                    if (iconSprite == null)
+                        iconSprite = IconLoader.GetIcon(item.ItemType, item.ItemKey);
+                    if (iconSprite == null)
+                        iconSprite = IconLoader.GetIconByPath("Icons/Empty");
+
+                    iconImg.sprite = iconSprite;
+                    iconImg.color = Color.white;
+                }
+            }
+        }
     }
 
     // 전체 마인 예상 채굴 자원 합산
@@ -233,4 +276,14 @@ public class MineResourceCollectManager : MonoBehaviour
         if (assistant?.Personality == null) return 1.0f;
         return assistant.Personality.miningMultiplier;
     }
+
+    public void SetAmountRoot(Transform root, GameObject prefab)
+    {
+        amountRoot = root;
+        itemAmountSlotPrefab = prefab;
+        UpdateExpectedMiningAmount();
+    }
+
+
+
 }

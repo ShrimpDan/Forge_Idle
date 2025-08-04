@@ -7,6 +7,7 @@ public class Monster : MonoBehaviour
     private MonsterHandler monsterHandler;
 
     private Animator animator;
+    private readonly int attackHash = Animator.StringToHash("Attack");
     private readonly int hitHash = Animator.StringToHash("Hit");
     private readonly int deathHash = Animator.StringToHash("Death");
 
@@ -53,6 +54,11 @@ public class Monster : MonoBehaviour
         hpFill.fillAmount = currentHp / maxHp;
     }
 
+    public void PlayAttackAnim()
+    {
+        animator.SetTrigger(attackHash);
+    }
+    
     public void EndDeathAnim()
     {
         OnDeath?.Invoke();

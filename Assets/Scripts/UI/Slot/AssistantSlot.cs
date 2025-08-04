@@ -22,6 +22,14 @@ public class AssistantSlot : MonoBehaviour
 
     public event Action OnClicked;
 
+    [Header("Rank Icon")]
+    [SerializeField] private Image rankIconImage;
+    [SerializeField] private Sprite rankN;
+    [SerializeField] private Sprite rankR;
+    [SerializeField] private Sprite rankSR;
+    [SerializeField] private Sprite rankSSR;
+    [SerializeField] private Sprite rankUR;
+
     public void Init(AssistantInstance data, Action<AssistantInstance> onClick, bool preventPopup = false)
     {
         AssistantData = data;
@@ -51,8 +59,26 @@ public class AssistantSlot : MonoBehaviour
         {
             Debug.LogWarning("[AssistantSlot] AssistantData가 null이어서 등록되지 않음");
         }
+
+        SetRankIcon(data?.grade); // 등급 아이콘 설정
     }
 
+    private void SetRankIcon(string grade)
+    {
+        if (rankIconImage == null) return;
+
+        switch (grade)
+        {
+            case "N": rankIconImage.sprite = rankN; break;
+            case "R": rankIconImage.sprite = rankR; break;
+            case "SR": rankIconImage.sprite = rankSR; break;
+            case "SSR": rankIconImage.sprite = rankSSR; break;
+            case "UR": rankIconImage.sprite = rankUR; break;
+            default: rankIconImage.sprite = null; break;
+        }
+
+        rankIconImage.enabled = rankIconImage.sprite != null;
+    }
 
     private void OnClickSlot()
     {
@@ -76,11 +102,9 @@ public class AssistantSlot : MonoBehaviour
         popup.SetAssistant(AssistantData);
     }
 
-
     public void RefreshEquippedState()
     {
         if (AssistantData == null) return;
-
         UpdateVisuals();
     }
 
@@ -109,6 +133,8 @@ public class AssistantSlot : MonoBehaviour
 
         if (canvasGroup != null)
             canvasGroup.alpha = isFired ? 0.5f : 1f;
+
+        SetRankIcon(AssistantData?.grade);
     }
 
     public void SetSelected(bool selected)

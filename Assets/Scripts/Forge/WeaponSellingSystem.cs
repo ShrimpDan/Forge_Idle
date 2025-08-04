@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class WeaponSellingSystem : MonoBehaviour
@@ -29,7 +28,6 @@ public class WeaponSellingSystem : MonoBehaviour
 
         customerManager.CustomerEvent.OnCustomerArrived += OrderItem;
 
-        forgeManager.Events.RaiseCraftStarted(null);
         forgeManager.Events.RaiseCraftProgress(0, 1);
     }
 
@@ -89,7 +87,7 @@ public class WeaponSellingSystem : MonoBehaviour
             Customer customer = customerQueue.Dequeue();
 
             // 어떤 무기를 만드는지 아이콘 이벤트 호출
-            forgeManager.Events.RaiseCraftStarted(IconLoader.GetIconByKey(weapon.ItemKey));
+            customer.SetOrderBubble(IconLoader.GetIconByKey(weapon.ItemKey));
 
             while (time < duration && !customer.IsAngry)
             {
@@ -119,7 +117,6 @@ public class WeaponSellingSystem : MonoBehaviour
         blackSmith.SetCraftingAnimation(false);
         craftingCoroutine = null;
 
-        forgeManager.Events.RaiseCraftStarted(null);
         forgeManager.Events.RaiseCraftProgress(0, 1);
     }
 
@@ -131,6 +128,7 @@ public class WeaponSellingSystem : MonoBehaviour
         if (chance <= forge.StatHandler.FinalPerfectCr3aftingChance)
         {
             // 대성공 시 효과도 추가
+            forge.BlackSmith.PlayTextEffect("대성공!!");
             return price * 2;
         }
 

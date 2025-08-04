@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using DG.Tweening.Core.Easing;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,7 +11,6 @@ public class AssistantTab : BaseTab
 
     [Header("Tab Buttons")]
     [SerializeField] private Button[] tabButtons;
-
     [SerializeField] private Color selectedColor = Color.white;
     [SerializeField] private Color defaultColor;
 
@@ -28,22 +26,22 @@ public class AssistantTab : BaseTab
     [SerializeField] private GameObject[] tabPanels;
 
     [Header("To Create Assistant")]
-    [SerializeField] GameObject assiSlotPrefab;
-    [SerializeField] Transform craftSlotRoot;
-    [SerializeField] Transform gemSlotRoot;
-    [SerializeField] Transform upgradeSlotRoot;
+    [SerializeField] private GameObject assiSlotPrefab;
+    [SerializeField] private Transform craftSlotRoot;
+    [SerializeField] private Transform gemSlotRoot;
+    [SerializeField] private Transform upgradeSlotRoot;
 
     [Header("Selected Assistant")]
-    [SerializeField] AssiEquippedSlot craftAssi;
-    [SerializeField] AssiEquippedSlot sellingAssi;
+    [SerializeField] private AssiEquippedSlot craftAssi;
+    [SerializeField] private AssiEquippedSlot sellingAssi;
 
     [Header("To Create Bonus Stat")]
-    [SerializeField] GameObject bonusStatPrefab;
-    [SerializeField] Transform craftStatRoot;
-    [SerializeField] Transform sellingStatRoot;
+    [SerializeField] private GameObject bonusStatPrefab;
+    [SerializeField] private Transform craftStatRoot;
+    [SerializeField] private Transform sellingStatRoot;
 
-    private Queue<GameObject> pooledSlots = new Queue<GameObject>();
-    private List<GameObject> activeSlots = new List<GameObject>();
+    private Queue<GameObject> pooledSlots = new();
+    private List<GameObject> activeSlots = new();
 
     private bool isDismissMode = false;
 
@@ -80,7 +78,6 @@ public class AssistantTab : BaseTab
         sellingAssi.Init(uIManager);
 
         wagePopup.SetActive(false);
-
         DismissManager.Instance?.SetDismissMode(false);
     }
 
@@ -104,9 +101,7 @@ public class AssistantTab : BaseTab
     public void RefreshSlots()
     {
         if (assistantManager == null)
-        {
             assistantManager = GameManager.Instance.AssistantManager;
-        }
 
         foreach (var slot in activeSlots)
         {
@@ -206,13 +201,16 @@ public class AssistantTab : BaseTab
             {
                 foreach (var stat in assi.Multipliers)
                 {
+                    if (stat.Multiplier == 0) continue;
+
                     GameObject obj = Instantiate(bonusStatPrefab, parent);
                     if (obj.TryGetComponent(out TextMeshProUGUI tmp))
                     {
                         tmp.text = stat.AbilityName;
 
                         float percent = (stat.Multiplier - 1f) * 100f;
-                        string display = percent > 0 ? $"+{percent:F0}%" : "0%";
+                        string sign = percent > 0 ? "+" : "";
+                        string display = percent != 0 ? $"{sign}{percent:F0}%" : "0%";
 
                         tmp.text += $"\n{display}";
                     }
@@ -221,14 +219,10 @@ public class AssistantTab : BaseTab
         }
     }
 
-
-
     private void ClearStat(Transform parent)
     {
         foreach (Transform child in parent)
-        {
             Destroy(child.gameObject);
-        }
     }
 
     public void RefreshEquippedIndicators()
@@ -262,7 +256,6 @@ public class AssistantTab : BaseTab
     private void OnClickWageButton()
     {
         SoundManager.Instance?.Play("ClickSound");
-
         wagePopup.SetActive(true);
         wagePopup.GetComponent<WagePopup>().Show();
     }
@@ -270,16 +263,13 @@ public class AssistantTab : BaseTab
     private void OnClickCloseWagePopup()
     {
         SoundManager.Instance?.Play("ClickSound");
-
         wagePopup.SetActive(false);
     }
 
     private void OnClickDismissButton()
     {
         SoundManager.Instance?.Play("ClickSound");
-
         isDismissMode = !isDismissMode;
-
         DismissManager.Instance?.SetDismissMode(isDismissMode);
     }
 }
