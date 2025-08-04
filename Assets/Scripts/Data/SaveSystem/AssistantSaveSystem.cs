@@ -34,6 +34,9 @@ public class AssistantDataSave
     public int RecruitCost;
     public int RehireCost;
     public bool IsFired;
+
+    public string grade;
+    public string customerInfo;
 }
 
 public class AssistantSaveSystem
@@ -57,7 +60,7 @@ public class AssistantSaveSystem
             if (assi.Personality == null)
             {
                 Debug.LogWarning($"[AssistantSaveSystem] Personality==null! 저장 불가. Key={assi.Key}, Name={assi.Name}");
-                continue; // Personality 없는 인스턴스는 저장하지 않음
+                continue;
             }
 
             var a = new AssistantDataSave
@@ -80,7 +83,10 @@ public class AssistantSaveSystem
                 Wage = assi.Wage,
                 RecruitCost = assi.RecruitCost,
                 RehireCost = assi.RehireCost,
-                IsFired = assi.IsFired
+                IsFired = assi.IsFired,
+
+                grade = assi.grade,
+                customerInfo = assi.CustomerInfo
             };
 
             saveData.Assistants.Add(a);
@@ -93,9 +99,7 @@ public class AssistantSaveSystem
     public static void LoadAssistants(AssistantInventory inventory, PersonalityDataLoader personalityLoader)
     {
         if (!File.Exists(SavePath))
-        {
             return;
-        }
 
         string json = File.ReadAllText(SavePath);
         var saveData = JsonUtility.FromJson<AssistantSaveData>(json);
@@ -117,19 +121,19 @@ public class AssistantSaveSystem
                 level: a.Level,
                 isEquipped: a.IsEquipped,
                 isInuse: a.IsInUse,
+                grade: a.grade,
+                customerInfo: a.customerInfo,
+                recruitCost: a.RecruitCost,
+                wage: a.Wage,
+                rehireCost: a.RehireCost,
                 forgeType: a.EquippedForge
             );
 
             assi.SpecializationIndex = a.SpecializationIndex;
-
-            assi.Wage = a.Wage;
-            assi.RecruitCost = a.RecruitCost;
-            assi.RehireCost = a.RehireCost;
             assi.IsFired = a.IsFired;
 
             inventory.Add(assi);
         }
-
     }
 
     public static void Delete(AssistantInventory inventory)
