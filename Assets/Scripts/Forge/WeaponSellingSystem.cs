@@ -70,7 +70,7 @@ public class WeaponSellingSystem : MonoBehaviour
             return data;
         }
 
-        return weaponList[Random.Range(0, weaponList.Count)].CraftingData;
+        return weaponList[Random.Range(0, weaponList.Count)]?.CraftingData;
     }
 
     IEnumerator CraftingWeaponCoroutine()

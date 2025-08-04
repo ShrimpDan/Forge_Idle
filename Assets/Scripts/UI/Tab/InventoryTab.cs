@@ -158,6 +158,7 @@ public class InventoryTab : BaseTab
 
     private void ClickDecompositionBtn()
     {
-        uIManager.OpenUI<DecompositionWindow>(UIName.DecompositionWindow);
+        var ui = uIManager.OpenUI<DecompositionWindow>(UIName.DecompositionWindow);
+        ui.SetUI(this);
     }
 }

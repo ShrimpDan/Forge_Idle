@@ -61,6 +61,7 @@ public static class UIName
     public const string RewardPopup = "RewardPopup";
     public const string LackPopup = "LackPopup";
     public const string SkillPopup = "SkillPopup";
+    public const string DecompositionPopup = "DecompositionPopup";
 
     public static string GetUINameByType(ButtonType type)
     {

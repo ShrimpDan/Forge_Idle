@@ -106,11 +106,9 @@ public class InventoryManager
             case ItemType.Ingot:
                 ResourceList.Remove(item);
                 break;
-
-
         }
     }
-
+    
     public void EquipItem(ItemInstance item)
     {
         if (item.Data.ItemType != ItemType.Weapon)
@@ -216,6 +214,17 @@ public class InventoryManager
             return itemInstances;
 
         return null;
+    }
+
+    public bool CanEquip()
+    {
+        foreach (var item in EquippedWeaponDict.Values)
+        {
+            if (item == null)
+                return true;
+        }
+
+        return false;
     }
 
     #region  데이터 세이브/로드
@@ -348,17 +357,6 @@ public class InventoryManager
         {
             EquippedWeaponDict[i] = null;
         }
-    }
-
-    public bool CanEquip()
-    {
-        foreach (var item in EquippedWeaponDict.Values)
-        {
-            if (item == null)
-                return true;
-        }
-
-        return false;
     }
     #endregion
 }
