@@ -8,6 +8,9 @@ public class UpgradeWeaponWindow : BaseUI
 {
     public override UIType UIType => UIType.Window;
 
+    [Header("Gold Icon")]
+    [SerializeField] private Sprite goldIconSprite;
+
     [Header("Window Settings")]
     [SerializeField] private Button exitButton;
 
@@ -17,7 +20,10 @@ public class UpgradeWeaponWindow : BaseUI
     [SerializeField] private GameObject upgradePanel;
     [SerializeField] private GameObject gemSystemPanel;
 
-    // --- 강화 UI ---
+    [Header("LackPopup")]
+    [SerializeField] private LackPopup lackPopupPrefab;
+    [SerializeField] private Transform popupParent;
+
     [Header("Upgrade UI")]
     [SerializeField] private Button inputWeaponSlotBtn;
     [SerializeField] private Image inputWeaponIcon;
@@ -33,16 +39,17 @@ public class UpgradeWeaponWindow : BaseUI
     [SerializeField] private Image progressBar;
     [SerializeField] private Button upgradeButton;
 
-    // --- 자동강화 UI ---
+    [Header("Advanced Upgrade UI")]
+    [SerializeField] private Button advancedUpgradeButton;
+
     [Header("Automatic Upgrade UI")]
-    [SerializeField] private Button automaticUpgradeButton;           // 자동강화 열기 버튼
-    [SerializeField] private GameObject automaticUpgradePanel;        // 자동강화 패널
-    [SerializeField] private Button[] automaticUpgradeLevelButtons;   // [1,5,10,13,15] 버튼
+    [SerializeField] private Button automaticUpgradeButton;
+    [SerializeField] private GameObject automaticUpgradePanel;
+    [SerializeField] private Button[] automaticUpgradeLevelButtons;
 
     private readonly int[] autoUpgradeTargetLevels = { 1, 5, 10, 13, 15 };
     private Coroutine autoUpgradeCoroutine;
 
-    // --- 젬 시스템 UI ---
     [Header("Gem System UI")]
     [SerializeField] private Button inputWeaponSlotBtnGem;
     [SerializeField] private Image inputWeaponIconGem;
@@ -58,11 +65,21 @@ public class UpgradeWeaponWindow : BaseUI
     private ItemInstance[] equippedGems = new ItemInstance[4];
 
     private DataManager dataManager;
+    private ForgeManager forgeManager;
+
+    private int CalcEnhanceGoldCost(ItemInstance weapon)
+    {
+        int level = weapon.CurrentEnhanceLevel + 1;
+        float baseAtk = weapon.Data?.WeaponStats?.Attack ?? 1;
+        int cost = Mathf.RoundToInt(1000 * level * level * level);
+        return Mathf.Max(cost, 1000);
+    }
 
     public override void Init(GameManager gameManager, UIManager uIManager)
     {
         base.Init(gameManager, uIManager);
         dataManager = gameManager.DataManager;
+        forgeManager = gameManager.ForgeManager;
 
         // 종료
         exitButton.onClick.RemoveAllListeners();
@@ -82,7 +99,14 @@ public class UpgradeWeaponWindow : BaseUI
         upgradeButton.onClick.RemoveAllListeners();
         upgradeButton.onClick.AddListener(StartUpgrade);
 
-        // --- 자동강화 초기화 및 이벤트 ---
+        // --- 고급강화 이벤트 연결 ---
+        if (advancedUpgradeButton != null)
+        {
+            advancedUpgradeButton.onClick.RemoveAllListeners();
+            advancedUpgradeButton.onClick.AddListener(StartAdvancedUpgrade);
+        }
+
+        // 자동강화
         if (automaticUpgradeButton != null)
         {
             automaticUpgradeButton.onClick.RemoveAllListeners();
@@ -114,7 +138,6 @@ public class UpgradeWeaponWindow : BaseUI
             btn.onClick.AddListener(() => OnGemSlotClicked(idx));
         }
 
-        // 초기 상태
         ShowUpgradePanel();
         ResetUpgradePanel();
         ResetGemSystemPanel();
@@ -183,7 +206,6 @@ public class UpgradeWeaponWindow : BaseUI
         inputWeaponIcon.enabled = true;
         inputWeaponName.text = selectedWeapon.Data.Name;
 
-        // 별 UI
         int curLevel = selectedWeapon.CurrentEnhanceLevel;
         int maxLevel = selectedWeapon.Data.UpgradeInfo.MaxEnhanceLevel;
         foreach (Transform child in currentUpgradeRoot) Destroy(child.gameObject);
@@ -191,10 +213,16 @@ public class UpgradeWeaponWindow : BaseUI
             Instantiate(i < curLevel ? starFilledPrefab : starEmptyPrefab, currentUpgradeRoot);
 
         foreach (Transform child in inputItemRoot) Destroy(child.gameObject);
+        int needGold = CalcEnhanceGoldCost(selectedWeapon);
+        var goldGo = Instantiate(inputItemPrefab, inputItemRoot);
+        TMP_Text amountText = goldGo.transform.Find("Amount_Text")?.GetComponent<TMP_Text>();
+        Image icon = goldGo.transform.Find("Icon")?.GetComponent<Image>();
+        if (amountText != null) amountText.text = needGold.ToString("N0");
+        if (icon != null) icon.sprite = goldIconSprite;
+        goldGo.SetActive(true);
 
         int rate = CalcEnhanceSuccessRate(selectedWeapon);
         successRateText.text = $"{rate}%";
-
         float beforeAtk = selectedWeapon.GetTotalAttack();
         float afterAtk = CalcNextAttack(selectedWeapon);
         beforeText.text = $"{beforeAtk:F0}";
@@ -213,6 +241,11 @@ public class UpgradeWeaponWindow : BaseUI
         return Mathf.Max(60, 100 - (cur * 10));
     }
 
+    private int CalcAdvancedEnhanceSuccessRate(ItemInstance weapon)
+    {
+        return CalcEnhanceSuccessRate(weapon) + 10;
+    }
+
     private float CalcNextAttack(ItemInstance weapon)
     {
         if (weapon == null || weapon.Data == null) return 0;
@@ -227,13 +260,59 @@ public class UpgradeWeaponWindow : BaseUI
     private void StartUpgrade()
     {
         if (selectedWeapon == null || selectedWeapon.Data == null) return;
+        int goldCost = CalcEnhanceGoldCost(selectedWeapon);
+
+        if (!forgeManager.UseGold(goldCost))
+        {
+            if (lackPopupPrefab != null)
+            {
+                LackPopup popup = Instantiate(lackPopupPrefab, popupParent ? popupParent : null);
+                popup.Init(GameManager.Instance, uIManager);
+                popup.Show(LackType.Gold);
+            }
+            return;
+        }
+
         if (upgradeCoroutine != null) StopCoroutine(upgradeCoroutine);
-        upgradeCoroutine = StartCoroutine(UpgradeRoutine());
+        upgradeCoroutine = StartCoroutine(UpgradeRoutine(false));
     }
 
-    private IEnumerator UpgradeRoutine()
+    //--- 고급강화 ---
+    private void StartAdvancedUpgrade()
+    {
+        if (selectedWeapon == null || selectedWeapon.Data == null) return;
+
+        int goldCost = CalcEnhanceGoldCost(selectedWeapon);
+
+        if (!forgeManager.UseGold(goldCost))
+        {
+            if (lackPopupPrefab != null)
+            {
+                LackPopup popup = Instantiate(lackPopupPrefab, popupParent ? popupParent : null);
+                popup.Init(GameManager.Instance, uIManager);
+                popup.Show(LackType.Gold);
+            }
+            return;
+        }
+
+        if (!forgeManager.UseDia(200))
+        {
+            if (lackPopupPrefab != null)
+            {
+                LackPopup popup = Instantiate(lackPopupPrefab, popupParent ? popupParent : null);
+                popup.Init(GameManager.Instance, uIManager);
+                popup.Show(LackType.Dia);
+            }
+            return;
+        }
+        if (upgradeCoroutine != null) StopCoroutine(upgradeCoroutine);
+        upgradeCoroutine = StartCoroutine(UpgradeRoutine(true));
+    }
+
+    private IEnumerator UpgradeRoutine(bool isAdvanced)
     {
         upgradeButton.interactable = false;
+        if (advancedUpgradeButton != null) advancedUpgradeButton.interactable = false;
         if (automaticUpgradeButton != null) automaticUpgradeButton.interactable = false;
 
         float duration = 2.0f;
@@ -245,14 +324,14 @@ public class UpgradeWeaponWindow : BaseUI
             progressBar.fillAmount = Mathf.SmoothStep(0f, 1f, t);
             yield return null;
         }
-        int successRate = CalcEnhanceSuccessRate(selectedWeapon);
+
+        int successRate = isAdvanced ? CalcAdvancedEnhanceSuccessRate(selectedWeapon) : CalcEnhanceSuccessRate(selectedWeapon);
         bool isSuccess = UnityEngine.Random.Range(0, 100) < successRate;
         if (isSuccess)
         {
             progressBar.fillAmount = 1f;
             selectedWeapon.EnhanceItem();
             SoundManager.Instance.Play("Successound");
-            // TODO: 성공 애니메이션
         }
         else
         {
@@ -270,13 +349,11 @@ public class UpgradeWeaponWindow : BaseUI
         }
         RefreshUpgradePanel();
         upgradeButton.interactable = true;
+        if (advancedUpgradeButton != null) advancedUpgradeButton.interactable = true;
         if (automaticUpgradeButton != null) automaticUpgradeButton.interactable = true;
     }
 
-    // ======================
     // ===== 자동강화 =======
-    // ======================
-
     private void ShowAutomaticUpgradePanel()
     {
         if (selectedWeapon == null || selectedWeapon.Data == null) return;
@@ -313,8 +390,8 @@ public class UpgradeWeaponWindow : BaseUI
 
     private IEnumerator AutoUpgradeRoutine(int targetLevel)
     {
-        // 자동강화시 모든 버튼/일반강화 비활성
         if (upgradeButton != null) upgradeButton.interactable = false;
+        if (advancedUpgradeButton != null) advancedUpgradeButton.interactable = false;
         if (automaticUpgradeButton != null) automaticUpgradeButton.interactable = false;
         if (automaticUpgradeLevelButtons != null)
             foreach (var btn in automaticUpgradeLevelButtons)
@@ -325,12 +402,24 @@ public class UpgradeWeaponWindow : BaseUI
                selectedWeapon.CurrentEnhanceLevel < targetLevel &&
                selectedWeapon.CanEnhance)
         {
-            yield return UpgradeRoutine();
-            yield return new WaitForSeconds(0.15f); // 너무 빠르면 연출 어색, 조정
+            int goldCost = CalcEnhanceGoldCost(selectedWeapon);
+            if (!forgeManager.UseGold(goldCost))
+            {
+                if (lackPopupPrefab != null)
+                {
+                    LackPopup popup = Instantiate(lackPopupPrefab, popupParent ? popupParent : null);
+                    popup.Init(GameManager.Instance, uIManager);
+                    popup.Show(LackType.Gold);
+                }
+                break;
+            }
+
+            yield return UpgradeRoutine(false);
+            yield return new WaitForSeconds(0.15f);
         }
 
-        // 종료 시 UI 복원
         if (upgradeButton != null) upgradeButton.interactable = true;
+        if (advancedUpgradeButton != null) advancedUpgradeButton.interactable = true;
         if (automaticUpgradeButton != null) automaticUpgradeButton.interactable = true;
         RefreshAutomaticUpgradeButtons();
         HideAutomaticUpgradePanel();
@@ -350,7 +439,6 @@ public class UpgradeWeaponWindow : BaseUI
         if (selectedGemWeapon != null && selectedGemWeapon.Data == null)
             selectedGemWeapon.Data = dataManager.ItemLoader.GetItemByKey(selectedGemWeapon.ItemKey);
 
-        // 젬 소켓 세팅
         if (selectedGemWeapon.GemSockets == null || selectedGemWeapon.GemSockets.Count < 4)
         {
             selectedGemWeapon.GemSockets = new List<ItemInstance>() { null, null, null, null };
@@ -397,7 +485,6 @@ public class UpgradeWeaponWindow : BaseUI
         inputWeaponIconGem.enabled = true;
         inputWeaponNameGem.text = selectedGemWeapon.Data.Name;
 
-        // 젬 슬롯 UI (직접 등록한 아이콘 배열로)
         for (int i = 0; i < gemSlots.Length; i++)
         {
             var gem = equippedGems[i];
@@ -405,7 +492,7 @@ public class UpgradeWeaponWindow : BaseUI
             {
                 if (gem != null && gem.Data != null)
                 {
-                    gemSlotIcons[i].sprite = IconLoader.GetIconByPath(gem.Data.IconPath);
+                    gemSlotIcons[i].sprite = IconLoader.GetIcon(ItemType.Gem, gem.Data.ItemKey);
                     gemSlotIcons[i].enabled = true;
                 }
                 else
@@ -458,7 +545,6 @@ public class UpgradeWeaponWindow : BaseUI
         InventorySaveSystem.SaveInventory(GameManager.Instance.Inventory);
     }
 
-    // 미리보기 (Before: 젬 적용X / After: 젬 적용O)
     private void CalcGemPreviewStats()
     {
         if (selectedGemWeapon == null || selectedGemWeapon.Data == null)
@@ -467,11 +553,9 @@ public class UpgradeWeaponWindow : BaseUI
             gemAfterText.text = "-";
             return;
         }
-        // Before: 젬 모두 제외
         var bak = new List<ItemInstance>(selectedGemWeapon.GemSockets);
         selectedGemWeapon.GemSockets = new List<ItemInstance>() { null, null, null, null };
         float before = selectedGemWeapon.GetTotalAttack();
-        // After: 젬 반영
         selectedGemWeapon.GemSockets = new List<ItemInstance>(equippedGems);
         float after = selectedGemWeapon.GetTotalAttack();
 

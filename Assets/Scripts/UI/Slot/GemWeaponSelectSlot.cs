@@ -8,7 +8,7 @@ public class GemWeaponSelectSlot : MonoBehaviour
     [Header("UI")]
     [SerializeField] private Image icon;
     [SerializeField] private TMP_Text nameText;
-    [SerializeField] private Image[] gemSlotIcons; 
+    [SerializeField] private Image[] gemSlotIcons;
 
     private ItemInstance weaponData;
     private Action<ItemInstance> onSelect;
@@ -18,12 +18,12 @@ public class GemWeaponSelectSlot : MonoBehaviour
         weaponData = weapon;
         onSelect = onSelectCallback;
 
-        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½/ï¿½Ì¸ï¿½
+        // ¹«±â ¾ÆÀÌÄÜ ¹× ÀÌ¸§
         if (weapon.Data != null)
         {
             if (icon != null)
             {
-                icon.sprite = IconLoader.GetIconByKey(weapon.ItemKey);
+                icon.sprite = IconLoader.GetIconByKey(weapon.Data.ItemKey);
                 icon.enabled = true;
             }
             if (nameText != null)
@@ -32,7 +32,7 @@ public class GemWeaponSelectSlot : MonoBehaviour
             }
         }
 
-        // ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        // Áª ¾ÆÀÌÄÜ
         if (gemSlotIcons != null && weapon.GemSockets != null)
         {
             for (int i = 0; i < gemSlotIcons.Length; i++)
@@ -43,7 +43,7 @@ public class GemWeaponSelectSlot : MonoBehaviour
                 {
                     if (gem != null && gem.Data != null)
                     {
-                        img.sprite = IconLoader.GetIconByPath(gem.Data.IconPath);
+                        img.sprite = IconLoader.GetIconByKey(gem.Data.ItemKey);
                         img.enabled = true;
                     }
                     else
@@ -55,13 +55,10 @@ public class GemWeaponSelectSlot : MonoBehaviour
             }
         }
 
-        // ï¿½ï¿½Æ° ï¿½ï¿½ï¿½
+        // ¹öÆ° ÀÌº¥Æ® ¿¬°á
         var btn = GetComponent<Button>();
         if (btn == null) btn = gameObject.AddComponent<Button>();
         btn.onClick.RemoveAllListeners();
-        btn.onClick.AddListener(() =>
-        {
-            onSelect?.Invoke(weaponData);
-        });
+        btn.onClick.AddListener(() => onSelect?.Invoke(weaponData));
     }
 }

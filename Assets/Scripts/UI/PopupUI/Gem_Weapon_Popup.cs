@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
@@ -10,9 +10,10 @@ public class Gem_Weapon_Popup : BaseUI
 
     [Header("UI")]
     [SerializeField] private Button exitButton;
-    [SerializeField] private Transform weaponListRoot;    
-    [SerializeField] private GameObject weaponSlotPrefab;  
-    [SerializeField] private ScrollRect scrollRect;        
+    [SerializeField] private Transform weaponListRoot;
+    [SerializeField] private GameObject weaponSlotPrefab;
+    [SerializeField] private ScrollRect scrollRect;
+
     private Action<ItemInstance> weaponSelectCallback;
     private List<GameObject> slotInstances = new();
 
@@ -21,7 +22,6 @@ public class Gem_Weapon_Popup : BaseUI
     public override void Init(GameManager gameManager, UIManager uIManager)
     {
         base.Init(gameManager, uIManager);
-
         this.dataManager = gameManager.DataManager;
 
         exitButton.onClick.RemoveAllListeners();
@@ -74,7 +74,8 @@ public class Gem_Weapon_Popup : BaseUI
 
                 if (icon != null)
                 {
-                    icon.sprite = IconLoader.GetIconByPath(itemData.IconPath);
+                    // UpgradeWeaponWindow와 동일! (ItemType, ItemKey)
+                    icon.sprite = IconLoader.GetIcon(itemData.ItemType, itemData.ItemKey);
                     icon.enabled = true;
                 }
                 if (nameText != null)
@@ -90,19 +91,11 @@ public class Gem_Weapon_Popup : BaseUI
                         var gem = (weapon.GemSockets.Count > i) ? weapon.GemSockets[i] : null;
                         if (gemIcon != null)
                         {
-                            if (gem != null)
+                            if (gem != null && gem.Data != null)
                             {
-                                ItemData gemData = dataManager.ItemLoader.GetItemByKey(gem.ItemKey);
-                                if (gemData != null)
-                                {
-                                    gemIcon.sprite = IconLoader.GetIconByPath(gemData.IconPath);
-                                    gemIcon.enabled = true;
-                                }
-                                else
-                                {
-                                    gemIcon.sprite = null;
-                                    gemIcon.enabled = false;
-                                }
+                                // UpgradeWeaponWindow와 똑같이, 젬도 ItemType, ItemKey로!
+                                gemIcon.sprite = IconLoader.GetIcon(gem.Data.ItemType, gem.Data.ItemKey);
+                                gemIcon.enabled = true;
                             }
                             else
                             {

@@ -11,7 +11,6 @@ public static class IconLoader
         return GetIconByPath(path);
     }
 
-    // 무기/방어구 아니면 전부 Resource 폴더!
     public static string GetIconPath(ItemType itemType, string key)
     {
         switch (itemType)
