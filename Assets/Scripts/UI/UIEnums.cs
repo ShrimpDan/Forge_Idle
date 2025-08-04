@@ -44,6 +44,7 @@ public static class UIName
     public const string MagicRecipeWindow = "MagicRecipeWindow";
     public const string SkillWindow = "SkillWindow";
     public const string ForgeMoveWindow = "ForgeMoveWindow";
+    public const string DecompositionWindow = "DecompositionWindow";
     
     // Popup UI
     public const string InventoryPopup = "InventoryPopup";
