@@ -98,6 +98,11 @@ public class TutorialManager : MonoBehaviour
 
     private void OnDisable()
     {
+        if (!isTurtorialMode)
+        { 
+            return;
+        }
+
         ClickBlocker.OnBlockClick -= HandleClickBlock;
         ForgeTab.onClickButton -= HandleButtonClick;
 
@@ -423,7 +428,6 @@ public class TutorialManager : MonoBehaviour
         PlayerPrefs.SetInt("TutorialDone", 1);
         tutorialPanel.SetActive(false);
         AllEffectOff();
-        effect.HideHighlight();
         ClickBlockerOff();
         GameManager.Instance.Forge.CustomerManager.EndTutorial();
 
