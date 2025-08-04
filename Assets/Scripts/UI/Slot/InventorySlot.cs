@@ -7,6 +7,7 @@ public class InventorySlot : MonoBehaviour
     private UIManager uIManager;
 
     [SerializeField] private Image icon;
+    [SerializeField] private TextMeshProUGUI nameText;
     [SerializeField] private TextMeshProUGUI countText;
     [SerializeField] private GameObject equippedIndicator;
     private Button slotBtn;
@@ -22,13 +23,22 @@ public class InventorySlot : MonoBehaviour
         slotBtn.onClick.AddListener(() => OnClickSlot());
 
         SlotItem = item;
-        countText.text = item.Data.Name;
+        nameText.text = item.Data.Name;
         icon.sprite = IconLoader.GetIconByKey(SlotItem.ItemKey);
 
         if (uIManager == null)
-                uIManager = GameManager.Instance.UIManager;
+            uIManager = GameManager.Instance.UIManager;
 
-        SetEquipped(SlotItem.IsEquipped);
+        if (item.Data.ItemType == ItemType.Weapon)
+        {
+            SetEquipped(SlotItem.IsEquipped);
+            countText.gameObject.SetActive(false);
+        }
+        else
+        {
+            SetEquipped(false);
+            countText.text = item.Quantity.ToString();
+        }
     }
 
     private void OnClickSlot()
