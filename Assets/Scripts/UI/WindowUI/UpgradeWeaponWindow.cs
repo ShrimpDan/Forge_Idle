@@ -33,19 +33,28 @@ public class UpgradeWeaponWindow : BaseUI
     [SerializeField] private Image progressBar;
     [SerializeField] private Button upgradeButton;
 
+    // --- 자동강화 UI ---
+    [Header("Automatic Upgrade UI")]
+    [SerializeField] private Button automaticUpgradeButton;           // 자동강화 열기 버튼
+    [SerializeField] private GameObject automaticUpgradePanel;        // 자동강화 패널
+    [SerializeField] private Button[] automaticUpgradeLevelButtons;   // [1,5,10,13,15] 버튼
+
+    private readonly int[] autoUpgradeTargetLevels = { 1, 5, 10, 13, 15 };
+    private Coroutine autoUpgradeCoroutine;
+
     // --- 젬 시스템 UI ---
     [Header("Gem System UI")]
-    [SerializeField] private Button inputWeaponSlotBtnGem;   
-    [SerializeField] private Image inputWeaponIconGem;        
-    [SerializeField] private TMP_Text inputWeaponNameGem;    
+    [SerializeField] private Button inputWeaponSlotBtnGem;
+    [SerializeField] private Image inputWeaponIconGem;
+    [SerializeField] private TMP_Text inputWeaponNameGem;
     [SerializeField] private Transform[] gemSlots;
     [SerializeField] private Image[] gemSlotIcons;
-    [SerializeField] private TMP_Text gemBeforeText;         
-    [SerializeField] private TMP_Text gemAfterText;         
+    [SerializeField] private TMP_Text gemBeforeText;
+    [SerializeField] private TMP_Text gemAfterText;
 
-    private ItemInstance selectedWeapon;            
+    private ItemInstance selectedWeapon;
     private Coroutine upgradeCoroutine;
-    private ItemInstance selectedGemWeapon;        
+    private ItemInstance selectedGemWeapon;
     private ItemInstance[] equippedGems = new ItemInstance[4];
 
     private DataManager dataManager;
@@ -73,6 +82,24 @@ public class UpgradeWeaponWindow : BaseUI
         upgradeButton.onClick.RemoveAllListeners();
         upgradeButton.onClick.AddListener(StartUpgrade);
 
+        // --- 자동강화 초기화 및 이벤트 ---
+        if (automaticUpgradeButton != null)
+        {
+            automaticUpgradeButton.onClick.RemoveAllListeners();
+            automaticUpgradeButton.onClick.AddListener(ShowAutomaticUpgradePanel);
+        }
+        if (automaticUpgradeLevelButtons != null && automaticUpgradeLevelButtons.Length == autoUpgradeTargetLevels.Length)
+        {
+            for (int i = 0; i < automaticUpgradeLevelButtons.Length; i++)
+            {
+                int idx = i;
+                automaticUpgradeLevelButtons[i].onClick.RemoveAllListeners();
+                automaticUpgradeLevelButtons[i].onClick.AddListener(() => StartAutomaticUpgrade(autoUpgradeTargetLevels[idx]));
+            }
+        }
+        if (automaticUpgradePanel != null)
+            automaticUpgradePanel.SetActive(false);
+
         // 무기선택(젬)
         inputWeaponSlotBtnGem.onClick.RemoveAllListeners();
         inputWeaponSlotBtnGem.onClick.AddListener(OpenGemWeaponPopup);
@@ -93,19 +120,21 @@ public class UpgradeWeaponWindow : BaseUI
         ResetGemSystemPanel();
     }
 
-    //강화 탭
+    //--- 강화 탭 ---
     private void ShowUpgradePanel()
     {
         upgradePanel.SetActive(true);
         gemSystemPanel.SetActive(false);
         ResetUpgradePanel();
+        HideAutomaticUpgradePanel();
     }
 
-    //젬 탭
+    //--- 젬 탭 ---
     private void ShowGemPanel()
     {
         upgradePanel.SetActive(false);
         gemSystemPanel.SetActive(true);
+        HideAutomaticUpgradePanel();
         if (GameManager.Instance.TutorialManager != null)
         {
             GameManager.Instance.TutorialManager.ForceStepClear();
@@ -113,7 +142,7 @@ public class UpgradeWeaponWindow : BaseUI
         ResetGemSystemPanel();
     }
 
-    //강화 시스템
+    //--- 무기 선택 ---
     private void OpenWeaponInventory()
     {
         var popup = uIManager.OpenUI<Forge_Inventory_Popup>(UIName.Forge_Inventory_Popup);
@@ -126,6 +155,7 @@ public class UpgradeWeaponWindow : BaseUI
         if (selectedWeapon != null && selectedWeapon.Data == null)
             selectedWeapon.Data = dataManager.ItemLoader.GetItemByKey(selectedWeapon.ItemKey);
         RefreshUpgradePanel();
+        RefreshAutomaticUpgradeButtons();
     }
 
     private void ResetUpgradePanel()
@@ -139,6 +169,7 @@ public class UpgradeWeaponWindow : BaseUI
         progressBar.fillAmount = 0;
         foreach (Transform child in currentUpgradeRoot) Destroy(child.gameObject);
         foreach (Transform child in inputItemRoot) Destroy(child.gameObject);
+        HideAutomaticUpgradePanel();
     }
 
     private void RefreshUpgradePanel()
@@ -169,6 +200,8 @@ public class UpgradeWeaponWindow : BaseUI
         beforeText.text = $"{beforeAtk:F0}";
         afterText.text = $"{afterAtk:F0}";
         progressBar.fillAmount = 0;
+
+        RefreshAutomaticUpgradeButtons();
     }
 
     private int CalcEnhanceSuccessRate(ItemInstance weapon)
@@ -190,6 +223,7 @@ public class UpgradeWeaponWindow : BaseUI
         return (nextLv == 0) ? baseAtk : baseAtk * (nextLv * mul);
     }
 
+    //--- 일반강화 ---
     private void StartUpgrade()
     {
         if (selectedWeapon == null || selectedWeapon.Data == null) return;
@@ -200,6 +234,8 @@ public class UpgradeWeaponWindow : BaseUI
     private IEnumerator UpgradeRoutine()
     {
         upgradeButton.interactable = false;
+        if (automaticUpgradeButton != null) automaticUpgradeButton.interactable = false;
+
         float duration = 2.0f;
         float timer = 0f;
         while (timer < duration)
@@ -234,9 +270,74 @@ public class UpgradeWeaponWindow : BaseUI
         }
         RefreshUpgradePanel();
         upgradeButton.interactable = true;
+        if (automaticUpgradeButton != null) automaticUpgradeButton.interactable = true;
     }
 
-    //젬 시스템
+    // ======================
+    // ===== 자동강화 =======
+    // ======================
+
+    private void ShowAutomaticUpgradePanel()
+    {
+        if (selectedWeapon == null || selectedWeapon.Data == null) return;
+        if (automaticUpgradePanel != null) automaticUpgradePanel.SetActive(true);
+        RefreshAutomaticUpgradeButtons();
+    }
+    private void HideAutomaticUpgradePanel()
+    {
+        if (automaticUpgradePanel != null) automaticUpgradePanel.SetActive(false);
+    }
+
+    private void RefreshAutomaticUpgradeButtons()
+    {
+        if (automaticUpgradeLevelButtons == null || automaticUpgradeLevelButtons.Length != autoUpgradeTargetLevels.Length) return;
+        int maxLevel = selectedWeapon?.Data?.UpgradeInfo.MaxEnhanceLevel ?? 0;
+        for (int i = 0; i < autoUpgradeTargetLevels.Length; i++)
+        {
+            bool valid = autoUpgradeTargetLevels[i] <= maxLevel;
+            automaticUpgradeLevelButtons[i].interactable = valid;
+            TMP_Text btnText = automaticUpgradeLevelButtons[i].GetComponentInChildren<TMP_Text>();
+            if (btnText != null)
+                btnText.color = valid ? Color.white : Color.gray;
+        }
+    }
+
+    private void StartAutomaticUpgrade(int targetLevel)
+    {
+        if (selectedWeapon == null || selectedWeapon.Data == null) return;
+        if (targetLevel > selectedWeapon.Data.UpgradeInfo.MaxEnhanceLevel) return;
+
+        if (autoUpgradeCoroutine != null) StopCoroutine(autoUpgradeCoroutine);
+        autoUpgradeCoroutine = StartCoroutine(AutoUpgradeRoutine(targetLevel));
+    }
+
+    private IEnumerator AutoUpgradeRoutine(int targetLevel)
+    {
+        // 자동강화시 모든 버튼/일반강화 비활성
+        if (upgradeButton != null) upgradeButton.interactable = false;
+        if (automaticUpgradeButton != null) automaticUpgradeButton.interactable = false;
+        if (automaticUpgradeLevelButtons != null)
+            foreach (var btn in automaticUpgradeLevelButtons)
+                btn.interactable = false;
+
+        while (selectedWeapon != null &&
+               selectedWeapon.Data != null &&
+               selectedWeapon.CurrentEnhanceLevel < targetLevel &&
+               selectedWeapon.CanEnhance)
+        {
+            yield return UpgradeRoutine();
+            yield return new WaitForSeconds(0.15f); // 너무 빠르면 연출 어색, 조정
+        }
+
+        // 종료 시 UI 복원
+        if (upgradeButton != null) upgradeButton.interactable = true;
+        if (automaticUpgradeButton != null) automaticUpgradeButton.interactable = true;
+        RefreshAutomaticUpgradeButtons();
+        HideAutomaticUpgradePanel();
+        autoUpgradeCoroutine = null;
+    }
+
+    // =========== 젬 시스템 ===========
     private void OpenGemWeaponPopup()
     {
         var popup = uIManager.OpenUI<Gem_Weapon_Popup>(UIName.Gem_Weapon_Popup);
@@ -284,9 +385,6 @@ public class UpgradeWeaponWindow : BaseUI
         gemAfterText.text = "-";
     }
 
-
-
-
     private void RefreshGemSystemPanel()
     {
         if (selectedGemWeapon == null || selectedGemWeapon.Data == null)
@@ -320,7 +418,6 @@ public class UpgradeWeaponWindow : BaseUI
 
         CalcGemPreviewStats();
     }
-
 
     private void OnGemSlotClicked(int idx)
     {
