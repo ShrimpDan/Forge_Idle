@@ -398,15 +398,7 @@ public class TutorialManager : MonoBehaviour
             case 49:
                 EndTutorial();
                 break;
-
-
-
         }
-
-
-
-
-
 
     }
 
