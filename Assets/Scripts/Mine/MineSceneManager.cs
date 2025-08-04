@@ -109,6 +109,7 @@ public class MineSceneManager : MonoBehaviour
         ShowMineDetailMap();
         RemoveFiredAssistantsFromMine();
         RemoveEquippedAssistantsFromMineOnly();
+        RemoveInactiveAssistantsFromMine();
     }
 
     private void SetAllInactive()
@@ -425,6 +426,27 @@ public class MineSceneManager : MonoBehaviour
                     ClearSlotAssistant(groupIdx, group.slotUIs[slotIdx]);
 
                     Debug.Log($"[광산] 착용 중인 제자 {assi.Name} → 광산에서 해제됨");
+                }
+            }
+        }
+    }
+
+    private void RemoveInactiveAssistantsFromMine()
+    {
+        foreach (var group in mineGroups)
+        {
+            for (int i = 0; i < group.slots.Count; i++)
+            {
+                var slot = group.slots[i];
+                var assi = slot.AssignedAssistant;
+
+                if (slot.IsAssigned && assi != null && !assi.IsInUse)
+                {
+                    slot.Unassign();
+                    group.slotUIs[i].AssignAssistant(null);
+                    ClearSlotAssistant(mineGroups.IndexOf(group), group.slotUIs[i]);
+
+                    Debug.Log($"[광산] 활동 중이 아닌 제자 {assi.Name} → 광산에서 제거됨 (IsInUse == false)");
                 }
             }
         }

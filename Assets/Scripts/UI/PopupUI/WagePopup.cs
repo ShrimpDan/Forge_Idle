@@ -1,11 +1,9 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 
 public class WagePopup : MonoBehaviour
 {
-    [SerializeField] private AssistantTab assistantTab;
-
     [SerializeField] private TMP_Text wageText;
     [SerializeField] private Button closeButton;
 
@@ -16,8 +14,9 @@ public class WagePopup : MonoBehaviour
 
     public void Show()
     {
-        int totalWage = 0;
+        Debug.Log("[WagePopup] Show() 호출됨");
 
+        int totalWage = 0;
         var trainees = GameManager.Instance.AssistantInventory?.GetActiveTrainees();
         if (trainees != null)
         {
@@ -28,13 +27,9 @@ public class WagePopup : MonoBehaviour
         wageText.text = $"{UIManager.FormatNumber(totalWage)}";
     }
 
-    public void Close()
+    private void Close()
     {
         gameObject.SetActive(false);
         transform.parent.Find("DimBackground")?.gameObject.SetActive(false);
-
-        DismissManager.Instance?.SetDismissMode(false);
-
-        assistantTab?.RefreshSlots();
     }
 }

@@ -42,7 +42,9 @@ public class DismissManager : MonoBehaviour
             if (selectedSlots.Count == 0)
             {
                 isDismissMode = false;
-                ApplyColorByMode();
+                SetDismissMode(false);
+
+                Debug.Log("[DismissManager] 해고 모드 종료됨 (선택 없음)");
 
                 foreach (var slot in allRegisteredSlots)
                 {
@@ -54,14 +56,34 @@ public class DismissManager : MonoBehaviour
             }
             else
             {
+                Debug.Log($"[DismissManager] 해고 대상 {selectedSlots.Count}명 → 확인 팝업 열림");
+
+                foreach (var slot in selectedSlots)
+                {
+                    Debug.Log($" - 선택된 제자: {slot.Assistant?.Name ?? "null"}");
+                }
+
                 if (dismissPopup != null)
+                {
+                    var popup = dismissPopup.GetComponent<DismissConfirmPopup>();
+                    if (popup != null)
+                    {
+                        popup.Show(GetSelectedSlotsCopy());
+                    }
+                    else
+                    {
+                        Debug.LogWarning("[DismissManager] dismissPopup에 DismissConfirmPopup 컴포넌트가 없습니다.");
+                    }
+
                     dismissPopup.SetActive(true);
+                }
             }
         }
         else
         {
             isDismissMode = true;
-            ApplyColorByMode();
+            SetDismissMode(true);
+            Debug.Log("[DismissManager] 해고 모드 진입");
 
             foreach (var slot in allRegisteredSlots)
             {
@@ -73,11 +95,12 @@ public class DismissManager : MonoBehaviour
         }
     }
 
-
     public void SetDismissMode(bool on)
     {
         isDismissMode = on;
         ApplyColorByMode();
+
+        Debug.Log($"[DismissManager] SetDismissMode({on}) 호출됨");
 
         foreach (var slot in allRegisteredSlots)
         {
@@ -89,6 +112,7 @@ public class DismissManager : MonoBehaviour
 
         selectedSlots.Clear();
     }
+
 
     private void ApplyColorByMode()
     {
@@ -143,4 +167,45 @@ public class DismissManager : MonoBehaviour
     {
         return selectedSlots;
     }
+
+    public List<AssistantInstance> GetSelectedAssistants()
+    {
+        List<AssistantInstance> result = new();
+
+        foreach (var slot in selectedSlots)
+        {
+            if (slot == null)
+            {
+                Debug.LogWarning("[DismissManager] 선택된 슬롯 중 null 있음");
+                continue;
+            }
+
+            var assistant = slot.Assistant;
+            if (assistant == null)
+            {
+                Debug.LogWarning("[DismissManager] 슬롯에 AssistantInstance가 null입니다");
+                continue;
+            }
+
+            result.Add(assistant);
+        }
+
+        return result;
+    }
+
+    public List<AssistantSlot> GetSelectedSlotsCopy()
+    {
+        return new List<AssistantSlot>(selectedSlots);
+    }
+
+    public void LogCurrentSelected()
+    {
+        Debug.Log($"[DismissManager] 현재 선택된 슬롯 수: {selectedSlots.Count}");
+
+        foreach (var slot in selectedSlots)
+        {
+            Debug.Log($" - 슬롯: {slot.name}, 어시스턴트: {slot.Assistant?.Name}, isSelected={slot.IsSelected()}");
+        }
+    }
+
 }

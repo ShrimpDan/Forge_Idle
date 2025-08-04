@@ -34,12 +34,22 @@ public class AssistantInventory
     /// </summary>
     public void Remove(AssistantInstance data)
     {
+        Debug.Log($"[AssistantInventory] Remove 호출: {data?.Name}, 키: {data?.Key}");
+
         if (!assistantList.Remove(data))
         {
-            Debug.LogWarning("[AssistantInventory] 리스트에서 제거 실패: 해당 제자가 존재하지 않습니다.");
+            Debug.LogWarning("[AssistantInventory] 리스트에서 제거 실패: 참조 불일치 또는 존재하지 않음");
+
+            var match = assistantList.Find(a => a.Key == data.Key);
+            if (match != null)
+            {
+                Debug.LogWarning($"[AssistantInventory] 동일한 키의 제자 존재하지만 참조 다름: {match.Name}");
+            }
+
             return;
         }
 
+        Debug.Log($"[AssistantInventory] 제자 제거 성공: {data.Name}");
         ReindexSpecialization(data.Specialization);
     }
 

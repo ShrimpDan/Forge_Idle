@@ -2980,6 +2980,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 463035542}
   m_CullTransparentMesh: 1
+--- !u!114 &466504160 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5175543826329466526, guid: 4b7bd5658b533a34aaa3afdceb9b2368, type: 3}
+  m_PrefabInstance: {fileID: 1446033299}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &498545379
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6475,7 +6486,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5175543826329466526, guid: 4b7bd5658b533a34aaa3afdceb9b2368, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5175543826329466526, guid: 4b7bd5658b533a34aaa3afdceb9b2368, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
@@ -6549,19 +6560,42 @@ PrefabInstance:
       propertyPath: assistantTab
       value: 
       objectReference: {fileID: 715228935}
-    m_RemovedComponents: []
+    - target: {fileID: 8366216181354204317, guid: 4b7bd5658b533a34aaa3afdceb9b2368, type: 3}
+      propertyPath: confirmButton
+      value: 
+      objectReference: {fileID: 466504160}
+    m_RemovedComponents:
+    - {fileID: 8366216181354204317, guid: 4b7bd5658b533a34aaa3afdceb9b2368, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 2849118502275398701, guid: 4b7bd5658b533a34aaa3afdceb9b2368, type: 3}
       insertIndex: -1
       addedObject: {fileID: 731635806}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2876743716848067743, guid: 4b7bd5658b533a34aaa3afdceb9b2368, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1446033304}
   m_SourcePrefab: {fileID: 100100000, guid: 4b7bd5658b533a34aaa3afdceb9b2368, type: 3}
 --- !u!224 &1446033300 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2849118502275398701, guid: 4b7bd5658b533a34aaa3afdceb9b2368, type: 3}
   m_PrefabInstance: {fileID: 1446033299}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1446033304
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 813314251}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88d47e37ed0b4484893f41b4b347df63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  confirmButton: {fileID: 466504160}
+  cancelButton: {fileID: 731635807}
+  assistantTab: {fileID: 715228935}
 --- !u!114 &1446805120 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3792391492370384722, guid: e5cfb9fd64f022c439c48db06878b5a3, type: 3}

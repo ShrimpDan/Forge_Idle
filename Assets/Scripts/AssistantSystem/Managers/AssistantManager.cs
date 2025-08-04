@@ -78,6 +78,29 @@ public class AssistantManager : MonoBehaviour
         Debug.Log("<color=red>[AssistantManager] 제자 전체 초기화 및 저장 삭제 완료</color>");
     }
 
+    public void DismissAssistant(AssistantInstance target)
+    {
+        if (target == null) return;
+
+        if (target.IsEquipped)
+        {
+            gameManager.ForgeManager.EquippedAssistant[target.EquippedForge][target.Specialization] = null;
+            target.EquipAssi(false);
+        }
+
+        if (target.IsInUse)
+        {
+            target.IsInUse = false;
+        }
+
+        GameManager.Instance.HeldCandidates.RemoveAll(c => c.Key == target.Key);
+
+        AssistantInventory.Remove(target);
+
+        GameManager.Instance.SaveManager.SaveAll();
+    }
+
+
     public void RecruitSingle(SpecializationType? type = null)
     {
         if (!canRecruit)

@@ -41,14 +41,28 @@ public class AssistantSlot : MonoBehaviour
 
         if (checkmark != null)
             checkmark.gameObject.SetActive(false);
+
+        if (AssistantData != null)
+        {
+            DismissManager.Instance?.RegisterSlot(this);
+            Debug.Log($"[AssistantSlot] 등록 완료: {AssistantData.Name}");
+        }
+        else
+        {
+            Debug.LogWarning("[AssistantSlot] AssistantData가 null이어서 등록되지 않음");
+        }
     }
+
 
     private void OnClickSlot()
     {
         SoundManager.Instance.Play("ClickSound");
 
+        Debug.Log($"[AssistantSlot] 슬롯 클릭됨: {AssistantData?.Name}, 해고 모드: {DismissManager.Instance?.IsDismissMode()}");
+
         if (DismissManager.Instance != null && DismissManager.Instance.IsDismissMode())
         {
+            Debug.Log($"[AssistantSlot] 해고 선택 처리됨 → {AssistantData?.Name}");
             DismissManager.Instance.ToggleSelect(this);
             return;
         }
@@ -61,6 +75,7 @@ public class AssistantSlot : MonoBehaviour
         var popup = uIManager.OpenUI<AssistantPopup>(UIName.AssistantPopup);
         popup.SetAssistant(AssistantData);
     }
+
 
     public void RefreshEquippedState()
     {
