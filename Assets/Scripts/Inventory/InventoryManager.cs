@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using UnityEditor;
 
@@ -221,6 +220,17 @@ public class InventoryManager
         foreach (var item in EquippedWeaponDict.Values)
         {
             if (item == null)
+                return true;
+        }
+
+        return false;
+    }
+
+    public bool IsEquippedWeapon()
+    {
+        foreach (var item in EquippedWeaponDict.Values)
+        {
+            if (item != null)
                 return true;
         }
 
