@@ -108,13 +108,13 @@ public class InventoryPopup : BaseUI
         {
             slotItem.UnEquipItem();
             gameManager.Inventory.UnEquipItem(slotItem);
-            btnName.text = "Equip";
+            btnName.text = "장착";
         }
         else
         {
             slotItem.EquipItem();
             gameManager.Inventory.EquipItem(slotItem);
-            btnName.text = "UnEquip";
+            btnName.text = "해제";
         }
     }
 }
