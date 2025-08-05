@@ -56,15 +56,14 @@ public class HighLightEffectController : MonoBehaviour
         highLightMaterial.SetVector("_Center", normalizedPos);
 
     }
-    public void ShowHighlight(Vector2 screenPos)
+    public void ShowHighlight(Vector2 normalizedPos)
     {
         if (highLightMaterial == null || highlightImage == null)
-        { 
+        {
             return;
         }
 
-        Vector2 normalizedPos = new Vector2(screenPos.x / Screen.width, screenPos.y / Screen.height);
-
+       
         highLightMaterial.SetVector("_Center", normalizedPos);
         highlightImage.enabled = true;
     }
