@@ -15,7 +15,7 @@ public class CollectionUI : BaseUI
 
     private readonly List<CustomerSlotUI> slots = new();    // 슬롯 참조(파괴 시 정리)
 
-    public override UIType UIType => UIType.Popup;
+    public override UIType UIType => UIType.Window;
 
     public override void Init(GameManager gameManager, UIManager uIManager)
     {
