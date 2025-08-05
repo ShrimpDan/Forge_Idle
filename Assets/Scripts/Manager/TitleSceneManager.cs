@@ -17,7 +17,7 @@ public class TitleSceneManager : MonoBehaviour
 
     private void Start()
     {
-        SoundManager.Instance?.Play("MainBGM");
+        SoundManager.Instance?.Play("TitleBGM");
 
         if (titleAnim != null)
             titleAnim.SetTrigger("Start");
@@ -25,6 +25,7 @@ public class TitleSceneManager : MonoBehaviour
 
     private void ClickStartBtn()
     {
+        SoundManager.Instance?.Play("ClickSound");
         LoadSceneManager.Instance.LoadSceneAsync(SceneType.Forge_Main);
     }
 }
