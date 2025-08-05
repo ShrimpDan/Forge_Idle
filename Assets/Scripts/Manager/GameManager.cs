@@ -97,7 +97,6 @@ public class GameManager : MonoSingleton<GameManager>
 
         SaveManager.LoadAll();
 
-
         SoundManager.Instance.Play("MainBGM");
     }
 

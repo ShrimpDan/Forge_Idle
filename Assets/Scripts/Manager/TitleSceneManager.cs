@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class TitleSceneManager : MonoBehaviour
@@ -9,6 +8,7 @@ public class TitleSceneManager : MonoBehaviour
 
     private void Awake()
     {
+        Application.targetFrameRate = 60;
         startButton.onClick.AddListener(ClickStartBtn);
     }
 
