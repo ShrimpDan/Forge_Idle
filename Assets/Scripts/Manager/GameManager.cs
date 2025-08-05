@@ -83,8 +83,6 @@ public class GameManager : MonoSingleton<GameManager>
 
     private void Start()
     {
-
-
         SaveManager = new GameSaveManager();
 
         SaveManager.RegisterSaveHandler(new SkillSaveHandler(SkillManager));
@@ -184,6 +182,14 @@ public class GameManager : MonoSingleton<GameManager>
         else
         {
             Debug.LogWarning("[GameManager] Forge 인스턴스를 찾을 수 없습니다!");
+        }
+    }
+
+    public void AddDia(int amount)
+    {
+        if (ForgeManager != null)
+        {
+            ForgeManager.AddDia(amount);
         }
     }
 
