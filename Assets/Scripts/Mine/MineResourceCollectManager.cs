@@ -75,11 +75,9 @@ public class MineResourceCollectManager : MonoBehaviour
                 var amountText = go.transform.Find("Amount").GetComponent<TMPro.TMP_Text>();
                 var item = GameManager.Instance.DataManager.ItemLoader.GetItemByKey(pair.Key);
 
-                // 숫자 세팅
                 if (amountText != null)
                     amountText.text = amountInt.ToString();
 
-                // 아이콘 세팅
                 if (iconImg != null && item != null)
                 {
                     Sprite iconSprite = null;

@@ -18,6 +18,9 @@ public class MineAssistantSlotUI : MonoBehaviour
     [SerializeField] private Sprite rankSSR;
     [SerializeField] private Sprite rankUR;
 
+    // 슬롯 차단 상태 저장 (필요할 경우)
+    private bool isBlocked = false;
+
     public Action<MineAssistantSlotUI> OnSlotClicked;
 
     public bool IsSceneSlot() => slot != null;
@@ -26,7 +29,13 @@ public class MineAssistantSlotUI : MonoBehaviour
     private void Awake()
     {
         if (slotButton != null)
-            slotButton.onClick.AddListener(() => OnSlotClicked?.Invoke(this));
+            slotButton.onClick.AddListener(OnSlotButtonClick);
+    }
+
+    private void OnSlotButtonClick()
+    {
+        if (isBlocked) return; // 혹시나 안전장치. 버튼 비활성화면 호출 안 됨. 그래도 혹시 모르니.
+        OnSlotClicked?.Invoke(this);
     }
 
     public void Init(AssistantInventory inv)
@@ -68,14 +77,12 @@ public class MineAssistantSlotUI : MonoBehaviour
             var icon = IconLoader.GetIconByPath(slot.AssignedAssistant.IconPath);
             iconImage.sprite = icon;
             iconImage.enabled = true;
-            // 등급 아이콘 표시
             SetRankIcon(slot.AssignedAssistant.grade);
         }
         else if (iconImage != null)
         {
             iconImage.sprite = null;
             iconImage.enabled = false;
-            // 등급 아이콘 비활성화
             if (rankIconImage != null) rankIconImage.enabled = false;
         }
     }
@@ -108,5 +115,12 @@ public class MineAssistantSlotUI : MonoBehaviour
             default: rankIconImage.sprite = null; break;
         }
         rankIconImage.enabled = rankIconImage.sprite != null;
+    }
+
+    public void SetBlocked(bool blocked)
+    {
+        if (slotButton != null)
+            slotButton.interactable = !blocked;
+
     }
 }

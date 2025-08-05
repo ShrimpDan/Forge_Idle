@@ -8,7 +8,8 @@ public class GemWeaponSelectSlot : MonoBehaviour
     [Header("UI")]
     [SerializeField] private Image icon;
     [SerializeField] private TMP_Text nameText;
-    [SerializeField] private Image[] gemSlotIcons; 
+    [SerializeField] private Image[] gemSlotIcons;
+    [SerializeField] private TMP_Text enhanceText;
 
     private ItemInstance weaponData;
     private Action<ItemInstance> onSelect;
@@ -18,12 +19,12 @@ public class GemWeaponSelectSlot : MonoBehaviour
         weaponData = weapon;
         onSelect = onSelectCallback;
 
-        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½/ï¿½Ì¸ï¿½
+        // ¹«±â ¾ÆÀÌÄÜ ¹× ÀÌ¸§
         if (weapon.Data != null)
         {
             if (icon != null)
             {
-                icon.sprite = IconLoader.GetIconByKey(weapon.ItemKey);
+                icon.sprite = IconLoader.GetIconByKey(weapon.Data.ItemKey);
                 icon.enabled = true;
             }
             if (nameText != null)
@@ -32,7 +33,10 @@ public class GemWeaponSelectSlot : MonoBehaviour
             }
         }
 
-        // ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        // °­È­ ¼öÄ¡ Ç¥½Ã
+        UpdateEnhanceText(weapon?.CurrentEnhanceLevel ?? 0);
+
+        // Áª ¾ÆÀÌÄÜ
         if (gemSlotIcons != null && weapon.GemSockets != null)
         {
             for (int i = 0; i < gemSlotIcons.Length; i++)
@@ -43,7 +47,7 @@ public class GemWeaponSelectSlot : MonoBehaviour
                 {
                     if (gem != null && gem.Data != null)
                     {
-                        img.sprite = IconLoader.GetIconByPath(gem.Data.IconPath);
+                        img.sprite = IconLoader.GetIconByKey(gem.Data.ItemKey);
                         img.enabled = true;
                     }
                     else
@@ -55,13 +59,39 @@ public class GemWeaponSelectSlot : MonoBehaviour
             }
         }
 
-        // ï¿½ï¿½Æ° ï¿½ï¿½ï¿½
+        // ¹öÆ° ÀÌº¥Æ® ¿¬°á
         var btn = GetComponent<Button>();
         if (btn == null) btn = gameObject.AddComponent<Button>();
         btn.onClick.RemoveAllListeners();
-        btn.onClick.AddListener(() =>
+        btn.onClick.AddListener(() => onSelect?.Invoke(weaponData));
+    }
+
+    // --- °­È­¼öÄ¡(+N) Ç¥½Ã ¹× »ö»ó ±¸°£ Ã³¸® ---
+    private void UpdateEnhanceText(int enhanceLevel)
+    {
+        if (enhanceText == null)
+            return;
+
+        if (enhanceLevel > 0)
         {
-            onSelect?.Invoke(weaponData);
-        });
+            enhanceText.gameObject.SetActive(true);
+            enhanceText.text = $"+{enhanceLevel}";
+
+            if (enhanceLevel <= 5)
+                enhanceText.color = Color.green;
+            else if (enhanceLevel <= 8)
+                enhanceText.color = new Color(0.28f, 0.53f, 1f); // ÆÄ¶û
+            else if (enhanceLevel <= 10)
+                enhanceText.color = new Color(0.8f, 0.35f, 1f); // º¸¶ó
+            else if (enhanceLevel <= 13)
+                enhanceText.color = new Color(1f, 0.5f, 0f); // ÁÖÈ²
+            else
+                enhanceText.color = Color.red;
+        }
+        else
+        {
+            enhanceText.text = "";
+            enhanceText.gameObject.SetActive(false);
+        }
     }
 }

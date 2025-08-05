@@ -360,5 +360,12 @@ public abstract class Customer : MonoBehaviour
         this.icon.sprite = icon;
         orderBubble.SetActive(true);
     }
-    
+
+    public void OutCustomer()
+    {
+        speech.Show("Angry");
+        IsAngry = true;
+        buyPoint.CustomerOut();
+        StartCoroutine(MoveToExit());
+    }
 }

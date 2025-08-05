@@ -3,8 +3,6 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System;
 
-
-
 public enum SceneType
 {
     Dungeon,
@@ -25,8 +23,6 @@ public static class SceneName
     public const string Forge_Armor = "Forge_Armor";
     public const string Forge_Magic = "Forge_Magic";
     public const string Forge_Main = "Forge_Main";
-
-    
 
     public static string GetSceneByType(SceneType type)
     {
@@ -59,26 +55,33 @@ public class LoadSceneManager : MonoSingleton<LoadSceneManager>
     [Header("Camera Reference")]
     [SerializeField] private GameObject mainCameraObject;
 
+    private SoundManager soundManager;
+    private SceneType _lastActiveSceneType = SceneType.Forge_Main;
+
     protected override void Awake()
     {
         base.Awake();
+        soundManager = SoundManager.Instance;
     }
 
-    /// <summary>
-    /// 비동기 씬로딩
-    /// </summary>
-    /// <param name="type">Scene 타입</param>
-    /// <param name="isAdditve">Additeve 모드 로딩 여부</param>
-    public void LoadSceneAsync(SceneType type, bool isAdditve = false)
+    // --- SCENE LOAD ---
+    public void LoadSceneAsync(SceneType type, bool isAdditive = false)
     {
         loadingAnim.SetBool(loadingHash, true);
-        StartCoroutine(LoadSceneCoroutine(SceneName.GetSceneByType(type), isAdditve));
+
+        string bgmName = GetBGMNameBySceneType(type);
+        SoundManager.Instance?.StopBGM();
+        SoundManager.Instance?.Play(bgmName);
+
+        _lastActiveSceneType = type;
+
+        StartCoroutine(LoadSceneCoroutine(SceneName.GetSceneByType(type), isAdditive));
     }
 
     IEnumerator LoadSceneCoroutine(string sceneName, bool isAdditive)
     {
         loadingCanvas.blocksRaycasts = true;
-        loadingCanvas.alpha = 1;
+        loadingCanvas.alpha = 1f;
 
         AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(sceneName, isAdditive ? LoadSceneMode.Additive : LoadSceneMode.Single);
         yield return new WaitUntil(() => asyncOperation.isDone);
@@ -90,29 +93,21 @@ public class LoadSceneManager : MonoSingleton<LoadSceneManager>
                 SceneManager.SetActiveScene(loadedScene);
         }
 
-        // MainCamera 활성화 체크
         EnsureMainCameraActive();
-
         yield return StartCoroutine(FadeRoutine(fadeInCurve, false));
     }
 
-    public void UnLoadScene(SceneType type)
+    // --- SCENE UNLOAD (직접 remainSceneType 넘길 때) ---
+    public void UnLoadScene(SceneType type, SceneType remainSceneType = SceneType.Forge_Main)
     {
         loadingAnim.SetBool(loadingHash, true);
-        StartCoroutine(UnLoadSceneCoroutine(SceneName.GetSceneByType(type)));
+        StartCoroutine(UnLoadSceneCoroutine(SceneName.GetSceneByType(type), remainSceneType));
     }
 
-    // 오버로드: 콜백 추가 버전
-    public void UnLoadScene(SceneType type, Action onComplete)
-    {
-        loadingAnim.SetBool(loadingHash, true);
-        StartCoroutine(UnLoadSceneCoroutine(SceneName.GetSceneByType(type), onComplete));
-    }
-
-    IEnumerator UnLoadSceneCoroutine(string sceneName)
+    private IEnumerator UnLoadSceneCoroutine(string sceneName, SceneType remainSceneType)
     {
         loadingCanvas.blocksRaycasts = true;
-        loadingCanvas.alpha = 1;
+        loadingCanvas.alpha = 1f;
         loadingAnim.SetBool(loadingHash, true);
 
         AsyncOperation asyncOperation = SceneManager.UnloadSceneAsync(sceneName);
@@ -122,20 +117,45 @@ public class LoadSceneManager : MonoSingleton<LoadSceneManager>
             yield return StartCoroutine(EnsureMainCameraReallyActive());
 
         yield return StartCoroutine(FadeRoutine(fadeInCurve, false));
+
+        // Fade가 끝난 뒤에만 BGM 전환, 로딩창 숨김 완료
+        string remainBgmName = GetBGMNameBySceneType(remainSceneType);
+        SoundManager.Instance?.StopBGM();
+        SoundManager.Instance?.Play(remainBgmName);
+
+        _lastActiveSceneType = remainSceneType;
     }
 
-    private IEnumerator UnLoadSceneCoroutine(string sceneName, Action onComplete)
+    // --- SCENE UNLOAD (콜백 버전) ---
+    public void UnLoadScene(SceneType type, Action onComplete)
     {
         loadingAnim.SetBool(loadingHash, true);
+        StartCoroutine(UnLoadSceneCoroutine_Compat(SceneName.GetSceneByType(type), onComplete));
+    }
 
-        AsyncOperation op = SceneManager.UnloadSceneAsync(sceneName);
-        while (!op.isDone)
-            yield return null;
+    private IEnumerator UnLoadSceneCoroutine_Compat(string sceneName, Action onComplete)
+    {
+        loadingCanvas.blocksRaycasts = true;
+        loadingCanvas.alpha = 1f;
+        loadingAnim.SetBool(loadingHash, true);
+
+        AsyncOperation asyncOperation = SceneManager.UnloadSceneAsync(sceneName);
+        yield return new WaitUntil(() => asyncOperation.isDone);
 
         if (!SceneCameraState.IsMineSceneActive)
             yield return StartCoroutine(EnsureMainCameraReallyActive());
 
+        yield return StartCoroutine(FadeRoutine(fadeInCurve, false));
+
+        // Fade 끝나고 UI 숨김 완료
         onComplete?.Invoke();
+
+        SceneType remainType = SceneCameraState.IsMineSceneActive ? SceneType.MineScene : SceneType.Forge_Main;
+        string remainBgmName = GetBGMNameBySceneType(remainType);
+        SoundManager.Instance?.StopBGM();
+        SoundManager.Instance?.Play(remainBgmName);
+
+        _lastActiveSceneType = remainType;
     }
 
     private IEnumerator FadeRoutine(AnimationCurve curve, bool blockRaycasts)
@@ -151,8 +171,8 @@ public class LoadSceneManager : MonoSingleton<LoadSceneManager>
             yield return null;
         }
 
-        loadingCanvas.alpha = curve.Evaluate(1f);
-        loadingCanvas.blocksRaycasts = blockRaycasts;
+        loadingCanvas.alpha = 0f; // Fade 끝난 후 로딩창 숨김
+        loadingCanvas.blocksRaycasts = false;
         loadingAnim.SetBool(loadingHash, false);
     }
 
@@ -209,5 +229,20 @@ public class LoadSceneManager : MonoSingleton<LoadSceneManager>
     public void SetMainCamera(GameObject cameraObject)
     {
         mainCameraObject = cameraObject;
+    }
+
+    private string GetBGMNameBySceneType(SceneType type)
+    {
+        return type switch
+        {
+            SceneType.Dungeon => "DeongunBGM",
+            SceneType.MiniGame => "MainBGM",
+            SceneType.MineScene => "MineBGM",
+            SceneType.Forge_Weapon => "MainBGM",
+            SceneType.Forge_Armor => "ArmorBGM",
+            SceneType.Forge_Magic => "MagicBGM",
+            SceneType.Forge_Main => "MainBGM",
+            _ => "MainBGM"
+        };
     }
 }

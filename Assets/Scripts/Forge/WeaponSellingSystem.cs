@@ -41,6 +41,13 @@ public class WeaponSellingSystem : MonoBehaviour
         customerQueue.Enqueue(customer);
 
         var craftingData = SelectWeaponByType(customer.WeaponType);
+
+        if (craftingData == null)
+        {
+            var curCustomer = customerQueue.Dequeue();
+            curCustomer.OutCustomer();
+        }
+
         craftingQueue.Enqueue(craftingData);
 
         if (craftingCoroutine == null)
@@ -53,6 +60,10 @@ public class WeaponSellingSystem : MonoBehaviour
     private CraftingData SelectWeaponByType(WeaponType type)
     {
         var weaponList = inventory.GetWeaponInstancesByType(type);
+
+        if (weaponList == null || weaponList.Count == 0)
+            return null;
+
         int chance = Random.Range(0, 101);
 
         if (chance <= forge.StatHandler.FinalExpensiveWeaponSellChance)
@@ -148,15 +159,15 @@ public class WeaponSellingSystem : MonoBehaviour
                     if (CanOrder(type))
                         typeList.Add(type);
                 }
-                
-                if(typeList.Count > 0)
+
+                if (typeList.Count > 0)
                     return typeList[Random.Range(0, typeList.Count)];
             }
         }
 
         return default;
     }
-    
+
     public bool CanOrder(WeaponType type)
     {
         var weaponList = inventory.GetWeaponInstancesByType(type);

@@ -19,6 +19,9 @@ public class MineGroup
     [NonSerialized] public MineAssistantManager mineManager;
     [NonSerialized] public DateTime lastCollectTime;
 
+    public Transform blockRoot;
+    public MineBlock blockObj;
+
     public void EnsureSlots()
     {
         while (slots.Count < slotUIs.Count)
@@ -26,10 +29,27 @@ public class MineGroup
         if (slots.Count > slotUIs.Count)
             slots.RemoveRange(slotUIs.Count, slots.Count - slotUIs.Count);
     }
+
+    // 차단/해금 블록 UI 동기화
+    public void ShowBlock(bool show, int cost = 0, int currentGold = 0, MineSceneManager manager = null, int idx = 0)
+    {
+        if (blockRoot == null) return;
+        if (blockObj == null)
+            blockObj = blockRoot.GetComponentInChildren<MineBlock>(true);
+        if (blockObj != null)
+        {
+            blockObj.gameObject.SetActive(show);
+            if (show && manager != null)
+                blockObj.Setup(idx, cost, currentGold, manager);
+        }
+        foreach (var slotUI in slotUIs)
+            slotUI.SetBlocked(show);
+    }
 }
 
 public class MineSceneManager : MonoBehaviour
 {
+
     public GameObject mineAssistantPrefab;
     public List<MineGroup> mineGroups;
     public GameObject mineDetailMap;
@@ -41,11 +61,22 @@ public class MineSceneManager : MonoBehaviour
     public Camera mineCamera;
     public Transform popupRoot;
 
+    [Header("Mine Unlock")]
+    [SerializeField] private List<int> mineUnlockGoldCosts;
+    [SerializeField] private Transform IronSilverRoot;
+    [SerializeField] private Transform GoldMithrillRoot;
+    [SerializeField] private Transform GemRoot;
+    [SerializeField] private GameObject mineBlockPrefab;
+    [SerializeField] private LackPopup lackPopupPrefab;
+    [SerializeField] private Transform lackPopupRoot;
+
+    private List<bool> unlockedMines = new List<bool>();
     private List<List<GameObject>> spawnedAssistants;
     private AssistantInventory assistantInventory;
     private MineLoader mineLoader;
     private int currentMineIndex = 0;
     private MineSaveHandler mineSaveHandler;
+    private SoundManager soundManager;
 
     [Header("UI Roots & Prefabs")]
     public Transform amountRoot;
@@ -54,11 +85,22 @@ public class MineSceneManager : MonoBehaviour
 
     private void Awake()
     {
+        soundManager = SoundManager.Instance;
         mineSaveHandler = new MineSaveHandler(this);
         SceneCameraState.IsMineSceneActive = true;
         SetMainUIClickable(false);
         SetMainCameraActive(false);
         SetMineCameraActive(true);
+
+        // 해금 상태 초기화
+        if (unlockedMines.Count != 4)
+        {
+            unlockedMines.Clear();
+            unlockedMines.Add(true);
+            unlockedMines.Add(false);
+            unlockedMines.Add(false);
+            unlockedMines.Add(false);
+        }
     }
 
     private void OnDestroy()
@@ -69,14 +111,16 @@ public class MineSceneManager : MonoBehaviour
 
     private void Start()
     {
-        
-
         if (GameManager.Instance?.AssistantManager?.AssistantInventory == null) return;
-
         assistantInventory = GameManager.Instance.AssistantManager.AssistantInventory;
 
         mineLoader = new MineLoader();
         spawnedAssistants = new List<List<GameObject>>();
+
+        // blockRoot 연결
+        if (mineGroups.Count > 1) mineGroups[1].blockRoot = IronSilverRoot;
+        if (mineGroups.Count > 2) mineGroups[2].blockRoot = GoldMithrillRoot;
+        if (mineGroups.Count > 3) mineGroups[3].blockRoot = GemRoot;
 
         for (int idx = 0; idx < mineGroups.Count; ++idx)
         {
@@ -100,14 +144,14 @@ public class MineSceneManager : MonoBehaviour
             }
         }
 
-        mineSaveHandler.Load();
+        SetupMineBlockPrefabs();
 
+        mineSaveHandler.Load();
         MineResourceCollectManager.Instance.SetMineGroups(mineGroups);
         MineResourceCollectManager.Instance.SetCurrentMineGroupIndex(currentMineIndex);
 
         if (collectButton != null)
             collectButton.onClick.AddListener(OnCollectAllButton);
-
         if (miningUIPanel != null)
             miningUIPanel.SetActive(true);
 
@@ -115,7 +159,98 @@ public class MineSceneManager : MonoBehaviour
         RemoveFiredAssistantsFromMine();
         RemoveEquippedAssistantsFromMineOnly();
         RemoveInactiveAssistantsFromMine();
+
+        RefreshAllMineBlocks();
     }
+    // 차단 프리팹 동적 세팅
+    private void SetupMineBlockPrefabs()
+    {
+        if (IronSilverRoot != null && IronSilverRoot.childCount == 0)
+            Instantiate(mineBlockPrefab, IronSilverRoot);
+        if (GoldMithrillRoot != null && GoldMithrillRoot.childCount == 0)
+            Instantiate(mineBlockPrefab, GoldMithrillRoot);
+        if (GemRoot != null && GemRoot.childCount == 0)
+            Instantiate(mineBlockPrefab, GemRoot);
+    }
+
+    // 마인 차단 UI 갱신
+    public void RefreshAllMineBlocks()
+    {
+        int playerGold = GameManager.Instance?.ForgeManager?.Gold ?? 0;
+        for (int i = 0; i < mineGroups.Count; i++)
+        {
+            if (i == 0) continue; 
+            bool isUnlocked = unlockedMines[i];
+            int cost = mineUnlockGoldCosts[i - 1];
+            mineGroups[i].ShowBlock(!isUnlocked, cost, playerGold, this, i);
+        }
+    }
+
+    // 해금 시도
+    public void TryUnlockMine(int idx)
+    {
+        SoundManager.Instance?.Play("Click");
+
+        if (idx < 1 || idx >= unlockedMines.Count) return;
+        if (unlockedMines[idx]) return;
+        if (!unlockedMines[idx - 1]) return;
+
+        int cost = mineUnlockGoldCosts[idx - 1];
+        int playerGold = GameManager.Instance.ForgeManager.Gold;
+
+        // 골드 부족시 LackPopup 호출
+        if (playerGold < cost)
+        {
+            ShowLackPopup(LackType.Gold);
+            return;
+        }
+
+        // 골드 충분하면 해금
+        if (GameManager.Instance.ForgeManager.UseGold(cost))
+        {
+            unlockedMines[idx] = true;
+            RefreshAllMineBlocks();
+            mineSaveHandler.Save();
+        }
+    }
+
+    private void ShowLackPopup(LackType type)
+    {
+        if (lackPopupPrefab && lackPopupRoot)
+        {
+            var lackPopup = Instantiate(lackPopupPrefab, lackPopupRoot);
+            lackPopup.Init(GameManager.Instance, null); // uIManager 없으면 null
+            lackPopup.Show(type);
+        }
+    }
+
+
+    // 세이브/로드 + 해금 상태 저장
+    public MineSaveData ToSaveData()
+    {
+        var saveData = new MineSaveData();
+        foreach (var group in mineGroups)
+        {
+            var groupSave = new MineGroupSaveData
+            {
+                MineKey = group.mineKey,
+                LastCollectTime = group.lastCollectTime.ToString("o")
+            };
+            foreach (var slot in group.slots)
+            {
+                var slotSave = new MineSlotSaveData
+                {
+                    AssistantKey = slot.AssignedAssistant != null ? slot.AssignedAssistant.Key : null,
+                    AssignedTime = slot.AssignedTime.ToString("o")
+                };
+                groupSave.Slots.Add(slotSave);
+            }
+            saveData.Groups.Add(groupSave);
+        }
+        saveData.UnlockedMines = new List<bool>(unlockedMines);
+        return saveData;
+    }
+
 
     private void SetAllInactive()
     {
@@ -311,33 +446,20 @@ public class MineSceneManager : MonoBehaviour
         });
     }
 
-    public MineSaveData ToSaveData()
-    {
-        var saveData = new MineSaveData();
-        foreach (var group in mineGroups)
-        {
-            var groupSave = new MineGroupSaveData
-            {
-                MineKey = group.mineKey,
-                LastCollectTime = group.lastCollectTime.ToString("o")
-            };
-            foreach (var slot in group.slots)
-            {
-                var slotSave = new MineSlotSaveData
-                {
-                    AssistantKey = slot.AssignedAssistant != null ? slot.AssignedAssistant.Key : null,
-                    AssignedTime = slot.AssignedTime.ToString("o")
-                };
-                groupSave.Slots.Add(slotSave);
-            }
-            saveData.Groups.Add(groupSave);
-        }
-        return saveData;
-    }
-
+    
     public void LoadFromSaveData(MineSaveData saveData)
     {
-        if (saveData == null) return;
+        if (saveData == null)
+        {
+            ResetUnlockedMines();
+            return;
+        }
+
+        if (saveData.UnlockedMines != null && saveData.UnlockedMines.Count == mineGroups.Count)
+            unlockedMines = new List<bool>(saveData.UnlockedMines);
+        else
+            ResetUnlockedMines();
+
         for (int groupIdx = 0; groupIdx < saveData.Groups.Count; groupIdx++)
         {
             var groupSave = saveData.Groups[groupIdx];
@@ -373,6 +495,7 @@ public class MineSceneManager : MonoBehaviour
                     SpawnAssistantInMine(groupIdx, slotUI, assistant);
                 }
             }
+            
         }
         for (int groupIdx = 0; groupIdx < mineGroups.Count; groupIdx++)
         {
@@ -384,6 +507,13 @@ public class MineSceneManager : MonoBehaviour
         }
 
         MineResourceCollectManager.Instance.UpdateExpectedMiningAmount();
+        RefreshAllMineBlocks();
+    }
+
+    public void ResetUnlockedMines()
+    {
+        unlockedMines = new List<bool> { true, false, false, false };
+        RefreshAllMineBlocks();
     }
 
     public void ClearAllSlots()
