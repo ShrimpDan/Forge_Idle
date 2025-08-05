@@ -43,6 +43,12 @@ public class RegualrCustomer : Customer
         {
             CheckClick(Input.GetTouch(0).position);
         }
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            Debug.Log("클릭됨");
+            CheckClick(Input.mousePosition);
+        }
 #endif    
     }
 
