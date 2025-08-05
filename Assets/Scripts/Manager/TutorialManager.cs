@@ -58,15 +58,13 @@ public class TutorialManager : MonoBehaviour
         {
             isTurtorialMode = false;
             Destroy(gameObject);
-            //tutorialPanel.SetActive(false);
             return;
         }
+
         PlayerPrefs.SetInt("TutorialDone", 0); // Test
         isTurtorialMode = true;
         tutorialPanel.SetActive(true);
         StartTutorial();
-
-
     }
     public void StartTutorial()
     {
@@ -175,19 +173,19 @@ public class TutorialManager : MonoBehaviour
                 break;
             case 6:
                 tutorialPanel.SetActive(true);
-                ShowTextWithTyping("다음은 제작에 대해서 설명해드릴께요!! 제작버튼을 눌러주세요!!");
+                ShowTextWithTyping("다음은 레시피 해금에 대해서 설명해드릴께요!! 무기 레시피 버튼을 눌러주세요!!");
                 effect.HighLightOn();
                 arrowIcon.SetActive(true);
                 HighlightPos(-44, -710);
                 break;
             case 7:
                 HighlightPos(40, 300);
-                ShowTextWithTyping("제작을 위해서는 제작포인트가 필요해요!! 처음 무기를 만드시는거니 이번에는 포인트 소모 없이 제작할수 있게 해드릴께요!!");
+                ShowTextWithTyping("레시피 해금을 위해서는 레시피 포인트가 필요해요!! 처음 무기를 만드시는거니 이번에는 포인트 소모 없이 제작할수 있게 해드릴께요!!");
                 ClickBlockerOn();
                 break;
             case 8:
                 AllEffectOff();
-                ShowTextWithTyping("제작 포인트는 무기를 판매하거나 던전을 클리어 하면 얻을수 있어요!! \n자 그럼이제 한번 레시피 제작을 해볼까요?? 제작을 하고 창을 닫아주세요!!");
+                ShowTextWithTyping("레시피 포인트는 무기를 판매하거나 던전을 클리어 해서 레벨업하면 \n자 그럼이제 한번 레시피 해금을 해볼까요?? 해금을 하고 창을 닫아주세요!!");
                 ClickBlockerOn();
                 break;
             case 9:
@@ -198,7 +196,7 @@ public class TutorialManager : MonoBehaviour
                 effect.HighLightOn();
                 arrowIcon.SetActive(true);
                 HighlightPos(31, 81);
-                ShowTextWithTyping("이제 제작한 레시피를 사용해서 무기를 만들어 볼꺼에요!! 가운데 제작대를 클릭해 주세요!!");
+                ShowTextWithTyping("이제 해금한 레시피를 사용해서 무기를 만들어 볼꺼에요!! 가운데 제작대를 클릭해 주세요!!");
                 GameManager.Instance.Inventory.AddItem(GameManager.Instance.DataManager.ItemLoader.GetItemByKey("resource_bronze"), 1);
                 GameManager.Instance.Inventory.AddItem(GameManager.Instance.DataManager.ItemLoader.GetItemByKey("ingot_copper"), 2);
                 GameManager.Instance.ForgeManager.AddGold(1000); //골드 제공
@@ -220,7 +218,7 @@ public class TutorialManager : MonoBehaviour
                 break;
             case 14:
                 tutorialPanel.SetActive(true);
-                ShowTextWithTyping("제작이 끝나면 자동으로 인벤토리에 무기가 들어가요!! 그리고 손님이 이제 올꺼에요!! 창을 닫아볼까요?");
+                ShowTextWithTyping("제작이 끝나면 수령 버튼을 누르거나 탭을 닫으면 자동으로 인벤토리에 무기가 들어가요!! 그리고 손님이 이제 올꺼에요!! 창을 닫아볼까요?");
                 break;
             case 15:
                 ShowTextWithTyping("손님은 일반손님,단골손님, 진상손님이 있어요!! 진상손님은 클릭해서 쫒아내야해요!!\n단골손님은 방문시 클릭하면 컬렉션에 등록되요!!");

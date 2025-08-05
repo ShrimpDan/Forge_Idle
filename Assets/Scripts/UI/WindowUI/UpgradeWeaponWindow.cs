@@ -70,9 +70,12 @@ public class UpgradeWeaponWindow : BaseUI
     private int CalcEnhanceGoldCost(ItemInstance weapon)
     {
         int level = weapon.CurrentEnhanceLevel + 1;
-        float baseAtk = weapon.Data?.WeaponStats?.Attack ?? 1;
-        int cost = Mathf.RoundToInt(1000 * level * level * level);
-        return Mathf.Max(cost, 1000);
+        int craftCost = weapon.CraftingData.craftCost;
+
+        // 무기의 제작 가격 * 레벨로 비용을 설정
+        int cost = Mathf.RoundToInt(craftCost * level);
+
+        return cost;
     }
 
     public override void Init(GameManager gameManager, UIManager uIManager)
@@ -217,7 +220,7 @@ public class UpgradeWeaponWindow : BaseUI
         var goldGo = Instantiate(inputItemPrefab, inputItemRoot);
         TMP_Text amountText = goldGo.transform.Find("Amount_Text")?.GetComponent<TMP_Text>();
         Image icon = goldGo.transform.Find("Icon")?.GetComponent<Image>();
-        if (amountText != null) amountText.text = needGold.ToString("N0");
+        if (amountText != null) amountText.text = UIManager.FormatNumber(needGold);
         if (icon != null) icon.sprite = goldIconSprite;
         goldGo.SetActive(true);
 
