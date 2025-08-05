@@ -9,6 +9,9 @@ public class CraftWeaponWindow : BaseUI
 {
     public override UIType UIType => UIType.Window;
 
+    [Header("Input Weapon Slot Icons")]
+    [SerializeField] private List<Image> inputWeaponSlotIcons;
+
     [Header("UI Elements")]
     [SerializeField] private Button exitBtn;
     [SerializeField] private Transform inputWeaponSlots;
@@ -37,16 +40,16 @@ public class CraftWeaponWindow : BaseUI
     private ItemDataLoader itemLoader;
     private CraftingDataLoader craftingLoader;
 
-    private Dictionary<CustomerJob, List<string>> jobToWeaponKeyList = new()
-    {
-        { CustomerJob.Woodcutter, new List<string> { "weapon_axe_crude", "weapon_axe_normal", "weapon_axe_fine", "weapon_axe_excellent", "weapon_axe_perfect" } },
-        { CustomerJob.Farmer,     new List<string> { "weapon_hoe_crude", "weapon_hoe_normal", "weapon_hoe_fine", "weapon_hoe_excellent", "weapon_hoe_perfect" } },
-        { CustomerJob.Miner,      new List<string> { "weapon_pickaxe_crude", "weapon_pickaxe_normal", "weapon_pickaxe_fine", "weapon_pickaxe_excellent", "weapon_pickaxe_perfect" } },
-        { CustomerJob.Warrior,    new List<string> { "weapon_sword_crude", "weapon_sword_normal", "weapon_sword_fine", "weapon_sword_excellent", "weapon_sword_perfect" } },
-        { CustomerJob.Archer,     new List<string> { "weapon_bow_crude", "weapon_bow_normal", "weapon_bow_fine", "weapon_bow_excellent", "weapon_bow_perfect" } },
-        { CustomerJob.Tanker,     new List<string> { "weapon_shield_crude", "weapon_shield_normal", "weapon_shield_fine", "weapon_shield_excellent", "weapon_shield_perfect" } },
-        { CustomerJob.Assassin,   new List<string> { "weapon_dagger_crude", "weapon_dagger_normal", "weapon_dagger_fine", "weapon_dagger_excellent", "weapon_dagger_perfect" } },
-    };
+    //private Dictionary<CustomerJob, List<string>> jobToWeaponKeyList = new()
+    //{
+    //    { CustomerJob.Woodcutter, new List<string> { "weapon_axe_crude", "weapon_axe_normal", "weapon_axe_fine", "weapon_axe_excellent", "weapon_axe_perfect" } },
+    //    { CustomerJob.Farmer,     new List<string> { "weapon_hoe_crude", "weapon_hoe_normal", "weapon_hoe_fine", "weapon_hoe_excellent", "weapon_hoe_perfect" } },
+    //    { CustomerJob.Miner,      new List<string> { "weapon_pickaxe_crude", "weapon_pickaxe_normal", "weapon_pickaxe_fine", "weapon_pickaxe_excellent", "weapon_pickaxe_perfect" } },
+    //    { CustomerJob.Warrior,    new List<string> { "weapon_sword_crude", "weapon_sword_normal", "weapon_sword_fine", "weapon_sword_excellent", "weapon_sword_perfect" } },
+    //    { CustomerJob.Archer,     new List<string> { "weapon_bow_crude", "weapon_bow_normal", "weapon_bow_fine", "weapon_bow_excellent", "weapon_bow_perfect" } },
+    //    { CustomerJob.Tanker,     new List<string> { "weapon_shield_crude", "weapon_shield_normal", "weapon_shield_fine", "weapon_shield_excellent", "weapon_shield_perfect" } },
+    //    { CustomerJob.Assassin,   new List<string> { "weapon_dagger_crude", "weapon_dagger_normal", "weapon_dagger_fine", "weapon_dagger_excellent", "weapon_dagger_perfect" } },
+    //};
 
     private class InputSlotContext
     {
@@ -146,7 +149,8 @@ public class CraftWeaponWindow : BaseUI
             GameObject go = Instantiate(weaponSlotBtnPrefab, inputWeaponSlots);
             var ctx = new InputSlotContext();
             ctx.Btn = go.GetComponent<Button>();
-            ctx.Icon = go.transform.Find("Icon")?.GetComponent<Image>() ?? go.GetComponent<Image>();
+            ctx.Icon = (inputWeaponSlotIcons != null && inputWeaponSlotIcons.Count > i)
+                        ? inputWeaponSlotIcons[i] : go.transform.Find("Icon")?.GetComponent<Image>() ?? go.GetComponent<Image>();
             ctx.ProgressBar = go.transform.Find("CraftProgressBarBG/CraftProgressBar")?.GetComponent<Image>();
             ctx.TimeText = go.transform.Find("CraftProgressBarBG/CraftProgressText")?.GetComponent<TMP_Text>();
             ctx.ReceiveBtn = go.transform.Find("ReceiveButton")?.GetComponent<Button>();
@@ -285,7 +289,7 @@ public class CraftWeaponWindow : BaseUI
         SoundManager.Instance.Play("SFX_ForgeCraft");
 
         var itemData = gameManager.DataManager.ItemLoader.GetItemByKey(craftingData.ItemKey);
-        Sprite iconSprite = IconLoader.GetIconByPath(itemData.IconPath);
+        Sprite iconSprite = IconLoader.GetIconByKey(itemData.ItemKey);
 
         var slot = inputSlots[idx];
         slot.Icon.sprite = iconSprite;
@@ -305,7 +309,8 @@ public class CraftWeaponWindow : BaseUI
 
             if (prog.isCrafting && prog.data != null)
             {
-                Sprite sp = IconLoader.GetIconByPath(prog.itemData.IconPath);
+                Sprite sp = IconLoader.GetIconByKey(prog.itemData.ItemKey);
+
                 slot.Icon.sprite = sp;
                 slot.Icon.enabled = (sp != null);
 
@@ -344,7 +349,6 @@ public class CraftWeaponWindow : BaseUI
         if (!prog.rewardGiven || prog.itemData == null) return;
 
         SoundManager.Instance.Play("SFX_SystemReward");
-        // RewardPopup 연동
         ShowCraftReward(prog.itemData);
 
         prog.Reset();
