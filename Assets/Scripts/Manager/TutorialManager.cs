@@ -356,7 +356,7 @@ public class TutorialManager : MonoBehaviour
                 break;
             case 41:
                 tutorialPanel.SetActive(false);
-                HighlightPos(66, -281);
+                HighlightPos(-100, -427);
                 effect.HideHighlight();
                 break;
             case 42:
