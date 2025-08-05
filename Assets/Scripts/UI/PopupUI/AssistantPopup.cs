@@ -12,6 +12,7 @@ public class AssistantPopup : BaseUI
     [SerializeField] private Image typeIcon;
     [SerializeField] private TextMeshProUGUI assiName;
     [SerializeField] private TextMeshProUGUI assiType;
+    [SerializeField] private TextMeshProUGUI personalityText;
     [SerializeField] private GameObject equippedIndicator;
     [SerializeField] private GameObject firedIndicator;
 
@@ -62,6 +63,9 @@ public class AssistantPopup : BaseUI
         assiName.text = data.Name;
         typeIcon.sprite = IconLoader.GetIconByPath($"Icons/Specializations/{data.Specialization}");
         assiType.text = FusionSlotView.GetKoreanSpecialization(data.Specialization);
+
+        if (personalityText != null)
+            personalityText.text = data.Personality?.personalityName ?? "알 수 없음";
 
         // 옵션 초기화
         foreach (Transform child in optionRoot)
