@@ -15,6 +15,7 @@ public class ForgeEventHandler
     public event Action<int, float> OnSkillCooldownStarted;
     public event Action<int, float, float> OnSkillCooldownUpdate;
     public event Action<int> OnSkillCooldownFinished;
+    public event Action<SkillInstance, float> OnSkillDurationUpdate;
 
     public void RaiseGoldChanged(int gold) => OnGoldChanged?.Invoke(gold);
     public void RaiseDiaChanged(int dia) => OnDiaChanged?.Invoke(dia);
@@ -26,4 +27,5 @@ public class ForgeEventHandler
     public void RaiseSkillCoolDownStarted(int idx, float curCooldown) => OnSkillCooldownStarted?.Invoke(idx, curCooldown);
     public void RaiseSkillCooldownUpdate(int idx, float curCooldown, float maxCooldown) => OnSkillCooldownUpdate?.Invoke(idx, curCooldown, maxCooldown);
     public void RaiseSkillCooldownFinished(int idx) => OnSkillCooldownFinished?.Invoke(idx);
+    public void RaiseSkillDurationUpdate(SkillInstance skill, float fillAmount) => OnSkillDurationUpdate?.Invoke(skill, fillAmount);
 }

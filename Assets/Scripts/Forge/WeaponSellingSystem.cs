@@ -52,7 +52,6 @@ public class WeaponSellingSystem : MonoBehaviour
 
         if (craftingCoroutine == null)
         {
-            Debug.Log($"[무기 판매 시스템] 무기 제작 시작!!");
             craftingCoroutine = StartCoroutine(CraftingWeaponCoroutine());
         }
     }
@@ -122,8 +121,6 @@ public class WeaponSellingSystem : MonoBehaviour
             forgeManager.AddGold(price);
             forgeManager.AddFame(5);
             blackSmith.PlayBuyEffect(price, customer.transform.position);
-
-            Debug.Log($"[무기 판매 시스템] {weapon.weaponType} 무기 제작 완료!");
         }
 
         blackSmith.SetCraftingAnimation(false);
@@ -139,7 +136,6 @@ public class WeaponSellingSystem : MonoBehaviour
         // 대성공 시 가격 2배
         if (chance <= forge.StatHandler.FinalPerfectCraftingChance)
         {
-            // 대성공 시 효과도 추가
             forge.BlackSmith.PlayTextEffect("대성공!!");
             return price * 2;
         }
