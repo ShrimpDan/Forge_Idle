@@ -75,6 +75,8 @@ public class RegularCustomerLoader
         GameObject regularObj = customerManager.PoolManager.Get(prefab.gameObject, spawnPoint.position, Quaternion.identity);
         var obj = regularObj.GetComponent<Customer>();
 
+        obj.SetSourcePrefab(prefab.gameObject);
+
         obj.Init(customerManager, baseCustomerData,mainBuyPoint);
 
         if (obj is RegualrCustomer rc)

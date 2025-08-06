@@ -73,7 +73,7 @@ public abstract class Customer : MonoBehaviour
 
     [Header("OrderInfo")]
     [SerializeField] SpriteRenderer icon;
-    [SerializeField] GameObject orderBubble;
+    [SerializeField] protected GameObject orderBubble;
 
 
     public void Init(CustomerManager customerManager, CustomerData _customerData, BuyPoint _buyPoint)
