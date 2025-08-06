@@ -22,7 +22,7 @@ public class HighLightEffectController : MonoBehaviour
             highLightMaterial.SetFloat("_Radius", 0.15f);
             highLightMaterial.SetFloat("_Softness", 0.1f);
             highLightMaterial.SetColor("_HighlightColor", Color.clear);
-            highLightMaterial.SetColor("_DimColor", new Color(0f, 0f, 0f, 0.7f));
+            highLightMaterial.SetColor("_DimColor", new Color(0f, 0f, 0f, 0.5f));
         }
         HideHighlight();
     }
