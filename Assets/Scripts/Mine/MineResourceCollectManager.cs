@@ -17,7 +17,7 @@ public class MineResourceCollectManager : MonoBehaviour
     [SerializeField] private float updateInterval = 1.0f;
     private float timer = 0f;
 
-    [Header("UI Prefabs (Inspector¿¡¼­ ÇÒ´ç ÇÊ¼ö!)")]
+    [Header("UI Prefabs (Inspectorï¿½ï¿½ï¿½ï¿½ ï¿½Ò´ï¿½ ï¿½Ê¼ï¿½!)")]
     [SerializeField] private GameObject rewardPopupPrefab;
     [SerializeField] private LackPopup lackPopupPrefab;
     [SerializeField] private Transform lackpopupRoot;
@@ -97,7 +97,7 @@ public class MineResourceCollectManager : MonoBehaviour
         }
     }
 
-    // ÀüÃ¼ ¸¶ÀÎ ¿¹»ó Ã¤±¼ ÀÚ¿ø ÇÕ»ê
+    // ï¿½ï¿½Ã¼ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã¤ï¿½ï¿½ ï¿½Ú¿ï¿½ ï¿½Õ»ï¿½
     private string GetAllExpectedResourcesText()
     {
         var totalResourceDict = new Dictionary<string, float>();
@@ -125,7 +125,7 @@ public class MineResourceCollectManager : MonoBehaviour
         return sb.ToString();
     }
 
-    // ÀüÃ¼ ¸¶ÀÎ ÀÚ¿ø ÇÑ ¹ø¿¡ ¼ö·É
+    // ï¿½ï¿½Ã¼ ï¿½ï¿½ï¿½ï¿½ ï¿½Ú¿ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     public void CollectAllResources()
     {
         if (mineGroups == null || mineGroups.Count == 0) return;
@@ -135,7 +135,7 @@ public class MineResourceCollectManager : MonoBehaviour
         {
             var resourceDict = CalculateMiningAmount(group, true, out float totalHours);
 
-            // 1ÃÊ ¹Ì¸¸Àº ¼öÁý ºÒ°¡
+            // 1ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ò°ï¿½
             if (totalHours < (1.0f / 3600f)) continue;
 
             foreach (var pair in resourceDict)
@@ -171,7 +171,7 @@ public class MineResourceCollectManager : MonoBehaviour
             popup.ShowWithoutManager(
                 totalRewardList,
                 GameManager.Instance.DataManager.ItemLoader,
-                "Ã¤±¤ º¸»ó"
+                "íšë“ ìžì›"
             );
         }
         UpdateExpectedMiningAmount();
@@ -197,7 +197,7 @@ public class MineResourceCollectManager : MonoBehaviour
         }
     }
 
-    // ±âÁ¸ ´ÜÀÏ ¸¶ÀÎ Ã¤±¼ °è»ê(¿ÜºÎ¿¡µµ ÇÊ¿ä)
+    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã¤ï¿½ï¿½ ï¿½ï¿½ï¿½(ï¿½ÜºÎ¿ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½)
     public Dictionary<string, float> CalculateMiningAmount(MineGroup group, bool useRandom, out float totalHours)
     {
         totalHours = 0f;

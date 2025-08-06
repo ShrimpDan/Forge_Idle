@@ -102,11 +102,9 @@ public class AssistantInfoView : MonoBehaviour
         foreach (var ability in assistant.Multipliers)
         {
             float multiplier = Mathf.Max(ability.Multiplier, 0f);
-            float percent = (multiplier - 1f) * 100f;
+            float percent = multiplier * 100f;
 
-            if (percent <= 0f)
-                sb.AppendLine($"{ability.AbilityName} 증가 : 0%");
-            else
+            if (percent > 0f)
                 sb.AppendLine($"{ability.AbilityName} 증가 : +{percent:F0}%");
         }
         return sb.ToString();

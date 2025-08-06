@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,6 +17,7 @@ public class Monster : MonoBehaviour
     private float maxHp;
     private float currentHp;
     private bool isBoss;
+    public bool IsDie { get; private set; } = false;
 
     public System.Action OnDeath;
 
@@ -34,18 +35,21 @@ public class Monster : MonoBehaviour
 
     public void TakeDamage(float amount)
     {
-        if(currentHp > 0) animator.SetTrigger(hitHash);
-
-        SoundManager.Instance.Play("SFX_BattleMonsterHit");
-
         currentHp -= amount;
         SetHpBar();
 
-        if (currentHp <= 0)
+        SoundManager.Instance.Play("SFX_BattleMonsterHit");
+        
+        if (currentHp <= 0 && !IsDie)
         {
+            IsDie = true;
             monsterHandler.ClearCurrentMonster();
             animator.SetTrigger(deathHash);
             SoundManager.Instance.Play("SFX_BattleMonsterDie");
+        }
+        else
+        {
+            animator.SetTrigger(hitHash);
         }
     }
 
@@ -54,11 +58,12 @@ public class Monster : MonoBehaviour
         hpFill.fillAmount = currentHp / maxHp;
     }
 
-    public void PlayAttackAnim()
+    public void PlayAttackAnim(float animSpeed)
     {
+        animator.speed = animSpeed;
         animator.SetTrigger(attackHash);
     }
-    
+
     public void EndDeathAnim()
     {
         OnDeath?.Invoke();

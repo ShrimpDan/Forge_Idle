@@ -13,6 +13,7 @@ public class DungeonUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI timeText;
     [SerializeField] private TextMeshProUGUI monsterText;
     [SerializeField] private DungeonPopup dungeonPopup;
+    [SerializeField] private Button doubleSpeedBtn;
 
     [Header("Reward Info")]
     [SerializeField] GameObject rewardSlotPrefab;
@@ -42,13 +43,15 @@ public class DungeonUI : MonoBehaviour
             blockRay.enabled = false;
         });
         confirmBtn.onClick.AddListener(() => dungeonManager.BackToMain());
+        doubleSpeedBtn.onClick.AddListener(ClickDoubleSpeedBtn);
 
         titleText.text = dungeonManager.DungeonData.DungeonName;
     }
 
     public void UpdateTimerUI(float current, float max)
     {
-        timeFill.fillAmount = current / max;
+        float fill = Mathf.Max(current / max, 0f);
+        timeFill.fillAmount = fill;
         timeText.text = current.ToString("F1");
     }
 
@@ -83,5 +86,18 @@ public class DungeonUI : MonoBehaviour
         {
             existSlot.AddItem(amount);
         }
+    }
+
+    private void ClickDoubleSpeedBtn()
+    {
+        if (dungeonManager.DungeonTimeScale == 2)
+        {
+            dungeonManager.SetDungeonSpeed(1);
+            doubleSpeedBtn.image.color = Color.gray;
+            return;
+        }
+
+        doubleSpeedBtn.image.color = Color.white;
+        dungeonManager.SetDungeonSpeed(2);
     }
 }

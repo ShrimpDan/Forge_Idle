@@ -156,10 +156,8 @@ public class ForgeStatHandler
     {
         foreach (var stat in assi.Multipliers)
         {
-            float raw = stat.Multiplier;
-            if (!isApply) raw *= -1;
-
-            float statValue = Mathf.Max(raw, 0f);
+            float multiplier = isApply ? 1 : -1;
+            float statValue = (float)Math.Round(stat.Multiplier * multiplier, 2);
 
             switch (stat.AbilityName)
             {

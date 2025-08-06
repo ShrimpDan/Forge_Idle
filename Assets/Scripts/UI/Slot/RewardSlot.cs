@@ -6,6 +6,8 @@ public class RewardSlot : MonoBehaviour
 {
     [SerializeField] private Image icon;
     [SerializeField] private TextMeshProUGUI quantityText;
+    [SerializeField] private TextMeshProUGUI nameText;
+
     private int quantity = 0;
 
     public ItemData SlotItem { get; private set; }
@@ -17,6 +19,7 @@ public class RewardSlot : MonoBehaviour
 
         icon.sprite = IconLoader.GetIconByKey(item.ItemKey);
         quantityText.text = quantity.ToString();
+        nameText.text = item.Name;
     }
 
     public void AddItem(int amount)
