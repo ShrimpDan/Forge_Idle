@@ -96,6 +96,8 @@ public class SkillPopup : BaseUI
 
         SetPopupUI(skill, slot);
         slot.SetSlotUI(skill);
+        
+        uIManager.CloseUI(UIName.SkillPopup);
     }
 
     private void ClickUnEquipBtn()

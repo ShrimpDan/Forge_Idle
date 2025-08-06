@@ -24,7 +24,7 @@ public class WagePopup : MonoBehaviour
                 totalWage += trainee.Wage;
         }
 
-        wageText.text = $"{UIManager.FormatNumber(totalWage)}";
+        wageText.text = $"{UIManager.FormatNumber(totalWage)}/분";
     }
 
     private void Close()

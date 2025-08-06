@@ -21,7 +21,6 @@ public class CustomerSlotUI : MonoBehaviour
         this.collectionData = collectionData;
         bool isDiscovered = GameManager.Instance.CollectionManager.IsDiscovered(data);
         btn = GetComponent<Button>();
-
         UpdateState(isDiscovered);
     }
 
@@ -49,7 +48,6 @@ public class CustomerSlotUI : MonoBehaviour
         else
         {
             image.sprite = silhouetteSprite;
-            image.color = new Color(1, 1, 1, 0.3f);
         }
 
 

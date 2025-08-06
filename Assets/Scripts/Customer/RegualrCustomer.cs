@@ -22,6 +22,17 @@ public class RegualrCustomer : Customer
         }
     }
 
+    protected override void OnEnable()
+    {
+        base.OnEnable();
+        isDiscovered = false;
+        isInteracting = false;
+
+        if (InteractObject != null)
+            InteractObject.SetActive(true);
+
+    }
+
     protected override void Update()
     {
         //마인씬이면 동작 금지
@@ -42,6 +53,12 @@ public class RegualrCustomer : Customer
         if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
         {
             CheckClick(Input.GetTouch(0).position);
+        }
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            Debug.Log("클릭됨");
+            CheckClick(Input.mousePosition);
         }
 #endif    
     }
@@ -90,9 +107,19 @@ public class RegualrCustomer : Customer
     protected override IEnumerator PerformPurChase()
     {
         state = CustomerState.Purchasing;
-        Interact(); // 가격 상승 등 효과
+
+
+        orderBubble.SetActive(false);
+        speech.Show("Happy");
+
+        Interact();
+        yield return WaitForSecondsCache.Wait(1f); 
+        speech.Hide();
+
         if (buyPoint != null)
+        { 
             buyPoint.CustomerOut();
+        }
 
         yield return MoveToExit();
     }

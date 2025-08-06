@@ -56,10 +56,6 @@ public class RecruitPreviewManager : MonoBehaviour
         recruitFilter = type;
 
         int requiredDia = (type == null) ? 500 : 750;
-        if (!GameManager.Instance.ForgeManager.UseDia(requiredDia))
-        {
-            return;
-        }
 
         if (GameManager.Instance.HeldCandidates.Count > 0)
         {
@@ -69,19 +65,21 @@ public class RecruitPreviewManager : MonoBehaviour
                 {
                     GameManager.Instance.HeldCandidates.Clear();
                     GameManager.Instance.SaveManager.SaveAll();
-                    StartRecruit();
+                    StartRecruit(requiredDia);
                 },
                 onCancel: () => { });
         }
         else
         {
-            StartRecruit();
+            StartRecruit(requiredDia);
         }
     }
 
     // 실제로 제자 5명 생성 후 프리뷰 시작
-    private void StartRecruit()
+    private void StartRecruit(int requiredDia)
     {
+        if (!GameManager.Instance.ForgeManager.UseDia(requiredDia)) return;
+
         ClearActivePapers();
         currentIndex = 0;
         currentHeldInstance = null;

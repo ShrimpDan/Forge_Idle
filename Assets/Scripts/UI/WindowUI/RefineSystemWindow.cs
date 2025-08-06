@@ -24,6 +24,10 @@ public class RefineSystemWindow : BaseUI
     [SerializeField] private TMP_Text amountText;
     [SerializeField] private Button craftBtn;
 
+    [Header("Popup Prefabs & Root")]
+    [SerializeField] private LackPopup lackPopupPrefab;
+    [SerializeField] private Transform popupParent;
+    [SerializeField] private RewardPopup rewardPopupPrefab; 
     private DataManager dataManager;
     private List<ItemData> gemList = new();
     private List<ItemData> ingotList = new();
@@ -33,7 +37,7 @@ public class RefineSystemWindow : BaseUI
     private ItemData selectedOutput;
     private List<ItemData> currentList;
 
-    private int baseRequiredAmount = 5; 
+    private int baseRequiredAmount = 5;
     private int craftAmount = 1;
     private int maxCraftAmount = 99;
 
@@ -136,7 +140,6 @@ public class RefineSystemWindow : BaseUI
 
         UpdateAmountUI();
 
-        // input 재료 갱신
         string resourceKey = GetResourceKeyForOutput(selectedOutput);
         if (string.IsNullOrEmpty(resourceKey) || inputSlots.Count == 0) return;
 
@@ -160,12 +163,13 @@ public class RefineSystemWindow : BaseUI
         if (selectedOutput == null || inputSlots.Count == 0) return;
         string resourceKey = GetResourceKeyForOutput(selectedOutput);
         int totalNeed = baseRequiredAmount * craftAmount;
+
         int owned = GameManager.Instance.Inventory.ResourceList
             .Where(x => x.ItemKey == resourceKey).Sum(x => x.Quantity);
 
         if (owned < totalNeed)
         {
-            Debug.LogWarning("재료 부족!");
+            ShowLackPopup(LackType.Resource);
             return;
         }
 
@@ -174,9 +178,47 @@ public class RefineSystemWindow : BaseUI
         var outItem = dataManager.ItemLoader.GetItemByKey(selectedOutput.ItemKey);
         GameManager.Instance.Inventory.AddItem(outItem, craftAmount);
 
+        ShowRewardPopup(outItem, craftAmount);
 
         SetCraftAmount(1);
-        SelectOutput(selectedOutput); 
+        SelectOutput(selectedOutput);
+    }
+
+    private void ShowLackPopup(LackType type)
+    {
+        if (lackPopupPrefab != null)
+        {
+            var popup = Instantiate(lackPopupPrefab, popupParent ? popupParent : null);
+            popup.Init(GameManager.Instance, uIManager);
+            popup.Show(type);
+        }
+        else
+        {
+            Debug.LogWarning("LackPopup 프리팹이 인스펙터에 할당되어 있지 않습니다.");
+        }
+    }
+
+    private void ShowRewardPopup(ItemData outItem, int amount)
+    {
+        SoundManager.Instance?.Play("SFX_SystemReward");
+
+        if (uIManager != null)
+        {
+            var rewardList = new List<(string itemKey, int count)> { (outItem.ItemKey, amount) };
+            var popup = uIManager.OpenUI<RewardPopup>(UIName.RewardPopup);
+            popup.Show(rewardList, dataManager.ItemLoader, "획득 보상");
+        }
+        else if (rewardPopupPrefab != null)
+        {
+            var popup = Instantiate(rewardPopupPrefab, popupParent ? popupParent : null);
+            popup.Init(GameManager.Instance, uIManager);
+            var rewardList = new List<(string itemKey, int count)> { (outItem.ItemKey, amount) };
+            popup.Show(rewardList, dataManager.ItemLoader, "획득 보상");
+        }
+        else
+        {
+            Debug.LogWarning("RewardPopup 프리팹이 인스펙터에 할당되어 있지 않습니다.");
+        }
     }
 
     private string GetResourceKeyForOutput(ItemData output)

@@ -136,7 +136,7 @@ public class WeaponSellingSystem : MonoBehaviour
         int chance = Random.Range(0, 101);
 
         // 대성공 시 가격 2배
-        if (chance <= forge.StatHandler.FinalPerfectCr3aftingChance)
+        if (chance <= forge.StatHandler.FinalPerfectCraftingChance)
         {
             // 대성공 시 효과도 추가
             forge.BlackSmith.PlayTextEffect("대성공!!");

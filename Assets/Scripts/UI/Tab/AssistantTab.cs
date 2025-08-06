@@ -208,7 +208,7 @@ public class AssistantTab : BaseTab
                     {
                         tmp.text = stat.AbilityName;
 
-                        float percent = (stat.Multiplier - 1f) * 100f;
+                        float percent = stat.Multiplier * 100f;
                         string sign = percent > 0 ? "+" : "";
                         string display = percent != 0 ? $"{sign}{percent:F0}%" : "0%";
 

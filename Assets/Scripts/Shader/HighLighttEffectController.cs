@@ -22,7 +22,7 @@ public class HighLightEffectController : MonoBehaviour
             highLightMaterial.SetFloat("_Radius", 0.15f);
             highLightMaterial.SetFloat("_Softness", 0.1f);
             highLightMaterial.SetColor("_HighlightColor", Color.clear);
-            highLightMaterial.SetColor("_DimColor", new Color(0f, 0f, 0f, 0.7f));
+            highLightMaterial.SetColor("_DimColor", new Color(0f, 0f, 0f, 0.5f));
         }
         HideHighlight();
     }
@@ -56,15 +56,14 @@ public class HighLightEffectController : MonoBehaviour
         highLightMaterial.SetVector("_Center", normalizedPos);
 
     }
-    public void ShowHighlight(Vector2 screenPos)
+    public void ShowHighlight(Vector2 normalizedPos)
     {
         if (highLightMaterial == null || highlightImage == null)
-        { 
+        {
             return;
         }
 
-        Vector2 normalizedPos = new Vector2(screenPos.x / Screen.width, screenPos.y / Screen.height);
-
+       
         highLightMaterial.SetVector("_Center", normalizedPos);
         highlightImage.enabled = true;
     }

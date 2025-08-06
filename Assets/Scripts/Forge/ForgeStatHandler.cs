@@ -42,14 +42,14 @@ public class ForgeStatHandler
     private float assistantResourcePerMinuteBonus; // 분당 자원 획득량 증가 (광산)
     private float assistantMaxResourceCapacityBonus; // 최대 자원 수집량 증가 (광산)
 
-    private const float MaxAutoCraftingTimeReduction = 0.99f;
-
+    private const float MaxTimeReduction = 0.99f;
+    private const float MaxChance = 1f;
     // 최종 스탯 프로퍼티
     public float FinalSellPriceBonus => 1 + upgradeSellPriceBonus + assistantSellPriceBonus + skillSellPriceBonus;
-    public float FinalExpensiveWeaponSellChance => upgradeExpensiveWeaponSellChance + skillExpensiveWeaponSellChance;
-    public float FinalCustomerSpawnInterval => upgradeCustomerSpawnInterval + assistantCustomerSpawnIntervalReduction + skillCustomerSpawnIntervalReduction;
-    public float FinalAutoCraftingTimeReduction => Mathf.Min(upgradeAutoCraftingTimeReduction + assistantAutoCraftingTimeReduction + skillAutoCraftingTimeReduction, MaxAutoCraftingTimeReduction);
-    public float FinalPerfectCr3aftingChance => (upgradePerfectCraftingChance + assistantPerfectCraftingChance + skillPerfectCraftingChance) * 100;
+    public float FinalExpensiveWeaponSellChance => Mathf.Min(upgradeExpensiveWeaponSellChance + skillExpensiveWeaponSellChance, MaxChance) * 100;
+    public float FinalCustomerSpawnInterval => upgradeCustomerSpawnInterval * (1 - Mathf.Min(assistantCustomerSpawnIntervalReduction + skillCustomerSpawnIntervalReduction, MaxTimeReduction));
+    public float FinalAutoCraftingTimeReduction => Mathf.Min(upgradeAutoCraftingTimeReduction + assistantAutoCraftingTimeReduction + skillAutoCraftingTimeReduction, MaxTimeReduction);
+    public float FinalPerfectCraftingChance => (upgradePerfectCraftingChance + assistantPerfectCraftingChance + skillPerfectCraftingChance) * 100;
     public float FinalBadCustomerAutoKickChance => assistantBadCustomerAutoKickChance;
     public float FinalReduceWeaponCraftingTime => assistantReduceWeaponCraftingTime;
     public float FinalRareCraftChance => assistantRareCraftChance;

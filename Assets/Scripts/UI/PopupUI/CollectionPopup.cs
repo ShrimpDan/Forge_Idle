@@ -1,4 +1,4 @@
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -22,6 +22,7 @@ public class CollectionPopup : BaseUI
 
     public void SetPopup(RegularCustomerData data) //데이터 넘겨 받는곳
     {
+       
         nameText.text = data.customerName;
         rarityText.text = GetStringByRarity(data.rarity);
         descText.text = data.customerInfo;
