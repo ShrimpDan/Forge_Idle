@@ -14,6 +14,7 @@ public class MonsterHandler : MonoBehaviour
     [SerializeField] MonsterPrefabSO monsterPrefabSO;
     [SerializeField] private Transform spawnRoot;
     [SerializeField] private Transform monsterPos;
+    [SerializeField] private float duration = 0.3f;
 
     private Queue<Monster> monstersQueue = new();
     private Monster currentMonster;
@@ -75,12 +76,14 @@ public class MonsterHandler : MonoBehaviour
             return;
         }
 
+        float scaledDuration = duration * dungeonManager.TimeMultiplier;
+
         Monster monster = monstersQueue.Dequeue();
         monster.gameObject.SetActive(true);
-        monster.transform.DOMoveX(monsterPos.position.x, 0.3f).SetEase(Ease.OutBack).OnComplete(() =>
+        monster.transform.DOMoveX(monsterPos.position.x, scaledDuration).SetEase(Ease.OutBack).OnComplete(() =>
         {
             currentMonster = monster;
-            monster.PlayAttackAnim();
+            currentMonster.PlayAttackAnim(dungeonManager.DungeonTimeScale);
         });
     }
 

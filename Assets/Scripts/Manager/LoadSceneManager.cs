@@ -235,7 +235,7 @@ public class LoadSceneManager : MonoSingleton<LoadSceneManager>
     {
         return type switch
         {
-            SceneType.Dungeon => "DeongunBGM",
+            SceneType.Dungeon => "DungeonBGM",
             SceneType.MiniGame => "MainBGM",
             SceneType.MineScene => "MineBGM",
             SceneType.Forge_Weapon => "MainBGM",
