@@ -133,6 +133,7 @@ public class ForgeTab : BaseTab
         else
         {
             slideTab.DOAnchorPosY(-200f, 0.5f).SetEase(Ease.Linear).OnComplete(() => arrowTr.localScale = new Vector3(1f, -1f, 1f));
+            
         }
     }
 }
