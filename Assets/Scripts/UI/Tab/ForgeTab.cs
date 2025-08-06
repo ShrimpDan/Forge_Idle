@@ -74,6 +74,7 @@ public class ForgeTab : BaseTab
             forgeMoveBtn.onClick.RemoveAllListeners();
             forgeMoveBtn.onClick.AddListener(OpenMoveWindow);
 
+            UpdateProgress(0f, 1f);
         }
     }
 

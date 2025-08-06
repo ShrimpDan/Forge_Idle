@@ -76,6 +76,9 @@ public class RefineSystemWindow : BaseUI
         currentList = gemList;
         UpdateRefineList();
         SelectOutput(null);
+
+        gemTabButton.image.color = Color.white;
+        ingotTabButton.image.color = Color.gray;
     }
 
     private void ShowIngotTab()
@@ -83,6 +86,9 @@ public class RefineSystemWindow : BaseUI
         currentList = ingotList;
         UpdateRefineList();
         SelectOutput(null);
+
+        gemTabButton.image.color = Color.gray;
+        ingotTabButton.image.color = Color.white;
     }
 
     private void UpdateRefineList()
