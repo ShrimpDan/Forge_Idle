@@ -7,6 +7,7 @@ public class ForgeStatHandler
     private Forge forge;
     private ForgeManager forgeManager;
     private ForgeUpgradeDataLoader upgradeDataLoader;
+    private UIManager uIManager;
 
     // 업그레이드 레벨
     public Dictionary<ForgeUpgradeType, int> UpgradeLevels { get; private set; }
@@ -57,10 +58,11 @@ public class ForgeStatHandler
     public float FinalMaxResourceCapacityBonus => assistantMaxResourceCapacityBonus;
     public int ForgeVisualLevel { get; private set; }
 
-    public ForgeStatHandler(Forge forge, DataManager dataManager)
+    public ForgeStatHandler(Forge forge, DataManager dataManager, UIManager uIManager)
     {
         this.forge = forge;
         forgeManager = forge.ForgeManager;
+        this.uIManager = uIManager;
 
         upgradeDataLoader = dataManager.UpgradeDataLoader;
     }
@@ -109,6 +111,9 @@ public class ForgeStatHandler
 
         if (IsAllUpgradesMaxed())
         {
+            var ui = uIManager.OpenUI<LackPopup>(UIName.LackPopup);
+            ui.ShowCustom("새로운 대장간이 해금되었습니다!");
+            
             forgeManager.UnlockForge(GetNextForgeType(forge.ForgeType));
         }
 

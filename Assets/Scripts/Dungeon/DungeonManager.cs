@@ -54,7 +54,7 @@ public class DungeonManager : MonoBehaviour
 
             if (time <= 0)
             {
-                IsRunning = false;
+                time = 0f;
 
                 // 시간이 다 되면 클리어 실패
                 DungeonClear(false);

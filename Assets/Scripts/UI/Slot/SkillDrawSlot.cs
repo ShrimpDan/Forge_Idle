@@ -9,20 +9,23 @@ public class SkillDrawSlot : MonoBehaviour
     [SerializeField] private TextMeshProUGUI skillName;
     [SerializeField] private Image glowEffect;
     public System.Action OnAnimationComplete;
-    private Material glowMaterialInstance; 
-    
-    [SerializeField] private Material defaultUIMaterial; 
+    private Material glowMaterialInstance;
+
+    [SerializeField] private Material defaultUIMaterial;
 
     [Header("Glow Effect Settings")]
-    [SerializeField] private Color startGlowColor = Color.white; 
-    [SerializeField] private float startGlowIntensity = 5.0f;    
-    [SerializeField] private float endGlowIntensity = 0.0f;       
+    [SerializeField] private Color startGlowColor = Color.white;
+    [SerializeField] private float startGlowIntensity = 5.0f;
+    [SerializeField] private float endGlowIntensity = 0.0f;
     [SerializeField] private float fadeOutDuration = 0.3f;
-    
+
+    private Sequence animationSequence;
+
     public void SetSlot(SkillData skillData)
     {
         icon.sprite = IconLoader.GetIconByPath(skillData.IconPath);
         skillName.text = skillData.Name;
+        skillName.gameObject.SetActive(false);
 
         if (glowEffect.material != null)
         {
@@ -47,33 +50,42 @@ public class SkillDrawSlot : MonoBehaviour
         Vector3 originalScale = transform.localScale;
         transform.localScale = originalScale * 3f;
 
-        Sequence sequence = DOTween.Sequence();
-        sequence.Append(transform.DOScale(originalScale, duration * 0.5f).SetEase(Ease.OutBack));
+        animationSequence = DOTween.Sequence();
+        animationSequence.Append(transform.DOScale(originalScale, duration * 0.5f).SetEase(Ease.OutBack));
 
         if (glowMaterialInstance != null && glowMaterialInstance.HasProperty("_GlowColor") && glowMaterialInstance.HasProperty("_GlowIntensity"))
         {
             glowMaterialInstance.SetColor("_GlowColor", startGlowColor);
 
-            sequence.Join(DOTween.To(() => glowMaterialInstance.GetFloat("_GlowIntensity"), 
-                                     x => glowMaterialInstance.SetFloat("_GlowIntensity", x), 
-                                     startGlowIntensity, 
-                                     duration * 0.5f) 
-                              .SetEase(Ease.OutSine)); 
-
-            sequence.Join(DOTween.To(() => glowMaterialInstance.GetFloat("_GlowIntensity"),
+            animationSequence.Join(DOTween.To(() => glowMaterialInstance.GetFloat("_GlowIntensity"),
                                      x => glowMaterialInstance.SetFloat("_GlowIntensity", x),
-                                     endGlowIntensity, 
-                                     duration * 0.5f) 
-                              .SetEase(Ease.InQuad) 
+                                     startGlowIntensity,
+                                     duration * 0.5f)
+                              .SetEase(Ease.OutSine));
+
+            animationSequence.Join(DOTween.To(() => glowMaterialInstance.GetFloat("_GlowIntensity"),
+                                     x => glowMaterialInstance.SetFloat("_GlowIntensity", x),
+                                     endGlowIntensity,
+                                     duration * 0.5f)
+                              .SetEase(Ease.InQuad)
                               .SetDelay(duration * 0.5f));
         }
 
-        sequence.Join(glowEffect.DOFade(0f, fadeOutDuration).SetEase(Ease.OutQuad)); 
+        animationSequence.Join(glowEffect.DOFade(0f, fadeOutDuration).SetEase(Ease.OutQuad));
 
-        sequence.OnComplete(() =>
+        animationSequence.OnComplete(() =>
         {
             OnAnimationComplete?.Invoke();
             glowEffect.enabled = false;
+            skillName.gameObject.SetActive(true);
         });
+    }
+
+    public void SkipAnimation()
+    {
+        if (animationSequence != null)
+        {
+            animationSequence.Complete();
+        }
     }
 }

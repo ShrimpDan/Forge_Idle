@@ -1,4 +1,6 @@
 using System.Collections;
+using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -22,11 +24,18 @@ public class SkillDrawSystem : MonoBehaviour
     [SerializeField] int oneDrawNeedDia;
     [SerializeField] int tenDrawNeedDia;
 
+    private Coroutine drawCoroutine;
+    private List<SkillDrawSlot> drawnSlots = new List<SkillDrawSlot>();
+    private bool isDone = false;
+
     void Start()
     {
         skillManager = GameManager.Instance.SkillManager;
         skillDataLoader = GameManager.Instance.DataManager.SkillDataLoader;
         forgeManager = GameManager.Instance.ForgeManager;
+
+        confirmBtn.onClick.RemoveAllListeners();
+        confirmBtn.onClick.AddListener(ClickConfirmBtn);
     }
 
     public void DrawSkill(int count)
@@ -39,20 +48,27 @@ public class SkillDrawSystem : MonoBehaviour
 
         ClearSlotRoot();
         gatchaBG.SetActive(true);
-        confirmBtn.interactable = false;
 
-        StartCoroutine(DrawSkillsSequentially(count));
+        drawCoroutine = StartCoroutine(DrawSkillsSequentially(count));
+    }
+
+    public void SkipDrawAnimation()
+    {
+        if (drawCoroutine == null) return;
+
+        DOTween.timeScale = 10f;
     }
 
     private IEnumerator DrawSkillsSequentially(int count)
     {
-        
-
         for (int i = 0; i < count; i++)
         {
             SkillData skillData = skillDataLoader.GetRandomSkill();
             SkillDrawSlot slot = Instantiate(slotPrefab, slotRoot);
             slot.SetSlot(skillData);
+
+            // 뽑힌 슬롯을 리스트에 추가
+            drawnSlots.Add(slot);
 
             skillManager.AddSkill(skillData);
 
@@ -63,7 +79,9 @@ public class SkillDrawSystem : MonoBehaviour
             yield return new WaitUntil(() => animationDone);
         }
 
-        confirmBtn.interactable = true;
+        DOTween.timeScale = 1f;
+        drawCoroutine = null;
+        isDone = true;
     }
 
     private void ClearSlotRoot()
@@ -74,5 +92,19 @@ public class SkillDrawSystem : MonoBehaviour
         {
             Destroy(child.gameObject);
         }
+
+        drawnSlots.Clear();
+    }
+
+    private void ClickConfirmBtn()
+    {
+        if (!isDone)
+        {
+            SkipDrawAnimation();
+            return;
+        }
+
+        isDone = false;
+        gatchaBG.SetActive(false);
     }
 }
