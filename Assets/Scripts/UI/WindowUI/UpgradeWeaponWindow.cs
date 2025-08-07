@@ -458,7 +458,8 @@ public class UpgradeWeaponWindow : BaseUI
     // =========== 젬 시스템 ===========
     private void OpenGemWeaponPopup()
     {
-        var popup = uIManager.OpenUI<Gem_Weapon_Popup>(UIName.Gem_Weapon_Popup);
+        var popup = uIManager.OpenUI<Forge_Inventory_Popup>(UIName.Forge_Inventory_Popup);
+        popup.SetDefaultItemType(ItemType.Weapon);
         popup.SetWeaponSelectCallback(OnGemWeaponSelected);
     }
 
@@ -542,6 +543,7 @@ public class UpgradeWeaponWindow : BaseUI
         if (equippedGems[idx] == null)
         {
             var popup = uIManager.OpenUI<Forge_Inventory_Popup>(UIName.Forge_Inventory_Popup);
+            popup.SetDefaultItemType(ItemType.Gem);
             popup.SetGemSelectCallback((gem) => OnGemSelected(idx, gem));
         }
         else

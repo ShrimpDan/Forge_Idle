@@ -14,6 +14,8 @@ public class Forge_Inventory_Popup : BaseUI
     private Action<ItemInstance> resourceSelectCallback;
     private Action<AssistantInstance> assistantSelectCallback;
 
+    private ItemType? defaultItemType = null;
+
     public override void Init(GameManager gameManager, UIManager uIManager)
     {
         base.Init(gameManager, uIManager);
@@ -22,24 +24,43 @@ public class Forge_Inventory_Popup : BaseUI
         exitBtn.onClick.AddListener(() => uIManager.CloseUI(UIName.Forge_Inventory_Popup));
 
         inventoryTab.Init(gameManager, uIManager);
+
         ApplyCallbacks();
+    }
+
+    public override void Open()
+    {
+        base.Open();
+
+        if (defaultItemType.HasValue)
+        {
+            inventoryTab.SelectTab(defaultItemType.Value);
+            defaultItemType = null;
+        }
     }
 
     public void SetWeaponSelectCallback(Action<ItemInstance> callback)
     {
-        weaponSelectCallback = callback; ApplyCallbacks();
+        weaponSelectCallback = callback;
+        ApplyCallbacks();
     }
+
     public void SetGemSelectCallback(Action<ItemInstance> callback)
     {
-        gemSelectCallback = callback; ApplyCallbacks();
+        gemSelectCallback = callback;
+        ApplyCallbacks();
     }
+
     public void SetResourceSelectCallback(Action<ItemInstance> callback)
     {
-        resourceSelectCallback = callback; ApplyCallbacks();
+        resourceSelectCallback = callback;
+        ApplyCallbacks();
     }
+
     public void SetTraineeSelectCallback(Action<AssistantInstance> callback)
     {
-        assistantSelectCallback = callback; ApplyCallbacks();
+        assistantSelectCallback = callback;
+        ApplyCallbacks();
     }
 
     private void ApplyCallbacks()
@@ -62,5 +83,14 @@ public class Forge_Inventory_Popup : BaseUI
         gemSelectCallback = null;
         resourceSelectCallback = null;
         assistantSelectCallback = null;
+    }
+
+    public void SetDefaultItemType(ItemType itemType)
+    {
+        if (inventoryTab != null)
+        {
+            inventoryTab.SelectTab(itemType);
+            defaultItemType = null;
+        }
     }
 }
