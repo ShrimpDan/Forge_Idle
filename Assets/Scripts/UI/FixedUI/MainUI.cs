@@ -69,6 +69,7 @@ public class MainUI : BaseUI
     {
         if (forgeManager == null) return;
 
+        forgeManager.Events.OnNameChanged += SetNameUI;
         forgeManager.Events.OnGoldChanged += SetGoldUI;
         forgeManager.Events.OnDiaChanged += SetDiaUI;
         forgeManager.Events.OnLevelChanged += SetLevelUI;
@@ -78,6 +79,7 @@ public class MainUI : BaseUI
 
     void OnDisable()
     {
+        forgeManager.Events.OnNameChanged -= SetNameUI;
         forgeManager.Events.OnGoldChanged -= SetGoldUI;
         forgeManager.Events.OnDiaChanged -= SetDiaUI;
         forgeManager.Events.OnLevelChanged -= SetLevelUI;
@@ -99,7 +101,7 @@ public class MainUI : BaseUI
                     onTabClick?.Invoke(tabUI.name);
                 }
                 else
-                { 
+                {
                     tabUI.CloseTab();
                 }
             }
@@ -113,6 +115,11 @@ public class MainUI : BaseUI
         }
 
         uIManager.CloseAllWindowUI();
+    }
+
+    private void SetNameUI(string name)
+    {
+        forgeNameText.text = name;
     }
 
     private void SetGoldUI(int gold)

@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 public class GameManager : MonoSingleton<GameManager>
 {
@@ -75,11 +73,6 @@ public class GameManager : MonoSingleton<GameManager>
         LoadSceneManager.Instance.SetMainCamera(Camera.main.gameObject);
         DontDestroyOnLoad(cmObj);
     }
-
-
-
-
-
 
     private void Start()
     {
