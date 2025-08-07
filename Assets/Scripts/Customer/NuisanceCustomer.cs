@@ -128,6 +128,7 @@ public class NuisanceCustomer : Customer
 
         GameManager.Instance.DailyQuestManager.ProgressQuest("CatchMission", 1);
 
+        //여기에 매서드 추가
         StopAllCoroutines();
         StartCoroutine(ExitFlow());
 
