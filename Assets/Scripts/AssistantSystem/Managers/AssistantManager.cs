@@ -84,8 +84,7 @@ public class AssistantManager : MonoBehaviour
 
         if (target.IsEquipped)
         {
-            gameManager.ForgeManager.EquippedAssistant[target.EquippedForge][target.Specialization] = null;
-            target.EquipAssi(false);
+            gameManager.ForgeManager.CurrentForge.AssistantHandler.DeActiveAssistant(target);
         }
 
         if (target.IsInUse)

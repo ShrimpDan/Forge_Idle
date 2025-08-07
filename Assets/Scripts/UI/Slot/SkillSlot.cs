@@ -13,6 +13,7 @@ public class SkillSlot : MonoBehaviour
     [SerializeField] private Image countFill;
     [SerializeField] private TextMeshProUGUI countText;
     [SerializeField] private GameObject lockUI;
+    [SerializeField] private GameObject equipIndicator;
 
     private Button slotBtn;
     public ForgeUpgradeType Type { get => type; }
@@ -41,6 +42,7 @@ public class SkillSlot : MonoBehaviour
         countText.text = $"{skill.CurCount} / {skill.NeedCount}";
         slotBtn.interactable = true;
         lockUI.SetActive(false);
+        equipIndicator.SetActive(skill.IsEquipped);
     }
 
     private void ClickSlotBtn()

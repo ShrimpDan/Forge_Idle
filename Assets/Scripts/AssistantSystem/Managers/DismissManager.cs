@@ -40,6 +40,7 @@ public class DismissManager : MonoBehaviour
         ApplyToggleButtonColor();
         UpdateConfirmButtonState();
     }
+    
     private void ToggleDismissMode()
     {
         SetDismissMode(isDismissMode);

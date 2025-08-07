@@ -121,5 +121,13 @@ public class AssistantInstance
         }
     }
 
+    public void Rehire()
+    {
+        IsFired = false;
+        IsInUse = false;
+        IsEquipped = false;
+        EquippedForge = ForgeType.None;
+    }
+
     public bool IsActive => !IsFired;
 }

@@ -16,16 +16,15 @@ public class ForgeSkillSystem : MonoBehaviour
         this.skillManager = skillManager;
     }
 
-    public void SetSkill(int idx, SkillInstance skill)
+    public bool SetSkill(int idx, SkillInstance skill)
     {
-        if (skill == null) return;
+        if (skill == null) return false;
 
         if (ActiveSkills[idx] != null)
         {
             if (ActiveSkills[idx].IsCoolDown)
             {
-                // 쿹타임 중에는 스킬 교체 불가능 알람 표시
-                return;
+                return false;
             }
 
             UnSetSkill(ActiveSkills[idx]);
@@ -34,20 +33,22 @@ public class ForgeSkillSystem : MonoBehaviour
         skill.EquipSkill();
         ActiveSkills[idx] = skill;
         forgeManager.Events.RaiseSkillChanged(idx, skill);
+        return true;
     }
 
-    public void UnSetSkill(SkillInstance skill)
+    public bool UnSetSkill(SkillInstance skill)
     {
         if (skill.IsCoolDown)
         {
-            // 쿨타임 중에는 해제 불가능 알람
-            return;
+            return false;
         }
 
         skill.UnEquipSkill();
         int idx = Array.IndexOf(ActiveSkills, skill);
         ActiveSkills[idx] = null;
         forgeManager.Events.RaiseSkillChanged(idx, null);
+
+        return true;
     }
 
     public void UseSkill(int idx)

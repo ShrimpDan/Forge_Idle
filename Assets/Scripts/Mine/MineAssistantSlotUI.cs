@@ -53,22 +53,18 @@ public class MineAssistantSlotUI : MonoBehaviour
     {
         if (slot == null) return;
 
-        if (assistant != null && assistant.IsInUse)
-        {
-            slot.Assign(null);
-            UpdateUI();
-            return;
-        }
-
+        // 1) 기존 배치된 어시스턴트의 IsInUse 해제
         if (slot.IsAssigned && slot.AssignedAssistant != null)
             slot.AssignedAssistant.IsInUse = false;
 
+        // 2) 신규 배치라면 IsInUse 부여
         if (assistant != null)
             assistant.IsInUse = true;
 
         slot.Assign(assistant);
         UpdateUI();
     }
+
 
     public void UpdateUI()
     {
