@@ -77,10 +77,14 @@ public class TutorialManager : MonoBehaviour
         PlayerPrefs.SetInt("TutorialDone", 0); // Test
         isTurtorialMode = true;
         tutorialPanel.SetActive(true);
-        StartTutorial();
+
+        StartCoroutine(StartTutorial());
     }
-    public void StartTutorial()
+
+    IEnumerator StartTutorial()
     {
+        yield return new WaitUntil(() => gameManager.ForgeManager.Name != null);
+        
         tutorialStep = 0;
         HandleStep();
     }
