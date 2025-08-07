@@ -17,6 +17,7 @@ public class RefineSystemWindow : BaseUI
     [SerializeField] private GameObject inputItemSlotPrefab;
     [SerializeField] private Transform refineListRoot;
     [SerializeField] private GameObject refineListSlotPrefab;
+    [SerializeField] private Button refineAllButton;
 
     [Header("Amount UI")]
     [SerializeField] private Button minusBtn;
@@ -28,6 +29,8 @@ public class RefineSystemWindow : BaseUI
     [SerializeField] private LackPopup lackPopupPrefab;
     [SerializeField] private Transform popupParent;
     [SerializeField] private RewardPopup rewardPopupPrefab; 
+
+
     private DataManager dataManager;
     private List<ItemData> gemList = new();
     private List<ItemData> ingotList = new();
@@ -63,6 +66,9 @@ public class RefineSystemWindow : BaseUI
 
         craftBtn.onClick.RemoveAllListeners();
         craftBtn.onClick.AddListener(OnClickCraft);
+
+        refineAllButton.onClick.RemoveAllListeners();
+        refineAllButton.onClick.AddListener(OnClickRefineAll);
 
         var all = dataManager.ItemLoader.ItemList;
         gemList = all.Where(x => x.ItemKey.StartsWith("gem_")).ToList();
@@ -198,10 +204,6 @@ public class RefineSystemWindow : BaseUI
             popup.Init(GameManager.Instance, uIManager);
             popup.Show(type);
         }
-        else
-        {
-            Debug.LogWarning("LackPopup 프리팹이 인스펙터에 할당되어 있지 않습니다.");
-        }
     }
 
     private void ShowRewardPopup(ItemData outItem, int amount)
@@ -221,10 +223,6 @@ public class RefineSystemWindow : BaseUI
             var rewardList = new List<(string itemKey, int count)> { (outItem.ItemKey, amount) };
             popup.Show(rewardList, dataManager.ItemLoader, "획득 보상");
         }
-        else
-        {
-            Debug.LogWarning("RewardPopup 프리팹이 인스펙터에 할당되어 있지 않습니다.");
-        }
     }
 
     private string GetResourceKeyForOutput(ItemData output)
@@ -233,5 +231,63 @@ public class RefineSystemWindow : BaseUI
         if (output.ItemKey.StartsWith("gem_")) return "resource_" + output.ItemKey.Substring(4);
         if (output.ItemKey.StartsWith("ingot_")) return "resource_" + output.ItemKey.Substring(6);
         return null;
+    }
+
+    private void OnClickRefineAll()
+    {
+        var allOutputList = gemList.Concat(ingotList).ToList();
+        var totalRewards = new List<(string itemKey, int count)>();
+        var inventory = GameManager.Instance.Inventory;
+        var invList = inventory.ResourceList;
+
+        foreach (var output in allOutputList)
+        {
+            string resourceKey = GetResourceKeyForOutput(output);
+            if (string.IsNullOrEmpty(resourceKey))
+                continue;
+
+            int owned = invList.Where(x => x.ItemKey == resourceKey).Sum(x => x.Quantity);
+            int maxCanMake = owned / baseRequiredAmount;
+            if (maxCanMake <= 0)
+                continue;
+
+            // 재료 사용
+            bool used = inventory.UseCraftingMaterials(new List<(string resourceKey, int amount)> { (resourceKey, baseRequiredAmount * maxCanMake) });
+            if (!used)
+                continue; // 실패하면 skip
+
+            // 결과 아이템 지급
+            var outItem = dataManager.ItemLoader.GetItemByKey(output.ItemKey);
+            inventory.AddItem(outItem, maxCanMake);
+
+            // 리워드 누적
+            totalRewards.Add((outItem.ItemKey, maxCanMake));
+        }
+
+        if (totalRewards.Count > 0)
+        {
+            ShowRewardPopup(totalRewards);
+        }
+        else
+        {
+            ShowLackPopup(LackType.Resource);
+        }
+    }
+
+    private void ShowRewardPopup(List<(string itemKey, int count)> rewardList)
+    {
+        SoundManager.Instance?.Play("SFX_SystemReward");
+
+        if (uIManager != null)
+        {
+            var popup = uIManager.OpenUI<RewardPopup>(UIName.RewardPopup);
+            popup.Show(rewardList, dataManager.ItemLoader, "획득 보상");
+        }
+        else if (rewardPopupPrefab != null)
+        {
+            var popup = Instantiate(rewardPopupPrefab, popupParent ? popupParent : null);
+            popup.Init(GameManager.Instance, uIManager);
+            popup.Show(rewardList, dataManager.ItemLoader, "획득 보상");
+        }
     }
 }
