@@ -49,7 +49,7 @@ public class DungeonManager : MonoBehaviour
 
         while (IsRunning)
         {
-            time -= timerInterval * DungeonTimeScale;
+            time -= timerInterval;
             DungeonUI.UpdateTimerUI(time, DungeonData.Duration);
 
             if (time <= 0)
