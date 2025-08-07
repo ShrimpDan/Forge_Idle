@@ -101,7 +101,11 @@ public class TutorialManager : MonoBehaviour
         if (skillDrawButton != null)
             skillDrawButton.onClick.AddListener(onClickSkillDraw);
         if (confirmButton != null)
+        { 
             confirmButton.onClick.AddListener(OnConfirmButtonClicked);
+            Debug.Log($"{confirmButton.onClick.GetPersistentEventCount()}");
+            Debug.Log("confirmButton 리스너 연결됨");
+        }
         if (drawButton != null)
             drawButton.onClick.AddListener(OnDrawButtonClicked);
         if (normalButton != null)
@@ -402,7 +406,6 @@ public class TutorialManager : MonoBehaviour
                 tutorialPanel.SetActive(false);
                 break;
             case 41:
-               
                 HighlightPos(0.51f, 0.20f);
                 effect.HideHighlight();
                 tutorialPanel.SetActive(false);
@@ -790,6 +793,7 @@ public class TutorialManager : MonoBehaviour
 
     private void OnConfirmButtonClicked()
     {
+        Debug.Log("함수 걸림");
         // 튜토리얼 단계 체크 후 처리
         if (tutorialStep == 41) //해당 단계가 맞는지 일단 비교후 넘김 
         {
