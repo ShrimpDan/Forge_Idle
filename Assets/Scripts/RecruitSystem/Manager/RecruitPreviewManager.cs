@@ -216,18 +216,19 @@ public class RecruitPreviewManager : MonoBehaviour
         gm.AssistantInventory.Add(target);
 
         if (isFromHeldList)
-            gm.HeldCandidates.Remove(currentHeldInstance);
-
-        gm.SaveManager.SaveAll();
-
-        if (isFromHeldList)
         {
+            gm.HeldCandidates.Remove(currentHeldInstance);
+            gm.SaveManager.SaveAll();
+            HeldUIHelper.Instance?.UpdateCheckIcons();
             ReturnToProperUI();
             return;
         }
 
+        gm.SaveManager.SaveAll();
+        HeldUIHelper.Instance?.UpdateCheckIcons();
         AdvanceToNextCandidate();
     }
+
 
 
     // 제자 영입 거절
@@ -240,12 +241,14 @@ public class RecruitPreviewManager : MonoBehaviour
         {
             GameManager.Instance.HeldCandidates.Remove(currentHeldInstance);
             GameManager.Instance.SaveManager.SaveAll();
+            HeldUIHelper.Instance?.UpdateCheckIcons();
             ReturnToProperUI();
             return;
         }
 
         AdvanceToNextCandidate();
     }
+
 
 
     // 제자 보류 처리
@@ -270,9 +273,11 @@ public class RecruitPreviewManager : MonoBehaviour
         var held = candidatePool[currentIndex];
         GameManager.Instance.HeldCandidates.Add(held);
         GameManager.Instance.SaveManager.SaveAll();
+        HeldUIHelper.Instance?.UpdateCheckIcons();
 
         AdvanceToNextCandidate();
     }
+
 
     private void AdvanceToNextCandidate()
     {
