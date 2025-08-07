@@ -119,4 +119,18 @@ public class ItemInstance
         return (atkMul, speedMul);
     }
 
+    public float GetTotalAttackAtEnhanceLevel(int level)
+    {
+        if (Data == null || Data.ItemType != ItemType.Weapon || Data.WeaponStats == null)
+            return 0;
+
+        float baseAttack = Data.WeaponStats.Attack;
+        float enhancedAttack = (level == 0)
+            ? baseAttack
+            : baseAttack * (level * Data.UpgradeInfo.AttackMultiplier);
+
+        var (atkMul, _) = GetGemMultipliers();
+        return enhancedAttack * atkMul;
+    }
+
 }

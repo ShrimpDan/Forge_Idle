@@ -205,15 +205,20 @@ public class UpgradeWeaponWindow : BaseUI
             ResetUpgradePanel();
             return;
         }
+
         inputWeaponIcon.sprite = IconLoader.GetIconByKey(selectedWeapon.Data.ItemKey);
         inputWeaponIcon.enabled = true;
         inputWeaponName.text = selectedWeapon.Data.Name;
 
         int curLevel = selectedWeapon.CurrentEnhanceLevel;
         int maxLevel = selectedWeapon.Data.UpgradeInfo.MaxEnhanceLevel;
+
         foreach (Transform child in currentUpgradeRoot) Destroy(child.gameObject);
         for (int i = 0; i < maxLevel; i++)
-            Instantiate(i < curLevel ? starFilledPrefab : starEmptyPrefab, currentUpgradeRoot);
+        {
+            GameObject star = Instantiate(i < curLevel ? starFilledPrefab : starEmptyPrefab, currentUpgradeRoot);
+            star.transform.SetAsLastSibling();
+        }
 
         foreach (Transform child in inputItemRoot) Destroy(child.gameObject);
         int needGold = CalcEnhanceGoldCost(selectedWeapon);
@@ -226,14 +231,30 @@ public class UpgradeWeaponWindow : BaseUI
 
         int rate = CalcEnhanceSuccessRate(selectedWeapon);
         successRateText.text = $"{rate}%";
+
         float beforeAtk = selectedWeapon.GetTotalAttack();
-        float afterAtk = CalcNextAttack(selectedWeapon);
+        float afterAtk = selectedWeapon.GetTotalAttackAtEnhanceLevel(curLevel + 1);
         beforeText.text = $"{beforeAtk:F0}";
         afterText.text = $"{afterAtk:F0}";
         progressBar.fillAmount = 0;
 
+        UpdateEnhanceButtonState();
         RefreshAutomaticUpgradeButtons();
     }
+
+    private void UpdateEnhanceButtonState()
+    {
+        if (selectedWeapon == null || selectedWeapon.Data == null)
+            return;
+
+        bool isMaxEnhance = selectedWeapon.CurrentEnhanceLevel >= selectedWeapon.Data.UpgradeInfo.MaxEnhanceLevel;
+        upgradeButton.interactable = !isMaxEnhance;
+
+        if (advancedUpgradeButton != null)
+            advancedUpgradeButton.interactable = !isMaxEnhance;
+    }
+
+
 
     private int CalcEnhanceSuccessRate(ItemInstance weapon)
     {
@@ -249,6 +270,7 @@ public class UpgradeWeaponWindow : BaseUI
         return CalcEnhanceSuccessRate(weapon) + 10;
     }
 
+    // 보석 효과 미반영 코드
     private float CalcNextAttack(ItemInstance weapon)
     {
         if (weapon == null || weapon.Data == null) return 0;
@@ -330,6 +352,7 @@ public class UpgradeWeaponWindow : BaseUI
 
         int successRate = isAdvanced ? CalcAdvancedEnhanceSuccessRate(selectedWeapon) : CalcEnhanceSuccessRate(selectedWeapon);
         bool isSuccess = UnityEngine.Random.Range(0, 100) < successRate;
+
         if (isSuccess)
         {
             progressBar.fillAmount = 1f;
@@ -350,11 +373,14 @@ public class UpgradeWeaponWindow : BaseUI
             }
             SoundManager.Instance.Play("FailSound");
         }
+
         RefreshUpgradePanel();
-        upgradeButton.interactable = true;
-        if (advancedUpgradeButton != null) advancedUpgradeButton.interactable = true;
-        if (automaticUpgradeButton != null) automaticUpgradeButton.interactable = true;
+        UpdateEnhanceButtonState();
+
+        if (automaticUpgradeButton != null)
+            automaticUpgradeButton.interactable = true;
     }
+
 
     // ===== 자동강화 =======
     private void ShowAutomaticUpgradePanel()
@@ -432,7 +458,8 @@ public class UpgradeWeaponWindow : BaseUI
     // =========== 젬 시스템 ===========
     private void OpenGemWeaponPopup()
     {
-        var popup = uIManager.OpenUI<Gem_Weapon_Popup>(UIName.Gem_Weapon_Popup);
+        var popup = uIManager.OpenUI<Forge_Inventory_Popup>(UIName.Forge_Inventory_Popup);
+        popup.SetDefaultItemType(ItemType.Weapon);
         popup.SetWeaponSelectCallback(OnGemWeaponSelected);
     }
 
@@ -516,6 +543,7 @@ public class UpgradeWeaponWindow : BaseUI
         if (equippedGems[idx] == null)
         {
             var popup = uIManager.OpenUI<Forge_Inventory_Popup>(UIName.Forge_Inventory_Popup);
+            popup.SetDefaultItemType(ItemType.Gem);
             popup.SetGemSelectCallback((gem) => OnGemSelected(idx, gem));
         }
         else

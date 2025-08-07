@@ -6,7 +6,8 @@ public class DismissManager : MonoBehaviour
 {
     public static DismissManager Instance { get; private set; }
 
-    [SerializeField] private Button dismissButton;
+    [SerializeField] private Button toggleDismissModeButton;
+    [SerializeField] private Button confirmDismissButton;
     [SerializeField] private Color dismissActiveColor = Color.white;
     [SerializeField] private Color dismissInactiveColor = new Color32(200, 200, 200, 255);
     [SerializeField] private GameObject dismissPopup;
@@ -15,6 +16,7 @@ public class DismissManager : MonoBehaviour
 
     private HashSet<AssistantSlot> selectedSlots = new();
     private List<AssistantSlot> allRegisteredSlots = new();
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -26,81 +28,66 @@ public class DismissManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
-        if (dismissButton != null)
-            dismissButton.onClick.AddListener(OnClickDismissButton);
+        if (toggleDismissModeButton != null)
+            toggleDismissModeButton.onClick.AddListener(ToggleDismissMode);
+
+        if (confirmDismissButton != null)
+            confirmDismissButton.onClick.AddListener(OnClickConfirmDismiss);
     }
 
     private void Start()
     {
-        ApplyColorByMode();
+        ApplyToggleButtonColor();
+        UpdateConfirmButtonState();
+    }
+    private void ToggleDismissMode()
+    {
+        SetDismissMode(isDismissMode);
+
+        Debug.Log($"[DismissManager] 해고 모드 {(isDismissMode ? "진입" : "종료")}");
+
+        foreach (var slot in allRegisteredSlots)
+        {
+            slot.SetDismissMode(isDismissMode);
+            slot.SetSelected(false);
+        }
+
+        selectedSlots.Clear();
+        UpdateConfirmButtonState();
     }
 
-    private void OnClickDismissButton()
+    private void OnClickConfirmDismiss()
     {
-        if (isDismissMode)
+        if (selectedSlots.Count == 0) return;
+
+        Debug.Log($"[DismissManager] 해고 대상 {selectedSlots.Count}명 → 확인 팝업 열림");
+
+        foreach (var slot in selectedSlots)
         {
-            if (selectedSlots.Count == 0)
+            Debug.Log($" - 선택된 제자: {slot.Assistant?.Name ?? "null"}");
+        }
+
+        if (dismissPopup != null)
+        {
+            var popup = dismissPopup.GetComponent<DismissConfirmPopup>();
+            if (popup != null)
             {
-                isDismissMode = false;
-                SetDismissMode(false);
-
-                Debug.Log("[DismissManager] 해고 모드 종료됨 (선택 없음)");
-
-                foreach (var slot in allRegisteredSlots)
-                {
-                    slot.SetDismissMode(false);
-                    slot.SetSelected(false);
-                }
-
-                selectedSlots.Clear();
+                popup.Show(GetSelectedSlotsCopy());
             }
             else
             {
-                Debug.Log($"[DismissManager] 해고 대상 {selectedSlots.Count}명 → 확인 팝업 열림");
-
-                foreach (var slot in selectedSlots)
-                {
-                    Debug.Log($" - 선택된 제자: {slot.Assistant?.Name ?? "null"}");
-                }
-
-                if (dismissPopup != null)
-                {
-                    var popup = dismissPopup.GetComponent<DismissConfirmPopup>();
-                    if (popup != null)
-                    {
-                        popup.Show(GetSelectedSlotsCopy());
-                    }
-                    else
-                    {
-                        Debug.LogWarning("[DismissManager] dismissPopup에 DismissConfirmPopup 컴포넌트가 없습니다.");
-                    }
-
-                    dismissPopup.SetActive(true);
-                }
-            }
-        }
-        else
-        {
-            isDismissMode = true;
-            SetDismissMode(true);
-            Debug.Log("[DismissManager] 해고 모드 진입");
-
-            foreach (var slot in allRegisteredSlots)
-            {
-                slot.SetDismissMode(true);
-                slot.SetSelected(false);
+                Debug.LogWarning("[DismissManager] dismissPopup에 DismissConfirmPopup 컴포넌트가 없습니다.");
             }
 
-            selectedSlots.Clear();
+            dismissPopup.SetActive(true);
         }
     }
 
     public void SetDismissMode(bool on)
     {
         isDismissMode = on;
-        ApplyColorByMode();
-
-        Debug.Log($"[DismissManager] SetDismissMode({on}) 호출됨");
+        ApplyToggleButtonColor();
+        UpdateConfirmButtonState();
 
         foreach (var slot in allRegisteredSlots)
         {
@@ -113,34 +100,48 @@ public class DismissManager : MonoBehaviour
         selectedSlots.Clear();
     }
 
-
-    private void ApplyColorByMode()
+    private void ApplyToggleButtonColor()
     {
-        if (dismissButton != null)
+        if (toggleDismissModeButton == null) return;
+
+        ColorBlock cb = toggleDismissModeButton.colors;
+
+        if (isDismissMode)
         {
-            ColorBlock cb = dismissButton.colors;
-
-            if (isDismissMode)
-            {
-                cb.normalColor = Color.white;
-                cb.highlightedColor = Color.white;
-                cb.pressedColor = new Color(0.9f, 0.9f, 0.9f);
-                cb.selectedColor = Color.white;
-            }
-            else
-            {
-                cb.normalColor = dismissInactiveColor;
-                cb.highlightedColor = dismissInactiveColor;
-                cb.pressedColor = dismissInactiveColor;
-                cb.selectedColor = dismissInactiveColor;
-            }
-
-            cb.colorMultiplier = 1;
-            dismissButton.colors = cb;
+            cb.normalColor = dismissActiveColor;
+            cb.highlightedColor = dismissActiveColor;
+            cb.pressedColor = new Color(0.9f, 0.9f, 0.9f);
+            cb.selectedColor = dismissActiveColor;
         }
+        else
+        {
+            cb.normalColor = dismissInactiveColor;
+            cb.highlightedColor = dismissInactiveColor;
+            cb.pressedColor = dismissInactiveColor;
+            cb.selectedColor = dismissInactiveColor;
+        }
+
+        cb.colorMultiplier = 1;
+        toggleDismissModeButton.colors = cb;
+    }
+
+    private void UpdateConfirmButtonState()
+    {
+        if (confirmDismissButton == null) return;
+
+        bool hasSelection = selectedSlots.Count > 0;
+
+        ColorBlock cb = confirmDismissButton.colors;
+        cb.normalColor = hasSelection ? dismissActiveColor : dismissInactiveColor;
+        cb.highlightedColor = cb.normalColor;
+        cb.pressedColor = hasSelection ? new Color(0.9f, 0.9f, 0.9f) : dismissInactiveColor;
+        cb.selectedColor = cb.normalColor;
+        cb.colorMultiplier = 1;
+        confirmDismissButton.colors = cb;
     }
 
     public bool IsDismissMode() => isDismissMode;
+
     public void ToggleSelect(AssistantSlot slot)
     {
         if (!isDismissMode) return;
@@ -155,6 +156,8 @@ public class DismissManager : MonoBehaviour
             selectedSlots.Add(slot);
             slot.SetSelected(true);
         }
+
+        UpdateConfirmButtonState();
     }
 
     public void RegisterSlot(AssistantSlot slot)
@@ -208,4 +211,24 @@ public class DismissManager : MonoBehaviour
         }
     }
 
+    public void ForceResetDismissState()
+    {
+        isDismissMode = false;
+
+        foreach (var slot in allRegisteredSlots)
+        {
+            slot.SetDismissMode(false);
+            slot.SetSelected(false);
+        }
+
+        selectedSlots.Clear();
+
+        ApplyToggleButtonColor();
+        UpdateConfirmButtonState();
+    }
+
+    public void ResetDismissButton()
+    {
+        ApplyToggleButtonColor();
+    }
 }

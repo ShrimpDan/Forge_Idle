@@ -57,7 +57,7 @@ public class InventoryPopup : BaseUI
                 break;
 
             case ItemType.Gem:
-                icon.sprite = IconLoader.GetIconByPath(item.Data.IconPath);
+                icon.sprite = IconLoader.GetIconByKey(item.ItemKey);
                 desc += $"\n\n<color=#ffcc00><b>▶ 효과</b></color>\n";
                 desc += $"강화 배율: <b>{item.Data.GemStats.GemMultiplier:F1}x</b>\n";
                 desc += $"{item.Data.GemStats.GemEffectDescription}";

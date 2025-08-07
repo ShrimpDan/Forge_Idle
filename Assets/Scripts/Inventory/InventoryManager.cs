@@ -94,6 +94,12 @@ public class InventoryManager
         {
             case ItemType.Weapon:
                 WeaponList.Remove(item);
+
+                foreach (var gem in item.GemSockets)
+                {
+                    if(gem != null)
+                        AddItem(gem.Data);
+                }
                 break;
             case ItemType.Gem:
                 GemList.Remove(item);
