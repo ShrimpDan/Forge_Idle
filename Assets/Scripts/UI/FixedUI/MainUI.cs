@@ -21,6 +21,7 @@ public class MainUI : BaseUI
     [SerializeField] private GameObject[] tabPanels;
 
     [Header("Top Info")]
+    [SerializeField] private Button forgeInfoBtn;
     [SerializeField] private TextMeshProUGUI levelText;
     [SerializeField] private Image fameFill;
     [SerializeField] private TextMeshProUGUI fameText;
@@ -55,6 +56,9 @@ public class MainUI : BaseUI
                 SwitchTab(index);
             });
         }
+
+        forgeInfoBtn.onClick.RemoveAllListeners();
+        forgeInfoBtn.onClick.AddListener(() => uIManager.OpenUI<ForgeInfoPopup>(UIName.ForgeInfoPopup));
 
         OnEnable();
     }
