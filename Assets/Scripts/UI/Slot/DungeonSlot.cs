@@ -11,6 +11,9 @@ public class DungeonSlot : MonoBehaviour
     [SerializeField] Button startBtn;
     [SerializeField] GameObject unlockIndicator;
 
+    [Header("To Show Reward Resources")]
+    [SerializeField] ResourceSlot[] resourceSlots;
+
     public void Init(GameManager gameManager, DungeonData data)
     {
         this.gameManager = gameManager;
@@ -18,7 +21,7 @@ public class DungeonSlot : MonoBehaviour
 
         dungeonName.text = data.DungeonName;
         startBtn.onClick.AddListener(StartDungeon);
-
+        SetRewardSlot(data);
         SetUnlock();
     }
 
@@ -38,5 +41,19 @@ public class DungeonSlot : MonoBehaviour
 
         var ui = gameManager.UIManager.OpenUI<LackPopup>(UIName.LackPopup);
         ui.ShowCustom("무기를 장착해주세요.");
+    }
+
+    private void SetRewardSlot(DungeonData data)
+    {
+        int idx = 0;
+
+        foreach (var resourceKey in data.RewardItemKeys)
+        {
+            ResourceSlot slot = resourceSlots[idx];
+            slot.SetDungeonResource(IconLoader.GetIconByKey(resourceKey), data.MinCount, data.MaxCount);
+            slot.gameObject.SetActive(true);
+
+            idx++;
+        }
     }
 }

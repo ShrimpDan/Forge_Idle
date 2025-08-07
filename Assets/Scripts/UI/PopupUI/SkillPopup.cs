@@ -42,8 +42,12 @@ public class SkillPopup : BaseUI
         for (int i = 0; i < slotBtns.Length; i++)
         {
             int idx = i;
-            slotBtns[i].onClick.AddListener(() => ClickSlotBtn(idx));
-            slotBtns[i].onClick.AddListener(() => slotBtns[idx].transform.parent.gameObject.SetActive(false));
+
+            Button slotBtn = slotBtns[i];
+            slotBtn.onClick.AddListener(() => ClickSlotBtn(idx));
+            slotBtn.onClick.AddListener(() => slotBtn.transform.parent.gameObject.SetActive(false));
+
+            SetSlotBtns(i);
         }
     }
 
@@ -92,11 +96,16 @@ public class SkillPopup : BaseUI
     {
         if (skill == null) return;
 
-        skillSystem.SetSkill(idx, skill);
+        bool isSuccess = skillSystem.SetSkill(idx, skill);
+
+        if (!isSuccess)
+        {
+            AlertPopup();
+        }
 
         SetPopupUI(skill, slot);
         slot.SetSlotUI(skill);
-        
+
         uIManager.CloseUI(UIName.SkillPopup);
     }
 
@@ -104,9 +113,45 @@ public class SkillPopup : BaseUI
     {
         if (skill == null) return;
 
-        skillSystem.UnSetSkill(skill);
+        bool isSuccess = skillSystem.UnSetSkill(skill);
+
+        if (!isSuccess)
+        {
+            AlertPopup();
+        }
 
         SetPopupUI(skill, slot);
         slot.SetSlotUI(skill);
+
+        for (int i = 0; i < slotBtns.Length; i++)
+        {
+            SetSlotBtns(i);
+        }
+    }
+
+    private void AlertPopup()
+    {
+        var ui = uIManager.OpenUI<LackPopup>(UIName.LackPopup);
+        ui.ShowCustom("쿨타임 중에는 교체할 수 없습니다.");
+    }
+
+    private void SetSlotBtns(int idx)
+    {
+        Button slotBtn = slotBtns[idx];
+        SkillInstance skill = skillSystem.ActiveSkills[idx];
+
+        if (skill != null)
+        {
+            Image icon = slotBtn.transform.Find("Icon").GetComponent<Image>();
+            icon.sprite = IconLoader.GetIconByPath(skill.SkillData.IconPath);
+            icon.gameObject.SetActive(true);
+
+            slotBtn.transform.Find("Text").gameObject.SetActive(false);
+        }
+        else
+        {
+            slotBtn.transform.Find("Icon").gameObject.SetActive(false);
+            slotBtn.transform.Find("Text").gameObject.SetActive(true);
+        }
     }
 }

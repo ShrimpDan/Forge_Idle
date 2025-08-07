@@ -14,4 +14,10 @@ public class ResourceSlot : MonoBehaviour
         amountText.text = $"{owned}/{needed}";
         amountText.color = owned < needed ? Color.red : Color.white;
     }
+
+    public void SetDungeonResource(Sprite sprite, int min, int max)
+    {
+        icon.sprite = sprite;
+        amountText.text = $"{min}~{max}";
+    }
 }

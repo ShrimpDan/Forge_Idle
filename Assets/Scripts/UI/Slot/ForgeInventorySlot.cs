@@ -69,15 +69,15 @@ public class ForgeInventorySlot : MonoBehaviour
             enhanceText.gameObject.SetActive(true);
             enhanceText.text = $"+{enhanceLevel}";
 
-            // 5±¸°£ °­È­ »ö»ó
+            // 5ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È­ ï¿½ï¿½ï¿½ï¿½
             if (enhanceLevel <= 5)
                 enhanceText.color = Color.green;
             else if (enhanceLevel <= 8)
-                enhanceText.color = new Color(0.28f, 0.53f, 1f); // ÆÄ¶û
+                enhanceText.color = new Color(0.28f, 0.53f, 1f); // ï¿½Ä¶ï¿½
             else if (enhanceLevel <= 10)
-                enhanceText.color = new Color(0.8f, 0.35f, 1f); // º¸¶ó
+                enhanceText.color = new Color(0.8f, 0.35f, 1f); // ï¿½ï¿½ï¿½ï¿½
             else if (enhanceLevel <= 13)
-                enhanceText.color = new Color(1f, 0.5f, 0f); // ÁÖÈ²
+                enhanceText.color = new Color(1f, 0.5f, 0f); // ï¿½ï¿½È²
             else
                 enhanceText.color = Color.red;
         }
@@ -88,7 +88,7 @@ public class ForgeInventorySlot : MonoBehaviour
         }
     }
 
-    private void UpdateGemSlots(System.Collections.Generic.List<ItemInstance> gems)
+    private void UpdateGemSlots(List<ItemInstance> gems)
     {
         ClearGemSlots();
 

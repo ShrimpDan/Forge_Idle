@@ -101,7 +101,11 @@ public class TutorialManager : MonoBehaviour
         if (skillDrawButton != null)
             skillDrawButton.onClick.AddListener(onClickSkillDraw);
         if (confirmButton != null)
+        { 
             confirmButton.onClick.AddListener(OnConfirmButtonClicked);
+            Debug.Log($"{confirmButton.onClick.GetPersistentEventCount()}");
+            Debug.Log("confirmButton 리스너 연결됨");
+        }
         if (drawButton != null)
             drawButton.onClick.AddListener(OnDrawButtonClicked);
         if (normalButton != null)
@@ -166,12 +170,12 @@ public class TutorialManager : MonoBehaviour
             case 0:
                 tutorialPanel.SetActive(true);
                 ClickBlockerOn();
-                ShowTextWithTyping("어서오세요!! 대장간은 처음 방문하시는군요!!\n 만나서 반갑습니다 간단한 운영법을 알려드릴께요!!");
+                ShowTextWithTyping("어서오세요!! 대장간은 처음 방문하시는군요!!\n 만나서 반갑습니다 간단한 운영법을 알려드릴게요!!");
                 isWaitingForClick = true;
                 isEvent = false; //박스랑 상호작용해도 대사 넘어가게
                 break;
             case 1:
-                ShowTextWithTyping("대장간을 운영하기 위해 기본적인 기능들을 알려드릴께요!! 우측 화살표를 눌러주세요!!");
+                ShowTextWithTyping("대장간을 운영하기 위해 기본적인 기능들을 알려드릴게요!! 우측 화살표를 눌러주세요!!");
                 break;
             case 2:
                 ClickBlockerOff();
@@ -182,7 +186,7 @@ public class TutorialManager : MonoBehaviour
                 break;
             case 3:
                 ClickBlockerOn();
-                ShowTextWithTyping("이곳은 대장관 관련된 강화 , 레시피, 스킬 관련된 버튼이 숨겨져 있어요!!\n 첫번째로 강화에 대해서 설명해드릴께요 강화버튼을 눌러주세요!!");
+                ShowTextWithTyping("이곳은 대장관 관련된 강화 , 레시피, 스킬 관련된 버튼이 숨겨져 있어요!!\n 첫번째로 강화에 대해서 설명해드릴게요 강화버튼을 눌러주세요!!");
                 AllEffectOff();
                 break;
             case 4:
@@ -196,7 +200,7 @@ public class TutorialManager : MonoBehaviour
                 tutorialPanel.SetActive(true);
                 ClickBlockerOn();
                 AllEffectOff();
-                ShowTextWithTyping("강화는 골드를 사용해서 가게운영에 도움이 되는 다양한 기술들을 배울수 있어요!!\n간단하게 둘러보고 창을 닫아볼까요??");
+                ShowTextWithTyping("강화는 골드를 사용해서 가게운영에 도움이 되는 다양한 기술들을 배울수 있어요!!\n간단하게 둘러보고 창을 닫아 볼까요??");
                 break;
             case 6:
                 ClickBlockerOff();
@@ -208,7 +212,7 @@ public class TutorialManager : MonoBehaviour
             case 7:
                 tutorialPanel.SetActive(true);
                 ClickBlockerOn();
-                ShowTextWithTyping("다음은 레시피 해금에 대해 알려드릴께요!! 무기 레시피 버튼을 눌러 주세요!!");
+                ShowTextWithTyping("다음은 레시피 해금에 대해 알려드릴게요!! 무기 레시피 버튼을 눌러 주세요!!");
                 AllEffectOff();
                 break;
             case 8:
@@ -232,7 +236,7 @@ public class TutorialManager : MonoBehaviour
                 break;
             case 11:
                 tutorialPanel.SetActive(true);
-                ShowTextWithTyping("레시피 포인트는 무기를 판매하거나 던전을 클리어 해서 레벨업하면 \n자 그럼이제 한번 레시피 해금을 해볼까요?? 해금을 하고 창을 닫아주세요!!");
+                ShowTextWithTyping("레시피 포인트는 무기를 판매하거나 던전을 클리어 해서 레벨업하면 \n자 그럼 이제 한번 레시피 해금을 해볼까요?? 해금을 하고 창을 닫아주세요!!");
                 HighlightPos(0.74f, 0.28f);
                 effect.HideHighlight();
                 arrowIcon.SetActive(true);
@@ -275,7 +279,7 @@ public class TutorialManager : MonoBehaviour
                 arrowIcon.SetActive(true);
                 HighlightPos(0.22f, 0.64f);
                 effect.HideHighlight();
-                ShowTextWithTyping("제작이 끝나면 수령 버튼을 누르거나 탭을 닫으면 자동으로 인벤토리에 무기가 들어가요!! 그리고 손님이 이제 올꺼에요!! 창을 닫아볼까요?");
+                ShowTextWithTyping("제작이 끝나면 수령 버튼을 누르거나 탭을 닫으면 자동으로 인벤토리에 무기가 들어가요!! 그리고 손님이 이제 올꺼에요!! 창을 닫아 볼까요?");
                 break;
             case 18:
                 AllEffectOff();
@@ -284,7 +288,7 @@ public class TutorialManager : MonoBehaviour
                 break;
             case 19:
                 AllEffectOff();
-                ShowTextWithTyping("손님은 일반손님,단골손님, 진상손님이 있어요!! 진상손님은 클릭해서 쫒아내야해요!!\n단골손님은 방문시 클릭하면 컬렉션에 등록되요!!");
+                ShowTextWithTyping("손님은 일반손님,단골손님, 진상손님이 있어요!! 진상손님은 클릭해서 쫒아내야 해요!!\n단골손님은 방문시 클릭하면 컬렉션에 등록되요!!");
                 ClickBlockerOn();
                 break;
             case 20:
@@ -296,7 +300,7 @@ public class TutorialManager : MonoBehaviour
             case 21:
                 ClickBlockerOn();
                 AllEffectOff();
-                ShowTextWithTyping("단골 손님이 여러번 방문하면 특별한 효과를 얻을수 있어요!! 창을 닫아주세요!!");
+                ShowTextWithTyping("단골 손님이 여러번 방문하면 특별한 효과를 얻을수 있어요!! 창을 닫아 주세요!!");
                 break;
             case 22:
                 ClickBlockerOff();
@@ -307,7 +311,7 @@ public class TutorialManager : MonoBehaviour
                 effect.HighLightOn();
                 arrowIcon.SetActive(true);
                 HighlightPos(0.74f, 0.73f); //0.74,0.73
-                ShowTextWithTyping("이제 세공에 대해서 알아볼꺼에요!!");
+                ShowTextWithTyping("이제 세공에 대해서 알아볼 거예요!!");
                 break;
             case 24:
                 AllEffectOff();
@@ -315,7 +319,7 @@ public class TutorialManager : MonoBehaviour
                 ShowTextWithTyping("세공은 제작에 필요한 광석이나 장착에 필요한 보석을 만들수 있어요!!\n각 보석들을 클릭하면 필요한 재료가 보일꺼에요!!");
                 break;
             case 25:
-                ShowTextWithTyping("둘러보고 창을 닫아볼까요??");
+                ShowTextWithTyping("둘러보고 창을 닫아 볼까요??");
                 break;
             case 26:
                 ClickBlockerOff();
@@ -325,12 +329,12 @@ public class TutorialManager : MonoBehaviour
                 arrowIcon.SetActive(true);
                 effect.HighLightOn();
                 HighlightPos(0.29f, 0.81f); //0.29,0.81
-                ShowTextWithTyping("다음은 강화에 대해서 알려드릴께요!!");
+                ShowTextWithTyping("다음은 강화에 대해서 알려드릴게요!!");
                 break;
             case 28:
                 ClickBlockerOn();
                 HighlightPos(0.32f, 0.86f); //0.32,0.86
-                ShowTextWithTyping("강화는 일반강화, 고급강화로 나눠져 있어요!! 가운데 창을 클릭해서 무기를 올려볼까요?");
+                ShowTextWithTyping("강화는 일반강화, 고급강화로 나눠져 있어요!! 가운데 창을 클릭해서 무기를 올려 볼까요?");
                 break;
             case 29:
                 HighlightPos(0.51f, 0.70f); //0.51,0.70
@@ -340,17 +344,17 @@ public class TutorialManager : MonoBehaviour
             case 30:
                 ClickBlockerOn();
                 HighlightPos(0.36f, 0.17f);  //0.36f,0.17f
-                ShowTextWithTyping("일반강화는 골드를 사용해서 확률을 통해서 강화 할수있어요!! ");
+                ShowTextWithTyping("일반강화는 골드를 사용해서 확률을 통해서 강화 할 수 있어요!!");
                 break;
             case 31:
                 ClickBlockerOn();
                 HighlightPos(0.68f, 0.17f); //0.68f,0.17f
-                ShowTextWithTyping("고급강화는 재화를 사용해서 좀더 확률이 높게 강화가 가능해요!! ");
+                ShowTextWithTyping("고급강화는 재화를 사용해서 좀더 확률이 높게 강화할 수 있어요!! ");
                 break;
 
             case 32:
                 HighlightPos(0.70f, 0.86f); //0.70,0.86
-                ShowTextWithTyping("이번에는 보석강화에 대해서 알려드릴께요!! \n 보석강화 버튼을 눌러주세요!!");
+                ShowTextWithTyping("이번에는 보석강화에 대해서 알려드릴게요!! \n 보석강화 버튼을 눌러주세요!!");
                 ClickBlockerOff();
                 break;
             case 33:
@@ -367,7 +371,7 @@ public class TutorialManager : MonoBehaviour
                 AllEffectOff();
                 ClickBlockerOn();
                 tutorialPanel.SetActive(true);
-                ShowTextWithTyping("이번에는 스킬에 대해서 설명해 드릴꺼에요!! 가게를 운영하면서 뽑기를 통해 스킬을 얻을수 있어요!! \n하단 탭에서 상점으로 가볼까요??");
+                ShowTextWithTyping("이번에는 스킬에 대해서 설명해 드릴 거예요!! 가게를 운영하면서 뽑기를 통해 스킬을 얻을수 있어요!! \n하단 탭에서 상점으로 가볼까요??");
                 break;
             case 36:
                 tutorialPanel.SetActive(false);
@@ -393,7 +397,7 @@ public class TutorialManager : MonoBehaviour
             case 39:
                 ClickBlockerOn();
                 tutorialPanel.SetActive(true);
-                ShowTextWithTyping("스킬을 1개 뽑아보세요!!");
+                ShowTextWithTyping("스킬을 1개 뽑아 보세요!!");
                 break;
             case 40:
                 HighlightPos(0.35f, 0.27f);
@@ -402,7 +406,6 @@ public class TutorialManager : MonoBehaviour
                 tutorialPanel.SetActive(false);
                 break;
             case 41:
-               
                 HighlightPos(0.51f, 0.20f);
                 effect.HideHighlight();
                 tutorialPanel.SetActive(false);
@@ -411,7 +414,7 @@ public class TutorialManager : MonoBehaviour
                 ClickBlockerOn();
                 AllEffectOff();
                 tutorialPanel.SetActive(true);
-                ShowTextWithTyping("스킬을 얻었어요!! 다시 대장간으로 돌아가보죠!!");
+                ShowTextWithTyping("스킬을 얻었어요!! 다시 대장간으로 돌아가 보죠!!");
                 break;
             case 43:
                 ClickBlockerOff();
@@ -485,7 +488,7 @@ public class TutorialManager : MonoBehaviour
                 ClickBlockerOn();
                 break;
             case 55:
-                ShowTextWithTyping("맘에드는 제자는 합격 , 맘에 들지 않으면 불합격, 맘에들지만 골드가 부족할때는 보류를 누르시면되요!!");
+                ShowTextWithTyping("마음에 드는 제자는 합격 , 마음에 들지 않으면 불합격, 맘에들지만 골드가 부족할때는 보류를 누르시면되요!!");
                 ClickBlockerOn();
                 break;
             case 56:
@@ -515,7 +518,7 @@ public class TutorialManager : MonoBehaviour
                     
             case 61:
                 
-                ShowTextWithTyping("자! 기본적인 운영 방법은 전부 설명드렸어요!! 대장간을 잘 운영하셔서 부자되세요!!\n튜토리얼 보상으로 다이아 5000개랑 10000골드를 드릴께요!!");
+                ShowTextWithTyping("자! 기본적인 운영 방법은 전부 설명드렸어요!! 대장간을 잘 운영하셔서 부자되세요!!\n튜토리얼 보상으로 다이아 5000개랑 10000골드를 드릴게요!!");
                 GameManager.Instance.ForgeManager.AddDia(5000);
                 GameManager.Instance.ForgeManager.AddGold(10000);
                 ClickBlockerOn();
@@ -790,6 +793,7 @@ public class TutorialManager : MonoBehaviour
 
     private void OnConfirmButtonClicked()
     {
+        Debug.Log("함수 걸림");
         // 튜토리얼 단계 체크 후 처리
         if (tutorialStep == 41) //해당 단계가 맞는지 일단 비교후 넘김 
         {

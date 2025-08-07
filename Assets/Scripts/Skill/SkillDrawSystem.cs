@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
@@ -34,7 +34,6 @@ public class SkillDrawSystem : MonoBehaviour
         skillDataLoader = GameManager.Instance.DataManager.SkillDataLoader;
         forgeManager = GameManager.Instance.ForgeManager;
 
-        confirmBtn.onClick.RemoveAllListeners();
         confirmBtn.onClick.AddListener(ClickConfirmBtn);
     }
 
