@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class WageProcessor
@@ -22,6 +23,7 @@ public class WageProcessor
         var allTrainees = inventory.GetAll();
         int totalPaid = 0;
         int activeCount = 0;
+        var runawayList = new List<AssistantInstance>();
 
         foreach (var assi in allTrainees)
         {
@@ -37,50 +39,45 @@ public class WageProcessor
             else
             {
                 assi.IsFired = true;
+                runawayList.Add(assi);
 
                 if (assi.IsEquipped && gm.Forge != null && gm.Forge.AssistantHandler != null)
                 {
                     gm.Forge.AssistantHandler.DeActiveAssistant(assi);
                     assi.IsEquipped = false;
-                    Debug.Log($"[시급] {assi.Name} 착용 해제됨 (탈주 처리)");
                 }
 
                 var mineSceneManager = GameObject.FindObjectOfType<MineSceneManager>();
                 if (mineSceneManager != null)
                 {
-                    var mineGroups = mineSceneManager.mineGroups;
-                    for (int mineIdx = 0; mineIdx < mineGroups.Count; ++mineIdx)
+                    foreach (var group in mineSceneManager.mineGroups)
                     {
-                        var group = mineGroups[mineIdx];
                         for (int slotIdx = 0; slotIdx < group.slots.Count; ++slotIdx)
                         {
                             var slot = group.slots[slotIdx];
                             if (slot.IsAssigned && slot.AssignedAssistant == assi)
                             {
                                 slot.Unassign();
-                                var slotUI = group.slotUIs[slotIdx];
-                                slotUI.AssignAssistant(null);
-                                mineSceneManager.ClearSlotAssistant(mineIdx, slotUI);
-
-                                Debug.Log($"[시급] {assi.Name} 광산 배치 해제됨 (탈주 처리)");
+                                group.slotUIs[slotIdx].AssignAssistant(null);
+                                mineSceneManager.ClearSlotAssistant(slotIdx, group.slotUIs[slotIdx]);
                                 break;
                             }
                         }
                     }
                 }
 
-                Debug.LogWarning($"[시급] {assi.Name} 시급 {assi.Wage}G 지급 실패 → 제자가 탈주 처리됨");
-
                 var assistantTab = GameObject.FindObjectOfType<AssistantTab>();
                 assistantTab?.RefreshSlots();
             }
         }
 
-        if (activeCount == 0)
+        if (runawayList.Count > 0)
         {
-            Debug.Log("<color=gray>[시급] 지급 대상 제자가 없습니다.</color>");
+            var popup = GameObject.FindObjectOfType<AssistantRunawayPopup>();
+            popup?.ShowPopup(runawayList);
         }
-        else if (totalPaid > 0)
+
+        if (totalPaid > 0)
         {
             Debug.Log($"<color=yellow>[시급 처리 완료] 총 {totalPaid}G 지출</color>");
             GoldChangeEffectManager.Instance?.ShowGoldChange(-totalPaid);
