@@ -86,7 +86,7 @@ public class AssistantSlot : MonoBehaviour
 
         Debug.Log($"[AssistantSlot] 슬롯 클릭됨: {AssistantData?.Name}, 해고 모드: {DismissManager.Instance?.IsDismissMode()}");
 
-        if (DismissManager.Instance != null && DismissManager.Instance.IsDismissMode())
+        if (DismissManager.Instance?.IsDismissMode() == true)
         {
             Debug.Log($"[AssistantSlot] 해고 선택 처리됨 → {AssistantData?.Name}");
             DismissManager.Instance.ToggleSelect(this);
@@ -150,6 +150,11 @@ public class AssistantSlot : MonoBehaviour
     public void SetDismissMode(bool value)
     {
         isDismissMode = value;
+
+        if (!value)
+        {
+            SetSelected(false);
+        }
     }
 
     public void SetSelectedForDismiss(bool selected)
