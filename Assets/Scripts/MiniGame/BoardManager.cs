@@ -31,15 +31,15 @@ public class BoardManager : MonoBehaviour
 
     [Header("Treasure")]
     [SerializeField] private TreasureData[] allTreasures;
-    private TreasureData[] treasures ;
+    private TreasureData[] treasures;
 
     [Header("BlockPrefabs")]
     [SerializeField] private Block blockPrefab;
     [SerializeField] private Transform boardRoot; //GridLayoutGroup 붙여야함
 
 
-  
-    
+
+
 
 
     private Block[,] board;
@@ -62,7 +62,7 @@ public class BoardManager : MonoBehaviour
         OnDigCountChange += UpdateCountUI;
         OnDigCountChange?.Invoke(digCount, maxDigCount);
 
-     
+
     }
 
     private void SettingBorad()
@@ -86,7 +86,7 @@ public class BoardManager : MonoBehaviour
 
     private void SettingTreasuresRandom()
     {
-       
+
         foreach (var treasure in treasures)
         {
             bool placed = false;
@@ -113,11 +113,11 @@ public class BoardManager : MonoBehaviour
                 Vector2Int pos = anchor + offset;
                 board[pos.x, pos.y].SetTreasure(treasure.id, i, treasure.pratSprite[i]);
 
-            
+
             }
         }
 
-       
+
     }
 
 
@@ -125,7 +125,7 @@ public class BoardManager : MonoBehaviour
     {
         if (block.isDig || digCount <= 0)
         {
-            return;        
+            return;
         }
 
         digCount--;
@@ -134,10 +134,10 @@ public class BoardManager : MonoBehaviour
         if (block.TreasureId != -1)
         {
             SoundManager.Instance.Play("SFX_MineMiniGameSuccess");
-            
+
             var set = treasureCoordinate[block.TreasureId];
             set.Add(block.Pos);
-            
+
             TreasureData data = treasures.First(t => t.id == block.TreasureId);
             if (set.Count == data.Shape.Length)
             {
@@ -176,9 +176,9 @@ public class BoardManager : MonoBehaviour
         {
             //다찾으면
             ShowResult();
-            GameManager.Instance.DailyQuestManager.ProgressQuest("ClearMiniGame", 1);
         }
 
+        GameManager.Instance.DailyQuestManager.ProgressQuest("ClearMiniGame", 1);
         OnTreasureComplete?.Invoke(data); //데이터 전달
     }
 
@@ -195,7 +195,7 @@ public class BoardManager : MonoBehaviour
         }
     }
 
-  
+
 
     private bool InsideCheck(Vector2Int pos)
     {
@@ -228,7 +228,7 @@ public class BoardManager : MonoBehaviour
             mineWindow.MarkCleared();
         }
 
-       
+
         SoundManager.Instance.Play("SFX_SystemReward");
     }
 }

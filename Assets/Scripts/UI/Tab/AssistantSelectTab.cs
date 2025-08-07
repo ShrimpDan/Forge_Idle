@@ -54,6 +54,10 @@ public class AssistantSelectTab : MonoBehaviour
         craftRoot.gameObject.SetActive(tab == TabType.Craft);
         miningRoot.gameObject.SetActive(tab == TabType.Mine);
         sellRoot.gameObject.SetActive(tab == TabType.Sell);
+
+        craftTabBtn.image.color = tab == TabType.Craft ? Color.white : Color.gray;
+        miningTabBtn.image.color = tab == TabType.Mine ? Color.white : Color.gray;
+        sellTabBtn.image.color = tab == TabType.Sell ? Color.white : Color.gray;
     }
 
     private void RefreshAllTabs()

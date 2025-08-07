@@ -20,6 +20,8 @@ public class BlackSmith : MonoBehaviour
     [Header("Skill Effect Setting")]
     [SerializeField] private Transform skillTextRoot;
     [SerializeField] private TextMeshPro skillTextPrefab;
+    [SerializeField] private Transform skillIndicatorRoot;
+    [SerializeField] private SkillIndicator skillIndicatorPrefab;
 
     public bool IsEnable { get; private set; }
 
@@ -78,6 +80,12 @@ public class BlackSmith : MonoBehaviour
         skillText.DOColor(new Color(initialColor.r, initialColor.g, initialColor.b, targetAlpha), duration)
             .SetEase(Ease.InQuad)
             .OnComplete(() => Destroy(skillText.gameObject));
+    }
+
+    public void CreateSkillSlot(SkillInstance skill, ForgeManager forgeManager)
+    {
+        SkillIndicator skillIndicator = Instantiate(skillIndicatorPrefab, skillIndicatorRoot);
+        skillIndicator.Init(skill, forgeManager);
     }
 
     public void SetEnable(bool isEnable)

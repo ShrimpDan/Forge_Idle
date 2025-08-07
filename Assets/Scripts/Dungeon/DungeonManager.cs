@@ -14,6 +14,8 @@ public class DungeonManager : MonoBehaviour
 
     private float time = 0f;
     public bool IsRunning { get; private set; } = true;
+    public float DungeonTimeScale { get; private set; } = 1f;
+    public float TimeMultiplier => 1f / DungeonTimeScale;
 
     void Start()
     {
@@ -43,20 +45,22 @@ public class DungeonManager : MonoBehaviour
     {
         time = DungeonData.Duration;
 
+        float timerInterval = 0.1f;
+
         while (IsRunning)
         {
-            time -= 0.1f;
+            time -= timerInterval * DungeonTimeScale;
             DungeonUI.UpdateTimerUI(time, DungeonData.Duration);
 
             if (time <= 0)
             {
-                IsRunning = false;
+                time = 0f;
 
                 // 시간이 다 되면 클리어 실패
                 DungeonClear(false);
             }
 
-            yield return WaitForSecondsCache.Wait(0.1f);
+            yield return WaitForSecondsCache.Wait(timerInterval * TimeMultiplier);
         }
     }
 
@@ -69,6 +73,8 @@ public class DungeonManager : MonoBehaviour
 
     public void DungeonClear(bool isClear)
     {
+        if (!IsRunning) return;
+        
         IsRunning = false;
 
         if (isClear)
@@ -85,8 +91,6 @@ public class DungeonManager : MonoBehaviour
 
     public void ExitDungeon()
     {
-        SoundManager.Instance.Play("SFX_BattleDungeonGiveUp01");
-
         RewardHandler.ApplyReward();
         GameManager.ForgeManager.AddFame(DungeonData.RewardFame);
         GameManager.DungeonSystem.ExitDungeon();
@@ -95,7 +99,14 @@ public class DungeonManager : MonoBehaviour
 
     public void BackToMain()
     {
+        SoundManager.Instance.Play("SFX_BattleDungeonGiveUp01");
+
         GameManager.DungeonSystem.ExitDungeon();
         LoadSceneManager.Instance.UnLoadScene(SceneType.Dungeon);
+    }
+
+    public void SetDungeonSpeed(int speed)
+    {
+        DungeonTimeScale = (float)speed;
     }
 }

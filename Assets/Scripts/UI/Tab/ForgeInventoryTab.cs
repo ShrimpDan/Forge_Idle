@@ -25,7 +25,7 @@ public class ForgeInventoryTab : MonoBehaviour
     private GameManager gameManager;
     private UIManager uIManager;
 
-    private enum TabType { Weapon, Gem, Resource, Trainee }
+    private enum TabType { Weapon, Gem, Resource }
     private TabType curTab = TabType.Weapon;
 
     public void Init(GameManager gameManager, UIManager uIManager)
@@ -63,6 +63,11 @@ public class ForgeInventoryTab : MonoBehaviour
         if (equipRoot) equipRoot.gameObject.SetActive(tab == TabType.Weapon);
         if (gemRoot) gemRoot.gameObject.SetActive(tab == TabType.Gem);
         if (resourceRoot) resourceRoot.gameObject.SetActive(tab == TabType.Resource);
+
+        equipButton.image.color = tab == TabType.Weapon ? Color.white : Color.gray;
+        gemButton.image.color = tab == TabType.Gem ? Color.white : Color.gray;
+        resourceButton.image.color = tab == TabType.Resource ? Color.white : Color.gray;
+
         RefreshSlots();
     }
 

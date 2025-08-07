@@ -87,7 +87,19 @@ public class ForgeSkillSystem : MonoBehaviour
     private IEnumerator SkillEffectCoroutine(SkillInstance skill, Coroutine coroutine)
     {
         forgeManager.CurrentForge.StatHandler.SetSkillEffect(skill.SkillData.Type, skill.GetValue(), true);
-        yield return WaitForSecondsCache.Wait(skill.GetDuration());
+        forgeManager.CurrentForge.BlackSmith.CreateSkillSlot(skill, forgeManager);
+
+        float maxDuration = skill.GetDuration();
+        float time = 0;
+
+        while (time / maxDuration <= 1f)
+        {
+            yield return WaitForSecondsCache.Wait(0.1f);
+            time += 0.1f;
+
+            forgeManager.Events.RaiseSkillDurationUpdate(skill, time / maxDuration);
+        }
+
         forgeManager.CurrentForge.StatHandler.SetSkillEffect(skill.SkillData.Type, skill.GetValue(), false);
 
         if (activeCoroutines.Contains(coroutine))

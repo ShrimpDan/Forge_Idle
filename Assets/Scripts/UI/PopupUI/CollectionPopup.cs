@@ -7,6 +7,7 @@ public class CollectionPopup : BaseUI
     public override UIType UIType => UIType.Popup;
 
     [Header("UI Elements")]
+    [SerializeField] Image icon;
     [SerializeField] TextMeshProUGUI nameText;
     [SerializeField] TextMeshProUGUI rarityText;
     [SerializeField] TextMeshProUGUI descText;
@@ -22,7 +23,7 @@ public class CollectionPopup : BaseUI
 
     public void SetPopup(RegularCustomerData data) //데이터 넘겨 받는곳
     {
-       
+        icon.sprite = IconLoader.GetIconByPath(data.iconPath);
         nameText.text = data.customerName;
         rarityText.text = GetStringByRarity(data.rarity);
         descText.text = data.customerInfo;

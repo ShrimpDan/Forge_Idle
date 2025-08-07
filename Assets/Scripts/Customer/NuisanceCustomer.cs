@@ -65,24 +65,33 @@ public class NuisanceCustomer : Customer
     protected override void Update()
     {
         base.Update();
-        
+
 
 #if UNITY_EDITOR || UNITY_STANDALONE
         if (Input.GetMouseButtonDown(0))
         {
-            if (blockClickCheck) return; 
+            if (blockClickCheck) return;
             else
             {
                 Debug.Log("클릭됨");
                 CheckClick(Input.mousePosition);
             }
-                
+
         }
 #else
         if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
-    {
+        {
         CheckClick(Input.GetTouch(0).position);
-    }
+        }
+        if (Input.GetMouseButtonDown(0))
+        {
+            if (blockClickCheck) return; 
+            else
+            {
+                CheckClick(Input.mousePosition);
+            }
+                
+        }
 #endif 
 
 

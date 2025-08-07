@@ -55,7 +55,7 @@ public class WeaponHandler : MonoBehaviour
 
     private void Update()
     {
-        float deltaTime = Time.deltaTime;
+        float deltaTime = Time.unscaledDeltaTime * dungeonManager.DungeonTimeScale;
 
         foreach (var slot in equippedSlots)
         {
@@ -83,7 +83,7 @@ public class WeaponHandler : MonoBehaviour
                 StartCoroutine(WaitAndRequeue(slot));
             }
 
-            yield return WaitForSecondsCache.Wait(attackDelay);
+            yield return WaitForSecondsCache.Wait(attackDelay * dungeonManager.TimeMultiplier);
         }
 
         isAttack = false;
@@ -91,6 +91,9 @@ public class WeaponHandler : MonoBehaviour
 
     private void Attack(EquippedWeaponSlot slot, Monster monster)
     {
+        if (animator.speed != dungeonManager.DungeonTimeScale)
+            animator.speed = dungeonManager.DungeonTimeScale;
+
         animator.Play(attackHash);
         SoundManager.Instance.Play("SFX_BattleThrow");
         SpawnProjectile(slot, monster);
@@ -109,7 +112,9 @@ public class WeaponHandler : MonoBehaviour
             icon.sprite = IconLoader.GetIconByKey(slot.WeaponData.ItemKey);
         }
 
-        go.transform.DOJump(endPos, Random.Range(minJumpPower, maxJumpPower), 1, duration)
+        float scaledDuration = duration * dungeonManager.TimeMultiplier;
+
+        go.transform.DOJump(endPos, Random.Range(minJumpPower, maxJumpPower), 1, scaledDuration)
             .SetEase(Ease.OutQuad)
             .OnComplete(() =>
             {
@@ -117,7 +122,7 @@ public class WeaponHandler : MonoBehaviour
                 Destroy(go);
             });
 
-        go.transform.DORotate(new Vector3(0, 0, Random.Range(minRotation, maxRotation)), duration, RotateMode.FastBeyond360);
+        go.transform.DORotate(new Vector3(0, 0, Random.Range(minRotation, maxRotation)), scaledDuration, RotateMode.FastBeyond360);
     }
 
     private void DamageToMonster(float damage, Monster monster)

@@ -35,7 +35,7 @@ public class Forge : MonoBehaviour
         VisualHandler = GetComponent<ForgeVisualHandler>();
         SellingSystem = GetComponent<WeaponSellingSystem>();
         RecipeSystem = new WeaponRecipeSystem(this, gameManager.DataManager.CraftingLoader, gameManager.DataManager.RecipeLoader);
-        StatHandler = new ForgeStatHandler(this, gameManager.DataManager);
+        StatHandler = new ForgeStatHandler(this, gameManager.DataManager, gameManager.UIManager);
         AssistantHandler = new ForgeAssistantHandler(this);
 
         if (SellingSystem)
