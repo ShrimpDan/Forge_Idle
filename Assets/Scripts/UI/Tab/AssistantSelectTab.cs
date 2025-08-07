@@ -37,9 +37,6 @@ public class AssistantSelectTab : MonoBehaviour
         SwitchTab(TabType.Craft); // 기본탭
     }
 
-    /// <summary>
-    /// isMineOrQuestAssign: 마인씬 팝업인지 여부 (true: 마인씬 등에서 사용중/장착/임무 중인 어시스턴트는 노출 안함)
-    /// </summary>
     public void OpenForSelection(Action<AssistantInstance> callback, bool isMineOrQuestAssign = false)
     {
         selectCallback = callback;
@@ -60,7 +57,7 @@ public class AssistantSelectTab : MonoBehaviour
         sellTabBtn.image.color = tab == TabType.Sell ? Color.white : Color.gray;
     }
 
-    private void RefreshAllTabs()
+    public void RefreshAllTabs()
     {
         RefreshTab(SpecializationType.Crafting, craftRoot, craftPool);
         RefreshTab(SpecializationType.Mining, miningRoot, miningPool);
@@ -73,7 +70,6 @@ public class AssistantSelectTab : MonoBehaviour
 
         List<AssistantInstance> assistants;
 
-        // 마인씬에서 할당할 때는 GetAvailableForMine()로 필터 후 해당 타입만
         if (mineSceneAssign)
             assistants = assistantInventory?.GetAvailableForMine().FindAll(a => a.Specialization == type) ?? new List<AssistantInstance>();
         else
@@ -96,7 +92,6 @@ public class AssistantSelectTab : MonoBehaviour
             var slot = slotObj.GetComponent<MineAssistantSlotUI>();
             if (slot == null)
             {
-                Debug.LogError($"MineAssistantSlotUI 컴포넌트가 {slotObj.name} 프리팹에 없습니다.");
                 continue;
             }
             slot.Init(assistantInventory);
