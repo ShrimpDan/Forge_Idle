@@ -1,8 +1,8 @@
 using System;
-using UnityEngine;
 
 public class ForgeEventHandler
 {
+    public event Action<string> OnNameChanged;
     public event Action<int> OnGoldChanged;
     public event Action<int> OnDiaChanged;
     public event Action<int, int> OnFameChanged;
@@ -17,6 +17,7 @@ public class ForgeEventHandler
     public event Action<int> OnSkillCooldownFinished;
     public event Action<SkillInstance, float> OnSkillDurationUpdate;
 
+    public void RaiseNameChanged(string name) => OnNameChanged?.Invoke(name);
     public void RaiseGoldChanged(int gold) => OnGoldChanged?.Invoke(gold);
     public void RaiseDiaChanged(int dia) => OnDiaChanged?.Invoke(dia);
     public void RaiseFameChanged(int currentFame, int maxFame) => OnFameChanged?.Invoke(currentFame, maxFame);

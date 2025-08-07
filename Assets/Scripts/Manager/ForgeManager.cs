@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -7,6 +8,9 @@ public class ForgeManager : MonoBehaviour
     private GameManager gameManager;
     private UIManager uIManager;
     private AssistantInventory assistantInventory;
+
+    // 대장간 이름
+    public string Name { get; private set; }
 
     // 레벨 & 명성치
     public int Level { get; private set; }
@@ -47,6 +51,7 @@ public class ForgeManager : MonoBehaviour
     {
         var data = new ForgeCommonData
         {
+            Name = Name,
             Level = Level,
             CurrentFame = CurrentFame,
             MaxFame = MaxFame,
@@ -73,6 +78,7 @@ public class ForgeManager : MonoBehaviour
 
     public void LoadFromData(ForgeCommonData data)
     {
+        Name = data.Name;
         Level = data.Level;
         CurrentFame = data.CurrentFame;
         MaxFame = data.MaxFame;
@@ -95,6 +101,7 @@ public class ForgeManager : MonoBehaviour
 
     private void RaiseAllEvents()
     {
+        Events.RaiseNameChanged(Name);
         Events.RaiseGoldChanged(Gold);
         Events.RaiseDiaChanged(Dia);
         Events.RaiseFameChanged(CurrentFame, MaxFame);
@@ -111,6 +118,11 @@ public class ForgeManager : MonoBehaviour
 
         CurrentForge = forge;
         gameManager.UIManager.OpenForgeTab();
+
+        if (string.IsNullOrEmpty(Name))
+        {
+            uIManager.OpenUI<NickNameWindow>(UIName.NickNameWindow);
+        }
     }
 
     public void UnlockForge(ForgeType forgeType)
@@ -208,6 +220,12 @@ public class ForgeManager : MonoBehaviour
             CurRecipePoint = TotalRecipePoint;
             CurrentForge.RecipeSystem.ResetRecipe();
         }
+    }
+
+    public void SetNickName(string nickName)
+    {
+        Name = nickName;
+        Events.RaiseNameChanged(Name);
     }
 
     public AssistantInstance GetEquippedAssi(string key)
