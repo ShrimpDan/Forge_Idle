@@ -326,6 +326,38 @@ public class MineSceneManager : MonoBehaviour
 
     void OnSlotClicked(int mineIdx, MineAssistantSlotUI slotUI)
     {
+        var group = mineGroups[mineIdx];
+        int slotIndex = group.slotUIs.IndexOf(slotUI);
+        if (slotIndex < 0 || slotIndex >= group.slots.Count) return;
+        var slot = group.slots[slotIndex];
+
+        // 이미 어시스턴트가 배치된 경우 → 해제 처리
+        if (slot.IsAssigned && slot.AssignedAssistant != null)
+        {
+            // 버프/쿨타임 FSM 정보 -> Slot에 저장
+            if (slotFsmDict.TryGetValue(slot, out var fsm) && fsm != null)
+            {
+                slot.LastIsBuffActive = fsm.IsBuffActive();
+                slot.LastBuffRemain = fsm.GetBuffRemain();
+                slot.LastIsCooldown = fsm.IsCooldown();
+                slot.LastCooldownRemain = fsm.GetCooldownRemain();
+            }
+            else
+            {
+                slot.LastIsBuffActive = false;
+                slot.LastBuffRemain = 0f;
+                slot.LastIsCooldown = false;
+                slot.LastCooldownRemain = 0f;
+            }
+
+            slot.Unassign();
+            slotUI.AssignAssistant(null);
+            ClearSlotAssistant(mineIdx, slotUI);
+            MineResourceCollectManager.Instance.UpdateExpectedMiningAmount();
+            return;
+        }
+
+        // 배치된 어시스턴트가 없는 경우 → 기존 선택 팝업 로직 사용
         var prefab = Resources.Load<GameObject>("UI/Popup/AssistantSelectPopup");
         if (prefab == null || popupRoot == null) return;
 
@@ -338,24 +370,36 @@ public class MineSceneManager : MonoBehaviour
         }
         popup.Init(assistantInventory);
 
-        var group = mineGroups[mineIdx];
-
         popup.OpenForSelection(selected =>
         {
             if (slotUI != null && slotUI.IsSceneSlot())
             {
-                int slotIndex = group.slotUIs.IndexOf(slotUI);
                 if (slotIndex >= 0 && slotIndex < group.slots.Count)
                 {
-                    group.slots[slotIndex].Assign(selected, DateTime.Now);
+                    slot.Assign(selected, DateTime.Now);
                     slotUI.AssignAssistant(selected);
                     ClearSlotAssistant(mineIdx, slotUI);
-                    SpawnAssistantInMine(mineIdx, slotUI, selected);
+
+                    // **다시 등록 시, Slot에 저장된 버프/쿨타임 전달!**
+                    bool isBuff = slot.LastIsBuffActive;
+                    float buffRemain = slot.LastBuffRemain;
+                    bool isCool = slot.LastIsCooldown;
+                    float coolRemain = slot.LastCooldownRemain;
+
+                    SpawnAssistantInMine(mineIdx, slotUI, selected, isBuff, buffRemain, isCool, coolRemain);
+
                     MineResourceCollectManager.Instance.UpdateExpectedMiningAmount();
+
+                    // ***중복 사용 방지 위해 재등록시 버프상태 Slot->초기화!***
+                    slot.LastIsBuffActive = false;
+                    slot.LastBuffRemain = 0f;
+                    slot.LastIsCooldown = false;
+                    slot.LastCooldownRemain = 0f;
                 }
             }
         }, true);
     }
+
 
     // 전체 자원 수령 버튼 → 한 번에 모든 마인 자원 수령
     public void OnCollectAllButton()
