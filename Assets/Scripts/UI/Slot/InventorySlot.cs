@@ -8,6 +8,7 @@ public class InventorySlot : MonoBehaviour
     private UIManager uIManager;
 
     [SerializeField] private Image icon;
+    [SerializeField] private Image slotBG;
     [SerializeField] private TextMeshProUGUI nameText;
     [SerializeField] private TextMeshProUGUI countText;
     [SerializeField] private GameObject equippedIndicator;
@@ -68,6 +69,13 @@ public class InventorySlot : MonoBehaviour
     public void SetEquipped(bool isEquipped)
     {
         equippedIndicator.SetActive(isEquipped);
+
+        if (slotBG != null)
+        {
+            slotBG.color = isEquipped
+                ? new Color(1f, 0.85f, 0.3f, 1f)
+                : Color.white;
+        }
     }
 
     private void UpdateEnhanceText(int enhanceLevel)
