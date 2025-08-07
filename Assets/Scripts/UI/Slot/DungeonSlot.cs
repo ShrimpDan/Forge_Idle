@@ -49,8 +49,11 @@ public class DungeonSlot : MonoBehaviour
 
         foreach (var resourceKey in data.RewardItemKeys)
         {
+            if (resourceKey == null) continue;
+            
             ResourceSlot slot = resourceSlots[idx];
-            slot.SetDungeonResource(IconLoader.GetIconByKey(resourceKey), data.MinCount, data.MaxCount);
+            ItemData item = gameManager.DataManager.ItemLoader.GetItemByKey(resourceKey);
+            slot.SetDungeonResource(item.Name, IconLoader.GetIconByKey(resourceKey), data.MinCount, data.MaxCount);
             slot.gameObject.SetActive(true);
 
             idx++;

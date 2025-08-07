@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -91,7 +92,8 @@ public class InventoryTab : BaseTab
         }
         activeSlots.Clear();
 
-        CreateSlots(inventory.WeaponList, EquipRoot);
+        CreateSortedWeaponSlots(inventory.WeaponList, EquipRoot);
+
         CreateSlots(inventory.GemList, GemRoot);
         CreateSlots(inventory.ResourceList, ResourceRoot);
 
@@ -101,12 +103,40 @@ public class InventoryTab : BaseTab
         }
     }
 
+    private void CreateSortedWeaponSlots(List<ItemInstance> weaponList, Transform parent)
+    {
+        var sortedList = weaponList
+            .Where(item => item.Quantity > 0)
+            .OrderByDescending(item => item.IsEquipped)
+            .ThenByDescending(item => item.GetTotalAttack())
+            .ToList();
+
+        int siblingIndex = 0;
+
+        foreach (var item in sortedList)
+        {
+            GameObject slotObj = GetSlotFromPool();
+            slotObj.transform.SetParent(parent, false);
+            slotObj.SetActive(true);
+            slotObj.transform.SetSiblingIndex(siblingIndex++);
+
+            var slot = slotObj.GetComponent<InventorySlot>();
+            slot.Init(item);
+
+            activeSlots.Add(slotObj);
+        }
+    }
+
     private void CreateSlots(List<ItemInstance> itemList, Transform parent)
     {
-        foreach (var item in itemList)
-        {
-            if (item.Quantity <= 0) continue;
+        var sortedList = itemList
+            .Where(item => item.Quantity > 0)
+            .OrderByDescending(item => item.IsEquipped)
+            .ThenByDescending(item => item.GetTotalAttack())
+            .ToList();
 
+        foreach (var item in sortedList)
+        {
             GameObject slotObj = GetSlotFromPool();
             slotObj.transform.SetParent(parent, false);
             slotObj.SetActive(true);
@@ -135,12 +165,14 @@ public class InventoryTab : BaseTab
     {
         UpdateSlot(item, true);
         invenEquippedSlots[slotIndex].Init(uIManager, item);
+        RefreshSlots();
     }
 
     private void OnItemUnEquipped(int slotIndex, ItemInstance item)
     {
         UpdateSlot(item, false);
         invenEquippedSlots[slotIndex].UnEquipItem();
+        RefreshSlots();
     }
 
     private void UpdateSlot(ItemInstance item, bool isEquipped)

@@ -23,6 +23,7 @@ public class RecruitPreviewManager : MonoBehaviour
     [SerializeField] private Button btnApprove;
     [SerializeField] private Button btnReject;
     [SerializeField] private Button btnHold;
+    [SerializeField] private Button btnHoldAll;
 
     private AssistantFactory assistantFactory;
     private SpecializationType? recruitFilter = null;
@@ -249,8 +250,6 @@ public class RecruitPreviewManager : MonoBehaviour
         AdvanceToNextCandidate();
     }
 
-
-
     // 제자 보류 처리
     public void HoldCandidate()
     {
@@ -278,6 +277,33 @@ public class RecruitPreviewManager : MonoBehaviour
         AdvanceToNextCandidate();
     }
 
+    // 제자 전부 보류 처리
+    public void HoldAllRemaining()
+    {
+        if (isTransitioning) return;
+        SetButtonsInteractable(false);
+
+        if (currentIndex < 0 || currentIndex >= candidatePool.Count)
+        {
+            Debug.LogWarning($"[Recruit] HoldAllRemaining에서 잘못된 인덱스 접근: {currentIndex}");
+            EndRecruitFlow();
+            return;
+        }
+
+        var gm = GameManager.Instance;
+
+        for (int i = currentIndex; i < candidatePool.Count; i++)
+        {
+            var held = candidatePool[i];
+            gm.HeldCandidates.Add(held);
+        }
+
+        gm.SaveManager.SaveAll();
+        HeldUIHelper.Instance?.UpdateCheckIcons();
+
+        currentIndex = candidatePool.Count;
+        AdvanceToNextCandidate();
+    }
 
     private void AdvanceToNextCandidate()
     {
@@ -352,6 +378,7 @@ public class RecruitPreviewManager : MonoBehaviour
         btnApprove.interactable = interactable;
         btnReject.interactable = interactable;
         btnHold.interactable = interactable;
+        btnHoldAll.interactable = interactable;
     }
 
     // 버튼 이벤트 (랜덤/특화별)

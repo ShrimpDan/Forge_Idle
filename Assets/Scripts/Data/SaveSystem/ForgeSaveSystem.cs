@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -19,6 +20,8 @@ public class EquipAssiSaveData
 [System.Serializable]
 public class ForgeCommonData
 {
+    public string Name;
+
     // 레벨 & 명성치
     public int Level;
     public int CurrentFame;
@@ -82,6 +85,7 @@ public static class ForgeSaveSystem
     {
         return new ForgeCommonData
         {
+            Name = null,
             Level = 1,
             CurrentFame = 0,
             MaxFame = 100,
