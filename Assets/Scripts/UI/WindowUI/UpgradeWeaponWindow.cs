@@ -227,7 +227,7 @@ public class UpgradeWeaponWindow : BaseUI
         int rate = CalcEnhanceSuccessRate(selectedWeapon);
         successRateText.text = $"{rate}%";
         float beforeAtk = selectedWeapon.GetTotalAttack();
-        float afterAtk = CalcNextAttack(selectedWeapon);
+        float afterAtk = selectedWeapon.GetTotalAttackAtEnhanceLevel(selectedWeapon.CurrentEnhanceLevel + 1);
         beforeText.text = $"{beforeAtk:F0}";
         afterText.text = $"{afterAtk:F0}";
         progressBar.fillAmount = 0;
@@ -249,6 +249,7 @@ public class UpgradeWeaponWindow : BaseUI
         return CalcEnhanceSuccessRate(weapon) + 10;
     }
 
+    // 보석 효과 미반영 코드
     private float CalcNextAttack(ItemInstance weapon)
     {
         if (weapon == null || weapon.Data == null) return 0;
