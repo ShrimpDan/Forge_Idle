@@ -40,26 +40,27 @@ public class ForgeInventoryTab : MonoBehaviour
         resourceButton.onClick.RemoveAllListeners();
         resourceButton.onClick.AddListener(() => SwitchTab(TabType.Resource));
 
-
         SwitchTab(TabType.Weapon);
     }
 
-    public void SetSlotCallbacks(Action<ItemInstance> weapon, Action<ItemInstance> gem, Action<ItemInstance> resource)
-    {
-        SetSlotCallbacks(weapon, gem, resource, null);
-    }
     public void SetSlotCallbacks(Action<ItemInstance> weapon, Action<ItemInstance> gem, Action<ItemInstance> resource, Action<AssistantInstance> assistant)
     {
         weaponSlotCallback = weapon;
         gemSlotCallback = gem;
         resourceSlotCallback = resource;
         assistantSlotCallback = assistant;
+
+        if (weapon != null) { gemSlotCallback = null; resourceSlotCallback = null; assistantSlotCallback = null; }
+        else if (gem != null) { weaponSlotCallback = null; resourceSlotCallback = null; assistantSlotCallback = null; }
+        else if (resource != null) { weaponSlotCallback = null; gemSlotCallback = null; assistantSlotCallback = null; }
+
         RefreshSlots();
     }
 
     private void SwitchTab(TabType tab)
     {
         curTab = tab;
+
         if (equipRoot) equipRoot.gameObject.SetActive(tab == TabType.Weapon);
         if (gemRoot) gemRoot.gameObject.SetActive(tab == TabType.Gem);
         if (resourceRoot) resourceRoot.gameObject.SetActive(tab == TabType.Resource);
@@ -108,12 +109,30 @@ public class ForgeInventoryTab : MonoBehaviour
         if (parent == null || slotPrefab == null) return;
         var go = Instantiate(slotPrefab, parent);
         var slot = go.GetComponent<ForgeInventorySlot>();
- 
+
         slot.Init(item, i =>
         {
             callback?.Invoke(i);
             if (uIManager != null)
                 uIManager.CloseUI(UIName.Forge_Inventory_Popup);
         });
+    }
+    public void SelectTab(ItemType itemType)
+    {
+        switch (itemType)
+        {
+            case ItemType.Weapon:
+                SwitchTab(TabType.Weapon);
+                break;
+            case ItemType.Gem:
+                SwitchTab(TabType.Gem);
+                break;
+            case ItemType.Resource:
+                SwitchTab(TabType.Resource);
+                break;
+            default:
+                SwitchTab(TabType.Weapon);
+                break;
+        }
     }
 }
