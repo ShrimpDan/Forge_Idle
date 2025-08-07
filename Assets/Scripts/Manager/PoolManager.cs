@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [Serializable]
@@ -7,6 +8,11 @@ public class PoolInfo
 {
     public GameObject prefabs;
     public int initialSize;
+}
+
+public interface IPoolable
+{
+    GameObject SourcePrefab { get; set; }
 }
 
 public class PoolManager : MonoBehaviour
@@ -110,6 +116,27 @@ public class PoolManager : MonoBehaviour
             // 풀이 없는 경우 그냥 파괴
             Destroy(obj);
         }
+    }
+
+    public void ReturnComponent<T>(T component) where T : Component //컴포넌트로 구분지어서 사용하려고 
+    {
+        if (component == null)
+        {
+            return; 
+        }
+
+        GameObject obj = component.gameObject;
+        if (component.TryGetComponent<IPoolable>(out var poolable))
+        {
+            GameObject sourcePrefab = poolable.SourcePrefab;
+            Return(obj, sourcePrefab);
+        }
+        else
+        {
+            Destroy(obj);
+        }
+
+
     }
 
 }

@@ -9,9 +9,9 @@ public class NuisanceCustomer : Customer
     [SerializeField] private int penaltyGold;
     [SerializeField] private GameObject InteractIcon;
     [SerializeField] private float offsetY = 0.5f;
-    [SerializeField] private GameObject catchEffectPrefab;
+    [SerializeField] private FlapperEffect catchEffectPrefab;
 
-    private FlapperEffect catchEffect;
+    
 
 
     [Header("ExitPoint")]
@@ -39,11 +39,7 @@ public class NuisanceCustomer : Customer
 
         if (catchEffectPrefab != null)
         { 
-            catchEffect = catchEffectPrefab.GetComponent<FlapperEffect>();
-            if (catchEffect == null)
-            {
-                Debug.LogError("CatchEffectPrefab에 FlapperEffect 컴포넌트가 없습니다.", this);
-            }
+           
         }
         else
         {
@@ -208,12 +204,29 @@ public class NuisanceCustomer : Customer
 
     private void ShowEffect()
     {
-        Vector3 spawnPos = transform.position;
-        GameObject effectObj = Instantiate(catchEffectPrefab, spawnPos, Quaternion.identity);
 
-        effectObj.transform.position = spawnPos;
-        
+        if (customerManager == null)
+        {
+            Debug.LogError("[NuisanceCustomer] customerManager가 null입니다!", this);
+            return;
+        }
+        Vector3 spawnPos = transform.position;
+        GameObject effectObj = customerManager.PoolManager.Get(catchEffectPrefab.gameObject, spawnPos, Quaternion.identity);
+
+        // FlapperEffect 컴포넌트 얻기
+        FlapperEffect effect = effectObj.GetComponent<FlapperEffect>();
+
+        effect.SourcePrefab = catchEffectPrefab.gameObject;
+
+        effect.Init(spawnPos, () =>
+        {
+            customerManager.PoolManager.ReturnComponent(effect);
+        });
+
         Destroy(effectObj, 1f); // 2초 후에 이펙트 오브젝트 제거
+
+
+
 
     }
 }
