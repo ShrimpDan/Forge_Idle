@@ -1,6 +1,7 @@
-using System.Collections.Generic;
+using System;
 using UnityEngine;
-using UnityEngine.Tilemaps;
+using TMPro;
+using System.Collections.Generic;
 
 public class MineAssistantFSM : MonoBehaviour
 {
@@ -18,14 +19,37 @@ public class MineAssistantFSM : MonoBehaviour
 
     private Vector2 targetPos;
     private bool hasTarget = false;
-    private float moveSpeed = 2.5f; // 이동 속도
 
-    private List<Tilemap> obstacleTilemaps;
+    // ---- FSM 및 버프 관련 ----
+    [Header("FSM 속도/버프 설정")]
+    public float baseMoveSpeed = 2.5f;
+    public float moveSpeed = 2.5f;
+
+    private float fsmSpeedMultiplier = 1f;
+
+    // --- 버프/쿨타임 데이터 ---
+    private bool isBuffActive = false;
+    private bool isCooldown = false;
+    private float buffDuration = 3600f; // 1시간(초)
+    private float buffTimer = 0f;
+
+    private float cooldownDuration = 21600f; // 6시간(초)
+    private float cooldownTimer = 0f;
+
+    private float resourceBuffMultiplier = 1.0f; // 생산량 증가(1.1f)
+    private TextMeshPro cooldownText;
+    private GameObject cooldownTextObj;
+
+    // 어시스턴트 정보 (버프-자원 연동용)
+    private AssistantInstance assistantInstance;
+
+    private List<UnityEngine.Tilemaps.Tilemap> obstacleTilemaps;
 
     // 작업 애니메이션 카운트
     private int workAnimCount = 0;
     private int workAnimMax = 0;
 
+    // ---- 초기화 ----
     public void Init(AssistantInstance assistant, int mineIdx, GameObject mineRoot, MineSceneManager mgr)
     {
         this.mineIdx = mineIdx;
@@ -36,9 +60,39 @@ public class MineAssistantFSM : MonoBehaviour
         wanderTimer = 0;
         hasTarget = false;
         isInitialized = true;
+        assistantInstance = assistant;
 
         var manager = mgr.mineGroups[mineIdx];
         obstacleTilemaps = manager.obstacleTilemaps;
+        CreateCooldownText();
+        UpdateAnimatorSpeed();
+    }
+
+    private void CreateCooldownText()
+    {
+        if (cooldownTextObj != null)
+        {
+            Destroy(cooldownTextObj);
+        }
+        cooldownTextObj = new GameObject("CooldownText");
+        cooldownTextObj.transform.SetParent(transform);
+        cooldownTextObj.transform.localPosition = new Vector3(0, 2.0f, 0);
+        cooldownText = cooldownTextObj.AddComponent<TextMeshPro>();
+        cooldownText.fontSize = 3;
+        cooldownText.alignment = TextAlignmentOptions.Center;
+        cooldownText.color = Color.yellow;
+        cooldownText.text = "";
+    }
+
+
+    private void DestroyCooldownText()
+    {
+        if (cooldownTextObj != null)
+        {
+            Destroy(cooldownTextObj);
+            cooldownTextObj = null;
+            cooldownText = null;
+        }
     }
 
     private void Update()
@@ -46,10 +100,13 @@ public class MineAssistantFSM : MonoBehaviour
         if (!isInitialized)
             return;
 
+        // 버프/쿨타임 처리
+        HandleBuffAndCooldown();
+
         switch (state)
         {
             case State.Idle:
-                wanderTimer += Time.deltaTime;
+                wanderTimer += Time.deltaTime * fsmSpeedMultiplier;
                 if (wanderTimer > wanderInterval)
                 {
                     SetRandomDestination();
@@ -61,18 +118,13 @@ public class MineAssistantFSM : MonoBehaviour
                 if (hasTarget)
                 {
                     Vector2 current = transform.position;
-                    // 장애물 체크
                     if (IsObstacleBetween(current, targetPos))
                     {
-                        // 장애물에 막히면 Idle 상태로 전환, 나중에 새 목표 잡음
                         hasTarget = false;
                         SetState(State.Idle);
                         break;
                     }
-
-                    // 정상 이동
-                    transform.position = Vector2.MoveTowards(current, targetPos, moveSpeed * Time.deltaTime);
-
+                    transform.position = Vector2.MoveTowards(current, targetPos, moveSpeed * fsmSpeedMultiplier * Time.deltaTime);
                     if (Vector2.Distance(current, targetPos) < 0.08f)
                     {
                         hasTarget = false;
@@ -86,15 +138,14 @@ public class MineAssistantFSM : MonoBehaviour
                 break;
 
             case State.Work:
-                // Work 애니메이션 반복 처리
-                wanderTimer += Time.deltaTime;
+                wanderTimer += Time.deltaTime * fsmSpeedMultiplier;
                 if (wanderTimer > 1.0f)
                 {
                     wanderTimer = 0;
                     workAnimCount++;
                     if (workAnimCount < workAnimMax)
                     {
-                        anim.Play("Slash", 0, 0); // 0프레임부터 다시 재생
+                        anim.Play("Slash", 0, 0);
                     }
                     else
                     {
@@ -104,6 +155,84 @@ public class MineAssistantFSM : MonoBehaviour
                 break;
         }
     }
+
+    private void HandleBuffAndCooldown()
+    {
+        // 텍스트 상태 갱신
+        if (isBuffActive)
+        {
+            buffTimer -= Time.deltaTime;
+            if (buffTimer > 0)
+            {
+                UpdateCooldownText(buffTimer);
+            }
+            else
+            {
+                EndBuff();
+            }
+        }
+        else if (isCooldown)
+        {
+            cooldownTimer -= Time.deltaTime;
+            if (cooldownTimer > 0)
+            {
+                UpdateCooldownText(cooldownTimer);
+            }
+            else
+            {
+                isCooldown = false;
+                if (cooldownText != null) cooldownText.text = "";
+                DestroyCooldownText();
+            }
+        }
+        else
+        {
+            if (cooldownText != null) cooldownText.text = "";
+            DestroyCooldownText();
+        }
+    }
+
+    private void UpdateCooldownText(float t)
+    {
+        if (cooldownText == null) return;
+        TimeSpan ts = TimeSpan.FromSeconds(Mathf.Max(0, t));
+        cooldownText.text = $"{ts:hh\\:mm\\:ss}";
+    }
+
+    private void StartBuff()
+    {
+        if (cooldownText == null) CreateCooldownText();
+        isBuffActive = true;
+        buffTimer = buffDuration;
+        isCooldown = false;
+        fsmSpeedMultiplier = 2f;
+        resourceBuffMultiplier = 1.1f;
+        moveSpeed = baseMoveSpeed * 2f;
+        UpdateAnimatorSpeed();
+    }
+
+    private void EndBuff()
+    {
+        isBuffActive = false;
+        fsmSpeedMultiplier = 1f;
+        resourceBuffMultiplier = 1.0f;
+        moveSpeed = baseMoveSpeed;
+        UpdateAnimatorSpeed();
+        isCooldown = true;
+        cooldownTimer = cooldownDuration;
+        if (cooldownText != null) cooldownText.text = "";
+    }
+
+    private void OnMouseDown()
+    {
+        Debug.Log("Clicked!");
+        if (!isBuffActive && !isCooldown)
+        {
+            if (cooldownText == null) CreateCooldownText();
+            StartBuff();
+        }
+    }
+
 
     private void SetState(State newState)
     {
@@ -119,14 +248,13 @@ public class MineAssistantFSM : MonoBehaviour
                 break;
             case State.Walk:
                 anim.Play("Block");
-                SoundManager.Instance.Play("MineWalkSound");
+                SoundManager.Instance?.Play("MineWalkSound");
                 break;
             case State.Work:
-                // Work 진입시 랜덤 반복
-                workAnimMax = Random.Range(3, 11);
+                workAnimMax = UnityEngine.Random.Range(3, 11);
                 workAnimCount = 0;
                 anim.Play("Slash");
-                SoundManager.Instance.Play("MineSound");
+                SoundManager.Instance?.Play("MineSound");
                 break;
         }
     }
@@ -137,21 +265,18 @@ public class MineAssistantFSM : MonoBehaviour
 
         if (mineRoot == null)
         {
-            Debug.LogError("[FSM] mineRoot==null! Init이 올바로 안 됨. 생성/Init 시점 구조 점검!");
             return;
         }
 
         Transform floor = FindDeepChild(mineRoot.transform, "Floor");
         if (floor == null)
         {
-            Debug.LogError($"[FSM] Floor 오브젝트를 찾지 못함! mineRoot={mineRoot.name} (전체 하위 탐색 실패)");
             return;
         }
 
         var col = floor.GetComponent<Collider2D>();
         if (col == null)
         {
-            Debug.LogError($"[FSM] Floor={floor.name}에 Collider2D 없음!");
             return;
         }
 
@@ -176,8 +301,6 @@ public class MineAssistantFSM : MonoBehaviour
                 UnityEngine.Random.Range(bounds.min.x, bounds.max.x),
                 UnityEngine.Random.Range(bounds.min.y, bounds.max.y)
             );
-
-            // 통과불가 체크: obstacleTilemaps 중 하나라도 tile 있으면 실패
             bool isBlocked = false;
             if (obstacleTilemaps != null)
             {
@@ -191,7 +314,6 @@ public class MineAssistantFSM : MonoBehaviour
                     }
                 }
             }
-
             if (!isBlocked && !Physics2D.OverlapCircle(dest, 0.3f, LayerMask.GetMask("Obstacle")))
             {
                 targetPos = dest;
@@ -217,10 +339,9 @@ public class MineAssistantFSM : MonoBehaviour
     }
     private bool IsObstacleBetween(Vector2 from, Vector2 to)
     {
-        // 직선 경로에 tile이 있는지 체크
         if (obstacleTilemaps == null) return false;
         float dist = Vector2.Distance(from, to);
-        int steps = Mathf.CeilToInt(dist / 0.1f); // 0.1f 간격 샘플링
+        int steps = Mathf.CeilToInt(dist / 0.1f);
         for (int i = 1; i <= steps; ++i)
         {
             Vector2 pos = Vector2.Lerp(from, to, i / (float)steps);
@@ -231,11 +352,55 @@ public class MineAssistantFSM : MonoBehaviour
                     return true;
             }
         }
-        // Physics2D로도 Obstacle Layer 검사
         if (Physics2D.OverlapCircle(to, 0.3f, LayerMask.GetMask("Obstacle")))
             return true;
 
         return false;
     }
 
+    // 버프/쿨타임 값 복원
+    public void LoadBuffState(bool buffActive, float buffRemain, bool cooldown, float cooldownRemain)
+    {
+        isBuffActive = buffActive;
+        isCooldown = cooldown;
+        buffTimer = buffActive ? buffRemain : 0f;
+        cooldownTimer = cooldown ? cooldownRemain : 0f;
+
+        // 상태별 값 반영 (moveSpeed 등도!)
+        if (isBuffActive)
+        {
+            fsmSpeedMultiplier = 2f;
+            resourceBuffMultiplier = 1.1f;
+            moveSpeed = baseMoveSpeed * 2f;
+        }
+        else
+        {
+            fsmSpeedMultiplier = 1f;
+            resourceBuffMultiplier = 1.0f;
+            moveSpeed = baseMoveSpeed;
+        }
+        UpdateAnimatorSpeed();
+
+        // UI 텍스트 상태 동기화
+        if (isBuffActive || isCooldown)
+        {
+            if (cooldownText == null) CreateCooldownText();
+            UpdateCooldownText(isBuffActive ? buffTimer : cooldownTimer);
+        }
+        else
+        {
+            DestroyCooldownText();
+        }
+    }
+
+    private void UpdateAnimatorSpeed()
+    {
+        if (anim != null)
+            anim.speed = fsmSpeedMultiplier; // 버프: 2, 일반: 1
+    }
+    public float ResourceBuffMultiplier() => resourceBuffMultiplier;
+    public bool IsBuffActive() => isBuffActive;
+    public float GetBuffRemain() => isBuffActive ? buffTimer : 0f;
+    public bool IsCooldown() => isCooldown;
+    public float GetCooldownRemain() => isCooldown ? cooldownTimer : 0f;
 }

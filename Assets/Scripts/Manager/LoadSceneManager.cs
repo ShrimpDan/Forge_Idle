@@ -54,6 +54,8 @@ public class LoadSceneManager : MonoSingleton<LoadSceneManager>
 
     [Header("Camera Reference")]
     [SerializeField] private GameObject mainCameraObject;
+    [SerializeField] private GameObject uiCameraObject;
+
 
     private SoundManager soundManager;
     private SceneType _lastActiveSceneType = SceneType.Forge_Main;
@@ -185,20 +187,15 @@ public class LoadSceneManager : MonoSingleton<LoadSceneManager>
                 mainCameraObject.SetActive(true);
                 var cam = mainCameraObject.GetComponent<Camera>();
                 if (cam != null && !cam.enabled)
-                {
                     cam.enabled = true;
-                    Debug.Log("[LoadSceneManager] MainCamera 컴포넌트까지 강제 활성화!");
-                }
-                Debug.Log("[LoadSceneManager] MainCamera 강제로 활성화!");
             }
-            else if (mainCameraObject == null)
+            if (uiCameraObject != null && !uiCameraObject.activeSelf)
             {
-                Debug.LogWarning("[LoadSceneManager] 인스펙터에 MainCamera 오브젝트가 할당 안됨!");
+                uiCameraObject.SetActive(true);
+                var cam = uiCameraObject.GetComponent<Camera>();
+                if (cam != null && !cam.enabled)
+                    cam.enabled = true;
             }
-        }
-        else
-        {
-            Debug.Log("[LoadSceneManager] Mine씬 활성 중. MainCamera 유지하지 않음.");
         }
     }
 
@@ -207,6 +204,7 @@ public class LoadSceneManager : MonoSingleton<LoadSceneManager>
         float timer = 0f;
         while (timer < 1f)
         {
+            // 메인카메라
             if (mainCameraObject != null)
             {
                 if (!mainCameraObject.activeSelf)
@@ -215,16 +213,26 @@ public class LoadSceneManager : MonoSingleton<LoadSceneManager>
                 var cam = mainCameraObject.GetComponent<Camera>();
                 if (cam != null && !cam.enabled)
                     cam.enabled = true;
-
-                Debug.Log("[LoadSceneManager] MainCamera와 Camera 컴포넌트 강제 활성화!");
-                break;
             }
+            // UI 카메라도 켜줌
+            if (uiCameraObject != null)
+            {
+                if (!uiCameraObject.activeSelf)
+                    uiCameraObject.SetActive(true);
+
+                var uicam = uiCameraObject.GetComponent<Camera>();
+                if (uicam != null && !uicam.enabled)
+                    uicam.enabled = true;
+            }
+
+            if (mainCameraObject != null && uiCameraObject != null)
+                break;
+
             timer += 0.1f;
             yield return new WaitForSeconds(0.1f);
         }
-        if (mainCameraObject == null)
-            Debug.LogError("[LoadSceneManager] 인스펙터에 MainCamera 오브젝트가 할당 안됨!");
     }
+
 
     public void SetMainCamera(GameObject cameraObject)
     {

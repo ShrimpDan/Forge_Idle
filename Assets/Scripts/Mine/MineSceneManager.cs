@@ -82,7 +82,7 @@ public class MineSceneManager : MonoBehaviour
     public Transform amountRoot;
     public GameObject itemAmountSlotPrefab;
 
-
+    private Dictionary<MineAssistantSlot, MineAssistantFSM> slotFsmDict = new();
     private void Awake()
     {
         soundManager = SoundManager.Instance;
@@ -91,6 +91,7 @@ public class MineSceneManager : MonoBehaviour
         SetMainUIClickable(false);
         SetMainCameraActive(false);
         SetMineCameraActive(true);
+        SetUICameraActive(false);
 
         // 해금 상태 초기화
         if (unlockedMines.Count != 4)
@@ -100,6 +101,7 @@ public class MineSceneManager : MonoBehaviour
             unlockedMines.Add(false);
             unlockedMines.Add(false);
             unlockedMines.Add(false);
+
         }
     }
 
@@ -225,7 +227,7 @@ public class MineSceneManager : MonoBehaviour
     }
 
 
-    // 세이브/로드 + 해금 상태 저장
+    // 세이브
     public MineSaveData ToSaveData()
     {
         var saveData = new MineSaveData();
@@ -243,6 +245,21 @@ public class MineSceneManager : MonoBehaviour
                     AssistantKey = slot.AssignedAssistant != null ? slot.AssignedAssistant.Key : null,
                     AssignedTime = slot.AssignedTime.ToString("o")
                 };
+                // FSM 버프/쿨타임 상태 저장
+                if (slot.AssignedAssistant != null && slotFsmDict.TryGetValue(slot, out var fsm) && fsm != null)
+                {
+                    slotSave.IsBuffActive = fsm.IsBuffActive();
+                    slotSave.BuffRemain = fsm.GetBuffRemain();
+                    slotSave.IsCooldown = fsm.IsCooldown();
+                    slotSave.CooldownRemain = fsm.GetCooldownRemain();
+                }
+                else
+                {
+                    slotSave.IsBuffActive = false;
+                    slotSave.BuffRemain = 0f;
+                    slotSave.IsCooldown = false;
+                    slotSave.CooldownRemain = 0f;
+                }
                 groupSave.Slots.Add(slotSave);
             }
             saveData.Groups.Add(groupSave);
@@ -250,6 +267,7 @@ public class MineSceneManager : MonoBehaviour
         saveData.UnlockedMines = new List<bool>(unlockedMines);
         return saveData;
     }
+
 
 
     private void SetAllInactive()
@@ -346,6 +364,51 @@ public class MineSceneManager : MonoBehaviour
         MineResourceCollectManager.Instance.UpdateExpectedMiningAmount();
     }
 
+    void SpawnAssistantInMine(int mineIdx, MineAssistantSlotUI slotUI, AssistantInstance assistant,
+    bool isBuffActive, float buffRemain, bool isCooldown, float cooldownRemain)
+    {
+        if (mineIdx < 0 || mineIdx >= mineGroups.Count) return;
+        var group = mineGroups[mineIdx];
+
+        Transform spawnPoint = group.spawnPoint;
+        Transform assistantsRoot = group.assistantsRoot;
+        if (spawnPoint == null || assistantsRoot == null)
+            return;
+
+        string key = $"Assets/Prefabs/Assistant/{assistant.Key}.prefab";
+        Addressables.LoadAssetAsync<GameObject>(key).Completed += handle =>
+        {
+            if (handle.Status != AsyncOperationStatus.Succeeded || handle.Result == null)
+                return;
+
+            Vector3 spawnPos = spawnPoint.position;
+            spawnPos.z = -1;
+            GameObject go = Instantiate(handle.Result, spawnPos, Quaternion.identity, assistantsRoot);
+
+            var sr = go.GetComponent<SpriteRenderer>();
+            if (sr != null)
+                sr.sortingOrder = 104;
+
+            var fsm = go.GetComponent<MineAssistantFSM>();
+            if (fsm != null)
+            {
+                fsm.Init(assistant, mineIdx, assistantsRoot.gameObject, this);
+
+                // FSM 상태 동기화!
+                fsm.LoadBuffState(isBuffActive, buffRemain, isCooldown, cooldownRemain);
+
+                // --- FSM 등록 ---
+                var slotObjRef = slotUI.gameObject.GetComponent<MineAssistantSlotUIObjectRef>();
+                if (slotObjRef != null && slotObjRef.spawnedObject != null)
+                    slotFsmDict.Remove(group.slots[group.slotUIs.IndexOf(slotUI)]);
+                slotFsmDict[group.slots[group.slotUIs.IndexOf(slotUI)]] = fsm;
+            }
+
+            slotUI.gameObject.GetComponent<MineAssistantSlotUIObjectRef>()?.SetAssistant(go);
+            spawnedAssistants[mineIdx].Add(go);
+        };
+    }
+
     void SpawnAssistantInMine(int mineIdx, MineAssistantSlotUI slotUI, AssistantInstance assistant)
     {
         if (mineIdx < 0 || mineIdx >= mineGroups.Count) return;
@@ -372,22 +435,45 @@ public class MineSceneManager : MonoBehaviour
 
             var fsm = go.GetComponent<MineAssistantFSM>();
             if (fsm != null)
+            {
                 fsm.Init(assistant, mineIdx, assistantsRoot.gameObject, this);
+
+                // --- FSM 등록 ---
+                var slotObjRef = slotUI.gameObject.GetComponent<MineAssistantSlotUIObjectRef>();
+                if (slotObjRef != null && slotObjRef.spawnedObject != null)
+                    slotFsmDict.Remove(group.slots[group.slotUIs.IndexOf(slotUI)]);
+                slotFsmDict[group.slots[group.slotUIs.IndexOf(slotUI)]] = fsm;
+            }
 
             slotUI.gameObject.GetComponent<MineAssistantSlotUIObjectRef>()?.SetAssistant(go);
             spawnedAssistants[mineIdx].Add(go);
         };
     }
 
+
     public void ClearSlotAssistant(int mineIdx, MineAssistantSlotUI slotUI)
     {
         var objRef = slotUI.GetComponent<MineAssistantSlotUIObjectRef>();
         if (objRef != null && objRef.spawnedObject != null)
         {
+            // --- FSM 해제 ---
+            var group = mineGroups[mineIdx];
+            int slotIndex = group.slotUIs.IndexOf(slotUI);
+            if (slotIndex >= 0 && slotIndex < group.slots.Count)
+                slotFsmDict.Remove(group.slots[slotIndex]);
+
             Destroy(objRef.spawnedObject);
             spawnedAssistants[mineIdx].Remove(objRef.spawnedObject);
             objRef.spawnedObject = null;
         }
+    }
+
+    public float GetBuffMultiplierForSlot(MineAssistantSlot slot)
+    {
+        if (slot == null) return 1.0f;
+        if (slotFsmDict.TryGetValue(slot, out var fsm))
+            return fsm != null ? fsm.ResourceBuffMultiplier() : 1.0f;
+        return 1.0f;
     }
 
     public void SetMainUIClickable(bool clickable)
@@ -409,6 +495,20 @@ public class MineSceneManager : MonoBehaviour
             var cam = mainCamObj.GetComponent<Camera>();
             if (cam != null) cam.enabled = active;
             SetAudioListenerEnabled(mainCamObj, active);
+        }
+    }
+
+    private void SetUICameraActive(bool active)
+    {
+        var uiCamObj = GameObject.FindWithTag("UICamera");
+        if (uiCamObj != null)
+        {
+            if (uiCamObj.activeSelf != active)
+                uiCamObj.SetActive(active);
+
+            var cam = uiCamObj.GetComponent<Camera>();
+            if (cam != null && cam.enabled != active)
+                cam.enabled = active;
         }
     }
 
@@ -439,6 +539,7 @@ public class MineSceneManager : MonoBehaviour
         mineSaveHandler.Save();
         SetMainUIClickable(true);
         SetMineCameraActive(false);
+        SetUICameraActive(true);
 
         LoadSceneManager.Instance.UnLoadScene(SceneType.MineScene, () =>
         {
@@ -446,7 +547,7 @@ public class MineSceneManager : MonoBehaviour
         });
     }
 
-    
+
     public void LoadFromSaveData(MineSaveData saveData)
     {
         if (saveData == null)
@@ -459,6 +560,9 @@ public class MineSceneManager : MonoBehaviour
             unlockedMines = new List<bool>(saveData.UnlockedMines);
         else
             ResetUnlockedMines();
+
+        // --- [NEW] 각 슬롯별 버프 정보 저장용 임시 딕셔너리 ---
+        var slotBuffStateDict = new Dictionary<MineAssistantSlot, (bool, float, bool, float)>();
 
         for (int groupIdx = 0; groupIdx < saveData.Groups.Count; groupIdx++)
         {
@@ -488,15 +592,22 @@ public class MineSceneManager : MonoBehaviour
                     group.slots[slotIdx].Assign(null, assignedTime);
                 }
 
+                // [NEW] 버프상태 딕셔너리 기록
+                slotBuffStateDict[group.slots[slotIdx]] =
+                    (slotSave.IsBuffActive, slotSave.BuffRemain, slotSave.IsCooldown, slotSave.CooldownRemain);
+
                 if (assistant != null)
                 {
                     var slotUI = group.slotUIs[slotIdx];
                     ClearSlotAssistant(groupIdx, slotUI);
-                    SpawnAssistantInMine(groupIdx, slotUI, assistant);
+
+                    // [중요] SpawnAssistantInMine 시 버프상태도 같이 전달!
+                    var buffState = slotBuffStateDict[group.slots[slotIdx]];
+                    SpawnAssistantInMine(groupIdx, slotUI, assistant, buffState.Item1, buffState.Item2, buffState.Item3, buffState.Item4);
                 }
             }
-            
         }
+
         for (int groupIdx = 0; groupIdx < mineGroups.Count; groupIdx++)
         {
             var group = mineGroups[groupIdx];
@@ -509,6 +620,8 @@ public class MineSceneManager : MonoBehaviour
         MineResourceCollectManager.Instance.UpdateExpectedMiningAmount();
         RefreshAllMineBlocks();
     }
+
+
 
     public void ResetUnlockedMines()
     {

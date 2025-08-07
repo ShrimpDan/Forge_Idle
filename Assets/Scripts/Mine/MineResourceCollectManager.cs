@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MineResourceCollectManager : MonoBehaviour
 {
@@ -11,13 +12,16 @@ public class MineResourceCollectManager : MonoBehaviour
     [SerializeField] private Transform amountRoot;
     [SerializeField] private GameObject itemAmountSlotPrefab;
 
+    [Header("빠른 수령 버튼!")]
+    [SerializeField] private Button quickCollectButton;
+
     private List<MineGroup> mineGroups;
     private int currentMineGroupIndex = 0;
 
     [SerializeField] private float updateInterval = 1.0f;
     private float timer = 0f;
 
-    [Header("UI Prefabs (Inspector���� �Ҵ� �ʼ�!)")]
+    [Header("UI Prefabs ")]
     [SerializeField] private GameObject rewardPopupPrefab;
     [SerializeField] private LackPopup lackPopupPrefab;
     [SerializeField] private Transform lackpopupRoot;
@@ -26,6 +30,13 @@ public class MineResourceCollectManager : MonoBehaviour
     {
         if (Instance == null) Instance = this;
         else if (Instance != this) Destroy(gameObject);
+
+        // 빠른수령 버튼 리스너 등록
+        if (quickCollectButton != null)
+        {
+            quickCollectButton.onClick.RemoveAllListeners();
+            quickCollectButton.onClick.AddListener(OnQuickCollectClicked);
+        }
     }
 
     private void Update()
@@ -97,35 +108,83 @@ public class MineResourceCollectManager : MonoBehaviour
         }
     }
 
-    // ��ü ���� ���� ä�� �ڿ� �ջ�
-    private string GetAllExpectedResourcesText()
+    //퀵 콜렉트 - 3시간치 자원
+    private void OnQuickCollectClicked()
     {
-        var totalResourceDict = new Dictionary<string, float>();
+        var forgeManager = GameManager.Instance?.ForgeManager;
+        // 다이아 100 사용. 실패 시 부족팝업
+        if (!forgeManager.UseDia(100))
+        {
+            ShowLackPopup(LackType.Dia);
+            return;
+        }
+
+        // 3시간치 자원 지급
+        float quickHours = 3.0f;
+        var totalRewardList = new List<(string itemKey, int count)>();
+
         foreach (var group in mineGroups)
         {
-            var resourceDict = CalculateMiningAmount(group, false, out _);
-            foreach (var pair in resourceDict)
+            if (group == null || group.mineManager == null || group.mineManager.Mine == null) continue;
+
+            MineData mineData = group.mineManager.Mine;
+            var resourceTypes = mineData.RewardMineralKeys ?? new List<string>();
+            foreach (string resKey in resourceTypes)
             {
-                if (!totalResourceDict.ContainsKey(pair.Key))
-                    totalResourceDict[pair.Key] = 0f;
-                totalResourceDict[pair.Key] += pair.Value;
+                float totalCollected = 0f;
+                foreach (var slot in group.slots)
+                {
+                    if (!slot.IsAssigned || slot.AssignedAssistant == null)
+                        continue;
+
+                    AssistantInstance assistant = slot.AssignedAssistant;
+                    float gradeMultiplier = GetGradeMultiplier(assistant.grade);
+                    float specMultiplier = GetMineSpecMultiplier(assistant);
+                    float personalityMultiplier = GetPersonalityMiningMultiplier(assistant);
+                    float totalMultiplier = gradeMultiplier * specMultiplier * personalityMultiplier;
+
+                    // 3시간 기준으로 보상 계산 (랜덤없이 평균)
+                    float randomAmountFactor = (mineData.CollectMin + mineData.CollectMax) / 2.0f;
+                    float collectedAmount = mineData.CollectRatePerHour
+                                            * randomAmountFactor
+                                            * quickHours
+                                            * totalMultiplier;
+
+                    totalCollected += collectedAmount;
+                }
+
+                int intAmount = Mathf.FloorToInt(totalCollected);
+                if (intAmount > 0)
+                {
+                    totalRewardList.Add((resKey, intAmount));
+                    var item = GameManager.Instance.DataManager.ItemLoader.GetItemByKey(resKey);
+                    if (item != null)
+                        GameManager.Instance.Inventory.AddItem(item, intAmount);
+                }
             }
         }
 
-        var sb = new System.Text.StringBuilder();
-        foreach (var pair in totalResourceDict)
+        if (totalRewardList.Count == 0)
         {
-            int amountInt = Mathf.FloorToInt(pair.Value);
-            if (amountInt > 0)
-            {
-                ItemData item = GameManager.Instance.DataManager.ItemLoader.GetItemByKey(pair.Key);
-                sb.AppendLine(item != null ? $"{item.Name} x {amountInt}" : $"{pair.Key} x {amountInt}");
-            }
+            ShowLackPopup("수령할 자원이 부족합니다.");
+            return;
         }
-        return sb.ToString();
+
+        // 보상 팝업 노출
+        if (rewardPopupPrefab && lackpopupRoot)
+        {
+            var popupObj = Instantiate(rewardPopupPrefab, lackpopupRoot);
+            var popup = popupObj.GetComponent<RewardPopup>();
+            popup.ShowWithoutManager(
+                totalRewardList,
+                GameManager.Instance.DataManager.ItemLoader,
+                "빠른 수령(3시간)"
+            );
+        }
+        UpdateExpectedMiningAmount();
     }
 
-    // ��ü ���� �ڿ� �� ���� ����
+    // 기존 1회 전체 수령 함수(일반 버튼용)
     public void CollectAllResources()
     {
         if (mineGroups == null || mineGroups.Count == 0) return;
@@ -135,7 +194,7 @@ public class MineResourceCollectManager : MonoBehaviour
         {
             var resourceDict = CalculateMiningAmount(group, true, out float totalHours);
 
-            // 1�� �̸��� ���� �Ұ�
+            // 1초 미만은 지급 없음
             if (totalHours < (1.0f / 3600f)) continue;
 
             foreach (var pair in resourceDict)
@@ -197,7 +256,7 @@ public class MineResourceCollectManager : MonoBehaviour
         }
     }
 
-    // ���� ���� ���� ä�� ���(�ܺο��� �ʿ�)
+    // MineGroup 자원 계산 함수(기존)
     public Dictionary<string, float> CalculateMiningAmount(MineGroup group, bool useRandom, out float totalHours)
     {
         totalHours = 0f;
@@ -214,6 +273,9 @@ public class MineResourceCollectManager : MonoBehaviour
         totalHours = (float)(now - group.lastCollectTime).TotalHours;
         if (totalHours <= 0) return resourceDict;
 
+        // --- SceneManager 가져오기 (버프 연동) ---
+        var sceneManager = FindObjectOfType<MineSceneManager>();
+
         foreach (var slot in group.slots)
         {
             if (!slot.IsAssigned || slot.AssignedAssistant == null)
@@ -224,7 +286,12 @@ public class MineResourceCollectManager : MonoBehaviour
             float gradeMultiplier = GetGradeMultiplier(assistant.grade);
             float specMultiplier = GetMineSpecMultiplier(assistant);
             float personalityMultiplier = GetPersonalityMiningMultiplier(assistant);
-            float totalMultiplier = gradeMultiplier * specMultiplier * personalityMultiplier;
+            float fsmBuffMultiplier = 1.0f;
+
+            if (sceneManager != null)
+                fsmBuffMultiplier = sceneManager.GetBuffMultiplierForSlot(slot);
+
+            float totalMultiplier = gradeMultiplier * specMultiplier * personalityMultiplier * fsmBuffMultiplier;
 
             float elapsedHour = Mathf.Min(totalHours, (float)(now - slot.AssignedTime).TotalHours);
             if (elapsedHour <= 0) continue;
@@ -245,6 +312,7 @@ public class MineResourceCollectManager : MonoBehaviour
         }
         return resourceDict;
     }
+
 
     private float GetGradeMultiplier(string grade)
     {
@@ -281,7 +349,4 @@ public class MineResourceCollectManager : MonoBehaviour
         itemAmountSlotPrefab = prefab;
         UpdateExpectedMiningAmount();
     }
-
-
-
 }

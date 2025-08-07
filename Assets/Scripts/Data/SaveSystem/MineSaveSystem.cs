@@ -23,6 +23,11 @@ public class MineSlotSaveData
 {
     public string AssistantKey;
     public string AssignedTime;
+
+    public bool IsBuffActive;
+    public float BuffRemain;
+    public bool IsCooldown;
+    public float CooldownRemain;
 }
 
 [System.Serializable]
