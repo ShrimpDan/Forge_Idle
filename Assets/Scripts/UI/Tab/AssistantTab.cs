@@ -19,7 +19,6 @@ public class AssistantTab : BaseTab
 
     [Header("Wage UI")]
     [SerializeField] private GameObject wagePopup;
-    [SerializeField] private Button wageButton;
     [SerializeField] private Button wageCloseButton;
 
     [Header("Tab Panels")]
@@ -59,7 +58,6 @@ public class AssistantTab : BaseTab
             });
         }
 
-        wageButton.onClick.AddListener(OnClickWageButton);
         wageCloseButton.onClick.AddListener(OnClickCloseWagePopup);
         dismissButton.onClick.AddListener(OnClickDismissButton);
 
@@ -251,13 +249,6 @@ public class AssistantTab : BaseTab
 
             return aTier.CompareTo(bTier);
         });
-    }
-
-    private void OnClickWageButton()
-    {
-        SoundManager.Instance?.Play("ClickSound");
-        wagePopup.SetActive(true);
-        wagePopup.GetComponent<WagePopup>().Show();
     }
 
     private void OnClickCloseWagePopup()
