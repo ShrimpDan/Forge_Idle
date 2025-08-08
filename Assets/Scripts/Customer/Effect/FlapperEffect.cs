@@ -19,6 +19,8 @@ public class FlapperEffect : MonoBehaviour , IPoolable
     {
         transform.position = pos;
         onComplete = onCompleteCallBack;
+
+     //   SoundManager.Instance.Play(); 사운드 입력 주말에 작업하겟움
         StartCoroutine(PlayEffect());
     }
 

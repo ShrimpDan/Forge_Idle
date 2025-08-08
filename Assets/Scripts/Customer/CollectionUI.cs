@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,6 +10,7 @@ public class CollectionUI : BaseUI
     [SerializeField] private Transform slotParent;
     [SerializeField] private GameObject slotPrefabs;
     [SerializeField] private Button exitBtn;
+    [SerializeField] private TextMeshProUGUI totalBounsText;
 
     private Button slotButton;
 
@@ -34,6 +36,7 @@ public class CollectionUI : BaseUI
     public override void Open()
     {
         panel.SetActive(true);
+        UpdateTotalBounsUI();
     }
 
     public override void Close()
@@ -64,10 +67,10 @@ public class CollectionUI : BaseUI
         }
     }
 
-    private void IsNotFound()
-    { 
-        
-
-
+    private void UpdateTotalBounsUI()
+    {
+        float total = GameManager.Instance.CollectionManager.GetTotalGoldBonus();
+        totalBounsText.text = $"총 골드 보너스 +{total * 100f:F1}";
     }
+
 }
