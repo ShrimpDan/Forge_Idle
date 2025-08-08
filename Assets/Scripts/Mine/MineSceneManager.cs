@@ -73,6 +73,9 @@ public class MineSceneManager : MonoBehaviour
     [SerializeField] private Transform mineInfoPopupRoot;
     private MineInfoPopup spawnedMineInfoPopup;
 
+    [Header("UICanvas")]
+    [SerializeField] private GameObject mainUICanvas;
+
     private List<bool> unlockedMines = new List<bool>();
     private List<List<GameObject>> spawnedAssistants;
     private AssistantInventory assistantInventory;
@@ -290,6 +293,8 @@ public class MineSceneManager : MonoBehaviour
         if (mineDetailMap != null)
             mineDetailMap.SetActive(true);
 
+        if (mainUICanvas != null) mainUICanvas.SetActive(true);
+
         if (cameraTouchDrag != null && cameraLimits != null && cameraLimits.Count > 0)
         {
             cameraTouchDrag.SetCameraLimit(cameraLimits[0]);
@@ -306,6 +311,8 @@ public class MineSceneManager : MonoBehaviour
         SetAllInactive();
         if (idx < 0 || idx >= minePrefabs.Count) return;
         minePrefabs[idx].SetActive(true);
+
+        if (mainUICanvas != null) mainUICanvas.SetActive(false);
 
         if (cameraTouchDrag != null && cameraLimits.Count > idx + 1)
         {

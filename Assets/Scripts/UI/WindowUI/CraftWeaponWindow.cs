@@ -238,7 +238,15 @@ public class CraftWeaponWindow : BaseUI
         bool allHave = true;
         foreach (var (resourceKey, amount) in required)
         {
-            int owned = inventory.ResourceList?.Find(x => x.ItemKey == resourceKey)?.Quantity ?? 0;
+            // 모든 인벤토리 리스트에서 합산 (ResourceList + GemList)
+            int owned = 0;
+            if (inventory != null)
+            {
+                if (inventory.ResourceList != null)
+                    owned += inventory.ResourceList.Where(x => x.ItemKey == resourceKey).Sum(x => x.Quantity);
+                if (inventory.GemList != null)
+                    owned += inventory.GemList.Where(x => x.ItemKey == resourceKey).Sum(x => x.Quantity);
+            }
             if (owned < amount)
             {
                 allHave = false;
@@ -284,6 +292,7 @@ public class CraftWeaponWindow : BaseUI
         gameManager.CraftingManager.StartCrafting(idx, craftingData, itemData);
         if (slotBtn.slotButton) slotBtn.slotButton.interactable = false;
     }
+
 
     void Update()
     {
