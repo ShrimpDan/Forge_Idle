@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.VFX;
+
 
 public class CollectionBookManager : MonoBehaviour
 {
@@ -64,7 +63,7 @@ public class CollectionBookManager : MonoBehaviour
                 var collectionData = new CustomerCollectionData
                 {
                     collectionData = data,
-                    maxVisitedCount = 15,
+                    maxVisitedCount = 5,
                     visitedCount = 0,
                     isDicovered = false,
                     isEffectUnlocked = false
@@ -189,22 +188,22 @@ public class CollectionBookManager : MonoBehaviour
     }
 
 
-
-
-    public float GetTotalGoldBounsForJob(CustomerJob job)
+    public float GetTotalGoldBonus()
     {
-        float totalBonus = 0f;
-        foreach (var pair in collectionDict)
+        float total = 0f;
+
+        foreach (var data in collectionDict.Values)
         {
-            var data = pair.Value;
             if (data.isEffectUnlocked)
             {
-                totalBonus += data.GoldBonus;
+                total += data.GoldBonus;
             }
         }
 
-        return totalBonus;
+        return total;
     }
+
+   
 
     public CustomerCollectionData GetCollectionData(string key)
     {

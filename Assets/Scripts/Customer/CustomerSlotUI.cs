@@ -1,5 +1,4 @@
-﻿using Assets.PixelFantasy.PixelHeroes.Common.Scripts.UI;
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 public class CustomerSlotUI : MonoBehaviour

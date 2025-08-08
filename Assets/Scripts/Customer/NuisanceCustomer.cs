@@ -1,6 +1,4 @@
 ﻿using System.Collections;
-using System.Linq.Expressions;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class NuisanceCustomer : Customer
