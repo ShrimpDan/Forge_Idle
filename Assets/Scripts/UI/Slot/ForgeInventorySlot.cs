@@ -33,7 +33,7 @@ public class ForgeInventorySlot : MonoBehaviour
         icon.sprite = item?.Data != null ? IconLoader.GetIconByKey(item.ItemKey) : null;
         icon.enabled = (icon.sprite != null);
 
-        countText.text = (item != null) ? item.Data.Name.ToString() : "";
+        countText.text = (item != null) ? item.Quantity.ToString() : "";
 
         if (uIManager == null)
             uIManager = GameManager.Instance.UIManager;
