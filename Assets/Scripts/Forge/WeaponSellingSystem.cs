@@ -8,6 +8,7 @@ public class WeaponSellingSystem : MonoBehaviour
     private ForgeManager forgeManager;
     private InventoryManager inventory;
     private CustomerManager customerManager;
+    private CollectionBookManager collectionBookManager;
     private BlackSmith blackSmith;
 
     private Queue<CraftingData> craftingQueue;
@@ -22,6 +23,7 @@ public class WeaponSellingSystem : MonoBehaviour
         forgeManager = forge.ForgeManager;
         blackSmith = forge.BlackSmith;
         customerManager = forge.CustomerManager;
+        collectionBookManager = GameManager.Instance.CollectionManager;
 
         craftingQueue = new Queue<CraftingData>();
         customerQueue = new Queue<Customer>();
@@ -115,7 +117,7 @@ public class WeaponSellingSystem : MonoBehaviour
             customer.NotifiedCraftWeapon();
 
             // 골드 지급
-            int price = (int)(weapon.sellCost * forge.StatHandler.FinalSellPriceBonus);
+            int price = (int)(weapon.sellCost * forge.StatHandler.FinalSellPriceBonus );
             price = CheckPerfectCrafting(price);
 
             forgeManager.AddGold(price);
