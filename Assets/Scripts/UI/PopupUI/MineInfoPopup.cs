@@ -33,7 +33,6 @@ public class MineInfoPopup : MonoBehaviour
         if (canvasGroup == null)
             canvasGroup = gameObject.AddComponent<CanvasGroup>();
 
-        // gameObject.SetActive(false); // 동적 생성이니 주석 처리
     }
 
     public void Show()
