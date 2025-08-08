@@ -84,7 +84,7 @@ public class RecipeSlot : MonoBehaviour
                 : null;
 
             int owned = inventory?.ResourceList?.Find(x => x.ItemKey == req.ResourceKey)?.Quantity ?? 0;
-            slot.Set(reqIconSprite, owned, req.Amount);
+            slot.Set(resItem.Name, reqIconSprite, owned, req.Amount);
         }
     }
 

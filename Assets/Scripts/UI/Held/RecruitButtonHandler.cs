@@ -15,6 +15,7 @@ public class RecruitButtonHandler : MonoBehaviour
     [SerializeField] private Button btnApprove;
     [SerializeField] private Button btnReject;
     [SerializeField] private Button btnHold;
+    [SerializeField] private Button btnHoldAll;
 
     [Header("참조 스크립트")]
     [SerializeField] private RecruitPreviewManager previewManager;
@@ -30,6 +31,7 @@ public class RecruitButtonHandler : MonoBehaviour
         btnApprove.onClick.AddListener(OnClickApprove);
         btnReject.onClick.AddListener(OnClickReject);
         btnHold.onClick.AddListener(OnClickHold);
+        btnHoldAll.onClick.AddListener(OnClickHoldAll);
     }
 
     // 선택한 특화에 따라 제자 뽑기
@@ -57,5 +59,12 @@ public class RecruitButtonHandler : MonoBehaviour
     {
         SoundManager.Instance.Play("ClickSound");
         previewManager.HoldCandidate();
+    }
+
+    // 전체 보류 처리
+    public void OnClickHoldAll()
+    {
+        SoundManager.Instance.Play("ClickSound");
+        previewManager.HoldAllRemaining();
     }
 }

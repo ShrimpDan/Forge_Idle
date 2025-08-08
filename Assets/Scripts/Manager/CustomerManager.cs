@@ -26,7 +26,7 @@ public class CustomerManager : MonoBehaviour
 
     [Header("Nuisance")]
     [SerializeField] private float nuisanceSpawnTime = 3f;
-    [SerializeField, Range(0f, 1f)] private float nuisanceSpawnChance = 0.5f;
+    [SerializeField, Range(0f, 1f)] private float nuisanceSpawnChance = 0.1f;
 
     [Header("Regular")]
     [SerializeField] private int RegularSpawnCount = 1;
@@ -52,6 +52,18 @@ public class CustomerManager : MonoBehaviour
         {CustomerRarity.Legendary,0.03f }
     };
 
+
+    public void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            nuisanceSpawnTime = 0.5f;
+            nuisanceSpawnChance = 1f;
+            StartCoroutine(SpawnNuisanceLoop());
+
+        }
+        
+    }
     //Loader
     private CustomerLoader customerLoader;
     private RegularCustomerLoader regularLoader;

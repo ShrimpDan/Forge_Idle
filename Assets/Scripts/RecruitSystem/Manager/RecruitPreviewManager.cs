@@ -23,6 +23,7 @@ public class RecruitPreviewManager : MonoBehaviour
     [SerializeField] private Button btnApprove;
     [SerializeField] private Button btnReject;
     [SerializeField] private Button btnHold;
+    [SerializeField] private Button btnHoldAll;
 
     private AssistantFactory assistantFactory;
     private SpecializationType? recruitFilter = null;
@@ -216,18 +217,19 @@ public class RecruitPreviewManager : MonoBehaviour
         gm.AssistantInventory.Add(target);
 
         if (isFromHeldList)
-            gm.HeldCandidates.Remove(currentHeldInstance);
-
-        gm.SaveManager.SaveAll();
-
-        if (isFromHeldList)
         {
+            gm.HeldCandidates.Remove(currentHeldInstance);
+            gm.SaveManager.SaveAll();
+            HeldUIHelper.Instance?.UpdateCheckIcons();
             ReturnToProperUI();
             return;
         }
 
+        gm.SaveManager.SaveAll();
+        HeldUIHelper.Instance?.UpdateCheckIcons();
         AdvanceToNextCandidate();
     }
+
 
 
     // 제자 영입 거절
@@ -240,13 +242,13 @@ public class RecruitPreviewManager : MonoBehaviour
         {
             GameManager.Instance.HeldCandidates.Remove(currentHeldInstance);
             GameManager.Instance.SaveManager.SaveAll();
+            HeldUIHelper.Instance?.UpdateCheckIcons();
             ReturnToProperUI();
             return;
         }
 
         AdvanceToNextCandidate();
     }
-
 
     // 제자 보류 처리
     public void HoldCandidate()
@@ -270,7 +272,36 @@ public class RecruitPreviewManager : MonoBehaviour
         var held = candidatePool[currentIndex];
         GameManager.Instance.HeldCandidates.Add(held);
         GameManager.Instance.SaveManager.SaveAll();
+        HeldUIHelper.Instance?.UpdateCheckIcons();
 
+        AdvanceToNextCandidate();
+    }
+
+    // 제자 전부 보류 처리
+    public void HoldAllRemaining()
+    {
+        if (isTransitioning) return;
+        SetButtonsInteractable(false);
+
+        if (currentIndex < 0 || currentIndex >= candidatePool.Count)
+        {
+            Debug.LogWarning($"[Recruit] HoldAllRemaining에서 잘못된 인덱스 접근: {currentIndex}");
+            EndRecruitFlow();
+            return;
+        }
+
+        var gm = GameManager.Instance;
+
+        for (int i = currentIndex; i < candidatePool.Count; i++)
+        {
+            var held = candidatePool[i];
+            gm.HeldCandidates.Add(held);
+        }
+
+        gm.SaveManager.SaveAll();
+        HeldUIHelper.Instance?.UpdateCheckIcons();
+
+        currentIndex = candidatePool.Count;
         AdvanceToNextCandidate();
     }
 
@@ -347,6 +378,7 @@ public class RecruitPreviewManager : MonoBehaviour
         btnApprove.interactable = interactable;
         btnReject.interactable = interactable;
         btnHold.interactable = interactable;
+        btnHoldAll.interactable = interactable;
     }
 
     // 버튼 이벤트 (랜덤/특화별)

@@ -45,7 +45,8 @@ public static class UIName
     public const string SkillWindow = "SkillWindow";
     public const string ForgeMoveWindow = "ForgeMoveWindow";
     public const string DecompositionWindow = "DecompositionWindow";
-    
+    public const string NickNameWindow = "NickNameWindow";
+
     // Popup UI
     public const string InventoryPopup = "InventoryPopup";
     public const string AssistantPopup = "AssistantPopup";
@@ -62,6 +63,8 @@ public static class UIName
     public const string LackPopup = "LackPopup";
     public const string SkillPopup = "SkillPopup";
     public const string DecompositionPopup = "DecompositionPopup";
+    public const string NickNamePopup = "NickNamePopup";
+    public const string ForgeInfoPopup = "ForgeInfoPopup";
 
     public static string GetUINameByType(ButtonType type)
     {

@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Linq.Expressions;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -8,6 +9,10 @@ public class NuisanceCustomer : Customer
     [SerializeField] private int penaltyGold;
     [SerializeField] private GameObject InteractIcon;
     [SerializeField] private float offsetY = 0.5f;
+    [SerializeField] private FlapperEffect catchEffectPrefab;
+
+    
+
 
     [Header("ExitPoint")]
     [SerializeField] private Transform exitPoint;
@@ -32,6 +37,15 @@ public class NuisanceCustomer : Customer
             InteractIcon.SetActive(true);
         }
 
+        if (catchEffectPrefab != null)
+        { 
+           
+        }
+        else
+        {
+            Debug.LogWarning("CatchEffectPrefab이 설정되지 않았습니다.", this);
+
+        }
         //  StartCoroutine(NuisanceFlow());
 
     }
@@ -127,7 +141,8 @@ public class NuisanceCustomer : Customer
         }
 
         GameManager.Instance.DailyQuestManager.ProgressQuest("CatchMission", 1);
-
+        ShowEffect(); //여기 이펙트 보여줄예정
+        //여기에 매서드 추가
         StopAllCoroutines();
         StartCoroutine(ExitFlow());
 
@@ -154,6 +169,13 @@ public class NuisanceCustomer : Customer
         CustomerExit();
     }
 
+    private void Disappear()
+    {
+        //점점 사라지는 fade효과 연출
+        
+
+    }
+
 
     //private 
 
@@ -178,5 +200,33 @@ public class NuisanceCustomer : Customer
     public static void SetBlockClick(bool block)
     {
         blockClickCheck = block;
+    }
+
+    private void ShowEffect()
+    {
+
+        if (customerManager == null)
+        {
+            Debug.LogError("[NuisanceCustomer] customerManager가 null입니다!", this);
+            return;
+        }
+        Vector3 spawnPos = transform.position;
+        GameObject effectObj = customerManager.PoolManager.Get(catchEffectPrefab.gameObject, spawnPos, Quaternion.identity);
+
+        // FlapperEffect 컴포넌트 얻기
+        FlapperEffect effect = effectObj.GetComponent<FlapperEffect>();
+
+        effect.SourcePrefab = catchEffectPrefab.gameObject;
+
+        effect.Init(spawnPos, () =>
+        {
+            customerManager.PoolManager.ReturnComponent(effect);
+        });
+
+        Destroy(effectObj, 1f); // 2초 후에 이펙트 오브젝트 제거
+
+
+
+
     }
 }

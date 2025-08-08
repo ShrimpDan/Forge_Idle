@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 public class GameManager : MonoSingleton<GameManager>
 {
@@ -76,11 +74,6 @@ public class GameManager : MonoSingleton<GameManager>
         DontDestroyOnLoad(cmObj);
     }
 
-
-
-
-
-
     private void Start()
     {
         SaveManager = new GameSaveManager();
@@ -96,6 +89,8 @@ public class GameManager : MonoSingleton<GameManager>
         SaveManager.LoadAll();
 
         SoundManager.Instance.Play("MainBGM");
+
+        HeldUIHelper.Instance?.UpdateCheckIcons();
     }
 
     /// <summary>

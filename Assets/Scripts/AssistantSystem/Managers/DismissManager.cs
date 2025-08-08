@@ -132,13 +132,7 @@ public class DismissManager : MonoBehaviour
 
         bool hasSelection = selectedSlots.Count > 0;
 
-        ColorBlock cb = confirmDismissButton.colors;
-        cb.normalColor = hasSelection ? dismissActiveColor : dismissInactiveColor;
-        cb.highlightedColor = cb.normalColor;
-        cb.pressedColor = hasSelection ? new Color(0.9f, 0.9f, 0.9f) : dismissInactiveColor;
-        cb.selectedColor = cb.normalColor;
-        cb.colorMultiplier = 1;
-        confirmDismissButton.colors = cb;
+        confirmDismissButton.gameObject.SetActive(hasSelection);
     }
 
     public bool IsDismissMode() => isDismissMode;

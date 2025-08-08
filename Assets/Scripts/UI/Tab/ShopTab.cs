@@ -53,6 +53,12 @@ public class ShopTab : BaseTab
             tabButtons[i].image.color = isSelected ? selectedColor : defaultColor;
         }
 
+        if (index == 0)
+        {
+            if (HeldUIHelper.Instance != null)
+                HeldUIHelper.Instance.UpdateCheckIcons();
+        }
+
         // SoundManager.Instance.Play("SFX_SystemClick");
 
     }
