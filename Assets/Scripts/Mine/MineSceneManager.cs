@@ -70,6 +70,9 @@ public class MineSceneManager : MonoBehaviour
     [SerializeField] private LackPopup lackPopupPrefab;
     [SerializeField] private Transform lackPopupRoot;
 
+
+    [SerializeField] private MineInfoPopup mineInfoPopup;
+
     private List<bool> unlockedMines = new List<bool>();
     private List<List<GameObject>> spawnedAssistants;
     private AssistantInventory assistantInventory;
@@ -733,6 +736,12 @@ public class MineSceneManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void OnClickOpenMineInfoPopup()
+    {
+        if (mineInfoPopup != null)
+            mineInfoPopup.Show();
     }
 
 }
