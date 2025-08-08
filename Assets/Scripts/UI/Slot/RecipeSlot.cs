@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
+using System.Linq;
 
 public class RecipeSlot : MonoBehaviour
 {
@@ -34,9 +35,8 @@ public class RecipeSlot : MonoBehaviour
         this.inventory = inventory;
         this.onSelectCallback = onSelect;
 
-        // 이 부분이 중요!
         var itemData = itemLoader?.GetItemByKey(data.ItemKey);
-        // 아이콘 불러오기: data.ItemKey를 key로 활용
+ 
         Sprite iconSprite = (itemData != null)
             ? IconLoader.GetIconByKey(data.ItemKey)
             : null;
@@ -52,7 +52,6 @@ public class RecipeSlot : MonoBehaviour
         craftCostText.text = $"제작 비용: {data.craftCost:N0}";
         sellCostText.text = $"판매가: {data.sellCost:N0}";
 
-        // 재료 아이콘도 마찬가지
         foreach (Transform child in requiredListRoot)
             Destroy(child.gameObject);
 
@@ -71,7 +70,7 @@ public class RecipeSlot : MonoBehaviour
         {
             Destroy(child.gameObject);
         }
-        
+
         foreach (var req in craftingData.RequiredResources)
         {
             if (resourceSlotPrefab == null) continue;
@@ -83,7 +82,14 @@ public class RecipeSlot : MonoBehaviour
                 ? IconLoader.GetIcon(resItem.ItemType, resItem.ItemKey)
                 : null;
 
-            int owned = inventory?.ResourceList?.Find(x => x.ItemKey == req.ResourceKey)?.Quantity ?? 0;
+            int owned = 0;
+            if (inventory != null)
+            {
+                if (inventory.ResourceList != null)
+                    owned += inventory.ResourceList.Where(x => x.ItemKey == req.ResourceKey).Sum(x => x.Quantity);
+                if (inventory.GemList != null)
+                    owned += inventory.GemList.Where(x => x.ItemKey == req.ResourceKey).Sum(x => x.Quantity);
+            }
             slot.Set(resItem.Name, reqIconSprite, owned, req.Amount);
         }
     }
