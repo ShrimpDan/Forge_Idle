@@ -70,7 +70,7 @@ public class CollectionUI : BaseUI
     private void UpdateTotalBounsUI()
     {
         float total = GameManager.Instance.CollectionManager.GetTotalGoldBonus();
-        totalBounsText.text = $"총 골드 보너스 +{total * 100f:F1}";
+        totalBounsText.text = $"{total * 100f:F0}%";
     }
 
 }

@@ -70,6 +70,7 @@ public class DailyQuestManager : MonoBehaviour
     private void Start()
     {
         resetTime = TimeManager.Instance.Now().AddSeconds(TestTime); //일단 작동하는지 확인부터 
+        bounsRewardButton.onClick.AddListener(BonusQuestReward);
     }
 
 
@@ -233,9 +234,15 @@ public class DailyQuestManager : MonoBehaviour
             TotalQuestText.text = $"완료 {completed}/{total} 보상 가능!";
             bounsRewardButton.interactable = true;
         }
-        else
+        else if (!isAllClear)
         {
             TotalQuestText.text = $"완료 {completed}/{total}";
+            bounsRewardButton.interactable = false;
+        }
+        else
+        {
+            // 이미 최종 보상을 받은 상태
+            TotalQuestText.text = $"모든 퀘스트 완료!";
             bounsRewardButton.interactable = false;
         }
 

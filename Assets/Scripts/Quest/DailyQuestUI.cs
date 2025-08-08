@@ -16,9 +16,16 @@ public class DailyQuestUI : MonoBehaviour
     [SerializeField] private GameObject claimButton; // 보상 받기 버튼
     [SerializeField] private TextMeshProUGUI buttonText;
 
+    private DailyQuestLoader currentLoader;
+    private DailyQuestManager dailyQuestManager;
+
 
     public void InitButton(DailyQuestLoader loader, DailyQuestManager dailyQuestManager)
     {
+
+        currentLoader = loader;
+        this.dailyQuestManager = dailyQuestManager;
+
         questNameText.text = loader.data.title;
         questInfo.text = loader.data.questInfo;
         questProgressText.text = $"{loader.currentAmount} / {loader.data.goalAmount}";
@@ -26,6 +33,10 @@ public class DailyQuestUI : MonoBehaviour
 
         Button btn = claimButton.GetComponent<Button>();
         btn.onClick.RemoveAllListeners();
+
+        bool isCompletedNow = loader.currentAmount >= loader.data.goalAmount;
+        bool isRewardClaimed = loader.isRewardClaimed;
+
 
         if (loader.isCompleted && !loader.isRewardClaimed)
         {
@@ -51,6 +62,15 @@ public class DailyQuestUI : MonoBehaviour
             buttonText.text = "완료함";
             btn.interactable = false;
         }
+    }
+    public bool IsSameQuest(DailyQuestLoader loader)
+    {
+        return currentLoader?.data.questId == loader.data.questId;
+    }
+
+    public void Refresh(DailyQuestLoader loader)
+    {
+        InitButton(loader, dailyQuestManager);
     }
 }
     

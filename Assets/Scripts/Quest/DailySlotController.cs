@@ -7,7 +7,7 @@ public class DailySlotController : MonoBehaviour
     [SerializeField] private List<DailyQuestUI> dailyQuestUIs;
 
     private DailyQuestManager dailyQuestManager;
-
+    private DailyQuestLoader currentLoader;
     public void Init(DailyQuestManager manager)
     {
         dailyQuestManager = manager;
@@ -45,5 +45,17 @@ public class DailySlotController : MonoBehaviour
       
         SettingSlot();
     }
+    public void Refresh(DailyQuestLoader loader)
+    {
+        foreach (var ui in dailyQuestUIs)
+        {
+            if (ui.IsSameQuest(loader)) // questId 같은지 체크
+            {
+                ui.Refresh(loader);
+                break;
+            }
+        }
+    }
+
 
 }
