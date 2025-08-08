@@ -10,6 +10,10 @@ public class DungeonWindow : BaseUI
     [SerializeField] GameObject dungeonSlotPrefab;
     [SerializeField] Transform dungeonRoot;
 
+    [Header("Scroll Bar")]
+    [SerializeField] Scrollbar scrollBar;
+    private const string DUNGEON_SCROLL_KEY = "DungeonScroll";
+
     public override void Init(GameManager gameManager, UIManager uIManager)
     {
         base.Init(gameManager, uIManager);
@@ -27,7 +31,7 @@ public class DungeonWindow : BaseUI
                 }
             }
         }
-        
+
         else
         {
             foreach (Transform child in dungeonRoot)
@@ -38,6 +42,8 @@ public class DungeonWindow : BaseUI
                 }
             }
         }
+
+        scrollBar.value = PlayerPrefs.GetFloat(DUNGEON_SCROLL_KEY, 1f);
     }
 
     public override void Open()
@@ -47,6 +53,7 @@ public class DungeonWindow : BaseUI
 
     public override void Close()
     {
+        PlayerPrefs.SetFloat(DUNGEON_SCROLL_KEY, scrollBar.value);
         base.Close();
     }
 }
