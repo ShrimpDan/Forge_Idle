@@ -158,22 +158,23 @@ public class InventoryManager
         return EquippedWeaponDict.Values.ToList();
     }
 
-    // ���� ��� ���� ���� �Լ� �߰�
+
     public bool UseCraftingMaterials(List<(string resourceKey, int amount)> requiredList)
     {
-        // 1. ��ü ��� ���� Ȯ��
         foreach (var req in requiredList)
         {
-            int have = ResourceList.Where(x => x.ItemKey == req.resourceKey).Sum(x => x.Quantity);
+            int have = 0;
+            have += ResourceList.Where(x => x.ItemKey == req.resourceKey).Sum(x => x.Quantity);
+            have += GemList.Where(x => x.ItemKey == req.resourceKey).Sum(x => x.Quantity);
             if (have < req.amount)
                 return false;
         }
 
-        // 2. ������ ����
+        // 소모 
         foreach (var req in requiredList)
         {
             int remain = req.amount;
-            // ���� ���ÿ��� ����
+            // ResourceList에서 소모
             foreach (var inst in ResourceList.Where(x => x.ItemKey == req.resourceKey && x.Quantity > 0).ToList())
             {
                 int consume = Math.Min(remain, inst.Quantity);
@@ -183,10 +184,24 @@ public class InventoryManager
                     RemoveItem(inst);
                 if (remain <= 0) break;
             }
+            // GemList에서 소모
+            if (remain > 0)
+            {
+                foreach (var inst in GemList.Where(x => x.ItemKey == req.resourceKey && x.Quantity > 0).ToList())
+                {
+                    int consume = Math.Min(remain, inst.Quantity);
+                    inst.Quantity -= consume;
+                    remain -= consume;
+                    if (inst.Quantity <= 0)
+                        RemoveItem(inst);
+                    if (remain <= 0) break;
+                }
+            }
         }
         OnItemAdded?.Invoke();
         return true;
     }
+
 
     public List<ItemData> GetWeaponListByType(WeaponType type)
     {
