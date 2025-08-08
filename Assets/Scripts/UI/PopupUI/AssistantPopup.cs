@@ -185,12 +185,18 @@ public class AssistantPopup : BaseUI
             SetAssistant(assiData);
 
             assistantTab?.RefreshSlots();
+
+            // <<--- 이 부분 추가!
+            AssistantSelectPopup[] allPopups = GameObject.FindObjectsOfType<AssistantSelectPopup>(true);
+            foreach (var popup in allPopups)
+                popup.RefreshUI();
         }
         else
         {
             Debug.LogWarning("골드가 부족합니다.");
         }
     }
+
 
     private void RefreshEquippedState()
     {

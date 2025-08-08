@@ -43,7 +43,7 @@ public class DismissManager : MonoBehaviour
     
     private void ToggleDismissMode()
     {
-        SetDismissMode(isDismissMode);
+        SetDismissMode(!isDismissMode);
 
         Debug.Log($"[DismissManager] 해고 모드 {(isDismissMode ? "진입" : "종료")}");
 
@@ -130,9 +130,20 @@ public class DismissManager : MonoBehaviour
     {
         if (confirmDismissButton == null) return;
 
-        bool hasSelection = selectedSlots.Count > 0;
+        confirmDismissButton.gameObject.SetActive(isDismissMode);
 
-        confirmDismissButton.gameObject.SetActive(hasSelection);
+        bool hasSelection = selectedSlots.Count > 0;
+        confirmDismissButton.interactable = hasSelection;
+
+        var cb = confirmDismissButton.colors;
+        var red = new Color(1f, 0.2f, 0.2f, 1f);
+        cb.normalColor = red;
+        cb.highlightedColor = red;
+        cb.pressedColor = red * 0.9f;
+        cb.selectedColor = red;
+        cb.disabledColor = red;
+        cb.colorMultiplier = 1f;
+        confirmDismissButton.colors = cb;
     }
 
     public bool IsDismissMode() => isDismissMode;
