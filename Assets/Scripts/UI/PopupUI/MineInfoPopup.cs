@@ -1,4 +1,5 @@
 ﻿using DG.Tweening;
+using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -20,6 +21,9 @@ public class MineInfoPopup : MonoBehaviour
 
     private CanvasGroup canvasGroup;
 
+    // 콜백 등록용
+    [NonSerialized] public Action onPopupClosed;
+
     private void Awake()
     {
         if (exitBtn != null)
@@ -29,7 +33,7 @@ public class MineInfoPopup : MonoBehaviour
         if (canvasGroup == null)
             canvasGroup = gameObject.AddComponent<CanvasGroup>();
 
-        gameObject.SetActive(false);
+        // gameObject.SetActive(false); // 동적 생성이니 주석 처리
     }
 
     public void Show()
@@ -39,7 +43,6 @@ public class MineInfoPopup : MonoBehaviour
         if (!gameObject.activeSelf)
             gameObject.SetActive(true);
 
-        // 🎬 팝업 열기: 전체 transform 기준 DOTween 연출
         transform.localScale = Vector3.one * 0.8f;
         transform.DOScale(1.0f, 0.25f).SetEase(Ease.OutBack);
 
@@ -52,18 +55,20 @@ public class MineInfoPopup : MonoBehaviour
 
     public void Close()
     {
-        // 🎬 팝업 닫기: 전체 transform 기준 DOTween 연출
+        // 애니메이션 후 파괴, onPopupClosed 콜백 호출
         transform.DOScale(0.8f, 0.2f).SetEase(Ease.InBack);
         if (canvasGroup != null)
         {
             canvasGroup.DOFade(0f, 0.15f).OnComplete(() =>
             {
-                gameObject.SetActive(false);
+                onPopupClosed?.Invoke();
+                Destroy(gameObject);
             });
         }
         else
         {
-            gameObject.SetActive(false);
+            onPopupClosed?.Invoke();
+            Destroy(gameObject);
         }
     }
 
@@ -92,7 +97,6 @@ public class MineInfoPopup : MonoBehaviour
             return;
         }
 
-        // MineGroups 가져오기
         var groupsField = sceneMgr.GetType().GetField("mineGroups", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
         var mineGroups = groupsField?.GetValue(sceneMgr) as List<MineGroup>;
         if (mineGroups == null || mineGroups.Count == 0)
@@ -102,7 +106,6 @@ public class MineInfoPopup : MonoBehaviour
             return;
         }
 
-        // 마인별 합산
         System.Text.StringBuilder miningSb = new();
         System.Text.StringBuilder resourceSb = new();
 

@@ -18,10 +18,8 @@ public class MineGroup
     public List<Tilemap> obstacleTilemaps;
     [NonSerialized] public MineAssistantManager mineManager;
     [NonSerialized] public DateTime lastCollectTime;
-
     public Transform blockRoot;
     public MineBlock blockObj;
-
     public void EnsureSlots()
     {
         while (slots.Count < slotUIs.Count)
@@ -29,8 +27,6 @@ public class MineGroup
         if (slots.Count > slotUIs.Count)
             slots.RemoveRange(slotUIs.Count, slots.Count - slotUIs.Count);
     }
-
-    // 차단/해금 블록 UI 동기화
     public void ShowBlock(bool show, int cost = 0, int currentGold = 0, MineSceneManager manager = null, int idx = 0)
     {
         if (blockRoot == null) return;
@@ -49,7 +45,6 @@ public class MineGroup
 
 public class MineSceneManager : MonoBehaviour
 {
-
     public GameObject mineAssistantPrefab;
     public List<MineGroup> mineGroups;
     public GameObject mineDetailMap;
@@ -70,8 +65,13 @@ public class MineSceneManager : MonoBehaviour
     [SerializeField] private LackPopup lackPopupPrefab;
     [SerializeField] private Transform lackPopupRoot;
 
-
-    [SerializeField] private MineInfoPopup mineInfoPopup;
+    [Header("Popup References")]
+    [SerializeField] private GameObject mineInfoPopupPrefab;
+    [SerializeField] private Button playerStatButton;
+    
+    [Header("Mine Info Root")]
+    [SerializeField] private Transform mineInfoPopupRoot;
+    private MineInfoPopup spawnedMineInfoPopup;
 
     private List<bool> unlockedMines = new List<bool>();
     private List<List<GameObject>> spawnedAssistants;
@@ -96,7 +96,6 @@ public class MineSceneManager : MonoBehaviour
         SetMineCameraActive(true);
         SetUICameraActive(false);
 
-        // 해금 상태 초기화
         if (unlockedMines.Count != 4)
         {
             unlockedMines.Clear();
@@ -104,7 +103,12 @@ public class MineSceneManager : MonoBehaviour
             unlockedMines.Add(false);
             unlockedMines.Add(false);
             unlockedMines.Add(false);
+        }
 
+        if (playerStatButton != null)
+        {
+            playerStatButton.onClick.RemoveAllListeners();
+            playerStatButton.onClick.AddListener(ShowMineInfoPopup);
         }
     }
 
@@ -738,10 +742,33 @@ public class MineSceneManager : MonoBehaviour
         }
     }
 
-    public void OnClickOpenMineInfoPopup()
+    public void ShowMineInfoPopup()
     {
-        if (mineInfoPopup != null)
-            mineInfoPopup.Show();
+        if (spawnedMineInfoPopup != null)
+        {
+            return;
+        }
+
+        if (mineInfoPopupPrefab == null || mineInfoPopupRoot == null)
+        {
+            return;
+        }
+
+        GameObject go = Instantiate(mineInfoPopupPrefab, mineInfoPopupRoot);
+        spawnedMineInfoPopup = go.GetComponent<MineInfoPopup>();
+        if (spawnedMineInfoPopup == null)
+        {
+            Destroy(go);
+            return;
+        }
+
+        spawnedMineInfoPopup.onPopupClosed = () =>
+        {
+            spawnedMineInfoPopup = null;
+        };
+
+        spawnedMineInfoPopup.Show();
     }
+
 
 }
