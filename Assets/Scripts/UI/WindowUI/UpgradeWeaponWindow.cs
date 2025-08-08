@@ -47,7 +47,8 @@ public class UpgradeWeaponWindow : BaseUI
     [SerializeField] private GameObject automaticUpgradePanel;
     [SerializeField] private Button[] automaticUpgradeLevelButtons;
 
-    private readonly int[] autoUpgradeTargetLevels = { 1, 5, 10, 13, 15 };
+    // 자동강화: n회 연속 강화 (버튼별 n)
+    private readonly int[] autoUpgradeRepeatCounts = { 1, 3, 5, 7 };
     private Coroutine autoUpgradeCoroutine;
 
     [Header("Gem System UI")]
@@ -71,10 +72,7 @@ public class UpgradeWeaponWindow : BaseUI
     {
         int level = weapon.CurrentEnhanceLevel + 1;
         int craftCost = weapon.CraftingData.craftCost;
-
-        // 무기의 제작 가격 * 레벨로 비용을 설정
         int cost = Mathf.RoundToInt(craftCost * level);
-
         return cost;
     }
 
@@ -102,26 +100,27 @@ public class UpgradeWeaponWindow : BaseUI
         upgradeButton.onClick.RemoveAllListeners();
         upgradeButton.onClick.AddListener(StartUpgrade);
 
-        // --- 고급강화 이벤트 연결 ---
+        // 고급강화
         if (advancedUpgradeButton != null)
         {
             advancedUpgradeButton.onClick.RemoveAllListeners();
             advancedUpgradeButton.onClick.AddListener(StartAdvancedUpgrade);
         }
 
-        // 자동강화
+        // 자동강화 패널(전체 on/off)
         if (automaticUpgradeButton != null)
         {
             automaticUpgradeButton.onClick.RemoveAllListeners();
             automaticUpgradeButton.onClick.AddListener(ShowAutomaticUpgradePanel);
         }
-        if (automaticUpgradeLevelButtons != null && automaticUpgradeLevelButtons.Length == autoUpgradeTargetLevels.Length)
+        // 자동강화 버튼(연속 n회)
+        if (automaticUpgradeLevelButtons != null && automaticUpgradeLevelButtons.Length == autoUpgradeRepeatCounts.Length)
         {
             for (int i = 0; i < automaticUpgradeLevelButtons.Length; i++)
             {
-                int idx = i;
+                int n = autoUpgradeRepeatCounts[i];
                 automaticUpgradeLevelButtons[i].onClick.RemoveAllListeners();
-                automaticUpgradeLevelButtons[i].onClick.AddListener(() => StartAutomaticUpgrade(autoUpgradeTargetLevels[idx]));
+                automaticUpgradeLevelButtons[i].onClick.AddListener(() => StartAutomaticUpgradeRepeat(n));
             }
         }
         if (automaticUpgradePanel != null)
@@ -162,9 +161,7 @@ public class UpgradeWeaponWindow : BaseUI
         gemSystemPanel.SetActive(true);
         HideAutomaticUpgradePanel();
         if (GameManager.Instance.TutorialManager != null)
-        {
             GameManager.Instance.TutorialManager.ForceStepClear();
-        }
         ResetGemSystemPanel();
     }
 
@@ -249,12 +246,15 @@ public class UpgradeWeaponWindow : BaseUI
 
         bool isMaxEnhance = selectedWeapon.CurrentEnhanceLevel >= selectedWeapon.Data.UpgradeInfo.MaxEnhanceLevel;
         upgradeButton.interactable = !isMaxEnhance;
-
         if (advancedUpgradeButton != null)
             advancedUpgradeButton.interactable = !isMaxEnhance;
+        if (automaticUpgradeButton != null)
+            automaticUpgradeButton.interactable = !isMaxEnhance;
+        if (automaticUpgradePanel != null)
+            automaticUpgradePanel.SetActive(!isMaxEnhance);
+
+        RefreshAutomaticUpgradeButtons();
     }
-
-
 
     private int CalcEnhanceSuccessRate(ItemInstance weapon)
     {
@@ -270,7 +270,6 @@ public class UpgradeWeaponWindow : BaseUI
         return CalcEnhanceSuccessRate(weapon) + 10;
     }
 
-    // 보석 효과 미반영 코드
     private float CalcNextAttack(ItemInstance weapon)
     {
         if (weapon == null || weapon.Data == null) return 0;
@@ -339,6 +338,11 @@ public class UpgradeWeaponWindow : BaseUI
         upgradeButton.interactable = false;
         if (advancedUpgradeButton != null) advancedUpgradeButton.interactable = false;
         if (automaticUpgradeButton != null) automaticUpgradeButton.interactable = false;
+        if (automaticUpgradePanel != null)
+        {
+            foreach (var btn in automaticUpgradeLevelButtons)
+                btn.interactable = false;
+        }
 
         float duration = 2.0f;
         float timer = 0f;
@@ -381,8 +385,7 @@ public class UpgradeWeaponWindow : BaseUI
             automaticUpgradeButton.interactable = true;
     }
 
-
-    // ===== 자동강화 =======
+    // ===== 자동강화(연속 n회) =======
     private void ShowAutomaticUpgradePanel()
     {
         if (selectedWeapon == null || selectedWeapon.Data == null) return;
@@ -396,28 +399,39 @@ public class UpgradeWeaponWindow : BaseUI
 
     private void RefreshAutomaticUpgradeButtons()
     {
-        if (automaticUpgradeLevelButtons == null || automaticUpgradeLevelButtons.Length != autoUpgradeTargetLevels.Length) return;
+        if (automaticUpgradeLevelButtons == null || automaticUpgradeLevelButtons.Length != autoUpgradeRepeatCounts.Length) return;
         int maxLevel = selectedWeapon?.Data?.UpgradeInfo.MaxEnhanceLevel ?? 0;
-        for (int i = 0; i < autoUpgradeTargetLevels.Length; i++)
+        int curLevel = selectedWeapon?.CurrentEnhanceLevel ?? 0;
+        int remain = maxLevel - curLevel;
+        bool isMaxEnhance = curLevel >= maxLevel;
+        for (int i = 0; i < autoUpgradeRepeatCounts.Length; i++)
         {
-            bool valid = autoUpgradeTargetLevels[i] <= maxLevel;
+            // n회 연속 강화는 남은 강화횟수 내에서만 활성화
+            bool valid = !isMaxEnhance && autoUpgradeRepeatCounts[i] <= remain;
             automaticUpgradeLevelButtons[i].interactable = valid;
             TMP_Text btnText = automaticUpgradeLevelButtons[i].GetComponentInChildren<TMP_Text>();
             if (btnText != null)
                 btnText.color = valid ? Color.white : Color.gray;
         }
+        if (automaticUpgradePanel != null)
+            automaticUpgradePanel.SetActive(!isMaxEnhance);
     }
 
-    private void StartAutomaticUpgrade(int targetLevel)
+    private void StartAutomaticUpgradeRepeat(int repeatCount)
     {
         if (selectedWeapon == null || selectedWeapon.Data == null) return;
-        if (targetLevel > selectedWeapon.Data.UpgradeInfo.MaxEnhanceLevel) return;
+
+        int curLevel = selectedWeapon.CurrentEnhanceLevel;
+        int maxLevel = selectedWeapon.Data.UpgradeInfo.MaxEnhanceLevel;
+        int remain = maxLevel - curLevel;
+        if (repeatCount > remain)
+            repeatCount = remain;
 
         if (autoUpgradeCoroutine != null) StopCoroutine(autoUpgradeCoroutine);
-        autoUpgradeCoroutine = StartCoroutine(AutoUpgradeRoutine(targetLevel));
+        autoUpgradeCoroutine = StartCoroutine(AutoUpgradeRepeatRoutine(repeatCount));
     }
 
-    private IEnumerator AutoUpgradeRoutine(int targetLevel)
+    private IEnumerator AutoUpgradeRepeatRoutine(int repeatCount)
     {
         if (upgradeButton != null) upgradeButton.interactable = false;
         if (advancedUpgradeButton != null) advancedUpgradeButton.interactable = false;
@@ -426,10 +440,14 @@ public class UpgradeWeaponWindow : BaseUI
             foreach (var btn in automaticUpgradeLevelButtons)
                 btn.interactable = false;
 
-        while (selectedWeapon != null &&
-               selectedWeapon.Data != null &&
-               selectedWeapon.CurrentEnhanceLevel < targetLevel &&
-               selectedWeapon.CanEnhance)
+        int successCount = 0;
+        while (
+            selectedWeapon != null &&
+            selectedWeapon.Data != null &&
+            selectedWeapon.CurrentEnhanceLevel < selectedWeapon.Data.UpgradeInfo.MaxEnhanceLevel &&
+            selectedWeapon.CanEnhance &&
+            successCount < repeatCount
+        )
         {
             int goldCost = CalcEnhanceGoldCost(selectedWeapon);
             if (!forgeManager.UseGold(goldCost))
@@ -443,8 +461,14 @@ public class UpgradeWeaponWindow : BaseUI
                 break;
             }
 
-            yield return UpgradeRoutine(false);
+            // 기존 UpgradeRoutine이 코루틴이므로 결과 캐치 필요, 아래처럼 리팩토링
+            bool? wasSuccess = null;
+            yield return StartCoroutine(UpgradeRoutineForAuto(false, (succ) => wasSuccess = succ));
             yield return new WaitForSeconds(0.15f);
+
+            // *** 성공했을 때만 카운트 업 ***
+            if (wasSuccess == true)
+                successCount++;
         }
 
         if (upgradeButton != null) upgradeButton.interactable = true;
@@ -454,6 +478,62 @@ public class UpgradeWeaponWindow : BaseUI
         HideAutomaticUpgradePanel();
         autoUpgradeCoroutine = null;
     }
+
+    private IEnumerator UpgradeRoutineForAuto(bool isAdvanced, System.Action<bool> onResult)
+    {
+        upgradeButton.interactable = false;
+        if (advancedUpgradeButton != null) advancedUpgradeButton.interactable = false;
+        if (automaticUpgradeButton != null) automaticUpgradeButton.interactable = false;
+        if (automaticUpgradePanel != null)
+        {
+            foreach (var btn in automaticUpgradeLevelButtons)
+                btn.interactable = false;
+        }
+
+        float duration = 2.0f;
+        float timer = 0f;
+        while (timer < duration)
+        {
+            timer += Time.deltaTime;
+            float t = Mathf.Clamp01(timer / duration);
+            progressBar.fillAmount = Mathf.SmoothStep(0f, 1f, t);
+            yield return null;
+        }
+
+        int successRate = isAdvanced ? CalcAdvancedEnhanceSuccessRate(selectedWeapon) : CalcEnhanceSuccessRate(selectedWeapon);
+        bool isSuccess = UnityEngine.Random.Range(0, 100) < successRate;
+
+        if (isSuccess)
+        {
+            progressBar.fillAmount = 1f;
+            selectedWeapon.EnhanceItem();
+            SoundManager.Instance.Play("Successound");
+        }
+        else
+        {
+            float failTime = 0.5f;
+            float failTimer = 0f;
+            float start = progressBar.fillAmount;
+            while (failTimer < failTime)
+            {
+                failTimer += Time.deltaTime;
+                float t = Mathf.Clamp01(failTimer / failTime);
+                progressBar.fillAmount = Mathf.Lerp(start, 0, t);
+                yield return null;
+            }
+            SoundManager.Instance.Play("FailSound");
+        }
+
+        RefreshUpgradePanel();
+        UpdateEnhanceButtonState();
+
+        if (automaticUpgradeButton != null)
+            automaticUpgradeButton.interactable = true;
+
+        // 결과 콜백
+        onResult?.Invoke(isSuccess);
+    }
+
 
     // =========== 젬 시스템 ===========
     private void OpenGemWeaponPopup()
