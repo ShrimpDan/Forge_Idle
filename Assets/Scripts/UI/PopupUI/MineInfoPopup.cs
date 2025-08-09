@@ -21,8 +21,27 @@ public class MineInfoPopup : MonoBehaviour
 
     private CanvasGroup canvasGroup;
 
-    // 콜백 등록용
     [NonSerialized] public Action onPopupClosed;
+
+    private static readonly Dictionary<string, string> MineNameMap = new()
+    {
+        ["mine_copperbronze"] = "구리/청동 광산",
+        ["mine_ironsilver"] = "철/은 광산",
+        ["mine_goldmithril"] = "금/미스릴 광산",
+        ["mine_gem"] = "보석 광산",
+    };
+
+    private static readonly Dictionary<string, string> WordMap = new()
+    {
+        ["mine"] = "광산",
+        ["copper"] = "구리",
+        ["bronze"] = "청동",
+        ["iron"] = "철",
+        ["silver"] = "은",
+        ["gold"] = "금",
+        ["mithril"] = "미스릴",
+        ["gem"] = "보석",
+    };
 
     private void Awake()
     {
@@ -32,7 +51,6 @@ public class MineInfoPopup : MonoBehaviour
         canvasGroup = GetComponent<CanvasGroup>();
         if (canvasGroup == null)
             canvasGroup = gameObject.AddComponent<CanvasGroup>();
-
     }
 
     public void Show()
@@ -54,7 +72,6 @@ public class MineInfoPopup : MonoBehaviour
 
     public void Close()
     {
-        // 애니메이션 후 파괴, onPopupClosed 콜백 호출
         transform.DOScale(0.8f, 0.2f).SetEase(Ease.InBack);
         if (canvasGroup != null)
         {
@@ -96,7 +113,8 @@ public class MineInfoPopup : MonoBehaviour
             return;
         }
 
-        var groupsField = sceneMgr.GetType().GetField("mineGroups", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+        var groupsField = sceneMgr.GetType().GetField("mineGroups",
+            System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
         var mineGroups = groupsField?.GetValue(sceneMgr) as List<MineGroup>;
         if (mineGroups == null || mineGroups.Count == 0)
         {
@@ -128,12 +146,29 @@ public class MineInfoPopup : MonoBehaviour
                 }
             }
 
-            string mineName = !string.IsNullOrEmpty(group.mineKey) ? group.mineKey : $"마인{i + 1}";
+            string mineName = LocalizeMineName(group.mineKey, i);
             miningSb.AppendLine($"{mineName}: +{(miningAmountSum * 100f):0.#}%");
             resourceSb.AppendLine($"{mineName}: +{(maxResourceSum * 100f):0.#}%");
         }
 
         miningSpeedText.text = miningSb.ToString();
         maxResourceText.text = resourceSb.ToString();
+    }
+
+    private string LocalizeMineName(string key, int index)
+    {
+        if (string.IsNullOrEmpty(key)) return $"광산 {index + 1}";
+        if (MineNameMap.TryGetValue(key, out var ko)) return ko;
+
+        var parts = key.Split('_');
+        var tokens = new List<string>();
+        foreach (var p in parts)
+        {
+            if (WordMap.TryGetValue(p, out var t)) tokens.Add(t);
+            else tokens.Add(p);
+        }
+
+        var joined = string.Join("/", tokens.FindAll(t => t != "광산"));
+        return string.IsNullOrEmpty(joined) ? $"광산 {index + 1}" : $"{joined} 광산";
     }
 }
