@@ -35,15 +35,7 @@ public class NuisanceCustomer : Customer
             InteractIcon.SetActive(true);
         }
 
-        if (catchEffectPrefab != null)
-        { 
-           
-        }
-        else
-        {
-            Debug.LogWarning("CatchEffectPrefab이 설정되지 않았습니다.", this);
-
-        }
+       
         //  StartCoroutine(NuisanceFlow());
 
     }
@@ -204,7 +196,7 @@ public class NuisanceCustomer : Customer
         Vector3 spawnPos = transform.position;
         GameObject effectObj = customerManager.PoolManager.Get(catchEffectPrefab.gameObject, spawnPos, Quaternion.identity);
 
-        // FlapperEffect 컴포넌트 얻기
+       
         FlapperEffect effect = effectObj.GetComponent<FlapperEffect>();
 
         effect.SourcePrefab = catchEffectPrefab.gameObject;
@@ -215,8 +207,7 @@ public class NuisanceCustomer : Customer
 
         });
 
-        //PoolManager.ReturnComponent(effectObj); // 2초 후에 이펙트 오브젝트 제거
-
+        
 
 
 

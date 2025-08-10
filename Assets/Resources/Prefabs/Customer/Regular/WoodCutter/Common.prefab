@@ -592,6 +592,10 @@ MonoBehaviour:
     customerInfo: 
     iconPath: 
     rarity: 0
+  HeartEffectPrefab: {fileID: 4618096987536125161, guid: 5cc411c178d3443ee928913f6207659e, type: 3}
+  effectLife: 1
+  effectOffsetY: 0.5
+  clickSfxName: 
 --- !u!50 &842627916342657262
 Rigidbody2D:
   serializedVersion: 4
@@ -791,8 +795,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -1654695933
+  m_SortingLayer: 1
   m_SortingOrder: 55
   m_Sprite: {fileID: 4723107735738678597, guid: c4591dc7f6a9bf14e8919d6bf9bbf3d9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
