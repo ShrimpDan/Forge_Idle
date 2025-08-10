@@ -167,13 +167,6 @@ public class NuisanceCustomer : Customer
         CustomerExit();
     }
 
-    private void Disappear()
-    {
-        //점점 사라지는 fade효과 연출
-        
-
-    }
-
 
     //private 
 
@@ -219,9 +212,10 @@ public class NuisanceCustomer : Customer
         effect.Init(spawnPos, () =>
         {
             customerManager.PoolManager.ReturnComponent(effect);
+
         });
 
-        Destroy(effectObj, 1f); // 2초 후에 이펙트 오브젝트 제거
+        //PoolManager.ReturnComponent(effectObj); // 2초 후에 이펙트 오브젝트 제거
 
 
 

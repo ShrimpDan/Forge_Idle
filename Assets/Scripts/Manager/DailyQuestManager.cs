@@ -188,7 +188,7 @@ public class DailyQuestManager : MonoBehaviour
         if (curQuestCount >= maxQuestClearCount)
         {
             isAllClear = true;
-            GameManager.Instance.ForgeManager.AddDia(100);
+            gameManager.ForgeManager.AddDia(100);
         }
 
     }

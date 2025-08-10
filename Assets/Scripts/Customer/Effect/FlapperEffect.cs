@@ -6,6 +6,7 @@ using UnityEngine;
 public class FlapperEffect : MonoBehaviour , IPoolable
 {
     private Action onComplete;
+    
 
     private GameObject sourcePrefab;
 
@@ -29,4 +30,6 @@ public class FlapperEffect : MonoBehaviour , IPoolable
         yield return WaitForSecondsCache.Wait(1f);
         onComplete?.Invoke();
     }
+
+
 }

@@ -10,6 +10,15 @@ public class RegualrCustomer : Customer
     [SerializeField] private float WaitTime = 4.0f;
     [SerializeField] private RegularCustomerData CollectData;
 
+    #region 사운드 및 효과
+
+    [SerializeField] private GameObject clickEffectPrfabs;
+    [SerializeField] private float effectLife = 1.0f;
+    [SerializeField] private float effectOffsetY = 0.5f;
+    [SerializeField] private string clickSfxName; //아직 사운드 없음 
+
+    #endregion
+
     private bool isDiscovered = false;
     private bool isInteracting = false;
 
@@ -74,9 +83,15 @@ public class RegualrCustomer : Customer
 
         isDiscovered = true;
         if (InteractObject != null)
+        { 
             InteractObject.SetActive(false);
+            StartCoroutine(ShowInteractBubbleForSeconds(2f));
+        }
+
+
 
         var gm = GameManager.Instance;
+       
         if (gm != null)
         {
             if (gm.CollectionManager != null)
@@ -89,6 +104,12 @@ public class RegualrCustomer : Customer
                 gm.DailyQuestManager.ProgressQuest("InteractMissition", 1);
             }
         }
+    }
+    private IEnumerator ShowInteractBubbleForSeconds(float duration)
+    {
+        InteractObject.SetActive(true);
+        yield return WaitForSecondsCache.Wait(duration);
+        InteractObject.SetActive(false);
     }
 
     public override void Interact()
@@ -110,7 +131,7 @@ public class RegualrCustomer : Customer
 
 
         orderBubble.SetActive(false);
-        speech.Show("Happy");
+        speech.Show("Love");
 
         Interact();
         yield return WaitForSecondsCache.Wait(1f); 
