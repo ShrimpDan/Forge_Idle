@@ -23,7 +23,7 @@ public class HeartEffect : MonoBehaviour, IPoolable
 
     void Update()
     {
-        this.transform.position += Vector3.up * Time.deltaTime * 1.0f;
+        this.transform.position += Vector3.up * Time.deltaTime * 4.0f;
 
     }
 
