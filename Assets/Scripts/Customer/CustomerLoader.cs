@@ -34,8 +34,7 @@ public class CustomerLoader
         }
 
         //var customer = Object.Instantiate(prefab, spawnPoint.position, Quaternion.identity); ->오브젝트 풀링함
-        GameObject customerobj = customerManager
-            .PoolManager.Get(prefab.gameObject, spawnPoint.position, Quaternion.identity);
+        GameObject customerobj = customerManager.PoolManager.Get(prefab.gameObject, spawnPoint.position, Quaternion.identity);
         var customer = customerobj.GetComponent<Customer>();
         customer.SetSourcePrefab(prefab.gameObject);
 
