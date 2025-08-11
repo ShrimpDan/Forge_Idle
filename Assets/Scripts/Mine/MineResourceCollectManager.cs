@@ -270,7 +270,7 @@ public class MineResourceCollectManager : MonoBehaviour
             resourceDict[resKey] = 0f;
 
         DateTime now = DateTime.Now;
-        totalHours = (float)(now - group.lastCollectTime).TotalHours;
+        totalHours =  Mathf.Min((float)(now - group.lastCollectTime).TotalHours, 12);
         if (totalHours <= 0) return resourceDict;
 
         // --- SceneManager 가져오기 (버프 연동) ---
