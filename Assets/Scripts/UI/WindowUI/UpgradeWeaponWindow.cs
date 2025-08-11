@@ -381,8 +381,7 @@ public class UpgradeWeaponWindow : BaseUI
         RefreshUpgradePanel();
         UpdateEnhanceButtonState();
 
-        if (automaticUpgradeButton != null)
-            automaticUpgradeButton.interactable = true;
+        ApplyMaxEnhanceLock();
     }
 
     // ===== 자동강화(연속 n회) =======
@@ -527,10 +526,8 @@ public class UpgradeWeaponWindow : BaseUI
         RefreshUpgradePanel();
         UpdateEnhanceButtonState();
 
-        if (automaticUpgradeButton != null)
-            automaticUpgradeButton.interactable = true;
+        ApplyMaxEnhanceLock();
 
-        // 결과 콜백
         onResult?.Invoke(isSuccess);
     }
 
@@ -673,5 +670,19 @@ public class UpgradeWeaponWindow : BaseUI
         selectedGemWeapon.GemSockets = bak;
         gemBeforeText.text = $"{before:F0}";
         gemAfterText.text = $"{after:F0}";
+    }
+
+    private void ApplyMaxEnhanceLock()
+    {
+        bool isMax = selectedWeapon != null
+            && selectedWeapon.Data != null
+            && selectedWeapon.CurrentEnhanceLevel >= selectedWeapon.Data.UpgradeInfo.MaxEnhanceLevel;
+
+        if (upgradeButton != null) upgradeButton.interactable = !isMax;
+        if (advancedUpgradeButton != null) advancedUpgradeButton.interactable = !isMax;
+        if (automaticUpgradeButton != null) automaticUpgradeButton.interactable = !isMax;
+        if (automaticUpgradePanel != null) automaticUpgradePanel.SetActive(!isMax);
+
+        RefreshAutomaticUpgradeButtons();
     }
 }
