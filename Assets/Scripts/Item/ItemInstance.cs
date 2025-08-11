@@ -25,7 +25,7 @@ public class ItemInstance
         CurrentEnhanceLevel = 0;
         IsEquipped = false;
         CraftingData = craftingData;
-        GemSockets = new List<ItemInstance>() { null, null, null };
+        GemSockets = new List<ItemInstance>() { null, null, null, null };
     }
 
    
