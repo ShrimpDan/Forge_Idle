@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class RegualrCustomer : Customer
@@ -12,7 +13,7 @@ public class RegualrCustomer : Customer
 
     #region 사운드 및 효과
 
-    [SerializeField] private GameObject clickEffectPrfabs;
+    [SerializeField] private HeartEffect HeartEffectPrefab;
     [SerializeField] private float effectLife = 1.0f;
     [SerializeField] private float effectOffsetY = 0.5f;
     [SerializeField] private string clickSfxName; //아직 사운드 없음 
@@ -83,15 +84,15 @@ public class RegualrCustomer : Customer
 
         isDiscovered = true;
         if (InteractObject != null)
-        { 
+        {
             InteractObject.SetActive(false);
             StartCoroutine(ShowInteractBubbleForSeconds(2f));
         }
 
-
+        ShowEffect(); //이펙트 보여주기
 
         var gm = GameManager.Instance;
-       
+
         if (gm != null)
         {
             if (gm.CollectionManager != null)
@@ -134,11 +135,11 @@ public class RegualrCustomer : Customer
         speech.Show("Love");
 
         Interact();
-        yield return WaitForSecondsCache.Wait(1f); 
+        yield return WaitForSecondsCache.Wait(1f);
         speech.Hide();
 
         if (buyPoint != null)
-        { 
+        {
             buyPoint.CustomerOut();
         }
 
@@ -151,5 +152,38 @@ public class RegualrCustomer : Customer
         if (moveWayPoint != null && moveWayPoint.Length > 1)
             yield return MoveingWayPoint(moveWayPoint[1].position);
         CustomerExit();
+    }
+
+    private void ShowEffect()
+    {
+        Vector3 spawnPos = transform.position;
+        spawnPos.y += effectOffsetY;
+
+        GameObject effectobj = customerManager.PoolManager.Get(HeartEffectPrefab.gameObject,spawnPos, Quaternion.identity); 
+
+          if (effectobj == null)
+    {
+        Debug.LogError("[ShowEffect] effectobj is NULL");
+        return;
+    }
+
+    Debug.Log($"[ShowEffect] Spawned Heart at {spawnPos} (name={effectobj.name})");
+
+    
+         HeartEffectPrefab = effectobj.GetComponent<HeartEffect>();
+        if (HeartEffectPrefab != null)
+        {
+            HeartEffectPrefab.SourcePrefab = HeartEffectPrefab.gameObject;
+            HeartEffectPrefab.Init(spawnPos, () =>
+            {
+                customerManager.PoolManager.ReturnComponent(HeartEffectPrefab);
+
+            });
+
+        }
+        
+
+        
+
     }
 }
