@@ -134,7 +134,7 @@ public class RegualrCustomer : Customer
 
 
         orderBubble.SetActive(false);
-        speech.Show("Love");
+     
 
         Interact();
         yield return WaitForSecondsCache.Wait(1f);
