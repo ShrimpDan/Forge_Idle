@@ -103,6 +103,39 @@ public class GameManager : MonoSingleton<GameManager>
         WageCountdownUI?.ResetTimer();
     }
 
+    /// <summary>
+    /// 튜토리얼 보상 일괄 지급
+    /// </summary>
+    [ContextMenu("튜토리얼 보상 일괄 지급")]
+    public void AddTutorialFullReward()
+    {
+        if (ForgeManager == null)
+        {
+            Debug.LogWarning("[GameManager] Forge 인스턴스를 찾을 수 없습니다! (튜토리얼 보상 지급 실패)");
+            return;
+        }
+        if (Inventory == null || DataManager == null)
+        {
+            Debug.LogWarning("[GameManager] Inventory/DataManager 가 준비되지 않았습니다! (튜토리얼 보상 지급 실패)");
+            return;
+        }
+
+        var bronze = DataManager.ItemLoader.GetItemByKey("resource_bronze");
+        var copperIngot = DataManager.ItemLoader.GetItemByKey("ingot_copper");
+        if (bronze != null) Inventory.AddItem(bronze, 1);
+        if (copperIngot != null) Inventory.AddItem(copperIngot, 2);
+
+        int totalGold = 1000 + 10000 + 10000;
+        int totalDia = 100 + 500 + 5000;
+
+        ForgeManager.AddGold(totalGold);
+        ForgeManager.AddDia(totalDia);
+
+        Debug.Log($"<color=lime>[GameManager] 튜토리얼 일괄 보상 지급 완료! " +
+                  $"골드 {totalGold:N0}, 다이아 {totalDia:N0}, " +
+                  $"resource_bronze ×1, ingot_copper ×2</color>");
+    }
+
 
     [ContextMenu("Get Random Item")]
     public void GetRandomItem()
