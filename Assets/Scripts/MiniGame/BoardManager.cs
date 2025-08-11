@@ -187,7 +187,7 @@ public class BoardManager : MonoBehaviour
         Debug.Log("들어감");
         if (data.gemType == GemType.Gem)
         {
-            GameManager.Instance.Inventory.AddItem(GameManager.Instance.DataManager.ItemLoader.GetItemByKey(data.Name));
+            GameManager.Instance.Inventory.AddItem(GameManager.Instance.DataManager.ItemLoader.GetItemByKey(data.Name),10);
         }
         else
         {
