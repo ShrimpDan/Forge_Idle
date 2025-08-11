@@ -17,10 +17,6 @@ public class AssistantTab : BaseTab
     [Header("Dismiss UI")]
     [SerializeField] private Button dismissButton;
 
-    [Header("Wage UI")]
-    [SerializeField] private GameObject wagePopup;
-    [SerializeField] private Button wageCloseButton;
-
     [Header("Tab Panels")]
     [SerializeField] private GameObject[] tabPanels;
 
@@ -58,7 +54,6 @@ public class AssistantTab : BaseTab
             });
         }
 
-        wageCloseButton.onClick.AddListener(OnClickCloseWagePopup);
         dismissButton.onClick.AddListener(OnClickDismissButton);
 
         SwitchTab(0);
@@ -75,7 +70,6 @@ public class AssistantTab : BaseTab
         craftAssi.Init(uIManager);
         sellingAssi.Init(uIManager);
 
-        wagePopup.SetActive(false);
         DismissManager.Instance?.SetDismissMode(false);
     }
 
@@ -249,12 +243,6 @@ public class AssistantTab : BaseTab
 
             return aTier.CompareTo(bTier);
         });
-    }
-
-    private void OnClickCloseWagePopup()
-    {
-        SoundManager.Instance?.Play("ClickSound");
-        wagePopup.SetActive(false);
     }
 
     private void OnClickDismissButton()
