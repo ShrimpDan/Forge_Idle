@@ -82,6 +82,8 @@ public class RegualrCustomer : Customer
         Collider2D hit = Physics2D.OverlapPoint(worldPos);
         if (hit == null || hit.transform != transform) return;
 
+        ShowEffect(); //이펙트 보여주기
+        
         isDiscovered = true;
         if (InteractObject != null)
         {
@@ -89,7 +91,6 @@ public class RegualrCustomer : Customer
             StartCoroutine(ShowInteractBubbleForSeconds(2f));
         }
 
-        ShowEffect(); //이펙트 보여주기
 
         var gm = GameManager.Instance;
 
@@ -105,6 +106,7 @@ public class RegualrCustomer : Customer
                 gm.DailyQuestManager.ProgressQuest("InteractMissition", 1);
             }
         }
+
     }
     private IEnumerator ShowInteractBubbleForSeconds(float duration)
     {
@@ -159,31 +161,33 @@ public class RegualrCustomer : Customer
         Vector3 spawnPos = transform.position;
         spawnPos.y += effectOffsetY;
 
-        GameObject effectobj = customerManager.PoolManager.Get(HeartEffectPrefab.gameObject,spawnPos, Quaternion.identity); 
+        GameObject effectobj = customerManager.PoolManager.Get(
+            HeartEffectPrefab.gameObject, // ← 원본 프리팹으로 키 유지
+            spawnPos,
+            Quaternion.identity
+        );
 
-          if (effectobj == null)
-    {
-        Debug.LogError("[ShowEffect] effectobj is NULL");
-        return;
-    }
-
-    Debug.Log($"[ShowEffect] Spawned Heart at {spawnPos} (name={effectobj.name})");
-
-    
-         HeartEffectPrefab = effectobj.GetComponent<HeartEffect>();
-        if (HeartEffectPrefab != null)
+        if (effectobj == null)
         {
-            HeartEffectPrefab.SourcePrefab = HeartEffectPrefab.gameObject;
-            HeartEffectPrefab.Init(spawnPos, () =>
-            {
-                customerManager.PoolManager.ReturnComponent(HeartEffectPrefab);
-
-            });
-
+            Debug.LogError("[ShowEffect] effectobj is NULL");
+            return;
         }
-        
+
+        var effect = effectobj.GetComponent<HeartEffect>();
+        if (effect == null)
+        {
+            Debug.LogError("[ShowEffect] HeartEffect component missing on pooled instance!");
+            return;
+        }
 
         
+        effect.SourcePrefab = HeartEffectPrefab.gameObject;
+
+        effect.Init(spawnPos, () =>
+        {
+            customerManager.PoolManager.ReturnComponent(effect);
+        });
+
 
     }
 }

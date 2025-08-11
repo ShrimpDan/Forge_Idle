@@ -87,6 +87,7 @@ public class PoolManager : MonoBehaviour
         else
         {
             obj = Instantiate(prefabs, position, rotation);
+            obj.SetActive(true);
      
         }
         return obj;

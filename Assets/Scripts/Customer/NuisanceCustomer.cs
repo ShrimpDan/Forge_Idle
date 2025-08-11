@@ -122,7 +122,7 @@ public class NuisanceCustomer : Customer
         }
         isClicked = true;
 
-        SoundManager.Instance.Play("SFX_GuestKickout01");
+        SoundManager.Instance.Play("SFX_guest_kickout_03");
 
         if (InteractIcon != null)
         {
