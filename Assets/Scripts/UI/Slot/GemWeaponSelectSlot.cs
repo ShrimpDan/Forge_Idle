@@ -19,7 +19,6 @@ public class GemWeaponSelectSlot : MonoBehaviour
         weaponData = weapon;
         onSelect = onSelectCallback;
 
-        // 무기 아이콘 및 이름
         if (weapon.Data != null)
         {
             if (icon != null)
@@ -33,10 +32,8 @@ public class GemWeaponSelectSlot : MonoBehaviour
             }
         }
 
-        // 강화 수치 표시
         UpdateEnhanceText(weapon?.CurrentEnhanceLevel ?? 0);
 
-        // 젬 아이콘
         if (gemSlotIcons != null && weapon.GemSockets != null)
         {
             for (int i = 0; i < gemSlotIcons.Length; i++)
@@ -59,14 +56,12 @@ public class GemWeaponSelectSlot : MonoBehaviour
             }
         }
 
-        // 버튼 이벤트 연결
         var btn = GetComponent<Button>();
         if (btn == null) btn = gameObject.AddComponent<Button>();
         btn.onClick.RemoveAllListeners();
         btn.onClick.AddListener(() => onSelect?.Invoke(weaponData));
     }
 
-    // --- 강화수치(+N) 표시 및 색상 구간 처리 ---
     private void UpdateEnhanceText(int enhanceLevel)
     {
         if (enhanceText == null)
@@ -80,11 +75,11 @@ public class GemWeaponSelectSlot : MonoBehaviour
             if (enhanceLevel <= 5)
                 enhanceText.color = Color.green;
             else if (enhanceLevel <= 8)
-                enhanceText.color = new Color(0.28f, 0.53f, 1f); // 파랑
+                enhanceText.color = new Color(0.28f, 0.53f, 1f);
             else if (enhanceLevel <= 10)
-                enhanceText.color = new Color(0.8f, 0.35f, 1f); // 보라
+                enhanceText.color = new Color(0.8f, 0.35f, 1f);
             else if (enhanceLevel <= 13)
-                enhanceText.color = new Color(1f, 0.5f, 0f); // 주황
+                enhanceText.color = new Color(1f, 0.5f, 0f); 
             else
                 enhanceText.color = Color.red;
         }
