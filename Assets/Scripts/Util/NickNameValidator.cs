@@ -1,8 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using UnityEngine;
+using UnityEngine.Networking;
 
 public class NicknameValidator : MonoBehaviour
 {
@@ -12,7 +14,7 @@ public class NicknameValidator : MonoBehaviour
     {
         LoadBadWordsFile();
     }
-    
+
     private void LoadBadWordsFile()
     {
         string path = Path.Combine(Application.streamingAssetsPath, "BadWords.txt");
@@ -41,26 +43,34 @@ public class NicknameValidator : MonoBehaviour
             Debug.LogError("BadWords.txt 파일을 찾을 수 없습니다.");
         }
     }
-    
+
     private IEnumerator LoadFromAndroid(string path)
     {
-        using (WWW www = new WWW(path))
+        UnityWebRequest request = UnityWebRequest.Get(path);
+
+        yield return request.SendWebRequest();
+
+        try
         {
-            yield return www;
-
-            if (string.IsNullOrEmpty(www.error))
+            if (request.result != UnityWebRequest.Result.Success)
             {
-                string[] words = www.text.Split('\n');
-                foreach (string word in words)
-                {
-                    badWords.Add(word.Trim());
-                }
+                throw new Exception($"BadWords.txt 파일을 로드하는 데 실패했습니다. 에러: {request.error}");
             }
 
-            else
+            string[] words = request.downloadHandler.text.Split('\n');
+            foreach (string word in words)
             {
-                Debug.LogError("BadWords.txt 파일을 찾지 못했습니다.");
+                badWords.Add(word.Trim());
             }
+            Debug.Log("BadWords.txt 파일을 성공적으로 로드했습니다.");
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError(ex.Message);
+        }
+        finally
+        {
+            request.Dispose();
         }
     }
 
@@ -94,7 +104,7 @@ public class NicknameValidator : MonoBehaviour
             resultMessage = "부적절한 언어가 포함되어있습니다.";
             return false;
         }
-        
+
         resultMessage = "사용가능한 닉네임입니다.";
         return true;
     }

@@ -41,7 +41,6 @@ public class DailyQuestManager : MonoBehaviour
     [SerializeField] private int TestTime;
 
     private DateTime lastResetTime;
-    private bool isResetting = false;
 
     private const string lastDateKey= "LastQuestResetDate";
     private DateTime resetTime;

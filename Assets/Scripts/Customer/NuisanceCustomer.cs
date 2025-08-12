@@ -6,10 +6,9 @@ public class NuisanceCustomer : Customer
     [SerializeField] private float waitTime = 3f;
     [SerializeField] private int penaltyGold;
     [SerializeField] private GameObject InteractIcon;
-    [SerializeField] private float offsetY = 0.5f;
     [SerializeField] private FlapperEffect catchEffectPrefab;
 
-    
+
 
 
     [Header("ExitPoint")]
@@ -35,10 +34,9 @@ public class NuisanceCustomer : Customer
             InteractIcon.SetActive(true);
         }
 
-       
         //  StartCoroutine(NuisanceFlow());
-
     }
+    
     protected override void OnEnable()
     {
 
@@ -63,8 +61,6 @@ public class NuisanceCustomer : Customer
 
         yield return ExitFlow();
     }
-
-
 
     protected override void Update()
     {
@@ -97,8 +93,6 @@ public class NuisanceCustomer : Customer
                 
         }
 #endif 
-
-
     }
 
     private void CheckClick(Vector2 screenPos)
@@ -135,7 +129,6 @@ public class NuisanceCustomer : Customer
         //여기에 매서드 추가
         StopAllCoroutines();
         StartCoroutine(ExitFlow());
-
     }
 
     private IEnumerator ExitFlow()
@@ -148,7 +141,9 @@ public class NuisanceCustomer : Customer
         }
         else
         {
+#if UNITY_EDITOR
             Debug.LogError($"[NuisanceCustomer] 퇴장 경로(moveWayPoint)가 설정되지 않았습니다!", this.gameObject);
+#endif
         }
 
         if (!isClicked)
@@ -169,8 +164,8 @@ public class NuisanceCustomer : Customer
         {
             return null;
         }
-        return points[Random.Range(0, points.Count)];
 
+        return points[Random.Range(0, points.Count)];
     }
 
     private void PenaltyGold()
@@ -190,13 +185,11 @@ public class NuisanceCustomer : Customer
 
         if (customerManager == null)
         {
-            Debug.LogError("[NuisanceCustomer] customerManager가 null입니다!", this);
             return;
         }
         Vector3 spawnPos = transform.position;
         GameObject effectObj = customerManager.PoolManager.Get(catchEffectPrefab.gameObject, spawnPos, Quaternion.identity);
 
-       
         FlapperEffect effect = effectObj.GetComponent<FlapperEffect>();
 
         effect.SourcePrefab = catchEffectPrefab.gameObject;
@@ -206,10 +199,5 @@ public class NuisanceCustomer : Customer
             customerManager.PoolManager.ReturnComponent(effect);
 
         });
-
-        
-
-
-
     }
 }

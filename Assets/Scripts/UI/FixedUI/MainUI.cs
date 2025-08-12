@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -29,7 +28,6 @@ public class MainUI : BaseUI
     [SerializeField] private TextMeshProUGUI goldText;
     [SerializeField] private TextMeshProUGUI diaText;
 
-    public static event Action<string> onUIClose;
     public static event Action<string> onTabClick;
     public override UIType UIType => UIType.Fixed;
 

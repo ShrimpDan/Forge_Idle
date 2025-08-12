@@ -1,10 +1,10 @@
 ﻿using System.Collections;
-using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class WageCountdownUI : MonoBehaviour
+public class WageCountdown : MonoBehaviour
 {
-    [SerializeField] private TMP_Text countdownText;
+    [SerializeField] private Image wageFill;
     [SerializeField] private float intervalSeconds = 60f;
 
     private float timer;
@@ -31,22 +31,22 @@ public class WageCountdownUI : MonoBehaviour
 
             while (timer > 0f)
             {
-                UpdateText(Mathf.CeilToInt(timer));
+                UpdateBar(Mathf.CeilToInt(timer));
                 yield return new WaitForSeconds(1f);
                 timer -= 1f;
             }
 
-            UpdateText(0);
+            UpdateBar(0);
 
             GameManager.Instance?.DebugWageTick();
             yield return null;
         }
     }
 
-    private void UpdateText(int seconds)
+    private void UpdateBar(int seconds)
     {
-        if (countdownText != null)
-            countdownText.text = $"시급 : {seconds}s";
+        wageFill.fillAmount = seconds / intervalSeconds;
+        wageFill.color = seconds <= 10f ? Color.red : Color.white;
     }
 
     public void ResetTimer()

@@ -34,8 +34,6 @@ public class HeldCandidateSaveHandler : ISaveHandler
 
         string json = JsonUtility.ToJson(data, true);
         File.WriteAllText(SavePath, json);
-
-        Debug.Log($"[HeldCandidateSaveHandler] 저장 완료: {SavePath}");
     }
 
     // 저장된 보류 제자 목록 불러오기
@@ -43,7 +41,6 @@ public class HeldCandidateSaveHandler : ISaveHandler
     {
         if (!File.Exists(SavePath))
         {
-            Debug.Log("[HeldCandidateSaveHandler] 저장 파일이 없습니다.");
             return;
         }
 
@@ -56,7 +53,6 @@ public class HeldCandidateSaveHandler : ISaveHandler
         {
             var runtimeList = data.heldList.ConvertAll(AssistantSerializationUtil.ToRuntime);
             gameManager.HeldCandidates.AddRange(runtimeList);
-            Debug.Log($"[HeldCandidateSaveHandler] 불러오기 완료: {runtimeList.Count}개 로드됨");
         }
         else
         {
@@ -70,7 +66,6 @@ public class HeldCandidateSaveHandler : ISaveHandler
         if (File.Exists(SavePath))
         {
             File.Delete(SavePath);
-            Debug.Log("[HeldCandidateSaveHandler] 저장 파일 삭제 완료");
         }
     }
 }
