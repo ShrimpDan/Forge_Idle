@@ -1,4 +1,3 @@
-using UnityEngine;
 using System.Collections.Generic;
 
 public class GameSaveManager
@@ -17,8 +16,6 @@ public class GameSaveManager
         {
             handler.Save();
         }
-
-        Debug.Log("[저장 시스템] 게임 저장 완료.");
     }
 
     public void LoadAll()
@@ -27,8 +24,6 @@ public class GameSaveManager
         {
             handler.Load();
         }
-
-        Debug.Log("[저장 시스템] 게임 불러오기 완료.");
     }
 
     public void DeleteAll()

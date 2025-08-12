@@ -13,8 +13,8 @@ public class MineBlock : MonoBehaviour
     {
         _mineIndex = mineIndex;
         _manager = manager;
-        goldText.text = $"{currentGold} / {needGold}";
-        unlockBtn.interactable = (currentGold >= needGold);
+        goldText.text = $"{UIManager.FormatNumber(currentGold)} / {UIManager.FormatNumber(needGold)}";
+        unlockBtn.interactable = currentGold >= needGold;
 
         unlockBtn.onClick.RemoveAllListeners();
         unlockBtn.onClick.AddListener(OnClickUnlock);
