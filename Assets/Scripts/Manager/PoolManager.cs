@@ -43,12 +43,10 @@ public class PoolManager : MonoBehaviour
     {
         if (prefab == null)
         {
-            Debug.LogError("[PoolManager] Prefab is null. Cannot create a pool.");
             return;
         }
         if (poolDictionary.ContainsKey(prefab))
         {
-            Debug.LogWarning($"[PoolManager] Pool for {prefab.name} already exists.");
             return;
         }
 
@@ -60,8 +58,6 @@ public class PoolManager : MonoBehaviour
             objectQueue.Enqueue(obj);
         }
         poolDictionary.Add(prefab, objectQueue);
-        Debug.Log($"[PoolManager] Created pool for {prefab.name} with {initialSize} objects.");
-
     }
 
 

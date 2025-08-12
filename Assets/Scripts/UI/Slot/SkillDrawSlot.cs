@@ -80,12 +80,4 @@ public class SkillDrawSlot : MonoBehaviour
             skillName.gameObject.SetActive(true);
         });
     }
-
-    public void SkipAnimation()
-    {
-        if (animationSequence != null)
-        {
-            animationSequence.Complete();
-        }
-    }
 }

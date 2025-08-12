@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class WageProcessor
@@ -34,7 +33,6 @@ public class WageProcessor
             if (gm.ForgeManager.UseGold(assi.Wage))
             {
                 totalPaid += assi.Wage;
-                Debug.Log($"[시급] {assi.Name}에게 {assi.Wage}G 지급 완료");
             }
             else
             {
@@ -79,7 +77,6 @@ public class WageProcessor
 
         if (totalPaid > 0)
         {
-            Debug.Log($"<color=yellow>[시급 처리 완료] 총 {totalPaid}G 지출</color>");
             GoldChangeEffectManager.Instance?.ShowGoldChange(-totalPaid);
         }
 
