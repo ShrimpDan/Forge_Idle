@@ -4,19 +4,15 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.U2D.Animation;
 
-
-
 public enum CustomerState
-{ 
-    Idle =0,
-    MovingToBuyZone =1,
-    InQueue =2,
-    WaitintTurn =3,
-    Purchasing =4,
-    Exiting =5
+{
+    Idle = 0,
+    MovingToBuyZone = 1,
+    InQueue = 2,
+    WaitintTurn = 3,
+    Purchasing = 4,
+    Exiting = 5
 }
-
-
 
 public abstract class Customer : MonoBehaviour
 {
@@ -43,7 +39,7 @@ public abstract class Customer : MonoBehaviour
     [SerializeField] protected Transform[] moveWayPoint;
     [SerializeField] protected int gold;
 
-    [SerializeField] private float waitAngryTime = 10f;
+    [SerializeField] private float waitAngryTime = 20f;
     protected CustomerState state;
 
     //애니메이션
@@ -140,14 +136,11 @@ public abstract class Customer : MonoBehaviour
 
     protected virtual IEnumerator CustomerFlow()
     {
-
         yield return MoveRandomPlace();
         yield return MoveToBuyZone();
         yield return JoinQueue();
         yield return WaitMyTurn();
         yield return PerformPurChase();
-
-
     }
 
     protected IEnumerator MoveRandomPlace()
@@ -162,13 +155,7 @@ public abstract class Customer : MonoBehaviour
         yield return MoveingWayPoint(pos);
         float waitTime = Random.Range(stayMinTime, stayMaxTime);
         yield return WaitForSecondsCache.Wait(waitTime);
-
-
     }
-
-
-
-
 
     protected IEnumerator MoveToBuyZone()
     {
@@ -189,12 +176,11 @@ public abstract class Customer : MonoBehaviour
 
         customerManager.CustomerEvent?.RaiseCustomerArrived(this); //이벤트 연결
         yield return null;
-
     }
 
     protected IEnumerator AngryTime()
     {
-        while (timer < 180)
+        while (timer < waitAngryTime)
         {
             timer += Time.deltaTime;
             yield return null;
@@ -219,9 +205,10 @@ public abstract class Customer : MonoBehaviour
             StopCoroutine(StopTime);
             StopTime = null;
         }
-        StopTime = StartCoroutine(AngryTime());
 
         yield return new WaitUntil(() => buyPoint.IsCustomFirst(this));
+        StopTime = StartCoroutine(AngryTime());
+
         yield return new WaitUntil(() => isCrafted);
         speech.Show("Idle");
     }
@@ -240,7 +227,7 @@ public abstract class Customer : MonoBehaviour
 
     }
 
-    protected IEnumerator MoveToExit()
+    protected virtual IEnumerator MoveToExit()
     {
         state = CustomerState.Exiting;
 
@@ -250,7 +237,9 @@ public abstract class Customer : MonoBehaviour
         }
         else
         {
+#if UNITY_EDITOR
             Debug.LogWarning($"[Customer] 퇴장 경로(moveWayPoint)가 제대로 설정되지 않았습니다. 오브젝트: {this.gameObject.name}", this.gameObject);
+#endif
         }
 
         CustomerExit();
@@ -277,7 +266,6 @@ public abstract class Customer : MonoBehaviour
         }
         rigid2D.velocity = Vector2.zero; // 안전
         IsMoving = false;
-        Debug.Log("IsMoving False");
     }
 
 
@@ -294,7 +282,6 @@ public abstract class Customer : MonoBehaviour
 
     protected virtual void CustomerExit() //큐에서 나가는 메서드
     {
-        Debug.Log("손님나감 호출");
         customerManager.CustomerExit(this);
         customerManager.PoolManager.Return(this.gameObject, this.sourcePrefab);
     }
@@ -315,10 +302,6 @@ public abstract class Customer : MonoBehaviour
         if (spriteLibrary != null && asset != null)
         {
             spriteLibrary.spriteLibraryAsset = asset;
-        }
-        else
-        {
-            Debug.Log("스프라이트 라이브러리 문제 발생");
         }
     }
 

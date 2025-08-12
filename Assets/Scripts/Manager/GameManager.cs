@@ -25,7 +25,7 @@ public class GameManager : MonoSingleton<GameManager>
 
     public DailyQuestManager DailyQuestManager { get; private set; }
 
-    public WageCountdownUI WageCountdownUI { get; private set; }
+    public WageCountdown WageCountdown { get; private set; }
 
 
     protected override void Awake()
@@ -37,7 +37,7 @@ public class GameManager : MonoSingleton<GameManager>
         DungeonSystem = new DungeonSystem(this);
         WageProcessor = new WageProcessor(this);
         SkillManager = new SkillManager(DataManager.SkillDataLoader);
-        WageCountdownUI = FindObjectOfType<WageCountdownUI>();
+        WageCountdown = FindObjectOfType<WageCountdown>();
 
         ForgeManager = GetComponentInChildren<ForgeManager>();
         AssistantManager = FindObjectOfType<AssistantManager>();
@@ -96,164 +96,18 @@ public class GameManager : MonoSingleton<GameManager>
     /// <summary>
     /// 강제로 시급 차감을 즉시 실행합니다.
     /// </summary>
-    [ContextMenu("강제 시급 차감 실행")]
     public void DebugWageTick()
     {
         WageProcessor.ProcessHourlyWage();
-        WageCountdownUI?.ResetTimer();
+        WageCountdown?.ResetTimer();
     }
 
-    /// <summary>
-    /// 튜토리얼 보상 일괄 지급
-    /// </summary>
-    [ContextMenu("튜토리얼 보상 일괄 지급")]
-    public void AddTutorialFullReward()
-    {
-        if (ForgeManager == null)
-        {
-            Debug.LogWarning("[GameManager] Forge 인스턴스를 찾을 수 없습니다! (튜토리얼 보상 지급 실패)");
-            return;
-        }
-        if (Inventory == null || DataManager == null)
-        {
-            Debug.LogWarning("[GameManager] Inventory/DataManager 가 준비되지 않았습니다! (튜토리얼 보상 지급 실패)");
-            return;
-        }
-
-        var bronze = DataManager.ItemLoader.GetItemByKey("resource_bronze");
-        var copperIngot = DataManager.ItemLoader.GetItemByKey("ingot_copper");
-        if (bronze != null) Inventory.AddItem(bronze, 1);
-        if (copperIngot != null) Inventory.AddItem(copperIngot, 2);
-
-        int totalGold = 1000 + 10000 + 10000;
-        int totalDia = 100 + 500 + 5000;
-
-        ForgeManager.AddGold(totalGold);
-        ForgeManager.AddDia(totalDia);
-
-        Debug.Log($"<color=lime>[GameManager] 튜토리얼 일괄 보상 지급 완료! " +
-                  $"골드 {totalGold:N0}, 다이아 {totalDia:N0}, " +
-                  $"resource_bronze ×1, ingot_copper ×2</color>");
-    }
-
-
-    [ContextMenu("Get Random Item")]
-    public void GetRandomItem()
-    {
-        for (int i = 0; i < 20; i++)
-        {
-            var itemData = DataManager.ItemLoader.GetRandomItem();
-            Inventory.AddItem(itemData);
-        }
-    }
-
-    [ContextMenu("Get Random Assistant")]
-    public void GetRandomAssi()
-    {
-        for (int i = 0; i < 20; i++)
-        {
-            AssistantManager.RecruitSingle();
-        }
-        Debug.Log("<color=yellow>[GameManager] 랜덤아이템 지급 완료!</color>");
-    }
-
-    [ContextMenu("Add Test Gold (5000)")]
-    public void AddTestGold()
-    {
-        if (ForgeManager != null)
-        {
-            ForgeManager.AddGold(5000);
-            Debug.Log("<color=yellow>[GameManager] 테스트 골드 5000 지급 완료!</color>");
-        }
-        else
-        {
-            Debug.LogWarning("[GameManager] Forge 인스턴스를 찾을 수 없습니다!");
-        }
-    }
-
-    [ContextMenu("Add Test Gold (500000)")]
-    public void AddTestGold2()
-    {
-        if (ForgeManager != null)
-        {
-            ForgeManager.AddGold(500000);
-            Debug.Log("<color=yellow>[GameManager] 테스트 골드 500000 지급 완료!</color>");
-        }
-        else
-        {
-            Debug.LogWarning("[GameManager] Forge 인스턴스를 찾을 수 없습니다!");
-        }
-    }
-
-    [ContextMenu("Add Test Dia (500)")]
-    public void AddTestDia500()
-    {
-        if (ForgeManager != null)
-        {
-            ForgeManager.AddDia(500);
-            Debug.Log("<color=cyan>[GameManager] 테스트 다이아 500 지급 완료!</color>");
-        }
-        else
-        {
-            Debug.LogWarning("[GameManager] Forge 인스턴스를 찾을 수 없습니다!");
-        }
-    }
-
-    [ContextMenu("Add Test Dia (750)")]
-    public void AddTestDia750()
-    {
-        if (ForgeManager != null)
-        {
-            ForgeManager.AddDia(750);
-            Debug.Log("<color=cyan>[GameManager] 테스트 다이아 750 지급 완료!</color>");
-        }
-        else
-        {
-            Debug.LogWarning("[GameManager] Forge 인스턴스를 찾을 수 없습니다!");
-        }
-    }
-
-    public void AddDia(int amount)
+    public void BuyDia(int amount)
     {
         if (ForgeManager != null)
         {
             ForgeManager.AddDia(amount);
         }
-    }
-
-    [ContextMenu("Add All Resource Items (20 Each)")]
-    public void AddAllResourcesTest()
-    {
-        int addedTypes = 0;
-        foreach (var item in DataManager.ItemLoader.ItemList)
-        {
-            if (item.ItemKey != null && item.ItemKey.StartsWith("resource_"))
-            {
-                Inventory.AddItem(item, 20);
-                addedTypes++;
-            }
-        }
-        Debug.Log($"<color=cyan>[GameManager] 리소스 아이템 {addedTypes}종 20개씩 지급 완료!</color>");
-    }
-
-    [ContextMenu("Delete All SaveData")]
-    public void DeleteSaveData()
-    {
-        SaveManager.DeleteAll();
-        SaveManager.LoadAll();
-    }
-
-    [ContextMenu("Get Recipe Point")]
-    public void GetRecipePoint()
-    {
-        ForgeManager.AddPoint(50);
-    }
-
-    [ContextMenu("Get Random Skill")]
-    public void GetRandomSkill()
-    {
-        for(int i = 0; i < 10; i++)
-            SkillManager.AddSkill(DataManager.SkillDataLoader.GetRandomSkill());
     }
 
     private void OnApplicationQuit()

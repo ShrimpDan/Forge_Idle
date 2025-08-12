@@ -19,14 +19,12 @@ public class AssistantController : MonoBehaviour
     private bool isFlipped = false;
     private bool isFlipping = false;
 
-    // 🔽 사운드별 재생 제한
+    // 사운드별 재생 제한
     private static bool hasPlayedDropSound = false;
-    private static bool hasPlayedFlipSound = false;
-    private static bool hasPlayedVanishSound = false;
 
     public bool IsFlipped => isFlipped;
 
-    private System.Action<AssistantInstance> onConfirm;
+    private Action<AssistantInstance> onConfirm;
 
     /// <summary>
     /// 카드 설정 및 UI 초기화
@@ -55,7 +53,6 @@ public class AssistantController : MonoBehaviour
             backCardButton.interactable = enableFlipOnStart;
             backCardButton.onClick.RemoveAllListeners();
             backCardButton.onClick.AddListener(OnClick_FlipCard);
-            Debug.Log($"[AssistantController] Setup 호출됨: {assistantData.Name}, IconPath: {assistantData.IconPath}");
         }
 
         if (playSpawnEffect)
@@ -178,8 +175,6 @@ public class AssistantController : MonoBehaviour
     public static void ResetSoundOnce()
     {
         hasPlayedDropSound = false;
-        hasPlayedFlipSound = false;
-        hasPlayedVanishSound = false;
     }
 
     /// <summary>

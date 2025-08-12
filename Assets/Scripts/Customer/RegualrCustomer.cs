@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using Unity.Mathematics;
 using UnityEngine;
 
 public class RegualrCustomer : Customer
@@ -8,20 +7,17 @@ public class RegualrCustomer : Customer
     public Action<CustomerJob> OnPriceBoosted; // 단골손님 가격올리기
 
     [SerializeField] private GameObject InteractObject; // 말풍선
-    [SerializeField] private float WaitTime = 4.0f;
     [SerializeField] private RegularCustomerData CollectData;
 
     #region 사운드 및 효과
 
     [SerializeField] private HeartEffect HeartEffectPrefab;
-    [SerializeField] private float effectLife = 1.0f;
     [SerializeField] private float effectOffsetY = 0.5f;
     [SerializeField] private string clickSfxName; //아직 사운드 없음 
 
     #endregion
 
     private bool isDiscovered = false;
-    private bool isInteracting = false;
 
     protected override void Start()
     {
@@ -36,7 +32,6 @@ public class RegualrCustomer : Customer
     {
         base.OnEnable();
         isDiscovered = false;
-        isInteracting = false;
 
         if (InteractObject != null)
             InteractObject.SetActive(true);
@@ -56,7 +51,6 @@ public class RegualrCustomer : Customer
 #if UNITY_EDITOR || UNITY_STANDALONE
         if (Input.GetMouseButtonDown(0))
         {
-            Debug.Log("클릭됨");
             CheckClick(Input.mousePosition);
         }
 #else
@@ -148,7 +142,7 @@ public class RegualrCustomer : Customer
         yield return MoveToExit();
     }
 
-    private IEnumerator MoveToExit()
+    protected override IEnumerator MoveToExit()
     {
         state = CustomerState.Exiting;
         if (moveWayPoint != null && moveWayPoint.Length > 1)
@@ -169,14 +163,12 @@ public class RegualrCustomer : Customer
 
         if (effectobj == null)
         {
-            Debug.LogError("[ShowEffect] effectobj is NULL");
             return;
         }
 
         var effect = effectobj.GetComponent<HeartEffect>();
         if (effect == null)
         {
-            Debug.LogError("[ShowEffect] HeartEffect component missing on pooled instance!");
             return;
         }
 

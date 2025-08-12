@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -41,7 +40,6 @@ public class DailyQuestManager : MonoBehaviour
     [SerializeField] private int TestTime;
 
     private DateTime lastResetTime;
-    private bool isResetting = false;
 
     private const string lastDateKey= "LastQuestResetDate";
     private DateTime resetTime;
