@@ -1,4 +1,6 @@
 # 무기팔아 먹고삽니다: 살래말래?
+<img width="1920" height="1080" alt="Google_MainCover" src="https://github.com/user-attachments/assets/0d61beaa-d748-46f0-9a05-635cb155e16e" />
+
 
 ### 인게임 화면
 | ![타이틀](https://github.com/user-attachments/assets/c4c94608-be1b-403a-b6bd-bec628ed87a0) | ![대장간](https://github.com/user-attachments/assets/6d0487b9-155b-4c27-aef5-e9379d1c5f07) | ![광산](https://github.com/user-attachments/assets/ad44d8ff-4811-44ff-9fc0-93605ec491d1) | ![레시피해금](https://github.com/user-attachments/assets/da30155f-1eea-4418-9ad7-92a14cac6a08) | ![무기강화](https://github.com/user-attachments/assets/a84a88c8-a6b6-40da-aa23-b66bdb72996d) |
