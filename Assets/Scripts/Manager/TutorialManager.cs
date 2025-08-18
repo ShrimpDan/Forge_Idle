@@ -268,7 +268,7 @@ public class TutorialManager : MonoBehaviour
                 ClickBlockerOff();
                 effect.HighLightOn();
                 arrowIcon.SetActive(true);
-                HighlightPos(0.25f, 0.49f);
+                HighlightPos(0.25f, 0.47f);
                 effect.HideHighlight();
                 tutorialPanel.SetActive(false);
                 break;
@@ -304,7 +304,7 @@ public class TutorialManager : MonoBehaviour
             case 22:
                 ClickBlockerOff();
                 arrowIcon.SetActive(true);
-                HighlightPos(0.53f, 0.19f);
+                HighlightPos(0.52f, 0.14f); 
                 break;
             case 23:
                 effect.HighLightOn();
@@ -332,7 +332,7 @@ public class TutorialManager : MonoBehaviour
                 break;
             case 28:
                 ClickBlockerOn();
-                HighlightPos(0.32f, 0.86f); //0.32,0.86
+                HighlightPos(0.32f, 0.80f); //0.32,0.81
                 ShowTextWithTyping("강화는 일반강화, 고급강화로 나눠져 있어요!! 가운데 창을 클릭해서 무기를 올려 볼까요?");
                 break;
             case 29:
@@ -342,27 +342,27 @@ public class TutorialManager : MonoBehaviour
                 break;
             case 30:
                 ClickBlockerOn();
-                HighlightPos(0.36f, 0.17f);  //0.36f,0.17f
+                HighlightPos(0.36f, 0.11f); 
                 ShowTextWithTyping("일반강화는 골드를 사용해서 확률을 통해서 강화 할 수 있어요!!");
                 break;
             case 31:
                 ClickBlockerOn();
-                HighlightPos(0.68f, 0.17f); //0.68f,0.17f
+                HighlightPos(0.68f, 0.11f); 
                 ShowTextWithTyping("고급강화는 재화를 사용해서 좀더 확률이 높게 강화할 수 있어요!! ");
                 break;
 
             case 32:
-                HighlightPos(0.70f, 0.86f); //0.70,0.86
+                HighlightPos(0.70f, 0.80f); 
                 ShowTextWithTyping("이번에는 보석강화에 대해서 알려드릴게요!! \n 보석강화 버튼을 눌러주세요!!");
                 ClickBlockerOff();
                 break;
             case 33:
-                HighlightPos(0.50f, 0.62f); //0.50f,0.62f
+                HighlightPos(0.50f, 0.54f); //0.50f,0.62f
                 ClickBlockerOn();
                 ShowTextWithTyping("해당 슬롯을 클릭해서 보석을 넣으면 해당 보석의 능력치를 부여할수 있어요!!");
                 break;
             case 34:
-                HighlightPos(0.51f, 0.08f); //0.51f,0.08f
+                HighlightPos(0.51f, 0.02f); //0.51f,0.08f
                 ShowTextWithTyping("이제 창을 닫아볼께요!!");
                 ClickBlockerOff();
                 break;
