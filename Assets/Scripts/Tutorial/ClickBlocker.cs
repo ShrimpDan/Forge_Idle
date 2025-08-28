@@ -14,7 +14,7 @@ public class ClickBlocker : MonoBehaviour
     {
         MouseClick();
     }
-    private void MouseClick()
+    public void MouseClick()
     {
         if (Input.GetMouseButtonDown(0))
         {

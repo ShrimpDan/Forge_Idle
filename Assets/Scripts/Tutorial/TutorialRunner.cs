@@ -21,4 +21,35 @@ public class TutorialRunner
        
     }
 
+    public IEnumerator StartQuest()
+    {
+        yield return MoveNext();
+    }
+
+
+    private IEnumerator MoveNext()
+    {
+        currentStep++;
+        if (quest == null || currentStep >= quest.steps.Count)
+        {
+            yield break; //퀘스트 종료 
+        }
+
+
+        var ctx = new TutorialContext(mananger);
+        var step = quest.steps[currentStep];
+
+
+        //Enter Action 실행
+        foreach (var a in step.actionOnEnter)
+        {
+            if (TutorialRegistry.Actions.TryGetValue(a.type, out var action))
+            {
+                yield return mananger.StartCoroutine(action.Execute(ctx, a));
+            }
+        }
+
+
+    }
+
 }

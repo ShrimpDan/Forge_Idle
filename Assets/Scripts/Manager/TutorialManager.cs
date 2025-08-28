@@ -640,7 +640,7 @@ public class TutorialManager : MonoBehaviour
     }
 
 
-    private void HandleClickBlock() //클릭버튼 이벤트 및 조건 처리
+    public void HandleClickBlock() //클릭버튼 이벤트 및 조건 처리
     {
         if (!isTurtorialMode)
         {
@@ -667,7 +667,7 @@ public class TutorialManager : MonoBehaviour
             }
         }
     }
-    private void ShowTextWithTyping(string text)
+    public void ShowTextWithTyping(string text)
     {
         if (typingRoutine != null) StopCoroutine(typingRoutine);
         fullText = text;
@@ -689,7 +689,7 @@ public class TutorialManager : MonoBehaviour
 
 
 
-    private void HandleUIOpen(string uiName)
+    public void HandleUIOpen(string uiName)
     {
 
 

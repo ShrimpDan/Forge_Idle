@@ -45,6 +45,6 @@ public class ConditionData
 
 public class TutorialContext //튜토리얼 매니저, UI, GameState등에 접근하기 위한 핸들
 {
-    public readonly TutorialManager mgr;  // 여러분 프로젝트의 기존 매니저
+    public readonly TutorialManager mgr;  // 니가 쓰던 기본 매니저 가져와서 써
     public TutorialContext(TutorialManager m) { mgr = m; }
 }   
